@@ -1,0 +1,1755 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap");
+
+/* ====================
+  Reset Default CSS Start
+  ==================== */
+
+:root {
+  --primary-font: "Noto Sans Bengali", "Poppins", sans-serif;
+  --white: #ffffff;
+  --text-color: #000000;
+  --text-color2: #15803d;
+  --primary-color: #15803d;
+  --stroke: #16a34a;
+  --hover-color: #f0fdf4;
+  --gray: #aaaaaa;
+  --box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 17%);
+  --dark-mode-bg: #1e1e1e;
+  --dark-mode-bg2: #121212;
+  --dark-mode-text: #c0c5cb;
+  --content-and-hover-bg: #414141;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--primary-font);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--primary-font);
+  margin-top: 0;
+}
+
+p {
+  font-family: var(--primary-font);
+}
+
+span {
+  font-family: var(--primary-font);
+}
+
+a {
+  text-decoration: none !important;
+  font-family: var(--primary-font);
+}
+
+ul {
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none;
+  font-family: var(--primary-font);
+}
+
+button {
+  border: none;
+  outline: none;
+  font-family: var(--primary-font);
+}
+
+input {
+  outline: none;
+  font-family: var(--primary-font);
+}
+
+label {
+  font-family: var(--primary-font);
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: var(--hover-color);
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  width: 10px;
+  border-radius: 5px;
+  border-color: none !important;
+}
+
+/* ====================
+   Reset Default CSS End
+   ==================== */
+
+/* ..................Right bar SETTING Dark Mode All Color Start...................... */
+
+body[data-topbar="dark"] .isvertical-topbar {
+  background-color: var(--dark-mode-bg);
+}
+
+body[data-topbar="dark"] .vertical-menu-btn2 {
+  color: var(--text-color) !important;
+}
+
+body[data-topbar="dark"] .logo-sm2,
+body[data-topbar="dark"] .header-item {
+  color: #af2222;
+}
+
+body[data-topbar="dark"] .light-mode-button span:nth-child(1) {
+  background-color: #ced4e2;
+  color: var(--text-color);
+}
+
+body[data-topbar="dark"] .light-mode-button span:nth-child(2) {
+  background-color: var(--text-color);
+}
+
+body[data-topbar="dark"] .light-mode-button span:nth-child(1) {
+  background: var(--white) !important;
+}
+
+body[data-topbar="dark"] .header-profile-user {
+  border-color: var(--gray);
+}
+
+body[data-topbar="dark"] #right-bar-toggle-v svg path {
+  stroke: var(--white);
+}
+
+body[data-topbar="dark"] #page-header-notifications-dropdown-v svg path,
+body[data-topbar="dark"] .language-switch-icon svg path,
+body[data-topbar="dark"] .nav-src-btn svg path,
+body[data-topbar="dark"] .search-icon svg path,
+body[data-topbar="dark"] .toggle-fullscreen-btn svg path {
+  fill: var(--white) !important;
+}
+
+body[data-topbar="dark"] .search-bar-box input,
+body[data-topbar="dark"] .search-bar-box input::placeholder,
+body[data-topbar="dark"] .search-bar-box {
+  border-color: var(--white);
+  color: var(--white) !important;
+}
+
+body[data-topbar="dark"] .topbar-setting svg path {
+  stroke: var(--white) !important;
+}
+
+body[data-topbar="dark"] .p-2 span,
+body[data-topbar="dark"] .mb-1,
+body[data-topbar="dark"] .mb-0,
+body[data-topbar="dark"] .m-0,
+body[data-topbar="dark"] .small {
+  color: var(--white) !important;
+}
+
+body[data-topbar="dark"] .text-reset .d-flex:hover {
+  background: var(--content-and-hover-bg) !important;
+}
+
+body[data-topbar="dark"] .page-header-notifications-dropdown-v {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[data-topbar="dark"] .language-switch .dropdown-menu-end .language,
+body[data-topbar="dark"] .language-switch .dropdown-menu-end {
+  background: var(--dark-mode-bg) !important;
+  color: var(--white) !important;
+}
+
+body[data-topbar="dark"] .language-switch .dropdown-menu-end .language:hover {
+  background: var(--content-and-hover-bg) !important;
+}
+
+body[data-topbar="dark"] .profile-dropdown {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[data-topbar="dark"] .profile-dropdown .dropdown-item {
+  color: var(--white) !important;
+}
+
+body[data-topbar="dark"] .profile-dropdown .dropdown-item:hover {
+  background: var(--content-and-hover-bg) !important;
+  color: var(--white) !important;
+}
+
+body[data-topbar="dark"] .header-item i {
+  color: var(--text-color2) !important;
+}
+
+/* ............sidebar.................... */
+
+body[data-sidebar="dark"] .navbar-brand-box {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[data-sidebar="dark"] .logo-lg svg path {
+  stroke: white !important;
+}
+
+body[data-sidebar="dark"] #cards .card-body svg path {
+  fill: var(--white) !important;
+}
+
+body[data-sidebar="dark"] .logo-sm2 svg path {
+  stroke: white !important;
+}
+
+body[data-sidebar="dark"] .navbar-brand-box .logo-dark {
+  display: block;
+}
+
+body[data-sidebar="dark"] .vertical-menu {
+  background: var(--dark-mode-bg);
+}
+
+body[data-sidebar="dark"] .vertical-menu .log-out:hover svg path {
+  stroke: var(--primary-color) !important;
+}
+
+body[data-sidebar="dark"] .vertical-menu .log-out a:hover {
+  background: var(--white) !important;
+}
+
+body[data-sidebar="dark"] .vertical-menu .log-out a:hover .text {
+  color: var(--primary-color) !important;
+}
+
+body[data-sidebar="dark"] #sidebar-menu ul .active-link.active a svg path {
+  stroke: var(--primary-color) !important;
+}
+
+body[data-sidebar="dark"] .vertical-menu .menu ul li.active > a {
+  background: var(--white);
+}
+
+body[data-sidebar="dark"] #sidebar-menu ul li a:hover .text,
+body[data-sidebar="dark"] .vertical-menu .menu ul li.active > a .text {
+  color: var(--primary-color) !important;
+}
+
+body[data-sidebar="dark"] #sidebar-menu ul li a:hover .arrow,
+body[data-sidebar="dark"] .vertical-menu .menu ul li.active .icon,
+body[data-sidebar="dark"] .vertical-menu .menu ul li.active .arrow {
+  color: var(--primary-color) !important;
+}
+
+body[data-sidebar="dark"] .vertical-menu .menu ul li.active > a svg path {
+  stroke: var(--primary-color) !important;
+}
+
+body[data-sidebar="dark"] #sidebar-menu ul li a:hover {
+  background: var(--white);
+}
+
+body[data-sidebar="dark"] #sidebar-menu ul li:hover a svg path {
+  stroke: var(--primary-color) !important;
+}
+
+body[data-sidebar="dark"] #sidebar-menu ul li a:hover a svg path {
+  stroke: var(--primary-color) !important;
+}
+
+body[data-sidebar="dark"] .vertical-menu .menu ul li a:hover .icon {
+  color: var(--primary-color) !important;
+}
+
+body[data-sidebar="dark"] .vertical-menu a,
+body[data-sidebar="dark"] .vertical-menu span,
+body[data-sidebar="dark"] .vertical-menu h1,
+body[data-sidebar="dark"] .vertical-menu h2,
+body[data-sidebar="dark"] .vertical-menu h3,
+body[data-sidebar="dark"] .vertical-menu h4,
+body[data-sidebar="dark"] .vertical-menu h5,
+body[data-sidebar="dark"] .vertical-menu h6 {
+  color: var(--white) !important;
+}
+
+body[data-sidebar="dark"] .sidebar-menu-scroll svg path {
+  stroke: var(--white) !important;
+}
+
+body[data-sidebar="dark"] .sidebar-menu-scroll svg rect {
+  fill: var(--white) !important;
+}
+
+body[data-sidebar="dark"] .vertical-menu #sidebar-menu > ul > li:hover > a {
+  background: var(--white) !important;
+}
+
+body[data-sidebar="dark"] .vertical-menu #sidebar-menu > ul ul li:hover > ul {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[data-sidebar="dark"] .vertical-menu #sidebar-menu > ul li a:hover {
+  background: var(--content-and-hover-bg) !important;
+}
+
+body[data-sidebar="dark"] .vertical-menu #sidebar-menu > ul li:hover .sub-menu {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[data-sidebar="dark"] .vertical-menu .fa-circle:before {
+  color: var(--white) !important;
+}
+
+body[data-sidebar="dark"] .vertical-menu .vertical-menu-btn {
+  color: var(--white) !important;
+}
+
+body[data-sidebar="dark"] .header-item i {
+  color: var(--text-color2) !important;
+}
+
+body[data-sidebar="dark"] .vertical-menu .menu ul li .icon {
+  color: var(--white) !important;
+}
+
+body[data-sidebar="dark"] .vertical-menu .log-out {
+  background: var(--dark-mode-bg) !important;
+  box-shadow: 0 -2px 4px rgba(255, 255, 255, 0.1);
+}
+
+body[data-sidebar="dark"] .vertical-menu .log-out svg path {
+  stroke: var(--white) !important;
+}
+
+body[data-sidebar="dark"][data-sidebar-size="sm"] .vertical-menu .log-out .text,
+body[data-sidebar="dark"][data-sidebar-size="sm"]
+  .vertical-menu
+  .menu
+  > ul
+  > li
+  > a
+  .text {
+  border: 1px solid var(--gray);
+}
+
+body[data-sidebar="dark"][data-sidebar-size="sm"]
+  .vertical-menu
+  #sidebar-menu
+  ul
+  .sub-menu {
+  border: 1px solid var(--gray);
+  background: var(--text-color);
+}
+
+/* ........Layout mode......... */
+
+body[data-layout-mode="dark"] body {
+    background-color: var(--dark-mode-bg2) !important;
+  }
+
+body[data-layout-mode="dark"] .main-content {
+  background: black !important;
+}
+
+body[data-layout-mode="dark"] .page-content {
+  background-color: var(--dark-mode-bg2);
+}
+
+body[data-layout-mode="dark"] .isvertical-topbar {
+  box-shadow: 0 2px 3px rgba(255, 255, 255, 0.39);
+}
+
+body[data-layout-mode="dark"] .header-item i {
+  color: var(--primary-color) !important;
+}
+
+body[data-layout-mode="dark"] .logo-lg svg path {
+  stroke: white !important;
+}
+body[data-layout-mode="dark"] .logo-sm2 svg path {
+  stroke: white !important;
+}
+
+body[data-layout-mode="dark"] .right-bar h6,
+body[data-layout-mode="dark"] .right-bar {
+  background: var(--dark-mode-bg) !important;
+  color: var(--white) !important;
+}
+
+/*-- Cards Start --*/
+
+body[data-layout-mode="dark"] #cards .card-body {
+  background: var(--dark-mode-bg);
+  box-shadow: var(--box-shadow) !important;
+}
+
+body[data-layout-mode="dark"] #cards .card-body h4 {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] #cards .card-body h5 {
+  color: var(--primary-color);
+}
+
+body[data-layout-mode="dark"] .bredcam-invoice {
+  color: var(--gray);
+}
+
+body[data-layout-mode="dark"] #data_table {
+  background: var(--dark-mode-bg);
+}
+
+body[data-layout-mode="dark"] #data_table .table-searchbox input {
+  background: none;
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] #data_table .table-searchbox svg path {
+  fill: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] #data_table .dropdown-toggle svg path {
+  fill: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] #data_table .dropdown-toggle svg rect {
+  fill: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] #data_table .dropdown-toggle {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .btn-secondary:focus {
+  background: var(--content-and-hover-bg) !important;
+}
+
+body[data-layout-mode="dark"] .dropdown-menu-custom {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[data-layout-mode="dark"] .dropdown-menu-custom a:hover {
+  background: var(--content-and-hover-bg);
+}
+
+body[data-layout-mode="dark"] .dropdown-menu-custom a {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] .file-export-item .dt-button {
+  background: none !important;
+}
+
+body[data-layout-mode="dark"] .file-export-item .dt-button svg {
+  border: 1px solid var(--white);
+  border-radius: 4px;
+}
+
+body[data-layout-mode="dark"] .file-export-item .dt-button svg:hover {
+  fill: var(--content-and-hover-bg) !important;
+}
+
+body[data-layout-mode="dark"] .file-export-item .dt-button svg path {
+  fill: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .file-export-item #copyButton svg path {
+  fill: none !important;
+  stroke: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .entries h1 {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .entries .custom-length-menu {
+  color: var(--white) !important;
+  background: var(--dark-mode-bg) !important;
+}
+
+body[data-layout-mode="dark"] .entries .custom-length-menu option {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[data-layout-mode="dark"] .table-wrapper {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[data-layout-mode="dark"] .table-wrapper tbody td {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[data-layout-mode="dark"] .table-wrapper tbody td span {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .table-wrapper tbody .client h1 {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .table-wrapper tbody .client h2 {
+  color: var(--gray) !important;
+}
+
+body[data-layout-mode="dark"] .table-wrapper tbody .total h1 {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .table-wrapper tbody .total h2 {
+  color: var(--gray) !important;
+}
+
+body[data-layout-mode="dark"] .table-wrapper tbody .edit svg path {
+  fill: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] #example th {
+  background: var(--dark-mode-bg) !important;
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] #example.dataTable thead th {
+  border-bottom: 1px solid rgb(255, 255, 255);
+}
+
+body[data-layout-mode="dark"] #example td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.26);
+}
+
+body[data-layout-mode="dark"] #example th:nth-child(1) {
+  padding-left: 10px !important;
+}
+
+body[data-layout-mode="dark"] table.dataTable.display tbody tr > .sorting_1 {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[data-layout-mode="dark"] .dataTables_info {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .custom-pagination .button {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .copyright p {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] #invoice-details {
+  background-color: var(--dark-mode-bg);
+}
+
+body[data-layout-mode="dark"] #invoice-details .brand-address h1 {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] #invoice-details .brand-address p {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] #invoice-details .invoice-address h1 {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] #invoice-details .invoice-address p {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] #invoice-details .address p {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] #invoice-details .invoice-address .title span {
+  color: var(--primary-color);
+}
+
+body[data-layout-mode="dark"] #invoice-details .invoice-address span {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] #invoice-details .address h2 {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] .invoice-details-table tbody tr td {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] .invoice-details-table tbody tr td h1 {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .data-table .card-body .date-wrapper input {
+  background: transparent;
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] .data-table .card-body .date-wrapper input:focus {
+  border-color: var(--white);
+}
+
+body[data-layout-mode="dark"] .data-table #openModalBtns:hover {
+  color: var(--white);
+  border-color: var(--white);
+}
+
+body[data-layout-mode="dark"] #invoice-details .terms-condition p {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] #invoice-details .condition .signature h1 {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] #invoice-details .invoice-details-button .cancel {
+  color: var(--white) !important;
+  border-color: var(--white);
+}
+
+body[data-layout-mode="dark"] .project-table thead th {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .project-title h4,
+body[data-layout-mode="dark"] .project-name span {
+  color: var(--gray) !important;
+}
+
+body[data-layout-mode="dark"] #table-body .projuct-parcent span {
+  color: var(--gray) !important;
+}
+
+body[data-layout-mode="dark"] .project-table .progress {
+  background: var(--primary-color) !important;
+}
+
+body[data-layout-mode="dark"] .projuct-table-container {
+  padding: 0px 10px !important;
+  background: var(--dark-mode-bg);
+  border-radius: 12px;
+}
+
+body[data-layout-mode="dark"] .project-table td,
+body[data-layout-mode="dark"] .project-table th {
+  color: var(--gray) !important;
+}
+
+body[data-layout-mode="dark"] .profile-form .change-password,
+body[data-layout-mode="dark"] .profile-form label {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] .profile-form .input-group input {
+  color: var(--white);
+  background: var(--dark-mode-bg);
+  border: 1px solid var(--gray);
+}
+
+body[data-layout-mode="dark"] #myModal #signup .input-header,
+body[data-layout-mode="dark"] .copyright p {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] #myModal #signup {
+  background: var(--dark-mode-bg2);
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .datepicker-wrapper .controls img,
+body[data-layout-mode="dark"] #myModal #signup .data textarea,
+body[data-layout-mode="dark"] #myModal #signup .country select,
+body[data-layout-mode="dark"] #myModal #signup input {
+  background: var(--dark-mode-bg);
+  color: var(--white) !important;
+  border: 1px solid var(--gray);
+}
+
+body[data-layout-mode="dark"] #signup .radioOrCheckboxes input {
+  accent-color: var(--primary-color) !important;
+}
+
+body[data-layout-mode="dark"] .data-table .card-body .date-wrapper label,
+body[data-layout-mode="dark"] #signup .radioOrCheckboxes .skills label {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .entries-page,
+body[light-mode="dark"] .entries-page {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+body[data-layout-mode="dark"] .entries-page label,
+body[light-mode="dark"] .entries-page label {
+  color: #94a3b8 !important;
+}
+
+body[data-layout-mode="dark"] .entries-page select#entries,
+body[data-layout-mode="dark"] .entries-page #entries,
+body[light-mode="dark"] .entries-page select#entries,
+body[light-mode="dark"] .entries-page #entries {
+  background-color: #0f172a !important;
+  border-color: #16a34a !important;
+  color: #4ade80 !important;
+}
+
+body[data-layout-mode="dark"] #action_btn #menu-wrap .dots > div:after,
+body[data-layout-mode="dark"] #action_btn #menu-wrap .dots > div::before,
+body[data-layout-mode="dark"] #action_btn #menu-wrap .dots > div {
+  background: var(--white);
+}
+
+body[data-layout-mode="dark"] #action_btn #menu-wrap:hover .dots > div:after,
+body[data-layout-mode="dark"] #action_btn #menu-wrap:hover .dots > div::before,
+body[data-layout-mode="dark"] #action_btn #menu-wrap:hover .dots > div {
+  background: var(--white);
+}
+
+body[data-layout-mode="dark"] .input-group-append .dropdown-button {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] .data-table .card-body {
+  background: var(--dark-mode-bg);
+  border-radius: 8px;
+}
+
+body[data-layout-mode="dark"] .data-table #openModalBtn:hover {
+  background: var(--white);
+  border-color: transparent !important;
+}
+
+body[data-layout-mode="dark"] .data-table .table td h4:nth-child(1) {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] .data-table .button-item #copyBtn svg path,
+body[data-layout-mode="dark"] .data-table .button-item #csvBtn svg path,
+body[data-layout-mode="dark"] .data-table .button-item #pdfBtn svg path,
+body[data-layout-mode="dark"] .data-table .button-item #printBtn svg path,
+body[data-layout-mode="dark"] .data-table .button-item #xlsxBtn svg path {
+  fill: var(--white);
+}
+
+body[data-layout-mode="dark"] .data-table .button-item #copyBtn,
+body[data-layout-mode="dark"] .data-table .button-item #csvBtn,
+body[data-layout-mode="dark"] .data-table .button-item #pdfBtn,
+body[data-layout-mode="dark"] .data-table .button-item #printBtn,
+body[data-layout-mode="dark"] .data-table .button-item #xlsxBtn {
+  border: 1px solid var(--white);
+}
+
+body[data-layout-mode="dark"] .data-table .button-item #copyBtn:hover,
+body[data-layout-mode="dark"] .data-table .button-item #csvBtn:hover,
+body[data-layout-mode="dark"] .data-table .button-item #pdfBtn:hover,
+body[data-layout-mode="dark"] .data-table .button-item #printBtn:hover,
+body[data-layout-mode="dark"] .data-table .button-item #xlsxBtn:hover {
+  border: 1px solid var(--primary-color);
+}
+
+body[data-layout-mode="dark"] .data-table #display-info,
+body[data-layout-mode="dark"] .data-table .table td {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] .table-hover > tbody > tr:hover > * {
+  background: hsla(0, 0%, 100%, 0.041);
+}
+
+body[data-layout-mode="dark"] .input-group-append .dropdown-button:hover {
+  background: var(--white);
+}
+
+body[data-layout-mode="dark"] .input-group-append .dropdown-button svg path {
+  fill: var(--white);
+}
+
+body[data-layout-mode="dark"] .input-group-append .dropdown-button svg rect {
+  fill: var(--white);
+  stroke: var(--white);
+}
+
+body[data-layout-mode="dark"]
+  .input-group-append
+  .dropdown-button:hover
+  svg
+  path {
+  fill: var(--text-color);
+}
+
+body[data-layout-mode="dark"]
+  .input-group-append
+  .dropdown-button:hover
+  svg
+  rect {
+  fill: var(--text-color);
+  stroke: var(--text-color);
+}
+
+body[data-layout-mode="dark"] .input-group-append .dropdown-button:hover {
+  color: var(--text-color) !important;
+}
+
+body[data-layout-mode="dark"] .page-link {
+  background-color: #292731;
+  border-color: #32303c;
+  color: #d8dbdd;
+}
+
+body[data-layout-mode="dark"] #data_table #example .edit svg path {
+  fill: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] #example .client-details h2,
+body[data-layout-mode="dark"] #example .total h2,
+body[data-layout-mode="dark"] #example .total h1 {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] #example .project span,
+body[data-layout-mode="dark"] #example .serial span,
+body[data-layout-mode="dark"] #example .invoice span,
+body[data-layout-mode="dark"] #example .date span,
+body[data-layout-mode="dark"] #data_table .client-details h1 {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] .data-table .table tbody td .details h2,
+body[data-layout-mode="dark"] .data-table .table tbody td .details h1,
+body[data-layout-mode="dark"] #data_table .table-wrapper #example th {
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .newcategory.show .newcategory-content,
+body[data-layout-mode="dark"] .newbrand-content,
+body[data-layout-mode="dark"] .financemodal .modal-content {
+  background: var(--dark-mode-bg2);
+  border: 1px solid var(--gray);
+}
+
+body[data-layout-mode="dark"] .financemodal form input,
+body[data-layout-mode="dark"] .financemodal form select {
+  background: var(--dark-mode-bg);
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] .newcategory input,
+body[data-layout-mode="dark"] .newcategory select,
+body[data-layout-mode="dark"] .newbrand input,
+body[data-layout-mode="dark"] .newbrand select {
+  background: var(--dark-mode-bg) !important;
+  color: var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .newcategory input:focus,
+body[data-layout-mode="dark"] .newcategory select:focus,
+body[data-layout-mode="dark"] .newbrand input:focus,
+body[data-layout-mode="dark"] .newbrand select:focus {
+  border: 1px solid var(--white) !important;
+}
+
+body[data-layout-mode="dark"] .newcategory-content h2,
+body[data-layout-mode="dark"] .financemodal .modal-content .heading,
+body[data-layout-mode="dark"] .newbrand-content h2 {
+  color: var(--white);
+}
+
+body[data-layout-mode="dark"] .financemodal form input:focus,
+body[data-layout-mode="dark"] .financemodal form select:focus {
+  border-color: var(--white) !important;
+}
+
+/*..........................Right bar SETTING Dark Mode All Color END ....................................*/
+
+/* ........................ Light & Dark Mode Toggle button Start ...................................... */
+
+.light-mode-button {
+  background: none;
+  border: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  height: 40px;
+  width: 51px;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0);
+  margin: 7.52px 12px;
+}
+
+.light-mode-button span:nth-child(1) {
+  position: absolute;
+  top: 7.2px;
+  left: 0;
+  width: 50px;
+  height: 25px;
+  border-radius: 20px;
+  background-color: var(--primary-color) !important;
+  box-shadow: inset 1px 1px 3px 0 rgba(0, 0, 0, 0.13);
+  transition: 0.3s;
+}
+
+.light-mode-button span:nth-child(2) {
+  position: absolute;
+  top: 9.8px;
+  left: 3px;
+  width: 19px;
+  height: 19px;
+  background-color: var(--white);
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+/* Toggle button Dark Mode Start  */
+
+body[light-mode="dark"] {
+  background-color: black;
+  color: var(--white);
+}
+
+body[light-mode="dark"] body {
+  background: var(--dark-mode-bg2) !important;
+}
+
+body[light-mode="dark"] .page-content {
+  background-color: var(--dark-mode-bg2);
+}
+
+body[light-mode="dark"] .isvertical-topbar {
+  box-shadow: 0 2px 3px rgba(255, 255, 255, 0.39);
+}
+
+body[light-mode="dark"] .light-mode-button span:nth-child(1) {
+  background-color: var(--white);
+  color: var(--text-color);
+}
+
+body[light-mode="dark"] .light-mode-button span:nth-child(2) {
+  left: 28px;
+  background-color: var(--text-color);
+}
+
+body[light-mode="dark"] .isvertical-topbar {
+  background-color: var(--dark-mode-bg);
+}
+
+body[light-mode="dark"] .vertical-menu-btn2 {
+  color: var(--text-color) !important;
+}
+
+body[light-mode="dark"] .light-mode-button span:nth-child(1) {
+  background-color: var(--white);
+  color: #141516;
+}
+
+body[light-mode="dark"] .light-mode-button span:nth-child(2) {
+  background-color: var(--text-color);
+}
+
+body[light-mode="dark"] .light-mode-button span:nth-child(1) {
+  background: var(--white) !important;
+}
+
+body[light-mode="dark"] .header-profile-user {
+  border-color: var(--gray);
+}
+
+body[light-mode="dark"] #right-bar-toggle-v svg path {
+  stroke: var(--white);
+}
+
+body[light-mode="dark"] #page-header-notifications-dropdown-v svg path,
+body[light-mode="dark"] .language-switch-icon svg path,
+body[light-mode="dark"] .nav-src-btn svg path,
+body[light-mode="dark"] .search-icon svg path,
+body[light-mode="dark"] .toggle-fullscreen-btn svg path {
+  fill: var(--white) !important;
+}
+
+body[light-mode="dark"] .search-bar-box input,
+body[light-mode="dark"] .search-bar-box input::placeholder,
+body[light-mode="dark"] .search-bar-box {
+  border-color: var(--white);
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .topbar-setting svg path {
+  stroke: var(--white) !important;
+}
+
+body[light-mode="dark"] .p-2 span,
+body[light-mode="dark"] .mb-1,
+body[light-mode="dark"] .mb-0,
+body[light-mode="dark"] .m-0,
+body[light-mode="dark"] .small {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .text-reset .d-flex:hover {
+  background: var(--content-and-hover-bg) !important;
+}
+
+body[light-mode="dark"] .page-header-notifications-dropdown-v {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[light-mode="dark"] .language-switch .dropdown-menu-end .language,
+body[light-mode="dark"] .language-switch .dropdown-menu-end {
+  background: var(--dark-mode-bg) !important;
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .language-switch .dropdown-menu-end .language:hover {
+  background: var(--content-and-hover-bg) !important;
+}
+
+body[light-mode="dark"] .data-table .card-body .date-wrapper label,
+body[light-mode="dark"] .data-table .entries-page label {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .profile-dropdown {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[light-mode="dark"] .profile-dropdown .dropdown-item {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .profile-dropdown .dropdown-item:hover {
+  background: var(--content-and-hover-bg) !important;
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .header-item i {
+  color: var(--white) !important;
+}
+
+/* ..sidebar.. */
+
+body[light-mode="dark"] .navbar-brand-box {
+  background: var(--dark-mode-bg) !important;
+  box-shadow: 0 3px 2px rgba(255, 255, 255, 0.1);
+}
+
+body[light-mode="dark"] .logo-lg svg path {
+  stroke: white !important;
+}
+
+body[light-mode="dark"] .logo-sm2 svg path {
+  stroke: white !important;
+}
+
+body[light-mode="dark"] .navbar-brand-box .logo-dark {
+  display: block;
+}
+
+body[light-mode="dark"] .vertical-menu {
+  background: var(--dark-mode-bg);
+}
+
+body[light-mode="dark"] .vertical-menu a,
+body[light-mode="dark"] .vertical-menu span,
+body[light-mode="dark"] .vertical-menu h1,
+body[light-mode="dark"] .vertical-menu h2,
+body[light-mode="dark"] .vertical-menu h3,
+body[light-mode="dark"] .vertical-menu h4,
+body[light-mode="dark"] .vertical-menu h5,
+body[light-mode="dark"] .vertical-menu h6 {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .sidebar-menu-scroll svg path {
+  stroke: var(--white) !important;
+}
+
+body[light-mode="dark"] .sidebar-menu-scroll svg rect {
+  fill: var(--white) !important;
+}
+
+body[light-mode="dark"] #sidebar-menu ul li.mm-active > a {
+  background: var(--content-and-hover-bg) !important;
+}
+
+body[light-mode="dark"] .vertical-menu #sidebar-menu > ul > li:hover > a {
+  background: var(--content-and-hover-bg) !important;
+}
+
+body[light-mode="dark"] .vertical-menu #sidebar-menu > ul ul li:hover > ul {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[light-mode="dark"] .vertical-menu #sidebar-menu > ul li a:hover {
+  background: var(--content-and-hover-bg) !important;
+}
+
+body[light-mode="dark"] .vertical-menu #sidebar-menu > ul li:hover .sub-menu {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[light-mode="dark"] .vertical-menu .menu ul li .icon {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .vertical-menu .log-out {
+  background: var(--dark-mode-bg) !important;
+  box-shadow: 0 -2px 4px rgba(255, 255, 255, 0.1);
+}
+
+body[light-mode="dark"] .vertical-menu .log-out svg path {
+  stroke: var(--white) !important;
+}
+
+body[light-mode="dark"] #cards .card-body svg path {
+  fill: var(--white) !important;
+}
+
+body[light-mode="dark"] .vertical-menu .log-out {
+  background: var(--dark-mode-bg) !important;
+  box-shadow: 0 -2px 4px rgba(255, 255, 255, 0.1);
+}
+
+body[light-mode="dark"] .vertical-menu .log-out svg path {
+  stroke: var(--white) !important;
+}
+
+body[light-mode="dark"] .vertical-menu .log-out:hover svg path {
+  stroke: var(--primary-color) !important;
+}
+
+body[light-mode="dark"] .vertical-menu .log-out a:hover {
+  background: var(--white) !important;
+}
+
+body[light-mode="dark"] .vertical-menu .log-out a:hover .text {
+  color: var(--primary-color) !important;
+}
+
+body[light-mode="dark"] #sidebar-menu ul .active-link.active a svg path {
+  stroke: var(--primary-color) !important;
+}
+
+body[light-mode="dark"] .vertical-menu .menu ul li.active > a {
+  background: var(--white);
+}
+
+body[light-mode="dark"] #sidebar-menu ul li a:hover .text,
+body[light-mode="dark"] .vertical-menu .menu ul li.active > a .text {
+  color: var(--primary-color) !important;
+}
+
+body[light-mode="dark"] #sidebar-menu ul li a:hover .arrow,
+body[light-mode="dark"] .vertical-menu .menu ul li.active .icon,
+body[light-mode="dark"] .vertical-menu .menu ul li.active .arrow {
+  color: var(--primary-color) !important;
+}
+
+body[light-mode="dark"] .vertical-menu .menu ul li.active > a svg path {
+  stroke: var(--primary-color) !important;
+}
+
+body[light-mode="dark"] #sidebar-menu ul li a:hover {
+  background: var(--white);
+}
+
+body[light-mode="dark"] .newcategory.show .newcategory-content,
+body[light-mode="dark"] .newbrand-content,
+body[light-mode="dark"] .financemodal .modal-content {
+  background: var(--dark-mode-bg2);
+  border: 1px solid var(--gray);
+}
+
+body[light-mode="dark"] .financemodal form input,
+body[light-mode="dark"] .financemodal form select {
+  background: var(--dark-mode-bg);
+  color: var(--white);
+}
+
+body[light-mode="dark"] .newcategory input,
+body[light-mode="dark"] .newcategory select,
+body[light-mode="dark"] .newbrand input,
+body[light-mode="dark"] .newbrand select {
+  background: var(--dark-mode-bg) !important;
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .newcategory input:focus,
+body[light-mode="dark"] .newcategory select:focus,
+body[light-mode="dark"] .newbrand input:focus,
+body[light-mode="dark"] .newbrand select:focus {
+  border: 1px solid var(--white) !important;
+}
+
+body[light-mode="dark"] .newcategory-content h2,
+body[light-mode="dark"] .financemodal .modal-content .heading,
+body[light-mode="dark"] .newbrand-content h2 {
+  color: var(--white);
+}
+
+body[light-mode="dark"] .financemodal form input:focus,
+body[light-mode="dark"] .financemodal form select:focus {
+  border-color: var(--white) !important;
+}
+
+body[light-mode="dark"] #sidebar-menu ul li:hover a svg path {
+  stroke: var(--primary-color) !important;
+}
+
+body[light-mode="dark"] #sidebar-menu ul li a:hover a svg path {
+  stroke: var(--primary-color) !important;
+}
+
+body[light-mode="dark"] .vertical-menu .menu ul li a:hover .icon {
+  color: var(--primary-color) !important;
+}
+
+body[light-mode="dark"][data-sidebar-size="sm"]
+  .vertical-menu
+  #sidebar-menu
+  ul
+  .sub-menu {
+  border: 1px solid var(--gray);
+  background: var(--text-color);
+}
+
+body[light-mode="dark"][data-sidebar-size="sm"] .vertical-menu .log-out .text,
+body[light-mode="dark"][data-sidebar-size="sm"]
+  .vertical-menu
+  .menu
+  > ul
+  > li
+  > a
+  .text {
+  border: 1px solid var(--gray);
+}
+
+body[light-mode="dark"] .vertical-menu .log-out a:hover {
+  background: var(--gray);
+}
+
+body[light-mode="dark"] .vertical-menu .fa-circle:before {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .vertical-menu .vertical-menu-btn {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .logo-lg svg path {
+  stroke: white !important;
+}
+
+body[light-mode="dark"] .logo-sm2 svg path {
+  stroke: white !important;
+}
+
+body[light-mode="dark"] .right-bar h6,
+body[light-mode="dark"] .right-bar {
+  background: var(--dark-mode-bg) !important;
+  color: var(--white) !important;
+}
+
+/*-- Cards Start --*/
+
+body[light-mode="dark"] #cards .card-body {
+  background: var(--dark-mode-bg);
+  box-shadow: var(--box-shadow) !important;
+}
+
+body[light-mode="dark"] #cards .card-body h4 {
+  color: var(--white);
+}
+
+body[light-mode="dark"] #cards .card-body h5 {
+  color: var(--primary-color);
+}
+
+body[light-mode="dark"] .bredcam-invoice {
+  color: var(--gray);
+}
+
+body[light-mode="dark"] #action_btn #menu-wrap .dots > div:after,
+body[light-mode="dark"] #action_btn #menu-wrap .dots > div::before,
+body[light-mode="dark"] #action_btn #menu-wrap .dots > div {
+  background: var(--white);
+}
+
+body[light-mode="dark"] #action_btn #menu-wrap:hover .dots > div:after,
+body[light-mode="dark"] #action_btn #menu-wrap:hover .dots > div::before,
+body[light-mode="dark"] #action_btn #menu-wrap:hover .dots > div {
+  background: var(--white);
+}
+
+body[light-mode="dark"] .input-group-append .dropdown-button {
+  color: var(--white);
+}
+
+body[light-mode="dark"] #data_table,
+body[light-mode="dark"] .data-table .card-body {
+  background: var(--dark-mode-bg);
+  border-radius: 8px;
+}
+
+body[light-mode="dark"] .data-table #openModalBtn:hover {
+  background: var(--white);
+  border-color: transparent !important;
+}
+
+body[light-mode="dark"] #data_table .table-wrapper #example tr {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[light-mode="dark"] .project-table td {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] #data_table #example .edit svg path {
+  fill: var(--white) !important;
+}
+
+body[light-mode="dark"] #example .client-details h2,
+body[light-mode="dark"] #example .total h2,
+body[light-mode="dark"] #example .total h1 {
+  color: var(--white);
+}
+
+body[light-mode="dark"] .data-table .table tbody td .details h2,
+body[light-mode="dark"] .data-table .table tbody td .details h1,
+body[light-mode="dark"] #example .project span,
+body[light-mode="dark"] #example .serial span,
+body[light-mode="dark"] #example .invoice span,
+body[light-mode="dark"] #example .date span,
+body[light-mode="dark"] #data_table .client-details h1 {
+  color: var(--white);
+}
+
+body[light-mode="dark"] #data_table .table-wrapper #example th {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .data-table .table td h4:nth-child(1) {
+  color: var(--white);
+}
+
+body[light-mode="dark"] .data-table .button-item #copyBtn svg path,
+body[light-mode="dark"] .data-table .button-item #csvBtn svg path,
+body[light-mode="dark"] .data-table .button-item #pdfBtn svg path,
+body[light-mode="dark"] .data-table .button-item #printBtn svg path,
+body[light-mode="dark"] .data-table .button-item #xlsxBtn svg path {
+  fill: var(--white);
+}
+
+body[light-mode="dark"] .data-table .button-item #copyBtn,
+body[light-mode="dark"] .data-table .button-item #csvBtn,
+body[light-mode="dark"] .data-table .button-item #pdfBtn,
+body[light-mode="dark"] .data-table .button-item #printBtn,
+body[light-mode="dark"] .data-table .button-item #xlsxBtn {
+  border: 1px solid var(--white);
+}
+
+body[light-mode="dark"] .data-table .button-item #copyBtn:hover,
+body[light-mode="dark"] .data-table .button-item #csvBtn:hover,
+body[light-mode="dark"] .data-table .button-item #pdfBtn:hover,
+body[light-mode="dark"] .data-table .button-item #printBtn:hover,
+body[light-mode="dark"] .data-table .button-item #xlsxBtn:hover {
+  border: 1px solid var(--primary-color);
+}
+
+body[light-mode="dark"] .data-table #display-info,
+body[light-mode="dark"] .data-table .table td {
+  color: var(--white);
+}
+
+body[light-mode="dark"] .table-hover > tbody > tr:hover > * {
+  background: hsla(0, 0%, 100%, 0.041);
+}
+
+body[light-mode="dark"] .input-group-append .dropdown-button:hover {
+  background: var(--white);
+}
+
+body[light-mode="dark"] .input-group-append .dropdown-button svg path {
+  fill: var(--white);
+}
+
+body[light-mode="dark"] .input-group-append .dropdown-button svg rect {
+  fill: var(--white);
+  stroke: var(--white);
+}
+
+body[light-mode="dark"] .input-group-append .dropdown-button:hover svg path {
+  fill: var(--text-color);
+}
+
+body[light-mode="dark"] .input-group-append .dropdown-button:hover svg rect {
+  fill: var(--text-color);
+  stroke: var(--text-color);
+}
+
+body[light-mode="dark"] .input-group-append .dropdown-button:hover {
+  color: var(--text-color) !important;
+}
+
+body[light-mode="dark"] .page-link {
+  background-color: #292731 !important;
+  border-color: #32303c !important;
+  color: #d8dbdd !important;
+}
+
+body[light-mode="dark"] .btn-secondary:focus {
+  background: var(--content-and-hover-bg) !important;
+}
+
+body[light-mode="dark"] .dropdown-menu-custom {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[light-mode="dark"] .dropdown-menu-custom a:hover {
+  background: var(--content-and-hover-bg);
+}
+
+body[light-mode="dark"] .dropdown-menu-custom a {
+  color: var(--white);
+}
+
+body[light-mode="dark"] .file-export-item .dt-button {
+  background: none !important;
+}
+
+body[light-mode="dark"] .file-export-item .dt-button svg {
+  border: 1px solid var(--white);
+  border-radius: 4px;
+}
+
+body[light-mode="dark"] .file-export-item .dt-button svg:hover {
+  fill: var(--text-color2) !important;
+}
+
+body[light-mode="dark"] .file-export-item .dt-button svg path {
+  fill: var(--white) !important;
+}
+
+body[light-mode="dark"] .file-export-item #copyButton svg path {
+  fill: none !important;
+  stroke: var(--white) !important;
+}
+
+body[light-mode="dark"] .entries h1 {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .entries .custom-length-menu {
+  color: var(--white) !important;
+  background: var(--dark-mode-bg) !important;
+}
+
+body[light-mode="dark"] .entries .custom-length-menu option {
+  background: var(--dark-mode-bg) !important;
+}
+
+body[light-mode="dark"] .project-table thead th {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .projuct-table-container {
+  padding: 0px 10px !important;
+  background: var(--dark-mode-bg);
+  border-radius: 12px;
+}
+
+body[light-mode="dark"] .project-title h4,
+body[light-mode="dark"] .project-name span {
+  color: var(--gray) !important;
+}
+
+body[light-mode="dark"] #table-body .projuct-parcent span {
+  color: var(--gray) !important;
+}
+
+body[light-mode="dark"] #myModal #signup .input-header,
+body[light-mode="dark"] .copyright p {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] #myModal #signup {
+  background: var(--dark-mode-bg2);
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .datepicker-wrapper .controls img,
+body[light-mode="dark"] #myModal #signup .data textarea,
+body[light-mode="dark"] #myModal #signup .country select,
+body[light-mode="dark"] #myModal #signup input {
+  background: var(--dark-mode-bg);
+  color: var(--white) !important;
+  border: 1px solid var(--gray);
+}
+
+body[light-mode="dark"] #signup .radioOrCheckboxes input {
+  accent-color: var(--primary-color) !important;
+}
+
+body[light-mode="dark"] .data-table .card-body .date-wrapper input {
+  background: transparent;
+  color: var(--white);
+}
+
+body[light-mode="dark"] .data-table .card-body .date-wrapper input:focus {
+  border-color: var(--white);
+}
+
+body[light-mode="dark"] .data-table #openModalBtns:hover {
+  color: var(--white);
+  border-color: var(--white);
+}
+
+body[light-mode="dark"] #signup .radioOrCheckboxes .skills label {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] #signup .modal-title h1 {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] .modal-content .close-btn i {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] #invoice-details {
+  background-color: var(--dark-mode-bg);
+}
+
+body[light-mode="dark"] #invoice-details .brand-address h1 {
+  color: var(--white);
+}
+
+body[light-mode="dark"] #invoice-details .brand-address p {
+  color: var(--white);
+}
+
+body[light-mode="dark"] #invoice-details .invoice-address h1 {
+  color: var(--white);
+}
+
+body[light-mode="dark"] #invoice-details .invoice-address p {
+  color: var(--white);
+}
+
+body[light-mode="dark"] #invoice-details .invoice-address .title span {
+  color: var(--primary-color);
+}
+
+body[light-mode="dark"] #invoice-details .invoice-address span {
+  color: var(--white);
+}
+
+body[light-mode="dark"] #invoice-details .address h2 {
+  color: var(--white);
+}
+
+body[light-mode="dark"] .invoice-details-table tbody tr td {
+  color: var(--white);
+}
+
+body[light-mode="dark"] .invoice-details-table tbody tr td h1 {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] #invoice-details .terms-condition p {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] #invoice-details .condition .signature h1 {
+  color: var(--white) !important;
+}
+
+body[light-mode="dark"] #invoice-details .invoice-details-button .cancel {
+  color: var(--white) !important;
+  border-color: var(--white);
+}
+
+body[light-mode="dark"] .profile-form .change-password,
+body[light-mode="dark"] .profile-form label {
+  color: var(--white);
+}
+
+body[light-mode="dark"] .profile-form .input-group input {
+  color: var(--white);
+  background: var(--dark-mode-bg);
+  border: 1px solid var(--gray);
+}
+/* ........................ Light & Dark Mode Toggle button End ...................................... */
+
+/* Rock-Solid Comprehensive Dark Mode Overrides for Cards & Dashboard Sections */
+body[light-mode="dark"],
+body[data-layout-mode="dark"],
+body[data-sidebar="dark"],
+body.dark-mode {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+}
+
+body[light-mode="dark"] .main-content,
+body[data-layout-mode="dark"] .main-content,
+body[data-sidebar="dark"] .main-content,
+body[light-mode="dark"] .page-content,
+body[data-layout-mode="dark"] .page-content,
+body[data-sidebar="dark"] .page-content {
+    background-color: #0f172a !important;
+}
+
+/* Card & Card Header Dark Mode Styling */
+body[light-mode="dark"] .card,
+body[data-layout-mode="dark"] .card,
+body[data-sidebar="dark"] .card,
+body[light-mode="dark"] .card-body,
+body[data-layout-mode="dark"] .card-body {
+    background: #1e293b !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+body[light-mode="dark"] .card-header,
+body[data-layout-mode="dark"] .card-header,
+body[light-mode="dark"] .bg-white,
+body[data-layout-mode="dark"] .bg-white {
+    background-color: #1e293b !important;
+    color: #f8fafc !important;
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Inner bg-light boxes (e.g. Monthly Summary Boxes) */
+body[light-mode="dark"] .bg-light,
+body[data-layout-mode="dark"] .bg-light,
+body[data-sidebar="dark"] .bg-light,
+body.dark-mode .bg-light,
+body[light-mode="dark"] .bg-light-subtle,
+body[data-layout-mode="dark"] .bg-light-subtle {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Badges & Buttons */
+body[light-mode="dark"] .badge.bg-light,
+body[data-layout-mode="dark"] .badge.bg-light,
+body[light-mode="dark"] .badge.bg-success-subtle,
+body[data-layout-mode="dark"] .badge.bg-success-subtle,
+body[light-mode="dark"] .badge.bg-danger-subtle,
+body[data-layout-mode="dark"] .badge.bg-danger-subtle,
+body[light-mode="dark"] .badge.bg-warning-subtle,
+body[data-layout-mode="dark"] .badge.bg-warning-subtle,
+body[light-mode="dark"] .badge.bg-teal-subtle,
+body[data-layout-mode="dark"] .badge.bg-teal-subtle {
+    background-color: #334155 !important;
+    color: #f8fafc !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Specific Summary Card Gradients in Dark Mode */
+body[light-mode="dark"] .card[style*="linear-gradient"],
+body[data-layout-mode="dark"] .card[style*="linear-gradient"] {
+    background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%) !important;
+}
+
+/* Typography & Number Colors inside Dark Cards */
+body[light-mode="dark"] .text-dark,
+body[data-layout-mode="dark"] .text-dark,
+body[light-mode="dark"] h1,
+body[light-mode="dark"] h2,
+body[light-mode="dark"] h3,
+body[light-mode="dark"] h4,
+body[light-mode="dark"] h5,
+body[light-mode="dark"] h6,
+body[data-layout-mode="dark"] h1,
+body[data-layout-mode="dark"] h2,
+body[data-layout-mode="dark"] h3,
+body[data-layout-mode="dark"] h4,
+body[data-layout-mode="dark"] h5,
+body[data-layout-mode="dark"] h6 {
+    color: #f8fafc !important;
+}
+
+body[light-mode="dark"] .text-muted,
+body[data-layout-mode="dark"] .text-muted {
+    color: #94a3b8 !important;
+}
+
+body[light-mode="dark"] .text-success,
+body[data-layout-mode="dark"] .text-success {
+    color: #4ade80 !important;
+}
+
+body[light-mode="dark"] .text-primary,
+body[data-layout-mode="dark"] .text-primary {
+    color: #38bdf8 !important;
+}
+
+body[light-mode="dark"] .text-info,
+body[data-layout-mode="dark"] .text-info {
+    color: #22d3ee !important;
+}
+
+body[light-mode="dark"] .style-purple,
+body[data-layout-mode="dark"] .style-purple,
+body[light-mode="dark"] [style*="color: #7c3aed"],
+body[data-layout-mode="dark"] [style*="color: #7c3aed"] {
+    color: #c084fc !important;
+}
+
+body[light-mode="dark"] .text-orange,
+body[data-layout-mode="dark"] .text-orange,
+body[light-mode="dark"] [style*="color: #ea580c"],
+body[data-layout-mode="dark"] [style*="color: #ea580c"] {
+    color: #fb923c !important;
+}
+
+body[light-mode="dark"] [style*="color: #0d9488"],
+body[data-layout-mode="dark"] [style*="color: #0d9488"] {
+    color: #2dd4bf !important;
+}
+
+/* Tables & Table Cells in Dark Mode */
+body[light-mode="dark"] .table,
+body[data-layout-mode="dark"] .table {
+    color: #f8fafc !important;
+    background-color: #1e293b !important;
+}
+
+body[light-mode="dark"] .table th,
+body[light-mode="dark"] .table td,
+body[data-layout-mode="dark"] .table th,
+body[data-layout-mode="dark"] .table td,
+body[light-mode="dark"] .table thead.bg-light th,
+body[data-layout-mode="dark"] .table thead.bg-light th {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Quick Action Outline Buttons in Dark Mode */
+body[light-mode="dark"] .btn-outline-dark,
+body[data-layout-mode="dark"] .btn-outline-dark {
+    color: #cbd5e1 !important;
+    border-color: #475569 !important;
+}
+
+body[light-mode="dark"] .btn-outline-dark:hover,
+body[data-layout-mode="dark"] .btn-outline-dark:hover {
+    background-color: #334155 !important;
+    color: #ffffff !important;
+}
+
+/* ApexCharts Text in Dark Mode */
+body[light-mode="dark"] .apexcharts-text,
+body[data-layout-mode="dark"] .apexcharts-text,
+body[light-mode="dark"] .apexcharts-title-text,
+body[data-layout-mode="dark"] .apexcharts-title-text,
+body[light-mode="dark"] .apexcharts-legend-text,
+body[data-layout-mode="dark"] .apexcharts-legend-text {
+    fill: #cbd5e1 !important;
+    color: #cbd5e1 !important;
+}

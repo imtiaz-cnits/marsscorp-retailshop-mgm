@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="mcBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="50%" stop-color="#047857" />
+      <stop offset="100%" stop-color="#0f766e" />
+    </linearGradient>
+
+    <linearGradient id="mcMGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6ee7b7" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+
+    <linearGradient id="mcCGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+
+    <filter id="mcShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background Card -->
+  <rect x="4" y="4" width="92" height="92" rx="22" fill="url(#mcBgGrad)" stroke="#34d399" stroke-width="2" filter="url(#mcShadow)" />
+  <rect x="7" y="7" width="86" height="86" rx="19" fill="none" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1" />
+
+  <!-- Monogram Graphic: 'M' and 'C' -->
+  <g transform="translate(13, 17)">
+    <!-- Letter M -->
+    <path d="M 5 56 V 12 L 23 38 L 41 12 V 56" fill="none" stroke="url(#mcMGrad)" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Letter C -->
+    <path d="M 67 18 C 47 10 38 25 38 34 C 38 43 47 58 67 50" fill="none" stroke="url(#mcCGrad)" stroke-width="8.5" stroke-linecap="round" />
+    
+    <!-- Accent Red Dot -->
+    <circle cx="67" cy="18" r="4.5" fill="#ef4444" />
+  </g>
+</svg>

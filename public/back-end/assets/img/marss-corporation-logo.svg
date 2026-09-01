@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 100" width="440" height="100">
+  <defs>
+    <linearGradient id="logoMcBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="50%" stop-color="#047857" />
+      <stop offset="100%" stop-color="#0f766e" />
+    </linearGradient>
+
+    <linearGradient id="logoMGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6ee7b7" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+
+    <linearGradient id="logoCGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+
+    <linearGradient id="corpTextGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#0f766e" />
+    </linearGradient>
+
+    <filter id="logoShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Left Icon Emblem -->
+  <g transform="translate(6, 6)">
+    <rect x="0" y="0" width="88" height="88" rx="20" fill="url(#logoMcBg)" stroke="#34d399" stroke-width="2" filter="url(#logoShadow)" />
+    <rect x="3" y="3" width="82" height="82" rx="17" fill="none" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1" />
+    
+    <g transform="translate(10, 13)">
+      <path d="M 5 52 V 10 L 22 34 L 39 10 V 52" fill="none" stroke="url(#logoMGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M 63 16 C 45 9 36 22 36 31 C 36 40 45 54 63 46" fill="none" stroke="url(#logoCGrad)" stroke-width="8" stroke-linecap="round" />
+      <circle cx="63" cy="16" r="4" fill="#ef4444" />
+    </g>
+  </g>
+
+  <!-- Brand Typography -->
+  <!-- MARSS -->
+  <text x="108" y="47" font-family="'Poppins', 'Montserrat', 'Segoe UI', sans-serif" font-weight="900" font-size="34" fill="#ef4444" letter-spacing="1.5">MARSS</text>
+  
+  <!-- CORP -->
+  <text x="242" y="47" font-family="'Poppins', 'Montserrat', 'Segoe UI', sans-serif" font-weight="800" font-size="34" fill="url(#corpTextGrad)" letter-spacing="1">CORP</text>
+
+  <!-- Subtitle Tagline -->
+  <text x="110" y="76" font-family="'Hind Siliguri', 'Noto Sans Bengali', sans-serif" font-weight="700" font-size="18" fill="#047857" letter-spacing="0.5">মার্স কর্পোরেশন</text>
+  
+  <!-- POS Badge -->
+  <rect x="254" y="60" width="46" height="20" rx="6" fill="#10b981" />
+  <text x="277" y="74" font-family="'Poppins', sans-serif" font-weight="800" font-size="11" fill="#ffffff" text-anchor="middle">POS</text>
+</svg>
