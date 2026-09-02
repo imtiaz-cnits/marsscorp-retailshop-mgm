@@ -365,38 +365,59 @@
                     </div>
                 </div>
 
-                <!-- Door Handedness Dynamic Selection (Shown only when Door category is selected) -->
+                <!-- Door Handedness Dynamic Selection & Quantity Inputs (Shown only when Door category is selected) -->
                 <div class="row mt-2" id="doorHandednessContainer" style="display: none;">
                     <div class="col-lg-12">
                         <div class="p-3 mb-2 rounded-3" style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1.5px dashed #86efac;">
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <label class="fw-bold text-success m-0 d-flex align-items-center gap-2" style="font-size: 13px;">
-                                    <i class="fa-solid fa-door-open fs-5 text-success"></i> Door Handedness (পাল্লার দিক নির্বাচন) <span class="text-danger">*</span>
+                                    <i class="fa-solid fa-door-open fs-5 text-success"></i>
+                                    <span>Door Handedness & Specific Quantities (ডোর সাইড অনুযায়ী স্টক এন্ট্রি)</span>
                                 </label>
-                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small fw-bold">Door Specification</span>
+                                <span class="badge bg-success text-white px-2 py-1 small fw-bold" id="createDoorTotalBadge">মোট ডোর স্টক: 0</span>
                             </div>
-                            <div class="d-flex flex-wrap gap-2 mt-1">
-                                <label class="door-hand-option flex-grow-1 mb-0" style="cursor: pointer;">
-                                    <input type="radio" name="door_side_option" value="Left Handed" class="d-none door-hand-radio" onchange="selectDoorSide(this.value)">
-                                    <div class="door-hand-card">
-                                        <span class="door-hand-icon fs-5">👈</span>
-                                        <span class="fw-bold text-dark door-hand-text" style="font-size: 13px;">Left Handed (বাম হাতি)</span>
+                            <div class="row g-2 mt-1">
+                                <!-- Left Handed Card & Qty Input -->
+                                <div class="col-md-4 col-12">
+                                    <div class="door-hand-box-create rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center" style="border-radius: 10px; padding: 10px 12px;">
+                                        <div class="d-flex align-items-center justify-content-center gap-1.5 mb-2 text-primary fw-bold" style="font-size: 13px;">
+                                            <span class="fs-5">👈</span>
+                                            <span>Left Handed (বাম)</span>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2">
+                                            <label for="createDoorQtyLeft" class="fw-bold text-secondary m-0" style="font-size: 12px; letter-spacing: 0.5px;">QTY:</label>
+                                            <input type="number" min="0" step="any" id="createDoorQtyLeft" class="form-control text-center fw-bold text-dark door-qty-input-create" placeholder="0" oninput="calculateCreateDoorTotal()" style="font-size: 14px; height: 36px; max-width: 130px; border-radius: 8px;">
+                                        </div>
                                     </div>
-                                </label>
-                                <label class="door-hand-option flex-grow-1 mb-0" style="cursor: pointer;">
-                                    <input type="radio" name="door_side_option" value="Right Handed" class="d-none door-hand-radio" onchange="selectDoorSide(this.value)">
-                                    <div class="door-hand-card">
-                                        <span class="door-hand-icon fs-5">👉</span>
-                                        <span class="fw-bold text-dark door-hand-text" style="font-size: 13px;">Right Handed (ডান হাতি)</span>
+                                </div>
+
+                                <!-- Right Handed Card & Qty Input -->
+                                <div class="col-md-4 col-12">
+                                    <div class="door-hand-box-create rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center" style="border-radius: 10px; padding: 10px 12px;">
+                                        <div class="d-flex align-items-center justify-content-center gap-1.5 mb-2 text-success fw-bold" style="font-size: 13px;">
+                                            <span class="fs-5">👉</span>
+                                            <span>Right Handed (ডান)</span>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2">
+                                            <label for="createDoorQtyRight" class="fw-bold text-secondary m-0" style="font-size: 12px; letter-spacing: 0.5px;">QTY:</label>
+                                            <input type="number" min="0" step="any" id="createDoorQtyRight" class="form-control text-center fw-bold text-dark door-qty-input-create" placeholder="0" oninput="calculateCreateDoorTotal()" style="font-size: 14px; height: 36px; max-width: 130px; border-radius: 8px;">
+                                        </div>
                                     </div>
-                                </label>
-                                <label class="door-hand-option flex-grow-1 mb-0" style="cursor: pointer;">
-                                    <input type="radio" name="door_side_option" value="Both Handed" class="d-none door-hand-radio" onchange="selectDoorSide(this.value)">
-                                    <div class="door-hand-card">
-                                        <span class="door-hand-icon fs-5">↔️</span>
-                                        <span class="fw-bold text-dark door-hand-text" style="font-size: 13px;">Both / Universal (উভয়মুখী)</span>
+                                </div>
+
+                                <!-- Both / Universal Card & Qty Input -->
+                                <div class="col-md-4 col-12">
+                                    <div class="door-hand-box-create rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center" style="border-radius: 10px; padding: 10px 12px;">
+                                        <div class="d-flex align-items-center justify-content-center gap-1.5 mb-2 text-info fw-bold" style="font-size: 13px;">
+                                            <span class="fs-5">↔️</span>
+                                            <span>Both / Universal (উভয়)</span>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2">
+                                            <label for="createDoorQtyBoth" class="fw-bold text-secondary m-0" style="font-size: 12px; letter-spacing: 0.5px;">QTY:</label>
+                                            <input type="number" min="0" step="any" id="createDoorQtyBoth" class="form-control text-center fw-bold text-dark door-qty-input-create" placeholder="0" oninput="calculateCreateDoorTotal()" style="font-size: 14px; height: 36px; max-width: 130px; border-radius: 8px;">
+                                        </div>
                                     </div>
-                                </label>
+                                </div>
                             </div>
                             <input type="hidden" id="selectedDoorSide" value="">
                         </div>
@@ -1043,16 +1064,53 @@
         return barcodeList;
     }
 
+    function calculateCreateDoorTotal() {
+        let left = parseFloat(document.getElementById('createDoorQtyLeft').value) || 0;
+        let right = parseFloat(document.getElementById('createDoorQtyRight').value) || 0;
+        let both = parseFloat(document.getElementById('createDoorQtyBoth').value) || 0;
+        let total = left + right + both;
+
+        const badge = document.getElementById('createDoorTotalBadge');
+        if (badge) badge.innerText = `মোট ডোর স্টক: ${total}`;
+
+        const qtyInput = document.getElementById('ProductQuantity');
+        if (qtyInput) qtyInput.value = total;
+
+        const hidden = document.getElementById('selectedDoorSide');
+        if (hidden) {
+            if (left > 0 && right === 0 && both === 0) hidden.value = 'Left Handed';
+            else if (right > 0 && left === 0 && both === 0) hidden.value = 'Right Handed';
+            else if (both > 0 && left === 0 && right === 0) hidden.value = 'Both Handed';
+            else if (total > 0) hidden.value = 'Multi Handed';
+            else hidden.value = '';
+        }
+
+        // Highlight cards
+        $('#createDoorQtyLeft').closest('.door-hand-box-create').toggleClass('border-primary shadow', left > 0);
+        $('#createDoorQtyRight').closest('.door-hand-box-create').toggleClass('border-success shadow', right > 0);
+        $('#createDoorQtyBoth').closest('.door-hand-box-create').toggleClass('border-info shadow', both > 0);
+    }
+
     function selectDoorSide(value) {
         const hidden = document.getElementById('selectedDoorSide');
         if (hidden) hidden.value = value;
     }
 
     function resetDoorSide() {
-        const radios = document.querySelectorAll('input[name="door_side_option"]');
-        radios.forEach(r => r.checked = false);
+        const leftInput = document.getElementById('createDoorQtyLeft');
+        const rightInput = document.getElementById('createDoorQtyRight');
+        const bothInput = document.getElementById('createDoorQtyBoth');
+        if (leftInput) leftInput.value = '';
+        if (rightInput) rightInput.value = '';
+        if (bothInput) bothInput.value = '';
+
         const hidden = document.getElementById('selectedDoorSide');
         if (hidden) hidden.value = '';
+
+        const badge = document.getElementById('createDoorTotalBadge');
+        if (badge) badge.innerText = 'মোট ডোর স্টক: 0';
+
+        $('.door-hand-box-create').removeClass('border-primary border-success border-info shadow');
     }
 
     function checkDoorCategory(categoryId) {
@@ -1065,6 +1123,7 @@
 
         if (categoryText.includes('door')) {
             container.style.display = 'block';
+            calculateCreateDoorTotal();
         } else {
             container.style.display = 'none';
             resetDoorSide();
@@ -1176,9 +1235,6 @@
             } else if (ProductCategoryDataID.length === 0 || ProductCategoryDataID === 'disabled') {
                 errorToast("Product Category is required!");
                 return false;
-            } else if (isDoorVisible && !selectedDoorSide) {
-                errorToast("Door Handedness (বাম / ডান হাতি) নির্বাচন করুন!");
-                return false;
             } else if (ProductName.length === 0) {
                 errorToast("Product Name is required!");
                 return false;
@@ -1192,6 +1248,17 @@
                 formData.append('status', ProductSelectStatus);
                 formData.append('brand_id', ProductBrand);
                 formData.append('category_id', ProductCategoryDataID);
+
+                if (isDoorVisible) {
+                    const leftQty = parseFloat(document.getElementById('createDoorQtyLeft').value) || 0;
+                    const rightQty = parseFloat(document.getElementById('createDoorQtyRight').value) || 0;
+                    const bothQty = parseFloat(document.getElementById('createDoorQtyBoth').value) || 0;
+
+                    formData.append('door_qty_left', leftQty);
+                    formData.append('door_qty_right', rightQty);
+                    formData.append('door_qty_both', bothQty);
+                }
+
                 if (selectedDoorSide) formData.append('door_side', selectedDoorSide);
                 if (ProductSubCategoryID) formData.append('sub_category_id', ProductSubCategoryID);
                 if (ProductUnit) formData.append('unit_id', ProductUnit);
@@ -1214,9 +1281,11 @@
                     resetDoorSide();
                     const modal = document.getElementById('myModal');
                     closeModal(modal);
-                    setTimeout(() => {
+                    if (typeof getList === 'function') {
+                        await getList();
+                    } else {
                         location.reload();
-                    }, 500);
+                    }
                 } else {
                     errorToast(res.data['message']);
                 }

@@ -62,162 +62,162 @@
   <style>
     /* Vibrant Colorful Emerald Teal Mesh Gradient Theme for Sidebar */
     .vertical-menu {
-        background: linear-gradient(165deg, #064e3b 0%, #047857 35%, #0d9488 70%, #0f766e 100%) !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
-        box-shadow: 4px 0 25px rgba(4, 120, 87, 0.25) !important;
+      background: linear-gradient(165deg, #064e3b 0%, #047857 35%, #0d9488 70%, #0f766e 100%) !important;
+      border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+      box-shadow: 4px 0 25px rgba(4, 120, 87, 0.25) !important;
     }
 
     /* Prevent Duplicate Logo on Topbar */
     #page-topbar .navbar-brand-box {
-        display: none !important;
+      display: none !important;
     }
 
     .navbar-top-logo {
-        height: 38px;
-        max-width: 170px;
-        object-fit: contain;
-        transition: all 0.3s ease-in-out;
+      height: 38px;
+      max-width: 170px;
+      object-fit: contain;
+      transition: all 0.3s ease-in-out;
     }
 
     @media (max-width: 576px) {
-        .navbar-top-logo {
-            height: 30px !important;
-            max-width: 130px !important;
-        }
+      .navbar-top-logo {
+        height: 30px !important;
+        max-width: 130px !important;
+      }
     }
 
     .vertical-menu .navbar-brand-box {
-        background: rgba(6, 78, 59, 0.95) !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
-        height: 72px !important;
-        display: flex !important;
-        align-items: center !important;
-        padding: 0 16px !important;
-        box-shadow: none !important;
+      background: rgba(6, 78, 59, 0.95) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+      height: 72px !important;
+      display: flex !important;
+      align-items: center !important;
+      padding: 0 16px !important;
+      box-shadow: none !important;
     }
 
     /* Expanded Sidebar Logo Rules */
     .vertical-menu .navbar-brand-box .logo-sm,
     .vertical-menu .navbar-brand-box .logo-sm2 {
-        display: none !important;
+      display: none !important;
     }
 
     .vertical-menu .navbar-brand-box .logo-lg {
-        display: flex !important;
-        align-items: center !important;
+      display: flex !important;
+      align-items: center !important;
     }
 
     /* Collapsed Sidebar Logo Rules */
     body[data-sidebar-size="sm"] .vertical-menu .navbar-brand-box {
-        width: 70px !important;
-        padding: 0 !important;
-        justify-content: center !important;
+      width: 70px !important;
+      padding: 0 !important;
+      justify-content: center !important;
     }
 
     body[data-sidebar-size="sm"] .vertical-menu .navbar-brand-box .logo-lg {
-        display: none !important;
+      display: none !important;
     }
 
     body[data-sidebar-size="sm"] .vertical-menu .navbar-brand-box .logo-sm {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        margin: 0 auto !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 0 auto !important;
     }
 
     .vertical-menu #sidebar-menu {
-        padding-top: 12px !important;
+      padding-top: 12px !important;
     }
 
     .vertical-menu #sidebar-menu ul li a {
-        color: #f1f5f9 !important;
-        font-weight: 500 !important;
-        font-size: 14px !important;
-        padding: 10px 14px !important;
-        margin: 4px 12px !important;
-        border-radius: 10px !important;
-        transition: all 0.22s ease-in-out !important;
-        border-left: 4px solid transparent !important;
+      color: #f1f5f9 !important;
+      font-weight: 500 !important;
+      font-size: 14px !important;
+      padding: 10px 14px !important;
+      margin: 4px 12px !important;
+      border-radius: 10px !important;
+      transition: all 0.22s ease-in-out !important;
+      border-left: 4px solid transparent !important;
     }
 
     .vertical-menu #sidebar-menu ul li a i.icon {
-        color: #a7f3d0 !important;
-        font-size: 16px !important;
-        width: 26px !important;
-        text-align: center !important;
-        transition: all 0.22s ease-in-out !important;
+      color: #a7f3d0 !important;
+      font-size: 16px !important;
+      width: 26px !important;
+      text-align: center !important;
+      transition: all 0.22s ease-in-out !important;
     }
 
     /* Hover State */
     .vertical-menu #sidebar-menu ul li a:hover {
-        background: rgba(255, 255, 255, 0.18) !important;
-        color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.18) !important;
+      color: #ffffff !important;
     }
 
     .vertical-menu #sidebar-menu ul li a:hover i.icon {
-        color: #6ee7b7 !important;
-        transform: scale(1.12);
+      color: #6ee7b7 !important;
+      transform: scale(1.12);
     }
 
     /* Active Link State */
-    .vertical-menu #sidebar-menu ul li.active-link.active > a,
-    .vertical-menu #sidebar-menu ul li.active-link > a:focus,
-    .vertical-menu #sidebar-menu ul li.submenu-active > a.active {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-        color: #ffffff !important;
-        font-weight: 600 !important;
-        border-left: 4px solid #34d399 !important;
-        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35) !important;
+    .vertical-menu #sidebar-menu ul li.active-link.active>a,
+    .vertical-menu #sidebar-menu ul li.active-link>a:focus,
+    .vertical-menu #sidebar-menu ul li.submenu-active>a.active {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+      color: #ffffff !important;
+      font-weight: 600 !important;
+      border-left: 4px solid #34d399 !important;
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35) !important;
     }
 
-    .vertical-menu #sidebar-menu ul li.active-link.active > a i.icon {
-        color: #ffffff !important;
-        filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.6)) !important;
+    .vertical-menu #sidebar-menu ul li.active-link.active>a i.icon {
+      color: #ffffff !important;
+      filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.6)) !important;
     }
 
-    .vertical-menu #sidebar-menu ul li.active-link.active > a .arrow,
-    .vertical-menu #sidebar-menu ul li.submenu-active > a.active .arrow {
-        color: #ffffff !important;
+    .vertical-menu #sidebar-menu ul li.active-link.active>a .arrow,
+    .vertical-menu #sidebar-menu ul li.submenu-active>a.active .arrow {
+      color: #ffffff !important;
     }
 
     /* Submenu items */
     .vertical-menu .menu .sub-menu {
-        background: rgba(0, 0, 0, 0.18) !important;
-        margin-left: 20px !important;
-        padding-left: 8px !important;
-        border-left: 2px dashed rgba(255, 255, 255, 0.25) !important;
-        border-radius: 0 0 10px 10px !important;
+      background: rgba(0, 0, 0, 0.18) !important;
+      margin-left: 20px !important;
+      padding-left: 8px !important;
+      border-left: 2px dashed rgba(255, 255, 255, 0.25) !important;
+      border-radius: 0 0 10px 10px !important;
     }
 
     .vertical-menu .menu .sub-menu li a {
-        color: #cbd5e1 !important;
-        font-size: 13px !important;
-        padding: 8px 12px !important;
-        margin: 2px 4px !important;
+      color: #cbd5e1 !important;
+      font-size: 13px !important;
+      padding: 8px 12px !important;
+      margin: 2px 4px !important;
     }
 
     .vertical-menu .menu .sub-menu li a:hover {
-        color: #a7f3d0 !important;
-        background: rgba(255, 255, 255, 0.12) !important;
+      color: #a7f3d0 !important;
+      background: rgba(255, 255, 255, 0.12) !important;
     }
 
     /* Logout Button */
     .vertical-menu .log-out {
-        background: rgba(6, 78, 59, 0.95) !important;
-        border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+      background: rgba(6, 78, 59, 0.95) !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
     }
 
     .vertical-menu .log-out a {
-        color: #fca5a5 !important;
-        font-weight: 600 !important;
-        padding: 10px 14px !important;
-        border-radius: 10px !important;
-        transition: all 0.2s !important;
+      color: #fca5a5 !important;
+      font-weight: 600 !important;
+      padding: 10px 14px !important;
+      border-radius: 10px !important;
+      transition: all 0.2s !important;
     }
 
     .vertical-menu .log-out a:hover {
-        background: rgba(239, 68, 68, 0.2) !important;
-        color: #ffffff !important;
+      background: rgba(239, 68, 68, 0.2) !important;
+      color: #ffffff !important;
     }
 
     /* Comprehensive Dark Mode Card & Section Overrides */
@@ -225,8 +225,8 @@
     body[data-layout-mode="dark"],
     body[data-sidebar="dark"],
     body.dark-mode {
-        background-color: #0f172a !important;
-        color: #f8fafc !important;
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
     }
 
     body[light-mode="dark"] .main-content,
@@ -235,7 +235,7 @@
     body[light-mode="dark"] .page-content,
     body[data-layout-mode="dark"] .page-content,
     body[data-sidebar="dark"] .page-content {
-        background-color: #0f172a !important;
+      background-color: #0f172a !important;
     }
 
     /* Card & Card Header Dark Mode Styling */
@@ -244,18 +244,18 @@
     body[data-sidebar="dark"] .card,
     body[light-mode="dark"] .card-body,
     body[data-layout-mode="dark"] .card-body {
-        background: #1e293b !important;
-        border-color: rgba(255, 255, 255, 0.08) !important;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+      background: #1e293b !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
     }
 
     body[light-mode="dark"] .card-header,
     body[data-layout-mode="dark"] .card-header,
     body[light-mode="dark"] .bg-white,
     body[data-layout-mode="dark"] .bg-white {
-        background-color: #1e293b !important;
-        color: #f8fafc !important;
-        border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+      border-bottom-color: rgba(255, 255, 255, 0.08) !important;
     }
 
     /* Inner bg-light boxes (e.g. Monthly Summary Boxes) */
@@ -265,9 +265,9 @@
     body.dark-mode .bg-light,
     body[light-mode="dark"] .bg-light-subtle,
     body[data-layout-mode="dark"] .bg-light-subtle {
-        background-color: #0f172a !important;
-        color: #f8fafc !important;
-        border-color: rgba(255, 255, 255, 0.1) !important;
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
     }
 
     /* Badges & Buttons */
@@ -281,15 +281,15 @@
     body[data-layout-mode="dark"] .badge.bg-warning-subtle,
     body[light-mode="dark"] .badge.bg-teal-subtle,
     body[data-layout-mode="dark"] .badge.bg-teal-subtle {
-        background-color: #334155 !important;
-        color: #f8fafc !important;
-        border-color: rgba(255, 255, 255, 0.15) !important;
+      background-color: #334155 !important;
+      color: #f8fafc !important;
+      border-color: rgba(255, 255, 255, 0.15) !important;
     }
 
     /* Specific Summary Card Gradients in Dark Mode */
     body[light-mode="dark"] .card[style*="linear-gradient"],
     body[data-layout-mode="dark"] .card[style*="linear-gradient"] {
-        background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%) !important;
+      background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%) !important;
     }
 
     /* Typography & Number Colors inside Dark Cards */
@@ -307,53 +307,53 @@
     body[data-layout-mode="dark"] h4,
     body[data-layout-mode="dark"] h5,
     body[data-layout-mode="dark"] h6 {
-        color: #f8fafc !important;
+      color: #f8fafc !important;
     }
 
     body[light-mode="dark"] .text-muted,
     body[data-layout-mode="dark"] .text-muted {
-        color: #94a3b8 !important;
+      color: #94a3b8 !important;
     }
 
     body[light-mode="dark"] .text-success,
     body[data-layout-mode="dark"] .text-success {
-        color: #4ade80 !important;
+      color: #4ade80 !important;
     }
 
     body[light-mode="dark"] .text-primary,
     body[data-layout-mode="dark"] .text-primary {
-        color: #38bdf8 !important;
+      color: #38bdf8 !important;
     }
 
     body[light-mode="dark"] .text-info,
     body[data-layout-mode="dark"] .text-info {
-        color: #22d3ee !important;
+      color: #22d3ee !important;
     }
 
     body[light-mode="dark"] .style-purple,
     body[data-layout-mode="dark"] .style-purple,
     body[light-mode="dark"] [style*="color: #7c3aed"],
     body[data-layout-mode="dark"] [style*="color: #7c3aed"] {
-        color: #c084fc !important;
+      color: #c084fc !important;
     }
 
     body[light-mode="dark"] .text-orange,
     body[data-layout-mode="dark"] .text-orange,
     body[light-mode="dark"] [style*="color: #ea580c"],
     body[data-layout-mode="dark"] [style*="color: #ea580c"] {
-        color: #fb923c !important;
+      color: #fb923c !important;
     }
 
     body[light-mode="dark"] [style*="color: #0d9488"],
     body[data-layout-mode="dark"] [style*="color: #0d9488"] {
-        color: #2dd4bf !important;
+      color: #2dd4bf !important;
     }
 
     /* Tables & Table Cells in Dark Mode */
     body[light-mode="dark"] .table,
     body[data-layout-mode="dark"] .table {
-        color: #f8fafc !important;
-        background-color: #1e293b !important;
+      color: #f8fafc !important;
+      background-color: #1e293b !important;
     }
 
     body[light-mode="dark"] .table th,
@@ -362,22 +362,22 @@
     body[data-layout-mode="dark"] .table td,
     body[light-mode="dark"] .table thead.bg-light th,
     body[data-layout-mode="dark"] .table thead.bg-light th {
-        background-color: #0f172a !important;
-        color: #f8fafc !important;
-        border-color: rgba(255, 255, 255, 0.08) !important;
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
     }
 
     /* Quick Action Outline Buttons in Dark Mode */
     body[light-mode="dark"] .btn-outline-dark,
     body[data-layout-mode="dark"] .btn-outline-dark {
-        color: #cbd5e1 !important;
-        border-color: #475569 !important;
+      color: #cbd5e1 !important;
+      border-color: #475569 !important;
     }
 
     body[light-mode="dark"] .btn-outline-dark:hover,
     body[data-layout-mode="dark"] .btn-outline-dark:hover {
-        background-color: #334155 !important;
-        color: #ffffff !important;
+      background-color: #334155 !important;
+      color: #ffffff !important;
     }
 
     /* ApexCharts Text in Dark Mode */
@@ -387,8 +387,8 @@
     body[data-layout-mode="dark"] .apexcharts-title-text,
     body[light-mode="dark"] .apexcharts-legend-text,
     body[data-layout-mode="dark"] .apexcharts-legend-text {
-        fill: #cbd5e1 !important;
-        color: #cbd5e1 !important;
+      fill: #cbd5e1 !important;
+      color: #cbd5e1 !important;
     }
   </style>
 
@@ -767,10 +767,20 @@
         try {
           var role = (localStorage.getItem('user_role') || '').toLowerCase();
           var perms = null;
-          try { perms = JSON.parse(localStorage.getItem('user_permissions') || 'null'); } catch(e){}
+          try {
+            perms = JSON.parse(localStorage.getItem('user_permissions') || 'null');
+          } catch (e) {}
 
           if (role && role !== 'admin' && role !== 'super_admin') {
-            var effective = { pos: true, product: false, purchase: false, customer: false, expense: false, report: false, user: false };
+            var effective = {
+              pos: true,
+              product: false,
+              purchase: false,
+              customer: false,
+              expense: false,
+              report: false,
+              user: false
+            };
             if (perms && typeof perms === 'object') {
               effective.pos = !!perms.pos;
               effective.product = !!perms.product;
@@ -780,9 +790,37 @@
               effective.report = !!perms.report;
               effective.user = !!perms.user;
             } else {
-              if (role === 'manager') { effective = { pos: true, product: true, purchase: true, customer: true, expense: true, report: true, user: false }; }
-              else if (role === 'cashier') { effective = { pos: true, product: false, purchase: false, customer: false, expense: false, report: false, user: false }; }
-              else if (role === 'accountant') { effective = { pos: false, product: false, purchase: false, customer: true, expense: true, report: true, user: false }; }
+              if (role === 'manager') {
+                effective = {
+                  pos: true,
+                  product: true,
+                  purchase: true,
+                  customer: true,
+                  expense: true,
+                  report: true,
+                  user: false
+                };
+              } else if (role === 'cashier') {
+                effective = {
+                  pos: true,
+                  product: false,
+                  purchase: false,
+                  customer: false,
+                  expense: false,
+                  report: false,
+                  user: false
+                };
+              } else if (role === 'accountant') {
+                effective = {
+                  pos: false,
+                  product: false,
+                  purchase: false,
+                  customer: true,
+                  expense: true,
+                  report: true,
+                  user: false
+                };
+              }
             }
 
             var css = '';
@@ -798,7 +836,9 @@
               document.head.appendChild(style);
             }
           }
-        } catch(e) { console.error('Instant perm filter error:', e); }
+        } catch (e) {
+          console.error('Instant perm filter error:', e);
+        }
       })();
     </script>
     <button type="button"
@@ -856,7 +896,12 @@
                   <i class="arrow fa-solid fa-angle-down"></i>
                 </a>
                 <ul class="sub-menu">
-                  <!-- <li>
+                  <li>
+                    <a href="{{ url('admin-dashboard-product') }}">
+                      <span class="text">Product List</span>
+                    </a>
+                  </li>
+                  <li>
                     <a href="{{ url('admin-dashboard-brand') }}">
                       <span class="text">Brand List</span>
                     </a>
@@ -864,16 +909,6 @@
                   <li>
                     <a href="{{ url('admin-dashboard-category') }}">
                       <span class="text">Category List</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="{{ url('admin-dashboard-sub-category') }}">
-                      <span class="text">Sub Category List</span>
-                    </a>
-                  </li> -->
-                  <li>
-                    <a href="{{ url('admin-dashboard-product') }}">
-                      <span class="text">Product List</span>
                     </a>
                   </li>
                   <li>
@@ -1213,11 +1248,35 @@
           } else {
             // Default role presets if custom toggles aren't explicitly saved
             if (role === 'manager') {
-              effective = { pos: true, product: true, purchase: true, customer: true, expense: true, report: true, user: false };
+              effective = {
+                pos: true,
+                product: true,
+                purchase: true,
+                customer: true,
+                expense: true,
+                report: true,
+                user: false
+              };
             } else if (role === 'cashier') {
-              effective = { pos: true, product: false, purchase: false, customer: false, false: false, report: false, user: false };
+              effective = {
+                pos: true,
+                product: false,
+                purchase: false,
+                customer: false,
+                false: false,
+                report: false,
+                user: false
+              };
             } else if (role === 'accountant') {
-              effective = { pos: false, product: false, purchase: false, customer: true, expense: true, report: true, user: false };
+              effective = {
+                pos: false,
+                product: false,
+                purchase: false,
+                customer: true,
+                expense: true,
+                report: true,
+                user: false
+              };
             }
           }
 
@@ -1286,64 +1345,64 @@
 
     // Play pleasant 4-note ascending chime sound using Web Audio API
     function playStockNotificationChime() {
-        try {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (!AudioContext) return;
-            const ctx = new AudioContext();
-            if (ctx.state === 'suspended') {
-                ctx.resume();
-            }
-            
-            const playNote = (freq, startTime, duration) => {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, startTime);
-                gain.gain.setValueAtTime(0.18, startTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(startTime);
-                osc.stop(startTime + duration);
-            };
-
-            const now = ctx.currentTime;
-            playNote(523.25, now, 0.18);        // C5
-            playNote(659.25, now + 0.12, 0.18);  // E5
-            playNote(783.99, now + 0.24, 0.18);  // G5
-            playNote(1046.50, now + 0.36, 0.35); // C6
-        } catch (e) {
-            console.log('Audio chime error:', e);
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        if (ctx.state === 'suspended') {
+          ctx.resume();
         }
+
+        const playNote = (freq, startTime, duration) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, startTime);
+          gain.gain.setValueAtTime(0.18, startTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + duration);
+        };
+
+        const now = ctx.currentTime;
+        playNote(523.25, now, 0.18); // C5
+        playNote(659.25, now + 0.12, 0.18); // E5
+        playNote(783.99, now + 0.24, 0.18); // G5
+        playNote(1046.50, now + 0.36, 0.35); // C6
+      } catch (e) {
+        console.log('Audio chime error:', e);
+      }
     }
 
     async function loadLowStockNotifications(playSound = false) {
-        try {
-            const res = await axios.get('/admin-dashboard-low-stock-notifications');
-            if (res.data && res.data.status === 'success') {
-                const products = res.data.data || [];
-                const count = res.data.count || 0;
-                
-                const badge = document.getElementById('noti-count-badge');
-                const listContainer = document.getElementById('notification-items-list');
+      try {
+        const res = await axios.get('/admin-dashboard-low-stock-notifications');
+        if (res.data && res.data.status === 'success') {
+          const products = res.data.data || [];
+          const count = res.data.count || 0;
 
-                if (badge) {
-                    if (count > 0) {
-                        badge.innerText = count;
-                        badge.style.display = 'inline-block';
-                    } else {
-                        badge.style.display = 'none';
-                    }
-                }
+          const badge = document.getElementById('noti-count-badge');
+          const listContainer = document.getElementById('notification-items-list');
 
-                // Play chime sound if count increased or explicitly triggered
-                if (playSound && count > 0) {
-                    playStockNotificationChime();
-                }
+          if (badge) {
+            if (count > 0) {
+              badge.innerText = count;
+              badge.style.display = 'inline-block';
+            } else {
+              badge.style.display = 'none';
+            }
+          }
 
-                if (listContainer) {
-                    if (count === 0) {
-                        listContainer.innerHTML = `
+          // Play chime sound if count increased or explicitly triggered
+          if (playSound && count > 0) {
+            playStockNotificationChime();
+          }
+
+          if (listContainer) {
+            if (count === 0) {
+              listContainer.innerHTML = `
                             <div class="text-center py-4 px-3">
                                 <div class="rounded-circle bg-success-subtle text-success d-inline-flex p-3 mb-2">
                                     <i class="fa-solid fa-circle-check fs-3"></i>
@@ -1352,10 +1411,10 @@
                                 <p class="small text-muted mb-0">কোনো প্রোডাক্টের স্টক ১০ এর নিচে নেই</p>
                             </div>
                         `;
-                    } else {
-                        let html = '';
-                        products.forEach(p => {
-                            html += `
+            } else {
+              let html = '';
+              products.forEach(p => {
+                html += `
                                 <a href="/admin-dashboard-stock-out" class="text-reset notification-item d-block p-3 border-bottom text-decoration-none">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-shrink-0 me-3">
@@ -1375,32 +1434,32 @@
                                     </div>
                                 </a>
                             `;
-                        });
-                        listContainer.innerHTML = html;
-                    }
-                }
-                
-                lastLowStockCount = count;
+              });
+              listContainer.innerHTML = html;
             }
-        } catch (err) {
-            console.log('Low stock notification fetch error:', err);
+          }
+
+          lastLowStockCount = count;
         }
+      } catch (err) {
+        console.log('Low stock notification fetch error:', err);
+      }
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
+      loadLowStockNotifications(false);
+
+      const bellBtn = document.getElementById('page-header-notifications-dropdown-v');
+      if (bellBtn) {
+        bellBtn.addEventListener('click', function() {
+          loadLowStockNotifications(false);
+        });
+      }
+
+      // Poll silently every 60 seconds for live stock alerts (without annoying continuous sound)
+      setInterval(() => {
         loadLowStockNotifications(false);
-
-        const bellBtn = document.getElementById('page-header-notifications-dropdown-v');
-        if (bellBtn) {
-            bellBtn.addEventListener('click', function() {
-                loadLowStockNotifications(false);
-            });
-        }
-
-        // Poll silently every 60 seconds for live stock alerts (without annoying continuous sound)
-        setInterval(() => {
-            loadLowStockNotifications(false);
-        }, 60000);
+      }, 60000);
     });
   </script>
 </body>

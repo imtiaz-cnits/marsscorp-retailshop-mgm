@@ -11,8 +11,8 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="button-wrapper mb-3">
-                            <!-- Search and Filter -->
-                            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                            <!-- Search and Entries Top Left Row (Strictly on the same line) -->
+                            <div class="d-flex align-items-center gap-2">
                                 <div class="entries-page">
                                     <label for="entries">Entries:</label>
                                     <div class="select-container">
@@ -25,13 +25,10 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="input-group" style="max-width: 320px;">
+                                <div style="min-width: 200px; max-width: 300px;">
                                     <input type="text" id="searchInput" class="form-control"
-                                        placeholder="Search Product..." />
+                                        placeholder="Search Product..." style="height: 42px; border-radius: 6px;" />
                                 </div>
-                                <select id="filterCategory" class="form-select" style="max-width: 220px; height: 42px; border-radius: 6px; font-weight: 500;">
-                                    <option value="">All Categories</option>
-                                </select>
                             </div>
 
                             <div class="button-item">
@@ -126,6 +123,16 @@
                                     </button>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Brand and Category Dual Filter (Row 2 - Side by Side) -->
+                        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                            <select id="filterBrand" class="form-select" style="min-width: 180px; max-width: 220px; height: 42px; border-radius: 6px; font-weight: 500;">
+                                <option value="">All Brands</option>
+                            </select>
+                            <select id="filterCategory" class="form-select" style="min-width: 180px; max-width: 220px; height: 42px; border-radius: 6px; font-weight: 500;">
+                                <option value="">All Categories</option>
+                            </select>
                         </div>
 
                         <!-- Table -->
@@ -319,6 +326,7 @@
 
         $(document).ready(function() {
             getList();
+            loadFilterBrands();
             loadFilterCategories();
             $("#searchInput").val("");
         });
@@ -329,7 +337,7 @@
             renderPaginatedList();
         });
 
-        $("#filterCategory").on("change", function() {
+        $("#filterBrand, #filterCategory").on("change", function() {
             currentPage = 1;
             renderPaginatedList();
         });
@@ -367,13 +375,16 @@
             if (!window.allProductsList) return;
 
             let searchTerm = $("#searchInput").val().toLowerCase().trim();
+            let selectedBrandId = $("#filterBrand").val();
+            let selectedBrandText = $("#filterBrand option:selected").text().toLowerCase().trim();
             let selectedCatId = $("#filterCategory").val();
             let selectedCatText = $("#filterCategory option:selected").text().toLowerCase().trim();
 
-            // 1. Filter products
+            // 1. Filter products (Independent or Combined Filter)
             let filtered = window.allProductsList.filter(function(item) {
                 let productName = (item.product_name || "").toLowerCase();
                 let categoryName = (item.category ? item.category.category_name : "").toLowerCase();
+                let brandName = (item.brand ? item.brand.name : "").toLowerCase();
                 let doorSide = (item.door_side || "").toLowerCase();
                 let codeStr = "";
                 try {
@@ -384,13 +395,14 @@
                 }
                 codeStr = codeStr.toLowerCase();
 
-                let matchSearch = !searchTerm || productName.includes(searchTerm) || categoryName.includes(searchTerm) || doorSide.includes(searchTerm) || codeStr.includes(searchTerm);
-                let matchCat = !selectedCatId || selectedCatText === "all categories" || (item.category && String(item.category.id) === String(selectedCatId));
+                let matchSearch = !searchTerm || productName.includes(searchTerm) || categoryName.includes(searchTerm) || brandName.includes(searchTerm) || doorSide.includes(searchTerm) || codeStr.includes(searchTerm);
+                let matchBrand = !selectedBrandId || selectedBrandText === "all brands" || (item.brand && String(item.brand.id) === String(selectedBrandId)) || (String(item.brand_id) === String(selectedBrandId));
+                let matchCat = !selectedCatId || selectedCatText === "all categories" || (item.category && String(item.category.id) === String(selectedCatId)) || (String(item.category_id) === String(selectedCatId));
 
-                return matchSearch && matchCat;
+                return matchSearch && matchBrand && matchCat;
             });
 
-            // Calculate Totals for Filtered Items
+            // Calculate Grand Totals for Filtered Items (exact sum of all underlying stock)
             let totalQuantity = 0;
             let totalCostPrice = 0;
             let totalSellingPrice = 0;
@@ -408,15 +420,73 @@
             $("#totalCostQuantityPrice").text(totalCostQuantityPrice.toFixed(2));
             $("#totalSellingPrice").text(totalSellingPrice.toFixed(2));
 
-            // 2. Pagination Calculations
-            let totalItems = filtered.length;
+            // 2. Group products by (category_id, brand_id, product_name)
+            // This unifies Left Hand, Right Hand, Both Hand or same-model variants under 1 unified row
+            let groupedMap = {};
+            let groupedList = [];
+
+            filtered.forEach(function(item) {
+                let catId = item.category_id || (item.category ? item.category.id : 0);
+                let brandId = item.brand_id || (item.brand ? item.brand.id : 0);
+                let pName = (item.product_name || "").trim().toLowerCase();
+                let key = `${catId}_${brandId}_${pName}`;
+
+                if (!groupedMap[key]) {
+                    groupedMap[key] = {
+                        key: key,
+                        mainItem: item,
+                        items: [],
+                        totalQuantity: 0,
+                        totalCostQuantityPrice: 0,
+                        minCostPrice: parseFloat(item.cost_price) || 0,
+                        maxCostPrice: parseFloat(item.cost_price) || 0,
+                        minSellPrice: parseFloat(item.sell_price) || 0,
+                        maxSellPrice: parseFloat(item.sell_price) || 0,
+                        handednessCount: {
+                            left: 0,
+                            right: 0,
+                            both: 0,
+                            none: 0
+                        }
+                    };
+                    groupedList.push(groupedMap[key]);
+                }
+
+                let g = groupedMap[key];
+                g.items.push(item);
+                let qty = parseInt(item.quantity) || 0;
+                let cost = parseFloat(item.cost_price) || 0;
+                let sell = parseFloat(item.sell_price) || 0;
+
+                g.totalQuantity += qty;
+                g.totalCostQuantityPrice += (cost * qty);
+                if (cost < g.minCostPrice) g.minCostPrice = cost;
+                if (cost > g.maxCostPrice) g.maxCostPrice = cost;
+                if (sell < g.minSellPrice) g.minSellPrice = sell;
+                if (sell > g.maxSellPrice) g.maxSellPrice = sell;
+
+                // Track handedness counts
+                let side = (item.door_side || "").toLowerCase();
+                if (side.includes('left')) {
+                    g.handednessCount.left += qty;
+                } else if (side.includes('right')) {
+                    g.handednessCount.right += qty;
+                } else if (side.includes('both')) {
+                    g.handednessCount.both += qty;
+                } else {
+                    g.handednessCount.none += qty;
+                }
+            });
+
+            // 3. Pagination Calculations based on Grouped Rows
+            let totalItems = groupedList.length;
             let totalPages = Math.ceil(totalItems / pageSize) || 1;
             if (currentPage > totalPages) currentPage = totalPages;
             if (currentPage < 1) currentPage = 1;
 
             let startIndex = (currentPage - 1) * pageSize;
             let endIndex = Math.min(startIndex + pageSize, totalItems);
-            let pageItems = filtered.slice(startIndex, endIndex);
+            let pageItems = groupedList.slice(startIndex, endIndex);
 
             let tableList = $("#tableList");
             let mobileCardList = $("#mobileCardList");
@@ -428,55 +498,239 @@
                 tableList.html('<tr><td colspan="11" class="text-center text-danger p-4 fw-bold">❌ কোনো পণ্য পাওয়া যায়নি।</td></tr>');
                 mobileCardList.html('<div class="p-4 text-center text-danger fw-bold bg-white rounded-3 border shadow-sm">❌ কোনো পণ্য পাওয়া যায়নি।</div>');
             } else {
-                pageItems.forEach(function(item, idx) {
+                pageItems.forEach(function(group, idx) {
                     let realIndex = startIndex + idx;
+                    let item = group.mainItem;
+                    let isMultiVariant = group.items.length > 1;
                     const img_url = item.img_url ? item.img_url : "{{ asset('back-end/assets/img/product-img.svg') }}";
-                    let stockStatusClass = item.quantity > 0 ? "available" : "out-of-stock";
-                    let stockStatusText = item.quantity > 0 ? "Available" : "Out of Stock";
+                    let stockStatusClass = group.totalQuantity > 0 ? "available" : "out-of-stock";
+                    let stockStatusText = group.totalQuantity > 0 ? "Available" : "Out of Stock";
                     let categoryName = item.category ? item.category.category_name : '-';
                     let unitName = item.unit ? item.unit.unit_name : '';
-                    let formattedCode = formatProductCode(item.product_code);
+                    let brandBadge = item.brand && item.brand.name ? `<div class="small text-muted mt-1" style="font-size: 11px;"><i class="fa-solid fa-tag me-1 text-success"></i>${item.brand.name}</div>` : '';
+                    let brandMobileBadge = item.brand && item.brand.name ? `<span class="badge bg-light text-dark border fw-semibold" style="font-size: 10px;"><i class="fa-solid fa-tag me-1 text-success"></i>${item.brand.name}</span>` : '';
 
-                    // Door Side Badge
-                    let doorSideBadge = '';
-                    if (item.door_side) {
-                        let doorIcon = item.door_side.toLowerCase().includes('left') ? '👈' : (item.door_side.toLowerCase().includes('right') ? '👉' : '↔️');
-                        doorSideBadge = `<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 fw-semibold d-inline-flex align-items-center gap-1 ms-1" style="font-size: 11px; border-radius: 6px;">${doorIcon} ${item.door_side}</span>`;
+                    // Barcode formatting: combine all barcodes for group
+                    let allBarcodesHtml = '';
+                    if (isMultiVariant) {
+                        let combinedCodes = [];
+                        group.items.forEach(sub => {
+                            try {
+                                let parsed = typeof sub.product_code === 'string' ? JSON.parse(sub.product_code) : sub.product_code;
+                                if (Array.isArray(parsed)) combinedCodes.push(...parsed);
+                                else if (parsed) combinedCodes.push(parsed);
+                            } catch (e) {
+                                if (sub.product_code) combinedCodes.push(sub.product_code);
+                            }
+                        });
+                        combinedCodes = [...new Set(combinedCodes.filter(Boolean))];
+                        allBarcodesHtml = combinedCodes.length > 0 ?
+                            combinedCodes.slice(0, 3).map(c => `<span class="badge bg-light text-success border border-success me-1 mb-1" style="font-family: monospace; font-size: 11px;">${c}</span>`).join('') + (combinedCodes.length > 3 ? `<span class="badge bg-secondary-subtle text-secondary" style="font-size: 10px;">+${combinedCodes.length - 3} more</span>` : '') :
+                            '<span class="text-muted small">N/A</span>';
+                    } else {
+                        allBarcodesHtml = formatProductCode(item.product_code);
                     }
 
-                    // Desktop Row
-                    let row = `
-                    <tr>
-                        <td class="text-center fw-bold">${realIndex + 1}</td>
-                        <td class="text-center">
-                            <div id="action_btn_wrap" class="d-flex align-items-center justify-content-center gap-1">
-                                <a data-id="${item['id']}" href="#" class="link edit-link btn btn-sm btn-outline-success px-2 py-1" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit">
+                    // Handedness Breakdown UI
+                    let handednessBreakdownHtml = '';
+                    let hasHandedness = group.handednessCount.left > 0 || group.handednessCount.right > 0 || group.handednessCount.both > 0;
+
+                    if (hasHandedness) {
+                        handednessBreakdownHtml = `
+                        <div class="d-flex flex-column align-items-center gap-1 mt-1">
+                            ${group.handednessCount.left > 0 ? `<span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-0.5 fw-bold w-100 text-start" style="font-size: 10px; border-radius: 4px;">👈 Left: <strong>${group.handednessCount.left}</strong></span>` : ''}
+                            ${group.handednessCount.right > 0 ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-0.5 fw-bold w-100 text-start" style="font-size: 10px; border-radius: 4px;">👉 Right: <strong>${group.handednessCount.right}</strong></span>` : ''}
+                            ${group.handednessCount.both > 0 ? `<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-0.5 fw-bold w-100 text-start" style="font-size: 10px; border-radius: 4px;">↔️ Both: <strong>${group.handednessCount.both}</strong></span>` : ''}
+                            ${group.handednessCount.none > 0 && (group.handednessCount.left > 0 || group.handednessCount.right > 0 || group.handednessCount.both > 0) ? `<span class="badge bg-secondary-subtle text-secondary border px-2 py-0.5 fw-bold w-100 text-start" style="font-size: 10px; border-radius: 4px;">Std: <strong>${group.handednessCount.none}</strong></span>` : ''}
+                        </div>`;
+                    } else if (item.door_side) {
+                        let doorIcon = item.door_side.toLowerCase().includes('left') ? '👈' : (item.door_side.toLowerCase().includes('right') ? '👉' : '↔️');
+                        handednessBreakdownHtml = `<div class="mt-1"><span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-0.5 fw-semibold" style="font-size: 10px; border-radius: 4px;">${doorIcon} ${item.door_side}</span></div>`;
+                    }
+
+                    // Variant Tag in Name Column
+                    let variantBadgeName = isMultiVariant ?
+                        `<div class="mt-1"><span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-0.5 fw-bold" style="font-size: 10px; border-radius: 4px;"><i class="fa-solid fa-layer-group me-1"></i>${group.items.length} Handedness Variants</span></div>` :
+                        (item.door_side ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-0.5 fw-semibold ms-1" style="font-size: 10px; border-radius: 4px;">${item.door_side}</span>` : '');
+
+                    // Desktop Main Row Actions
+                    let actionHtml = '';
+                    if (isMultiVariant) {
+                        actionHtml = `
+                            <div class="d-flex align-items-center justify-content-center gap-1">
+                                <button type="button" class="btn btn-sm btn-outline-primary rounded-circle d-flex align-items-center justify-content-center p-0 toggle-variant-btn" data-target="variant-row-${realIndex}" title="Show / Hide Handedness Variants (${group.items.length} items)" style="width: 32px; height: 32px;">
+                                    <i class="fa-solid fa-chevron-down" style="font-size: 11px;"></i>
+                                </button>
+                                <a data-id="${item.id}" href="#" class="link edit-link btn btn-sm btn-outline-success rounded-circle d-flex align-items-center justify-content-center p-0" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit Main Variant" style="width: 32px; height: 32px;">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
-                                <a href="#" data-id="${item['id']}" class="link custom-delete-modal-btn btn btn-sm btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmationModal" title="Delete">
+                            </div>
+                        `;
+                    } else {
+                        actionHtml = `
+                            <div id="action_btn_wrap" class="d-flex align-items-center justify-content-center gap-1">
+                                <a data-id="${item.id}" href="#" class="link edit-link btn btn-sm btn-outline-success px-2 py-1" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a href="#" data-id="${item.id}" class="link custom-delete-modal-btn btn btn-sm btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmationModal" title="Delete">
                                     <i class="fa-solid fa-trash"></i>
                                 </a>
                             </div>
-                        </td>
+                        `;
+                    }
+
+                    let costDisplay = group.minCostPrice === group.maxCostPrice ?
+                        parseFloat(group.minCostPrice).toFixed(2) :
+                        `${parseFloat(group.minCostPrice).toFixed(2)} - ${parseFloat(group.maxCostPrice).toFixed(2)}`;
+
+                    let sellDisplay = group.minSellPrice === group.maxSellPrice ?
+                        parseFloat(group.minSellPrice).toFixed(2) :
+                        `${parseFloat(group.minSellPrice).toFixed(2)} - ${parseFloat(group.maxSellPrice).toFixed(2)}`;
+
+                    let mainRow = `
+                    <tr class="${isMultiVariant ? 'group-parent-row' : ''}">
+                        <td class="text-center fw-bold text-muted">${realIndex + 1}</td>
+                        <td class="text-center">${actionHtml}</td>
                         <td class="text-center">
                             <img style="width: 45px; height: 45px; object-fit: cover; border-radius: 6px; border: 1px solid #eee;" alt="${item.product_name}" src="${img_url}">
                         </td>
-                        <td class="text-start">${formattedCode}</td>
-                        <td class="text-start fw-bold">${item.product_name} ${doorSideBadge} ${unitName ? `<span class="text-muted small">(${unitName})</span>` : ''}</td>
-                        <td class="text-start">${categoryName}</td>
-                        <td class="text-center fw-bold">${item.quantity} ${unitName}</td>
-                        <td class="text-end">${parseFloat(item.cost_price).toFixed(2)}</td>
-                        <td class="text-end fw-bold">${(parseFloat(item.cost_price) * parseInt(item.quantity)).toFixed(2)}</td>
-                        <td class="text-end">${parseFloat(item.sell_price).toFixed(2)}</td>
+                        <td class="text-start">${allBarcodesHtml}</td>
+                        <td class="text-start">
+                            <span class="fw-bold text-dark fs-6">${item.product_name}</span> ${unitName ? `<span class="text-muted small">(${unitName})</span>` : ''}
+                            ${variantBadgeName}
+                        </td>
+                        <td class="text-start">${categoryName} ${brandBadge}</td>
+                        <td class="text-center">
+                            <span class="fw-bold fs-6 text-dark">${group.totalQuantity} ${unitName}</span>
+                            ${handednessBreakdownHtml}
+                        </td>
+                        <td class="text-end">৳ ${costDisplay}</td>
+                        <td class="text-end fw-bold text-dark">৳ ${group.totalCostQuantityPrice.toFixed(2)}</td>
+                        <td class="text-end">৳ ${sellDisplay}</td>
                         <td class="text-center">
                             <span class="badge ${stockStatusClass}">
                                 ${stockStatusText}
                             </span>
                         </td>
                     </tr>`;
-                    tableList.append(row);
+
+                    tableList.append(mainRow);
+
+                    // Expandable Sub-table for Multi-variant items
+                    if (isMultiVariant) {
+                        let subRows = group.items.map(subItem => {
+                            let subDoorSide = subItem.door_side || 'Standard';
+                            let subDoorIcon = subDoorSide.toLowerCase().includes('left') ? '👈' : (subDoorSide.toLowerCase().includes('right') ? '👉' : (subDoorSide.toLowerCase().includes('both') ? '↔️' : '🚪'));
+                            let subBadgeClass = subDoorSide.toLowerCase().includes('left') ? 'bg-info-subtle text-info border-info-subtle' : (subDoorSide.toLowerCase().includes('right') ? 'bg-primary-subtle text-primary border-primary-subtle' : 'bg-success-subtle text-success border-success-subtle');
+                            let subStockStatus = subItem.quantity > 0 ? 'available' : 'out-of-stock';
+                            let subStockText = subItem.quantity > 0 ? 'Available' : 'Out of Stock';
+                            let subCodes = formatProductCode(subItem.product_code);
+                            let subTotalCost = (parseFloat(subItem.cost_price) * parseInt(subItem.quantity)).toFixed(2);
+
+                            return `
+                            <tr>
+                                <td class="text-center">
+                                    <div class="d-flex align-items-center justify-content-center gap-1">
+                                        <a data-id="${subItem.id}" href="#" class="link edit-link btn btn-sm btn-outline-success p-1" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit this variant" style="width: 26px; height: 26px; font-size: 11px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px;">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <a href="#" data-id="${subItem.id}" class="link custom-delete-modal-btn btn btn-sm btn-outline-danger p-1" data-bs-toggle="modal" data-bs-target="#confirmationModal" title="Delete this variant" style="width: 26px; height: 26px; font-size: 11px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px;">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="text-start">
+                                    <span class="badge ${subBadgeClass} border px-2 py-1 fw-bold" style="font-size: 11px; border-radius: 6px;">
+                                        ${subDoorIcon} ${subDoorSide}
+                                    </span>
+                                </td>
+                                <td class="text-start">${subCodes}</td>
+                                <td class="text-center fw-bold">${subItem.quantity} ${unitName}</td>
+                                <td class="text-end">৳ ${parseFloat(subItem.cost_price).toFixed(2)}</td>
+                                <td class="text-end fw-bold">৳ ${subTotalCost}</td>
+                                <td class="text-end">৳ ${parseFloat(subItem.sell_price).toFixed(2)}</td>
+                                <td class="text-center">
+                                    <span class="badge ${subStockStatus}" style="font-size: 10px;">${subStockText}</span>
+                                </td>
+                            </tr>`;
+                        }).join('');
+
+                        let accordionRow = `
+                        <tr id="variant-row-${realIndex}" class="variant-accordion-row" style="display: none; background-color: #f8fafc;">
+                            <td colspan="11" class="p-3 border-start border-end border-bottom">
+                                <div class="card border border-success-subtle shadow-sm rounded-3 p-3 bg-white">
+                                    <div class="d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom">
+                                        <h6 class="fw-bold text-dark mb-0 small d-flex align-items-center gap-2">
+                                            <i class="fa-solid fa-door-open text-success"></i>
+                                            <span><strong>${item.product_name}</strong> - ডোর সাইড ও স্টক ভ্যারিয়েন্ট বিস্তারিত (${group.items.length} Handedness Items)</span>
+                                        </h6>
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold small px-2 py-1">মোট স্টক: ${group.totalQuantity} ${unitName}</span>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-hover align-middle mb-0">
+                                            <thead class="table-light text-muted" style="font-size: 11px;">
+                                                <tr>
+                                                    <th class="text-center" style="width: 80px;">Action</th>
+                                                    <th class="text-start" style="width: 150px;">ডোর সাইড (Handedness)</th>
+                                                    <th class="text-start">বারকোড (Barcode)</th>
+                                                    <th class="text-center" style="width: 110px;">স্টক পরিমাণ</th>
+                                                    <th class="text-end" style="width: 110px;">ক্রয়মূল্য</th>
+                                                    <th class="text-end" style="width: 110px;">মোট ক্রয়</th>
+                                                    <th class="text-end" style="width: 110px;">বিক্রয়মূল্য</th>
+                                                    <th class="text-center" style="width: 90px;">স্ট্যাটাস</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${subRows}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>`;
+                        tableList.append(accordionRow);
+                    }
 
                     // Mobile Card
+                    let mobileVariantsHtml = '';
+                    if (isMultiVariant) {
+                        mobileVariantsHtml = `
+                        <div class="border-top pt-2 mt-2">
+                            <button type="button" class="btn btn-sm btn-outline-success w-100 fw-bold d-flex align-items-center justify-content-between px-3 py-1.5 toggle-variant-btn" data-target="mobile-variant-card-${realIndex}" style="border-radius: 8px; font-size: 12px;">
+                                <span><i class="fa-solid fa-layer-group me-1"></i> ভ্যারিয়েন্ট স্টক তালিকা (${group.items.length} টি)</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                            <div id="mobile-variant-card-${realIndex}" class="mt-2" style="display: none;">
+                                ${group.items.map(subItem => {
+                                    let subDoorSide = subItem.door_side || 'Standard';
+                                    let subDoorIcon = subDoorSide.toLowerCase().includes('left') ? '👈' : (subDoorSide.toLowerCase().includes('right') ? '👉' : (subDoorSide.toLowerCase().includes('both') ? '↔️' : '🚪'));
+                                    let subBadgeClass = subDoorSide.toLowerCase().includes('left') ? 'bg-info-subtle text-info border-info-subtle' : (subDoorSide.toLowerCase().includes('right') ? 'bg-primary-subtle text-primary border-primary-subtle' : 'bg-success-subtle text-success border-success-subtle');
+                                    let subCodes = formatProductCode(subItem.product_code);
+                                    return `
+                                    <div class="border rounded-3 p-2 mb-2 bg-light">
+                                        <div class="d-flex align-items-center justify-content-between mb-1">
+                                            <span class="badge ${subBadgeClass} border fw-bold" style="font-size: 11px;">${subDoorIcon} ${subDoorSide}</span>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <a data-id="${subItem.id}" href="#" class="edit-link btn btn-sm btn-outline-success p-1" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit" style="width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px;">
+                                                    <i class="fa-solid fa-pen-to-square" style="font-size: 11px;"></i>
+                                                </a>
+                                                <a href="#" data-id="${subItem.id}" class="custom-delete-modal-btn btn btn-sm btn-outline-danger p-1" data-bs-toggle="modal" data-bs-target="#confirmationModal" title="Delete" style="width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px;">
+                                                    <i class="fa-solid fa-trash" style="font-size: 11px;"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="small text-muted mb-1">${subCodes}</div>
+                                        <div class="d-flex justify-content-between small fw-bold text-dark">
+                                            <span>স্টক: ${subItem.quantity} ${unitName}</span>
+                                            <span>ক্রয়: ৳ ${parseFloat(subItem.cost_price).toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>`;
+                    }
+
                     let mobileCard = `
                     <div class="product-mobile-card card border shadow-sm rounded-4 mb-3 p-3 position-relative bg-white">
                         <div class="d-flex align-items-center justify-content-between pb-2 mb-2 border-bottom">
@@ -485,7 +739,8 @@
                                 <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold" style="font-size: 10px;">
                                     <i class="fa-solid fa-folder me-1"></i>${categoryName}
                                 </span>
-                                ${doorSideBadge}
+                                ${brandMobileBadge}
+                                ${isMultiVariant ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold" style="font-size: 10px;"><i class="fa-solid fa-layer-group me-1"></i>${group.items.length} Variants</span>` : ''}
                             </div>
                             <div>
                                 <span class="badge ${stockStatusClass} px-2 py-1 fw-bold" style="font-size: 10px; border-radius: 12px;">
@@ -500,46 +755,82 @@
                                 <h6 class="fw-bold text-dark mb-1 text-truncate" style="font-size: 14px;">${item.product_name} ${unitName ? `<span class="text-muted small">(${unitName})</span>` : ''}</h6>
                                 <div class="d-flex align-items-center gap-1 flex-wrap">
                                     <span class="text-muted small" style="font-size: 11px;">কোড:</span>
-                                    ${formattedCode}
+                                    ${allBarcodesHtml}
                                 </div>
                             </div>
                         </div>
 
                         <div class="row g-2 bg-light p-2 rounded-3 my-2 text-center align-items-center" style="border: 1px solid #f1f5f9;">
                             <div class="col-4 border-end">
-                                <span class="text-muted d-block small fw-bold" style="font-size: 9px; text-transform: uppercase;">পরিমাণ</span>
-                                <span class="fw-bold text-dark" style="font-size: 12px;">${item.quantity} ${unitName}</span>
+                                <span class="text-muted d-block small fw-bold" style="font-size: 9px; text-transform: uppercase;">মোট পরিমাণ</span>
+                                <span class="fw-bold text-dark" style="font-size: 12px;">${group.totalQuantity} ${unitName}</span>
                             </div>
                             <div class="col-4 border-end">
                                 <span class="text-muted d-block small fw-bold" style="font-size: 9px; text-transform: uppercase;">ক্রয়মূল্য</span>
-                                <span class="fw-bold text-danger" style="font-size: 12px;">৳ ${parseFloat(item.cost_price).toFixed(2)}</span>
+                                <span class="fw-bold text-danger" style="font-size: 12px;">৳ ${costDisplay}</span>
                             </div>
                             <div class="col-4">
                                 <span class="text-muted d-block small fw-bold" style="font-size: 9px; text-transform: uppercase;">বিক্রয়মূল্য</span>
-                                <span class="fw-bold text-success" style="font-size: 12px;">৳ ${parseFloat(item.sell_price).toFixed(2)}</span>
+                                <span class="fw-bold text-success" style="font-size: 12px;">৳ ${sellDisplay}</span>
                             </div>
                         </div>
 
+                        ${hasHandedness ? `
+                        <div class="d-flex align-items-center gap-1 flex-wrap mb-2">
+                            ${group.handednessCount.left > 0 ? `<span class="badge bg-info-subtle text-info border border-info-subtle fw-bold" style="font-size: 10px;">👈 Left: ${group.handednessCount.left}</span>` : ''}
+                            ${group.handednessCount.right > 0 ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold" style="font-size: 10px;">👉 Right: ${group.handednessCount.right}</span>` : ''}
+                            ${group.handednessCount.both > 0 ? `<span class="badge bg-success-subtle text-success border border-success-subtle fw-bold" style="font-size: 10px;">↔️ Both: ${group.handednessCount.both}</span>` : ''}
+                        </div>` : ''}
+
                         <div class="d-flex align-items-center justify-content-between pt-2 mt-1 border-top">
                             <div class="text-muted small" style="font-size: 11px;">
-                                মোট ক্রয়: <span class="fw-bold text-dark">৳ ${(parseFloat(item.cost_price) * parseInt(item.quantity)).toFixed(2)}</span>
+                                মোট ক্রয়: <span class="fw-bold text-dark">৳ ${group.totalCostQuantityPrice.toFixed(2)}</span>
                             </div>
                             <div class="d-flex align-items-center gap-2">
-                                <a data-id="${item['id']}" href="#" class="edit-link btn btn-sm btn-outline-success border-2 rounded-circle d-flex align-items-center justify-content-center p-0" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit" style="width: 36px; height: 36px;">
+                                <a data-id="${item.id}" href="#" class="edit-link btn btn-sm btn-outline-success border-2 rounded-circle d-flex align-items-center justify-content-center p-0" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit" style="width: 36px; height: 36px;">
                                     <i class="fa-solid fa-pen-to-square fs-6"></i>
                                 </a>
-                                <a href="#" data-id="${item['id']}" class="custom-delete-modal-btn btn btn-sm btn-outline-danger border-2 rounded-circle d-flex align-items-center justify-content-center p-0" data-bs-toggle="modal" data-bs-target="#confirmationModal" title="Delete" style="width: 36px; height: 36px;">
+                                ${!isMultiVariant ? `
+                                <a href="#" data-id="${item.id}" class="custom-delete-modal-btn btn btn-sm btn-outline-danger border-2 rounded-circle d-flex align-items-center justify-content-center p-0" data-bs-toggle="modal" data-bs-target="#confirmationModal" title="Delete" style="width: 36px; height: 36px;">
                                     <i class="fa-solid fa-trash fs-6"></i>
                                 </a>
+                                ` : ''}
                             </div>
                         </div>
+
+                        ${mobileVariantsHtml}
                     </div>`;
+
                     mobileCardList.append(mobileCard);
                 });
             }
 
+            // Accordion toggle button listener
+            $(document).off('click', '.toggle-variant-btn').on('click', '.toggle-variant-btn', function(e) {
+                e.preventDefault();
+                let targetId = $(this).data('target');
+                let targetEl = $('#' + targetId);
+                let icon = $(this).find('i.fa-solid');
+
+                if (targetEl.is(':visible')) {
+                    targetEl.hide();
+                    icon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    targetEl.show();
+                    icon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            });
+
+            // Edit button listener
+            $(document).off('click', '.edit-link').on('click', function(e) {
+                let id = $(this).data('id') || $(this).attr('data-id');
+                if (id && typeof FillUpUpdateForm === 'function') {
+                    FillUpUpdateForm(id);
+                }
+            });
+
             // Delete button listener
-            $('.custom-delete-modal-btn').on('click', function() {
+            $(document).off('click', '.custom-delete-modal-btn').on('click', '.custom-delete-modal-btn', function() {
                 let id = $(this).data('id');
                 $("#deleteID").val(id);
                 $("#confirmationModal").modal('show');
@@ -548,7 +839,7 @@
             // 3. Update Display Info & Pagination UI
             let fromCount = totalItems > 0 ? startIndex + 1 : 0;
             let toCount = endIndex;
-            $("#display-info").html(`Showing <span class="badge bg-light text-dark border px-2 py-1 mx-1 fw-bold fs-6">${fromCount} - ${toCount}</span> of <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 mx-1 fw-bold fs-6">${totalItems}</span> entries`);
+            $("#display-info").html(`Showing <span class="badge bg-light text-dark border px-2 py-1 mx-1 fw-bold fs-6">${fromCount} - ${toCount}</span> of <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 mx-1 fw-bold fs-6">${totalItems}</span> products`);
 
             renderPaginationControls(totalPages);
         }
@@ -607,10 +898,25 @@
             });
         }
 
+        async function loadFilterBrands() {
+            try {
+                let res = await axios.get("/api/brand-list", HeaderToken());
+                if (res.data && res.data.status === "success" && res.data.BrandData) {
+                    let options = '<option value="">All Brands</option>';
+                    res.data.BrandData.forEach(brand => {
+                        options += `<option value="${brand.id}">${brand.name}</option>`;
+                    });
+                    $("#filterBrand").html(options);
+                }
+            } catch (e) {
+                console.error("Filter brand loading failed", e);
+            }
+        }
+
         async function loadFilterCategories() {
             try {
                 let res = await axios.get("/api/category-list", HeaderToken());
-                if (res.data.status === "success") {
+                if (res.data && res.data.status === "success" && res.data.CategoryData) {
                     let options = '<option value="">All Categories</option>';
                     res.data.CategoryData.forEach(cat => {
                         options += `<option value="${cat.id}">${cat.category_name}</option>`;

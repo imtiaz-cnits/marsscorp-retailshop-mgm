@@ -86,7 +86,7 @@ class ProductController extends Controller
     public function ProductList()
     {
         try {
-            $ProductData = Product::with(['category', 'subCategory', 'unit'])->get();
+            $ProductData = Product::with(['category', 'subCategory', 'unit', 'brand'])->get();
             return response()->json(['status' => 'success', 'ProductData' => $ProductData]);
         } catch (Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
@@ -148,18 +148,62 @@ class ProductController extends Controller
                 $productImg->move(public_path('uploads/Product-img'), $productImgName);
             }
 
+            $leftQty = floatval($request->input('door_qty_left', 0));
+            $rightQty = floatval($request->input('door_qty_right', 0));
+            $bothQty = floatval($request->input('door_qty_both', 0));
+
+            $doorEntries = [];
+            if ($leftQty > 0) $doorEntries['Left Handed'] = $leftQty;
+            if ($rightQty > 0) $doorEntries['Right Handed'] = $rightQty;
+            if ($bothQty > 0) $doorEntries['Both Handed'] = $bothQty;
+
+            // If multiple door handedness quantities are entered
+            if (count($doorEntries) > 1) {
+                $createdProducts = [];
+                foreach ($doorEntries as $side => $qty) {
+                    $p = Product::create([
+                        'img_url' => $productImgPath,
+                        'product_name' => $request->product_name,
+                        'quantity' => $qty,
+                        'cost_price' => (!is_null($request->cost_price) && $request->cost_price !== '') ? $request->cost_price : 0,
+                        'sell_price' => (!is_null($request->sell_price) && $request->sell_price !== '') ? $request->sell_price : 0,
+                        'status' => $request->status ?? 'Active',
+                        'product_code' => is_string($request->product_code) ? $request->product_code : json_encode(array_values($barcodes)),
+                        'brand_id' => (!empty($request->brand_id) && $request->brand_id !== 'none') ? $request->brand_id : null,
+                        'category_id' => (!empty($request->category_id) && $request->category_id !== 'none') ? $request->category_id : null,
+                        'door_side' => $side,
+                        'sub_category_id' => $request->sub_category_id,
+                        'unit_id' => $request->unit_id,
+                        'user_id' => $user_id,
+                    ]);
+                    $createdProducts[] = $p;
+                }
+                return response()->json(['status' => 'success', 'message' => 'Product Variants Created Successfully', 'products' => $createdProducts]);
+            }
+
+            // Single door side or standard product
+            $doorSide = null;
+            $quantity = (!is_null($request->quantity) && $request->quantity !== '') ? $request->quantity : 0;
+
+            if (count($doorEntries) === 1) {
+                $doorSide = array_key_first($doorEntries);
+                $quantity = $doorEntries[$doorSide];
+            } else if (!empty($request->door_side) && $request->door_side !== 'none') {
+                $doorSide = $request->door_side;
+            }
+
             // Create Product
             $product = Product::create([
                 'img_url' => $productImgPath,
                 'product_name' => $request->product_name,
-                'quantity' => (!is_null($request->quantity) && $request->quantity !== '') ? $request->quantity : 0,
+                'quantity' => $quantity,
                 'cost_price' => (!is_null($request->cost_price) && $request->cost_price !== '') ? $request->cost_price : 0,
                 'sell_price' => (!is_null($request->sell_price) && $request->sell_price !== '') ? $request->sell_price : 0,
                 'status' => $request->status ?? 'Active',
                 'product_code' => is_string($request->product_code) ? $request->product_code : json_encode(array_values($barcodes)),
-                'brand_id' => $request->brand_id,
-                'category_id' => $request->category_id,
-                'door_side' => (!empty($request->door_side) && $request->door_side !== 'none') ? $request->door_side : null,
+                'brand_id' => (!empty($request->brand_id) && $request->brand_id !== 'none') ? $request->brand_id : null,
+                'category_id' => (!empty($request->category_id) && $request->category_id !== 'none') ? $request->category_id : null,
+                'door_side' => $doorSide,
                 'sub_category_id' => $request->sub_category_id,
                 'unit_id' => $request->unit_id,
                 'user_id' => $user_id,
@@ -178,7 +222,7 @@ class ProductController extends Controller
         try {
             $user_id = Auth::id();
             $request->validate(["id" => 'required']);
-            $rows = Product::with(['category', 'subCategory', 'unit'])->where('id', $request->input('id'))->first();
+            $rows = Product::with(['category', 'subCategory', 'unit', 'brand'])->where('id', $request->input('id'))->first();
             return response()->json(['status' => 'success', 'rows' => $rows]);
         } catch (Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
@@ -194,16 +238,29 @@ class ProductController extends Controller
             // Update Product Info
             $product = Product::findOrFail($request->input('id'));
 
-            $product->product_name = $request->input('product_name');
-            $product->quantity = (!is_null($request->input('quantity')) && $request->input('quantity') !== '') ? $request->input('quantity') : 0;
-            $product->cost_price = (!is_null($request->input('cost_price')) && $request->input('cost_price') !== '') ? $request->input('cost_price') : 0;
-            $product->sell_price = (!is_null($request->input('sell_price')) && $request->input('sell_price') !== '') ? $request->input('sell_price') : 0;
-            $product->status = $request->input('status') ?? 'Active';
-            $product->brand_id = (!empty($request->input('brand_id')) && $request->input('brand_id') !== 'none') ? $request->input('brand_id') : null;
-            $product->category_id = (!empty($request->input('category_id')) && $request->input('category_id') !== 'none') ? $request->input('category_id') : null;
-            $product->door_side = (!empty($request->input('door_side')) && $request->input('door_side') !== 'none') ? $request->input('door_side') : null;
-            $product->sub_category_id = (!empty($request->input('sub_category_id')) && $request->input('sub_category_id') !== 'none') ? $request->input('sub_category_id') : null;
-            $product->unit_id = (!empty($request->input('unit_id')) && $request->input('unit_id') !== 'none') ? $request->input('unit_id') : null;
+            $productName = $request->input('product_name');
+            $costPrice = (!is_null($request->input('cost_price')) && $request->input('cost_price') !== '') ? $request->input('cost_price') : 0;
+            $sellPrice = (!is_null($request->input('sell_price')) && $request->input('sell_price') !== '') ? $request->input('sell_price') : 0;
+            $status = $request->input('status') ?? 'Active';
+            $brandId = (!empty($request->input('brand_id')) && $request->input('brand_id') !== 'none') ? $request->input('brand_id') : null;
+            $categoryId = (!empty($request->input('category_id')) && $request->input('category_id') !== 'none') ? $request->input('category_id') : null;
+            $subCategoryId = (!empty($request->input('sub_category_id')) && $request->input('sub_category_id') !== 'none') ? $request->input('sub_category_id') : null;
+            $unitId = (!empty($request->input('unit_id')) && $request->input('unit_id') !== 'none') ? $request->input('unit_id') : null;
+
+            // Handle Product Image Upload
+            if ($request->hasFile('img_url')) {
+                $img = $request->file('img_url');
+                $img_name = time() . '-' . $user_id . '-' . $img->getClientOriginalName();
+                $img_url = "uploads/Product-img/{$img_name}";
+                $img->move(public_path('uploads/Product-img'), $img_name);
+
+                // Remove old image if exists
+                if ($product->img_url && file_exists(public_path($product->img_url))) {
+                    @unlink(public_path($product->img_url));
+                }
+
+                $product->img_url = $img_url;
+            }
 
             // Handle Product Barcodes
             if ($request->has('product_code')) {
@@ -236,22 +293,107 @@ class ProductController extends Controller
                 $product->product_code = json_encode(array_values(array_unique($cleanCodes)));
             }
 
+            // Check if handedness quantities are provided
+            $leftQty = $request->has('door_qty_left') ? floatval($request->input('door_qty_left')) : null;
+            $rightQty = $request->has('door_qty_right') ? floatval($request->input('door_qty_right')) : null;
+            $bothQty = $request->has('door_qty_both') ? floatval($request->input('door_qty_both')) : null;
 
-            // Handle Product Image Upload
-            if ($request->hasFile('img_url')) {
-                $img = $request->file('img_url');
-                $img_name = time() . '-' . $user_id . '-' . $img->getClientOriginalName();
-                $img_url = "uploads/Product-img/{$img_name}";
-                $img->move(public_path('uploads/Product-img'), $img_name);
+            $hasDoorQuantities = (!is_null($leftQty) || !is_null($rightQty) || !is_null($bothQty));
 
-                // Remove old image if exists
-                if ($product->img_url && file_exists(public_path($product->img_url))) {
-                    @unlink(public_path($product->img_url));
+            if ($hasDoorQuantities && ($leftQty > 0 || $rightQty > 0 || $bothQty > 0)) {
+                $doorMap = [
+                    'Left Handed' => $leftQty ?? 0,
+                    'Right Handed' => $rightQty ?? 0,
+                    'Both Handed' => $bothQty ?? 0,
+                ];
+
+                // Find existing variants of this product (same product_name & category_id)
+                $variants = Product::where('product_name', $product->product_name)
+                    ->where('category_id', $product->category_id)
+                    ->where(function ($q) use ($product) {
+                        if ($product->brand_id) {
+                            $q->where('brand_id', $product->brand_id);
+                        }
+                    })
+                    ->get();
+
+                $assignedProductIds = [];
+
+                foreach ($doorMap as $side => $qty) {
+                    // Try to find existing variant for this door_side
+                    $existingVariant = $variants->first(function ($v) use ($side) {
+                        return $v->door_side === $side;
+                    });
+
+                    // If not found and current product matches this side or has no side yet
+                    if (!$existingVariant && ($product->door_side === $side || empty($product->door_side)) && !in_array($product->id, $assignedProductIds)) {
+                        $existingVariant = $product;
+                    }
+
+                    if ($existingVariant) {
+                        $existingVariant->product_name = $productName;
+                        $existingVariant->quantity = $qty;
+                        $existingVariant->cost_price = $costPrice;
+                        $existingVariant->sell_price = $sellPrice;
+                        $existingVariant->status = $status;
+                        $existingVariant->brand_id = $brandId;
+                        $existingVariant->category_id = $categoryId;
+                        $existingVariant->door_side = $side;
+                        $existingVariant->sub_category_id = $subCategoryId;
+                        $existingVariant->unit_id = $unitId;
+                        if ($product->img_url) {
+                            $existingVariant->img_url = $product->img_url;
+                        }
+                        $existingVariant->save();
+                        $assignedProductIds[] = $existingVariant->id;
+                    } else if ($qty > 0) {
+                        // Create new variant if quantity > 0
+                        $newVariant = Product::create([
+                            'img_url' => $product->img_url,
+                            'product_name' => $productName,
+                            'quantity' => $qty,
+                            'cost_price' => $costPrice,
+                            'sell_price' => $sellPrice,
+                            'status' => $status,
+                            'product_code' => $product->product_code,
+                            'brand_id' => $brandId,
+                            'category_id' => $categoryId,
+                            'door_side' => $side,
+                            'sub_category_id' => $subCategoryId,
+                            'unit_id' => $unitId,
+                            'user_id' => $user_id,
+                        ]);
+                        $assignedProductIds[] = $newVariant->id;
+                    }
                 }
 
-                $product->img_url = $img_url;
+                // If current product wasn't assigned in the loop, update it with main values
+                if (!in_array($product->id, $assignedProductIds)) {
+                    $product->product_name = $productName;
+                    $product->cost_price = $costPrice;
+                    $product->sell_price = $sellPrice;
+                    $product->status = $status;
+                    $product->brand_id = $brandId;
+                    $product->category_id = $categoryId;
+                    $product->sub_category_id = $subCategoryId;
+                    $product->unit_id = $unitId;
+                    $product->save();
+                }
+
+                return response()->json(['status' => 'success', 'message' => 'Product and Door variants updated successfully']);
             }
 
+            // Standard product update without multi-door quantities
+            $product->product_name = $productName;
+            $product->quantity = (!is_null($request->input('quantity')) && $request->input('quantity') !== '') ? $request->input('quantity') : 0;
+            $product->cost_price = $costPrice;
+            $product->sell_price = $sellPrice;
+            $product->status = $status;
+            $product->brand_id = $brandId;
+            $product->category_id = $categoryId;
+            $product->door_side = (!empty($request->input('door_side')) && $request->input('door_side') !== 'none') ? $request->input('door_side') : null;
+            $product->sub_category_id = $subCategoryId;
+            $product->unit_id = $unitId;
             $product->save();
 
             return response()->json(['status' => 'success', 'message' => 'Product updated successfully']);

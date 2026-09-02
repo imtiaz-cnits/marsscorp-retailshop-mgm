@@ -132,38 +132,59 @@
                         </div>
                     </div>
 
-                    <!-- Door Handedness Dynamic Selection (Shown only when Door category is selected) -->
+                    <!-- Door Handedness Dynamic Selection & Quantity Inputs (Shown only when Door category is selected) -->
                     <div class="row mt-1" id="updateDoorHandednessContainer" style="display: none;">
                         <div class="col-lg-12">
                             <div class="p-3 mb-2 rounded-3" style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1.5px dashed #86efac;">
                                 <div class="d-flex align-items-center justify-content-between mb-2">
                                     <label class="fw-bold text-success m-0 d-flex align-items-center gap-2" style="font-size: 13px;">
-                                        <i class="fa-solid fa-door-open fs-5 text-success"></i> Door Handedness (পাল্লার দিক নির্বাচন) <span class="text-danger">*</span>
+                                        <i class="fa-solid fa-door-open fs-5 text-success"></i>
+                                        <span>Door Handedness & Specific Quantities (ডোর সাইড অনুযায়ী স্টক এন্ট্রি)</span>
                                     </label>
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small fw-bold">Door Specification</span>
+                                    <span class="badge bg-success text-white px-2 py-1 small fw-bold" id="updateDoorTotalBadge">মোট ডোর স্টক: 0</span>
                                 </div>
-                                <div class="d-flex flex-wrap gap-2 mt-1">
-                                    <label class="door-hand-option-update flex-grow-1 mb-0" style="cursor: pointer;">
-                                        <input type="radio" name="update_door_side_option" value="Left Handed" class="d-none door-hand-radio-update" onchange="selectUpdateDoorSide(this.value)">
-                                        <div class="door-hand-card-update">
-                                            <span class="door-hand-icon-update fs-5">👈</span>
-                                            <span class="fw-bold text-dark door-hand-text-update" style="font-size: 13px;">Left Handed (বাম হাতি)</span>
+                                <div class="row g-2 mt-1">
+                                    <!-- Left Handed Card & Qty Input -->
+                                    <div class="col-md-4 col-12">
+                                        <div class="door-hand-box-update rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center" style="border-radius: 10px; padding: 10px 12px;">
+                                            <div class="d-flex align-items-center justify-content-center gap-1.5 mb-2 text-primary fw-bold" style="font-size: 13px;">
+                                                <span class="fs-5">👈</span>
+                                                <span>Left Handed (বাম)</span>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                                <label for="updateDoorQtyLeft" class="fw-bold text-secondary m-0" style="font-size: 12px; letter-spacing: 0.5px;">QTY:</label>
+                                                <input type="number" min="0" step="any" id="updateDoorQtyLeft" class="form-control text-center fw-bold text-dark door-qty-input-update" placeholder="0" oninput="calculateUpdateDoorTotal()" style="font-size: 14px; height: 36px; max-width: 130px; border-radius: 8px;">
+                                            </div>
                                         </div>
-                                    </label>
-                                    <label class="door-hand-option-update flex-grow-1 mb-0" style="cursor: pointer;">
-                                        <input type="radio" name="update_door_side_option" value="Right Handed" class="d-none door-hand-radio-update" onchange="selectUpdateDoorSide(this.value)">
-                                        <div class="door-hand-card-update">
-                                            <span class="door-hand-icon-update fs-5">👉</span>
-                                            <span class="fw-bold text-dark door-hand-text-update" style="font-size: 13px;">Right Handed (ডান হাতি)</span>
+                                    </div>
+
+                                    <!-- Right Handed Card & Qty Input -->
+                                    <div class="col-md-4 col-12">
+                                        <div class="door-hand-box-update rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center" style="border-radius: 10px; padding: 10px 12px;">
+                                            <div class="d-flex align-items-center justify-content-center gap-1.5 mb-2 text-success fw-bold" style="font-size: 13px;">
+                                                <span class="fs-5">👉</span>
+                                                <span>Right Handed (ডান)</span>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                                <label for="updateDoorQtyRight" class="fw-bold text-secondary m-0" style="font-size: 12px; letter-spacing: 0.5px;">QTY:</label>
+                                                <input type="number" min="0" step="any" id="updateDoorQtyRight" class="form-control text-center fw-bold text-dark door-qty-input-update" placeholder="0" oninput="calculateUpdateDoorTotal()" style="font-size: 14px; height: 36px; max-width: 130px; border-radius: 8px;">
+                                            </div>
                                         </div>
-                                    </label>
-                                    <label class="door-hand-option-update flex-grow-1 mb-0" style="cursor: pointer;">
-                                        <input type="radio" name="update_door_side_option" value="Both Handed" class="d-none door-hand-radio-update" onchange="selectUpdateDoorSide(this.value)">
-                                        <div class="door-hand-card-update">
-                                            <span class="door-hand-icon-update fs-5">↔️</span>
-                                            <span class="fw-bold text-dark door-hand-text-update" style="font-size: 13px;">Both / Universal (উভয়মুখী)</span>
+                                    </div>
+
+                                    <!-- Both / Universal Card & Qty Input -->
+                                    <div class="col-md-4 col-12">
+                                        <div class="door-hand-box-update rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center" style="border-radius: 10px; padding: 10px 12px;">
+                                            <div class="d-flex align-items-center justify-content-center gap-1.5 mb-2 text-info fw-bold" style="font-size: 13px;">
+                                                <span class="fs-5">↔️</span>
+                                                <span>Both / Universal (উভয়)</span>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                                <label for="updateDoorQtyBoth" class="fw-bold text-secondary m-0" style="font-size: 12px; letter-spacing: 0.5px;">QTY:</label>
+                                                <input type="number" min="0" step="any" id="updateDoorQtyBoth" class="form-control text-center fw-bold text-dark door-qty-input-update" placeholder="0" oninput="calculateUpdateDoorTotal()" style="font-size: 14px; height: 36px; max-width: 130px; border-radius: 8px;">
+                                            </div>
                                         </div>
-                                    </label>
+                                    </div>
                                 </div>
                                 <input type="hidden" id="updateSelectedDoorSide" value="">
                             </div>
@@ -261,21 +282,52 @@
 <!-- Action Button Edit Modal End -->
 
 <script>
+    let isFormLoading = false;
+
     // Door Handedness helpers for Update Modal
-    function selectUpdateDoorSide(value) {
-        $('#updateSelectedDoorSide').val(value);
+    function calculateUpdateDoorTotal() {
+        let left = parseFloat($('#updateDoorQtyLeft').val()) || 0;
+        let right = parseFloat($('#updateDoorQtyRight').val()) || 0;
+        let both = parseFloat($('#updateDoorQtyBoth').val()) || 0;
+        let total = left + right + both;
+
+        $('#updateDoorTotalBadge').text(`মোট ডোর স্টক: ${total}`);
+        $('#UpdateProductQuantity').val(total);
+
+        // Highlight active cards
+        $('#updateDoorQtyLeft').closest('.door-hand-box-update').toggleClass('border-primary shadow', left > 0);
+        $('#updateDoorQtyRight').closest('.door-hand-box-update').toggleClass('border-success shadow', right > 0);
+        $('#updateDoorQtyBoth').closest('.door-hand-box-update').toggleClass('border-info shadow', both > 0);
+
+        // Set primary door side value
+        if (left > 0 && right === 0 && both === 0) {
+            $('#updateSelectedDoorSide').val('Left Handed');
+        } else if (right > 0 && left === 0 && both === 0) {
+            $('#updateSelectedDoorSide').val('Right Handed');
+        } else if (both > 0 && left === 0 && right === 0) {
+            $('#updateSelectedDoorSide').val('Both Handed');
+        } else if (total > 0) {
+            $('#updateSelectedDoorSide').val('Multi Handed');
+        } else {
+            $('#updateSelectedDoorSide').val('');
+        }
     }
 
     function resetUpdateDoorSide() {
-        $('input[name="update_door_side_option"]').prop('checked', false);
+        $('#updateDoorQtyLeft').val('');
+        $('#updateDoorQtyRight').val('');
+        $('#updateDoorQtyBoth').val('');
         $('#updateSelectedDoorSide').val('');
+        $('#updateDoorTotalBadge').text('মোট ডোর স্টক: 0');
         $('#updateDoorHandednessContainer').hide();
+        $('.door-hand-box-update').removeClass('border-primary border-success border-info shadow');
     }
 
     function checkUpdateDoorCategory() {
         const selectedText = ($('#UpdateProductCategory option:selected').text() || '').toLowerCase().trim();
         if (selectedText.includes('door')) {
             $('#updateDoorHandednessContainer').slideDown(200);
+            calculateUpdateDoorTotal();
         } else {
             $('#updateDoorHandednessContainer').slideUp(200);
             resetUpdateDoorSide();
@@ -306,7 +358,7 @@
             resetUpdateDoorSide();
         });
 
-        // Modal show listener
+        // Modal show listener (bootstrap fallback)
         $('#exampleModal').on('show.bs.modal', function(event) {
             const button = event.relatedTarget;
             if (button) {
@@ -321,16 +373,14 @@
     // Helper functions to load dropdown options
     async function ProductCategoryShow(selectedCategoryId = null) {
         try {
-            const currentVal = $('#UpdateProductCategory').val();
             const res = await axios.get("/api/category-list", HeaderToken());
             if (res.status === 200 && res.data.CategoryData) {
                 const optionsHtml = res.data.CategoryData.map(Category =>
                     `<option value="${Category.id}">${Category.category_name}</option>`
                 ).join('');
                 $('#UpdateProductCategory').html(`<option value="">Select Category</option>` + optionsHtml);
-                const targetVal = selectedCategoryId || currentVal;
-                if (targetVal) {
-                    $('#UpdateProductCategory').val(String(targetVal));
+                if (selectedCategoryId) {
+                    $('#UpdateProductCategory').val(String(selectedCategoryId));
                 }
             }
         } catch (error) {
@@ -340,16 +390,14 @@
 
     async function ProductBrandShow(selectedBrandId = null) {
         try {
-            const currentVal = $('#UpdateProductBrand').val();
             const res = await axios.get("/api/brand-list", HeaderToken());
             if (res.status === 200 && res.data.BrandData) {
                 const optionsHtml = res.data.BrandData.map(Brand =>
                     `<option value="${Brand.id}">${Brand.name}</option>`
                 ).join('');
                 $('#UpdateProductBrand').html(`<option value="">Select Brand</option>` + optionsHtml);
-                const targetVal = selectedBrandId || currentVal;
-                if (targetVal) {
-                    $('#UpdateProductBrand').val(String(targetVal));
+                if (selectedBrandId) {
+                    $('#UpdateProductBrand').val(String(selectedBrandId));
                 }
             }
         } catch (error) {
@@ -401,14 +449,10 @@
 
     // Main Edit Form Population Function
     async function FillUpUpdateForm(id) {
-        if (!id || isFormLoading) return;
-        isFormLoading = true;
+        if (!id) return;
 
         try {
-            document.getElementById('updateID').value = id;
-
-            // Load dropdowns first if needed
-            await Promise.all([ProductBrandShow(), ProductCategoryShow()]);
+            $('#updateID').val(id);
 
             // Find data in window cache or call API
             let data = null;
@@ -426,16 +470,28 @@
             }
 
             if (!data) {
-                isFormLoading = false;
                 return errorToast("Product data not found!");
             }
 
-            // Fill form fields
+            // Fill form inputs
             $('#UpdateProductName').val(data.product_name || '');
             $('#UpdateProductQuantity').val(data.quantity !== undefined ? data.quantity : '');
             $('#UpdateProductCostPrice').val(data.cost_price !== undefined ? data.cost_price : '');
             $('#UpdateProductSellingPrice').val(data.sell_price !== undefined ? data.sell_price : '');
             $('#UpdateProductStatus').val(data.status || 'Active');
+
+            // Load dropdowns and preselect current values
+            await Promise.all([
+                ProductBrandShow(data.brand_id),
+                ProductCategoryShow(data.category_id)
+            ]);
+
+            if (data.brand_id) {
+                $('#UpdateProductBrand').val(String(data.brand_id));
+            }
+            if (data.category_id) {
+                $('#UpdateProductCategory').val(String(data.category_id));
+            }
 
             // Image preview
             const defaultImg = "{{ asset('back-end/assets/img/product-img.svg') }}";
@@ -465,25 +521,58 @@
             }
             $('#ProductBarCodeInput').val(barcodeVal);
 
-            // Select Brand & Category
-            if (data.brand_id) {
-                $('#UpdateProductBrand').val(String(data.brand_id));
-            }
-            if (data.category_id) {
-                $('#UpdateProductCategory').val(String(data.category_id));
-            }
-
-            // Check and populate Door Handedness
+            // Check and populate Door Handedness & Quantities
             const categoryName = (data.category ? data.category.category_name : $('#UpdateProductCategory option:selected').text() || '').toLowerCase();
             if (categoryName.includes('door') || data.door_side) {
                 $('#updateDoorHandednessContainer').show();
-                if (data.door_side) {
-                    $(`input[name="update_door_side_option"][value="${data.door_side}"]`).prop('checked', true);
-                    $('#updateSelectedDoorSide').val(data.door_side);
-                } else {
-                    $('input[name="update_door_side_option"]').prop('checked', false);
-                    $('#updateSelectedDoorSide').val('');
+
+                let leftQty = 0;
+                let rightQty = 0;
+                let bothQty = 0;
+
+                if (window.allProductsList && Array.isArray(window.allProductsList)) {
+                    let pName = (data.product_name || '').trim().toLowerCase();
+                    let catId = data.category_id;
+                    let brandId = data.brand_id;
+
+                    let sameVariants = window.allProductsList.filter(p => {
+                        let matchName = (p.product_name || '').trim().toLowerCase() === pName;
+                        let matchCat = String(p.category_id) === String(catId);
+                        let matchBrand = (!brandId && !p.brand_id) || String(p.brand_id) === String(brandId);
+                        return matchName && matchCat && matchBrand;
+                    });
+
+                    if (sameVariants.length > 0) {
+                        sameVariants.forEach(v => {
+                            let side = (v.door_side || '').toLowerCase();
+                            let q = parseFloat(v.quantity) || 0;
+                            if (side.includes('left')) leftQty += q;
+                            else if (side.includes('right')) rightQty += q;
+                            else if (side.includes('both')) bothQty += q;
+                            else if (data.door_side) {
+                                if (data.door_side.toLowerCase().includes('left')) leftQty += q;
+                                else if (data.door_side.toLowerCase().includes('right')) rightQty += q;
+                                else if (data.door_side.toLowerCase().includes('both')) bothQty += q;
+                            } else {
+                                leftQty += q;
+                            }
+                        });
+                    }
                 }
+
+                if (leftQty === 0 && rightQty === 0 && bothQty === 0) {
+                    let side = (data.door_side || '').toLowerCase();
+                    let q = parseFloat(data.quantity) || 0;
+                    if (side.includes('left')) leftQty = q;
+                    else if (side.includes('right')) rightQty = q;
+                    else if (side.includes('both')) bothQty = q;
+                    else leftQty = q;
+                }
+
+                $('#updateDoorQtyLeft').val(leftQty > 0 ? leftQty : '');
+                $('#updateDoorQtyRight').val(rightQty > 0 ? rightQty : '');
+                $('#updateDoorQtyBoth').val(bothQty > 0 ? bothQty : '');
+                calculateUpdateDoorTotal();
             } else {
                 resetUpdateDoorSide();
             }
@@ -492,8 +581,6 @@
             hideLoader();
             console.error("FillUpUpdateForm Error:", e);
             errorToast("Error loading product data!");
-        } finally {
-            isFormLoading = false;
         }
     }
 
@@ -506,12 +593,6 @@
 
             const categoryId = $('#UpdateProductCategory').val();
             if (!categoryId || categoryId === "none" || categoryId === "") return errorToast("Category is required!");
-
-            const selectedDoorSide = $('#updateSelectedDoorSide').val();
-            const isDoorVisible = $('#updateDoorHandednessContainer').is(':visible');
-            if (isDoorVisible && !selectedDoorSide) {
-                return errorToast("Door Handedness (বাম / ডান হাতি) নির্বাচন করুন!");
-            }
 
             const brandId = $('#UpdateProductBrand').val();
             const status = $('#UpdateProductStatus').val() || 'Active';
@@ -542,9 +623,22 @@
 
             if (brandId && brandId !== "none") formData.append('brand_id', brandId);
             if (categoryId && categoryId !== "none") formData.append('category_id', categoryId);
-            if (selectedDoorSide) {
-                formData.append('door_side', selectedDoorSide);
-            } else if (!isDoorVisible) {
+
+            const isDoorVisible = $('#updateDoorHandednessContainer').is(':visible');
+            if (isDoorVisible) {
+                const leftQty = parseFloat($('#updateDoorQtyLeft').val()) || 0;
+                const rightQty = parseFloat($('#updateDoorQtyRight').val()) || 0;
+                const bothQty = parseFloat($('#updateDoorQtyBoth').val()) || 0;
+
+                formData.append('door_qty_left', leftQty);
+                formData.append('door_qty_right', rightQty);
+                formData.append('door_qty_both', bothQty);
+
+                const selectedDoorSide = $('#updateSelectedDoorSide').val();
+                if (selectedDoorSide) {
+                    formData.append('door_side', selectedDoorSide);
+                }
+            } else {
                 formData.append('door_side', '');
             }
 
