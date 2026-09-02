@@ -1,11 +1,13 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700;800&family=Valley+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 
 /* ====================
   Reset Default CSS Start
   ==================== */
 
 :root {
-  --primary-font: "Noto Sans Bengali", "Poppins", sans-serif;
+  --primary-font: "Valley Sans", "Baloo Da 2", sans-serif;
+  --english-font: "Valley Sans", sans-serif;
+  --bangla-font: "Baloo Da 2", sans-serif;
   --white: #ffffff;
   --text-color: #000000;
   --text-color2: #15803d;
@@ -230,12 +232,12 @@ body[data-sidebar="dark"] #sidebar-menu ul .active-link.active a svg path {
   stroke: var(--primary-color) !important;
 }
 
-body[data-sidebar="dark"] .vertical-menu .menu ul li.active > a {
+body[data-sidebar="dark"] .vertical-menu .menu ul li.active>a {
   background: var(--white);
 }
 
 body[data-sidebar="dark"] #sidebar-menu ul li a:hover .text,
-body[data-sidebar="dark"] .vertical-menu .menu ul li.active > a .text {
+body[data-sidebar="dark"] .vertical-menu .menu ul li.active>a .text {
   color: var(--primary-color) !important;
 }
 
@@ -245,7 +247,7 @@ body[data-sidebar="dark"] .vertical-menu .menu ul li.active .arrow {
   color: var(--primary-color) !important;
 }
 
-body[data-sidebar="dark"] .vertical-menu .menu ul li.active > a svg path {
+body[data-sidebar="dark"] .vertical-menu .menu ul li.active>a svg path {
   stroke: var(--primary-color) !important;
 }
 
@@ -284,19 +286,19 @@ body[data-sidebar="dark"] .sidebar-menu-scroll svg rect {
   fill: var(--white) !important;
 }
 
-body[data-sidebar="dark"] .vertical-menu #sidebar-menu > ul > li:hover > a {
+body[data-sidebar="dark"] .vertical-menu #sidebar-menu>ul>li:hover>a {
   background: var(--white) !important;
 }
 
-body[data-sidebar="dark"] .vertical-menu #sidebar-menu > ul ul li:hover > ul {
+body[data-sidebar="dark"] .vertical-menu #sidebar-menu>ul ul li:hover>ul {
   background: var(--dark-mode-bg) !important;
 }
 
-body[data-sidebar="dark"] .vertical-menu #sidebar-menu > ul li a:hover {
+body[data-sidebar="dark"] .vertical-menu #sidebar-menu>ul li a:hover {
   background: var(--content-and-hover-bg) !important;
 }
 
-body[data-sidebar="dark"] .vertical-menu #sidebar-menu > ul li:hover .sub-menu {
+body[data-sidebar="dark"] .vertical-menu #sidebar-menu>ul li:hover .sub-menu {
   background: var(--dark-mode-bg) !important;
 }
 
@@ -326,21 +328,11 @@ body[data-sidebar="dark"] .vertical-menu .log-out svg path {
 }
 
 body[data-sidebar="dark"][data-sidebar-size="sm"] .vertical-menu .log-out .text,
-body[data-sidebar="dark"][data-sidebar-size="sm"]
-  .vertical-menu
-  .menu
-  > ul
-  > li
-  > a
-  .text {
+body[data-sidebar="dark"][data-sidebar-size="sm"] .vertical-menu .menu>ul>li>a .text {
   border: 1px solid var(--gray);
 }
 
-body[data-sidebar="dark"][data-sidebar-size="sm"]
-  .vertical-menu
-  #sidebar-menu
-  ul
-  .sub-menu {
+body[data-sidebar="dark"][data-sidebar-size="sm"] .vertical-menu #sidebar-menu ul .sub-menu {
   border: 1px solid var(--gray);
   background: var(--text-color);
 }
@@ -348,8 +340,8 @@ body[data-sidebar="dark"][data-sidebar-size="sm"]
 /* ........Layout mode......... */
 
 body[data-layout-mode="dark"] body {
-    background-color: var(--dark-mode-bg2) !important;
-  }
+  background-color: var(--dark-mode-bg2) !important;
+}
 
 body[data-layout-mode="dark"] .main-content {
   background: black !important;
@@ -370,6 +362,7 @@ body[data-layout-mode="dark"] .header-item i {
 body[data-layout-mode="dark"] .logo-lg svg path {
   stroke: white !important;
 }
+
 body[data-layout-mode="dark"] .logo-sm2 svg path {
   stroke: white !important;
 }
@@ -524,7 +517,7 @@ body[data-layout-mode="dark"] #example th:nth-child(1) {
   padding-left: 10px !important;
 }
 
-body[data-layout-mode="dark"] table.dataTable.display tbody tr > .sorting_1 {
+body[data-layout-mode="dark"] table.dataTable.display tbody tr>.sorting_1 {
   background: var(--dark-mode-bg) !important;
 }
 
@@ -698,15 +691,15 @@ body[light-mode="dark"] .entries-page #entries {
   color: #4ade80 !important;
 }
 
-body[data-layout-mode="dark"] #action_btn #menu-wrap .dots > div:after,
-body[data-layout-mode="dark"] #action_btn #menu-wrap .dots > div::before,
-body[data-layout-mode="dark"] #action_btn #menu-wrap .dots > div {
+body[data-layout-mode="dark"] #action_btn #menu-wrap .dots>div:after,
+body[data-layout-mode="dark"] #action_btn #menu-wrap .dots>div::before,
+body[data-layout-mode="dark"] #action_btn #menu-wrap .dots>div {
   background: var(--white);
 }
 
-body[data-layout-mode="dark"] #action_btn #menu-wrap:hover .dots > div:after,
-body[data-layout-mode="dark"] #action_btn #menu-wrap:hover .dots > div::before,
-body[data-layout-mode="dark"] #action_btn #menu-wrap:hover .dots > div {
+body[data-layout-mode="dark"] #action_btn #menu-wrap:hover .dots>div:after,
+body[data-layout-mode="dark"] #action_btn #menu-wrap:hover .dots>div::before,
+body[data-layout-mode="dark"] #action_btn #menu-wrap:hover .dots>div {
   background: var(--white);
 }
 
@@ -757,7 +750,7 @@ body[data-layout-mode="dark"] .data-table .table td {
   color: var(--white);
 }
 
-body[data-layout-mode="dark"] .table-hover > tbody > tr:hover > * {
+body[data-layout-mode="dark"] .table-hover>tbody>tr:hover>* {
   background: hsla(0, 0%, 100%, 0.041);
 }
 
@@ -774,19 +767,11 @@ body[data-layout-mode="dark"] .input-group-append .dropdown-button svg rect {
   stroke: var(--white);
 }
 
-body[data-layout-mode="dark"]
-  .input-group-append
-  .dropdown-button:hover
-  svg
-  path {
+body[data-layout-mode="dark"] .input-group-append .dropdown-button:hover svg path {
   fill: var(--text-color);
 }
 
-body[data-layout-mode="dark"]
-  .input-group-append
-  .dropdown-button:hover
-  svg
-  rect {
+body[data-layout-mode="dark"] .input-group-append .dropdown-button:hover svg rect {
   fill: var(--text-color);
   stroke: var(--text-color);
 }
@@ -1070,23 +1055,23 @@ body[light-mode="dark"] .sidebar-menu-scroll svg rect {
   fill: var(--white) !important;
 }
 
-body[light-mode="dark"] #sidebar-menu ul li.mm-active > a {
+body[light-mode="dark"] #sidebar-menu ul li.mm-active>a {
   background: var(--content-and-hover-bg) !important;
 }
 
-body[light-mode="dark"] .vertical-menu #sidebar-menu > ul > li:hover > a {
+body[light-mode="dark"] .vertical-menu #sidebar-menu>ul>li:hover>a {
   background: var(--content-and-hover-bg) !important;
 }
 
-body[light-mode="dark"] .vertical-menu #sidebar-menu > ul ul li:hover > ul {
+body[light-mode="dark"] .vertical-menu #sidebar-menu>ul ul li:hover>ul {
   background: var(--dark-mode-bg) !important;
 }
 
-body[light-mode="dark"] .vertical-menu #sidebar-menu > ul li a:hover {
+body[light-mode="dark"] .vertical-menu #sidebar-menu>ul li a:hover {
   background: var(--content-and-hover-bg) !important;
 }
 
-body[light-mode="dark"] .vertical-menu #sidebar-menu > ul li:hover .sub-menu {
+body[light-mode="dark"] .vertical-menu #sidebar-menu>ul li:hover .sub-menu {
   background: var(--dark-mode-bg) !important;
 }
 
@@ -1132,12 +1117,12 @@ body[light-mode="dark"] #sidebar-menu ul .active-link.active a svg path {
   stroke: var(--primary-color) !important;
 }
 
-body[light-mode="dark"] .vertical-menu .menu ul li.active > a {
+body[light-mode="dark"] .vertical-menu .menu ul li.active>a {
   background: var(--white);
 }
 
 body[light-mode="dark"] #sidebar-menu ul li a:hover .text,
-body[light-mode="dark"] .vertical-menu .menu ul li.active > a .text {
+body[light-mode="dark"] .vertical-menu .menu ul li.active>a .text {
   color: var(--primary-color) !important;
 }
 
@@ -1147,7 +1132,7 @@ body[light-mode="dark"] .vertical-menu .menu ul li.active .arrow {
   color: var(--primary-color) !important;
 }
 
-body[light-mode="dark"] .vertical-menu .menu ul li.active > a svg path {
+body[light-mode="dark"] .vertical-menu .menu ul li.active>a svg path {
   stroke: var(--primary-color) !important;
 }
 
@@ -1206,23 +1191,13 @@ body[light-mode="dark"] .vertical-menu .menu ul li a:hover .icon {
   color: var(--primary-color) !important;
 }
 
-body[light-mode="dark"][data-sidebar-size="sm"]
-  .vertical-menu
-  #sidebar-menu
-  ul
-  .sub-menu {
+body[light-mode="dark"][data-sidebar-size="sm"] .vertical-menu #sidebar-menu ul .sub-menu {
   border: 1px solid var(--gray);
   background: var(--text-color);
 }
 
 body[light-mode="dark"][data-sidebar-size="sm"] .vertical-menu .log-out .text,
-body[light-mode="dark"][data-sidebar-size="sm"]
-  .vertical-menu
-  .menu
-  > ul
-  > li
-  > a
-  .text {
+body[light-mode="dark"][data-sidebar-size="sm"] .vertical-menu .menu>ul>li>a .text {
   border: 1px solid var(--gray);
 }
 
@@ -1271,15 +1246,15 @@ body[light-mode="dark"] .bredcam-invoice {
   color: var(--gray);
 }
 
-body[light-mode="dark"] #action_btn #menu-wrap .dots > div:after,
-body[light-mode="dark"] #action_btn #menu-wrap .dots > div::before,
-body[light-mode="dark"] #action_btn #menu-wrap .dots > div {
+body[light-mode="dark"] #action_btn #menu-wrap .dots>div:after,
+body[light-mode="dark"] #action_btn #menu-wrap .dots>div::before,
+body[light-mode="dark"] #action_btn #menu-wrap .dots>div {
   background: var(--white);
 }
 
-body[light-mode="dark"] #action_btn #menu-wrap:hover .dots > div:after,
-body[light-mode="dark"] #action_btn #menu-wrap:hover .dots > div::before,
-body[light-mode="dark"] #action_btn #menu-wrap:hover .dots > div {
+body[light-mode="dark"] #action_btn #menu-wrap:hover .dots>div:after,
+body[light-mode="dark"] #action_btn #menu-wrap:hover .dots>div::before,
+body[light-mode="dark"] #action_btn #menu-wrap:hover .dots>div {
   background: var(--white);
 }
 
@@ -1363,7 +1338,7 @@ body[light-mode="dark"] .data-table .table td {
   color: var(--white);
 }
 
-body[light-mode="dark"] .table-hover > tbody > tr:hover > * {
+body[light-mode="dark"] .table-hover>tbody>tr:hover>* {
   background: hsla(0, 0%, 100%, 0.041);
 }
 
@@ -1581,6 +1556,7 @@ body[light-mode="dark"] .profile-form .input-group input {
   background: var(--dark-mode-bg);
   border: 1px solid var(--gray);
 }
+
 /* ........................ Light & Dark Mode Toggle button End ...................................... */
 
 /* Rock-Solid Comprehensive Dark Mode Overrides for Cards & Dashboard Sections */
@@ -1588,8 +1564,8 @@ body[light-mode="dark"],
 body[data-layout-mode="dark"],
 body[data-sidebar="dark"],
 body.dark-mode {
-    background-color: #0f172a !important;
-    color: #f8fafc !important;
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
 }
 
 body[light-mode="dark"] .main-content,
@@ -1598,7 +1574,7 @@ body[data-sidebar="dark"] .main-content,
 body[light-mode="dark"] .page-content,
 body[data-layout-mode="dark"] .page-content,
 body[data-sidebar="dark"] .page-content {
-    background-color: #0f172a !important;
+  background-color: #0f172a !important;
 }
 
 /* Card & Card Header Dark Mode Styling */
@@ -1607,18 +1583,18 @@ body[data-layout-mode="dark"] .card,
 body[data-sidebar="dark"] .card,
 body[light-mode="dark"] .card-body,
 body[data-layout-mode="dark"] .card-body {
-    background: #1e293b !important;
-    border-color: rgba(255, 255, 255, 0.08) !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+  background: #1e293b !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
 }
 
 body[light-mode="dark"] .card-header,
 body[data-layout-mode="dark"] .card-header,
 body[light-mode="dark"] .bg-white,
 body[data-layout-mode="dark"] .bg-white {
-    background-color: #1e293b !important;
-    color: #f8fafc !important;
-    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 /* Inner bg-light boxes (e.g. Monthly Summary Boxes) */
@@ -1628,9 +1604,9 @@ body[data-sidebar="dark"] .bg-light,
 body.dark-mode .bg-light,
 body[light-mode="dark"] .bg-light-subtle,
 body[data-layout-mode="dark"] .bg-light-subtle {
-    background-color: #0f172a !important;
-    color: #f8fafc !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* Badges & Buttons */
@@ -1644,15 +1620,15 @@ body[light-mode="dark"] .badge.bg-warning-subtle,
 body[data-layout-mode="dark"] .badge.bg-warning-subtle,
 body[light-mode="dark"] .badge.bg-teal-subtle,
 body[data-layout-mode="dark"] .badge.bg-teal-subtle {
-    background-color: #334155 !important;
-    color: #f8fafc !important;
-    border-color: rgba(255, 255, 255, 0.15) !important;
+  background-color: #334155 !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 /* Specific Summary Card Gradients in Dark Mode */
 body[light-mode="dark"] .card[style*="linear-gradient"],
 body[data-layout-mode="dark"] .card[style*="linear-gradient"] {
-    background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%) !important;
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%) !important;
 }
 
 /* Typography & Number Colors inside Dark Cards */
@@ -1670,53 +1646,53 @@ body[data-layout-mode="dark"] h3,
 body[data-layout-mode="dark"] h4,
 body[data-layout-mode="dark"] h5,
 body[data-layout-mode="dark"] h6 {
-    color: #f8fafc !important;
+  color: #f8fafc !important;
 }
 
 body[light-mode="dark"] .text-muted,
 body[data-layout-mode="dark"] .text-muted {
-    color: #94a3b8 !important;
+  color: #94a3b8 !important;
 }
 
 body[light-mode="dark"] .text-success,
 body[data-layout-mode="dark"] .text-success {
-    color: #4ade80 !important;
+  color: #4ade80 !important;
 }
 
 body[light-mode="dark"] .text-primary,
 body[data-layout-mode="dark"] .text-primary {
-    color: #38bdf8 !important;
+  color: #38bdf8 !important;
 }
 
 body[light-mode="dark"] .text-info,
 body[data-layout-mode="dark"] .text-info {
-    color: #22d3ee !important;
+  color: #22d3ee !important;
 }
 
 body[light-mode="dark"] .style-purple,
 body[data-layout-mode="dark"] .style-purple,
 body[light-mode="dark"] [style*="color: #7c3aed"],
 body[data-layout-mode="dark"] [style*="color: #7c3aed"] {
-    color: #c084fc !important;
+  color: #c084fc !important;
 }
 
 body[light-mode="dark"] .text-orange,
 body[data-layout-mode="dark"] .text-orange,
 body[light-mode="dark"] [style*="color: #ea580c"],
 body[data-layout-mode="dark"] [style*="color: #ea580c"] {
-    color: #fb923c !important;
+  color: #fb923c !important;
 }
 
 body[light-mode="dark"] [style*="color: #0d9488"],
 body[data-layout-mode="dark"] [style*="color: #0d9488"] {
-    color: #2dd4bf !important;
+  color: #2dd4bf !important;
 }
 
 /* Tables & Table Cells in Dark Mode */
 body[light-mode="dark"] .table,
 body[data-layout-mode="dark"] .table {
-    color: #f8fafc !important;
-    background-color: #1e293b !important;
+  color: #f8fafc !important;
+  background-color: #1e293b !important;
 }
 
 body[light-mode="dark"] .table th,
@@ -1725,22 +1701,22 @@ body[data-layout-mode="dark"] .table th,
 body[data-layout-mode="dark"] .table td,
 body[light-mode="dark"] .table thead.bg-light th,
 body[data-layout-mode="dark"] .table thead.bg-light th {
-    background-color: #0f172a !important;
-    color: #f8fafc !important;
-    border-color: rgba(255, 255, 255, 0.08) !important;
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 /* Quick Action Outline Buttons in Dark Mode */
 body[light-mode="dark"] .btn-outline-dark,
 body[data-layout-mode="dark"] .btn-outline-dark {
-    color: #cbd5e1 !important;
-    border-color: #475569 !important;
+  color: #cbd5e1 !important;
+  border-color: #475569 !important;
 }
 
 body[light-mode="dark"] .btn-outline-dark:hover,
 body[data-layout-mode="dark"] .btn-outline-dark:hover {
-    background-color: #334155 !important;
-    color: #ffffff !important;
+  background-color: #334155 !important;
+  color: #ffffff !important;
 }
 
 /* ApexCharts Text in Dark Mode */
@@ -1750,6 +1726,6 @@ body[light-mode="dark"] .apexcharts-title-text,
 body[data-layout-mode="dark"] .apexcharts-title-text,
 body[light-mode="dark"] .apexcharts-legend-text,
 body[data-layout-mode="dark"] .apexcharts-legend-text {
-    fill: #cbd5e1 !important;
-    color: #cbd5e1 !important;
+  fill: #cbd5e1 !important;
+  color: #cbd5e1 !important;
 }

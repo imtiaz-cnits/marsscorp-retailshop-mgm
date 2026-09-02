@@ -1,24 +1,26 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700;800&family=Valley+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 
 /* ====================
   Reset Default CSS Start
   ==================== */
 
-  :root {
-    --primary-font: "Poppins", sans-serif;
-    --white: #ffffff;
-    --text-color: #000000;
-    --text-color2: #15803d;
-    --primary-color: #15803d;
-    --stroke: #16a34a;
-    --hover-color: #f0fdf4;
-    --gray: #aaaaaa;
-    --box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 17%);
-    --dark-mode-bg: #1e1e1e;
-    --dark-mode-bg2: #121212;
-    --dark-mode-text: #c0c5cb;
-    --content-and-hover-bg: #414141;
-  }
+:root {
+  --primary-font: "Valley Sans", "Baloo Da 2", sans-serif;
+  --english-font: "Valley Sans", sans-serif;
+  --bangla-font: "Baloo Da 2", sans-serif;
+  --white: #ffffff;
+  --text-color: #000000;
+  --text-color2: #15803d;
+  --primary-color: #15803d;
+  --stroke: #16a34a;
+  --hover-color: #f0fdf4;
+  --gray: #aaaaaa;
+  --box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 17%);
+  --dark-mode-bg: #1e1e1e;
+  --dark-mode-bg2: #121212;
+  --dark-mode-text: #c0c5cb;
+  --content-and-hover-bg: #414141;
+}
 
 * {
   margin: 0;
@@ -158,7 +160,7 @@ html ::-webkit-scrollbar-thumb {
 }
 
 .profile-section .upload-button {
-    position: relative;
+  position: relative;
   background-color: #007bff;
   color: white;
   padding: 16px 40px;
@@ -167,16 +169,16 @@ html ::-webkit-scrollbar-thumb {
   font-size: 14px;
   font-weight: 500;
   text-decoration: none;
- text-align: center;
+  text-align: center;
 }
 
 .profile-section #UpdatedProfileImage {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
 }
 
 .profile-section .uploder-items {
@@ -196,7 +198,7 @@ html ::-webkit-scrollbar-thumb {
 }
 
 .profile-section .uploder-items .upload-description p {
-    margin: 0px;
+  margin: 0px;
 
 }
 

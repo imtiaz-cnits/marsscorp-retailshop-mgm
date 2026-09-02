@@ -1,11 +1,13 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700;800&family=Valley+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 
 /* ====================
   Reset Default CSS Start
   ==================== */
 
 :root {
-    --primary-font: "Poppins", sans-serif;
+    --primary-font: "Valley Sans", "Baloo Da 2", sans-serif;
+    --english-font: "Valley Sans", sans-serif;
+    --bangla-font: "Baloo Da 2", sans-serif;
     --white: #ffffff;
     --text-color: #000000;
     --text-color2: #15803d;
@@ -387,20 +389,26 @@ Reset Default CSS End
     display: flex;
     align-items: center;
 }
+
 .sign-in-signup .password-container #togglePassword {
     position: absolute;
     right: 20px;
     top: 10px;
 }
+
 .sign-in-signup .password-container input {
     width: 100%;
-    padding-right: 30px; /* Optional, to keep input field look consistent */
+    padding-right: 30px;
+    /* Optional, to keep input field look consistent */
 }
+
 .sign-in-signup .toggle-password {
     position: relative;
-    top: -10px; /* Adjust based on your design needs */
+    top: -10px;
+    /* Adjust based on your design needs */
     cursor: pointer;
-    z-index: 2; /* Ensure the icon is clickable */
+    z-index: 2;
+    /* Ensure the icon is clickable */
     padding: 5px;
 }
 
@@ -481,17 +489,20 @@ input::-webkit-inner-spin-button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0; /* ফ্লেক্সের নিজস্ব কোনো গ্যাপ থাকলে তা জিরো করবে */
+    gap: 0;
+    /* ফ্লেক্সের নিজস্ব কোনো গ্যাপ থাকলে তা জিরো করবে */
 }
 
 .invoice-container .logo-wrapper img {
     width: 250px;
-    display: block; /* inline-block এর বদলে block দিলে নিচের অদৃশ্য গ্যাপটি চলে যায় */
-    margin-bottom: 0; /* ইমেজের নিচের মার্জিন জিরো করা হলো */
+    display: block;
+    /* inline-block এর বদলে block দিলে নিচের অদৃশ্য গ্যাপটি চলে যায় */
+    margin-bottom: 0;
+    /* ইমেজের নিচের মার্জিন জিরো করা হলো */
 }
 
 /* ইমেজের ঠিক নিচে যে লেখাগুলো আছে তাদের মার্জিন রিমুভ করা */
-.invoice-container .logo-wrapper > * {
+.invoice-container .logo-wrapper>* {
     margin-top: 0;
     margin-bottom: 0;
 }
@@ -506,6 +517,7 @@ input::-webkit-inner-spin-button {
     display: flex;
     justify-content: left;
 }
+
 .invoice-container .invoice-wrapper table {
     width: 220px;
     margin: auto;
@@ -657,14 +669,17 @@ input::-webkit-inner-spin-button {
     margin-top: 4px;
     line-height: 14px;
 }
+
 .invoice-container .footer-message p {
     margin-top: 10px;
     color: var(--text-color);
     font-size: 12px;
 }
+
 .invoice-container .signature1 {
     text-align: left;
 }
+
 .invoice-container .signature2 {
     text-align: right;
 }
@@ -701,6 +716,7 @@ input::-webkit-inner-spin-button {
     .invoice-container .shop-details {
         padding: 0;
     }
+
     .invoice-container .shop-details {
         padding: 0;
     }
@@ -767,6 +783,7 @@ input::-webkit-inner-spin-button {
         justify-content: space-between;
     }
 }
+
 /* .......................................................... */
 /* ......................Invoice Css End................. */
 /* .......................................................... */
@@ -1100,6 +1117,7 @@ input::-webkit-inner-spin-button {
     border-radius: 5px;
     cursor: pointer;
 }
+
 .invoice-container .footer-message {
     text-align: left;
     margin-top: 4px;
@@ -1116,6 +1134,7 @@ input::-webkit-inner-spin-button {
     margin-top: 6px;
     line-height: 14px;
 }
+
 .invoice-container .footer-message p {
     margin: 0;
     color: var(--text-color);
@@ -1130,6 +1149,7 @@ input::-webkit-inner-spin-button {
     color: var(--text-color);
     margin-top: 40px;
 }
+
 .invoice-container .sign span {
     border-top: 1px solid var(--text-color);
     padding: 0 20px;
@@ -1523,6 +1543,7 @@ input::-webkit-inner-spin-button {
         display: none !important;
     }
 }
+
 /* .......................................................... */
 /* ......................Bar Code Print Css End................. */
 /* .......................................................... */
@@ -1536,6 +1557,7 @@ input::-webkit-inner-spin-button {
     width: 100%;
     display: flex;
 }
+
 .input-datepicker-wrapper .datepicker-picker {
     background: var(--white);
     border: 1px solid var(--stroke);
@@ -1679,7 +1701,8 @@ input::-webkit-inner-spin-button {
     top: 0;
     background-color: #fff;
     z-index: 1;
-    display: none; /* Initially hide the search input */
+    display: none;
+    /* Initially hide the search input */
 }
 
 .select-dropdown-items.show {
@@ -1687,7 +1710,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Rotate the icon when the dropdown is open */
-.select-dropdown-items.show + .select-dropdown-selected .icon {
+.select-dropdown-items.show+.select-dropdown-selected .icon {
     transform: rotate(180deg);
 }
 

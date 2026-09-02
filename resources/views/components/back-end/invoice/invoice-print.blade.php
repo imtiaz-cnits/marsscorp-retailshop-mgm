@@ -10,10 +10,10 @@
     <link href="{{ asset('back-end/assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <!-- Google Fonts: Poppins & Noto Sans Bengali -->
+    <!-- Google Fonts: Valley Sans & Baloo Da 2 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700;800&family=Valley+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <!-- Axios -->
     <script src="{{ asset('back-end/assets/js/axios.min.js') }}"></script>
 
@@ -22,7 +22,7 @@
             background-color: #f1f5f9;
             margin: 0;
             padding: 20px;
-            font-family: 'Poppins', 'Noto Sans Bengali', Arial, sans-serif;
+            font-family: 'Valley Sans', 'Baloo Da 2', Arial, sans-serif;
             color: #0f172a;
         }
 
@@ -111,7 +111,7 @@
             line-height: 1.1;
             letter-spacing: 0.5px;
             margin: 0;
-            font-family: 'Poppins', 'Arial Black', sans-serif;
+            font-family: 'Valley Sans', 'Arial Black', sans-serif;
         }
 
         .company-name .text-marss-red {

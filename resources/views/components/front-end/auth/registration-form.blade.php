@@ -13,7 +13,7 @@
     position: relative;
     overflow: hidden;
     padding: 24px;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Valley Sans', 'Baloo Da 2', sans-serif;
   }
 
   /* Animated Glowing Mesh Blobs */
@@ -46,8 +46,13 @@
   }
 
   @keyframes blob-pulse {
-    0% { transform: scale(1) translate(0, 0); }
-    100% { transform: scale(1.15) translate(30px, -20px); }
+    0% {
+      transform: scale(1) translate(0, 0);
+    }
+
+    100% {
+      transform: scale(1.15) translate(30px, -20px);
+    }
   }
 
   /* Card Layout */
@@ -329,10 +334,12 @@
       width: 100%;
       padding: 32px 24px;
     }
+
     .form-section {
       width: 100%;
       padding: 32px 24px;
     }
+
     .login-card-container {
       max-width: 500px;
     }
@@ -341,7 +348,7 @@
 
 <div class="admin-login-wrapper">
   <div class="login-card-container">
-    
+
     <!-- Sign In Card Start -->
     <div class="login-card-grid" id="signInCard" style="display: flex;">
       <!-- Left Hero Sidebar -->
@@ -359,7 +366,7 @@
           <div class="feature-item">
             <div class="feature-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
               </svg>
             </div>
             <span>হাই-সিকিউরিটি এনক্রিপ্টেড সাইন-ইন</span>
@@ -367,7 +374,7 @@
           <div class="feature-item">
             <div class="feature-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                <path d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
               </svg>
             </div>
             <span>ইনভেন্টরি, সেলস ও রিয়েলটাইম রিপোর্ট</span>
@@ -579,7 +586,9 @@
 
       showLoader();
       let response = await axios.post("user-registration", formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       });
       hideLoader();
 
@@ -630,7 +639,10 @@
           if (!endpoint) continue;
           try {
             console.log("Trying login endpoint:", endpoint);
-            let response = await axios.post(endpoint, { email: email, password: password });
+            let response = await axios.post(endpoint, {
+              email: email,
+              password: password
+            });
             if (response && (response.status === 200 || response.status === 201)) {
               res = response;
               break;

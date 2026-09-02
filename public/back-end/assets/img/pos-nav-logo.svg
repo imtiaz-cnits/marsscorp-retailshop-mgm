@@ -40,15 +40,15 @@
 
   <!-- Brand Typography -->
   <!-- MARSS -->
-  <text x="108" y="47" font-family="'Poppins', 'Montserrat', 'Segoe UI', sans-serif" font-weight="900" font-size="34" fill="#ef4444" letter-spacing="1.5">MARSS</text>
+  <text x="108" y="47" font-family="'Valley Sans', 'Montserrat', 'Segoe UI', sans-serif" font-weight="900" font-size="34" fill="#ef4444" letter-spacing="1.5">MARSS</text>
   
   <!-- CORP -->
-  <text x="242" y="47" font-family="'Poppins', 'Montserrat', 'Segoe UI', sans-serif" font-weight="800" font-size="34" fill="url(#corpTextGrad)" letter-spacing="1">CORP</text>
+  <text x="242" y="47" font-family="'Valley Sans', 'Montserrat', 'Segoe UI', sans-serif" font-weight="800" font-size="34" fill="url(#corpTextGrad)" letter-spacing="1">CORP</text>
 
   <!-- Subtitle Tagline -->
-  <text x="110" y="76" font-family="'Hind Siliguri', 'Noto Sans Bengali', sans-serif" font-weight="700" font-size="18" fill="#047857" letter-spacing="0.5">মার্স কর্পোরেশন</text>
+  <text x="110" y="76" font-family="'Baloo Da 2', sans-serif" font-weight="700" font-size="18" fill="#047857" letter-spacing="0.5">মার্স কর্পোরেশন</text>
   
   <!-- POS Badge -->
   <rect x="254" y="60" width="46" height="20" rx="6" fill="#10b981" />
-  <text x="277" y="74" font-family="'Poppins', sans-serif" font-weight="800" font-size="11" fill="#ffffff" text-anchor="middle">POS</text>
+  <text x="277" y="74" font-family="'Valley Sans', sans-serif" font-weight="800" font-size="11" fill="#ffffff" text-anchor="middle">POS</text>
 </svg>

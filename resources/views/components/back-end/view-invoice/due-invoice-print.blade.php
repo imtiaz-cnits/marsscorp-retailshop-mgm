@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <title>Bill Invoice {{ $invoice->order_no }} - MARSS CORPORATION</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <!-- Bootstrap Css -->
     <link href="{{ asset('back-end/assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <!-- Google Fonts: Poppins & Noto Sans Bengali -->
+    <!-- Google Fonts: Valley Sans & Baloo Da 2 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700;800&family=Valley+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+
     <style>
         body {
             background-color: #f1f5f9;
             margin: 0;
             padding: 20px;
-            font-family: 'Poppins', 'Noto Sans Bengali', Arial, sans-serif;
+            font-family: 'Valley Sans', 'Baloo Da 2', Arial, sans-serif;
             color: #0f172a;
         }
 
@@ -64,6 +65,7 @@
         .logo-emblem {
             text-align: center;
         }
+
         .logo-emblem .marss-txt {
             color: #dc2626;
             font-size: 11px;
@@ -71,6 +73,7 @@
             line-height: 1;
             margin-bottom: 2px;
         }
+
         .logo-emblem .mc-box {
             width: 44px;
             height: 44px;
@@ -83,8 +86,14 @@
             font-size: 22px;
             background: #fff;
         }
-        .mc-box .m-red { color: #dc2626; }
-        .mc-box .c-green { color: #15803d; }
+
+        .mc-box .m-red {
+            color: #dc2626;
+        }
+
+        .mc-box .c-green {
+            color: #15803d;
+        }
 
         .company-name {
             color: #15803d;
@@ -93,11 +102,13 @@
             line-height: 1.1;
             letter-spacing: 0.5px;
             margin: 0;
-            font-family: 'Poppins', 'Arial Black', sans-serif;
+            font-family: 'Valley Sans', 'Arial Black', sans-serif;
         }
+
         .company-name .text-marss-red {
             color: #dc2626;
         }
+
         .company-tagline {
             color: #166534;
             font-size: 11.5px;
@@ -133,17 +144,20 @@
             font-size: 12px;
             line-height: 1.8;
         }
+
         .meta-line {
             display: flex;
             align-items: flex-end;
             margin-bottom: 4px;
         }
+
         .meta-label {
             font-weight: 600;
             color: #0f172a;
             white-space: nowrap;
             margin-right: 5px;
         }
+
         .meta-dots {
             flex: 1;
             border-bottom: 1px dotted #64748b;
@@ -159,10 +173,13 @@
             margin-bottom: 15px;
             font-size: 12px;
         }
-        .items-table th, .items-table td {
+
+        .items-table th,
+        .items-table td {
             border: 1px solid #000 !important;
             padding: 6px 8px;
         }
+
         .items-table th {
             background-color: #f8fafc;
             font-weight: 700;
@@ -182,14 +199,17 @@
             align-items: flex-end;
             margin-bottom: 25px;
         }
+
         .taka-words-box {
             width: 60%;
             font-size: 12px;
         }
+
         .taka-words-line {
             display: flex;
             align-items: flex-end;
         }
+
         .taka-words-val {
             flex: 1;
             border-bottom: 1px dotted #64748b;
@@ -201,21 +221,25 @@
         .totals-table-box {
             width: 38%;
         }
+
         .totals-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 12px;
         }
+
         .totals-table td {
             border: 1px solid #000 !important;
             padding: 5px 8px;
         }
+
         .totals-table td.lbl {
             font-weight: 700;
             text-align: left;
             background-color: #f8fafc;
             width: 50%;
         }
+
         .totals-table td.val {
             font-weight: 700;
             text-align: right;
@@ -231,6 +255,7 @@
             font-size: 12px;
             font-weight: 600;
         }
+
         .sig-box {
             width: 40%;
             text-align: center;
@@ -247,10 +272,12 @@
             margin-bottom: -20px;
             width: calc(100% + 50px);
         }
+
         .bottom-color-bar .red-bar {
             width: 50%;
             background-color: #dc2626;
         }
+
         .bottom-color-bar .green-bar {
             width: 50%;
             background-color: #15803d;
@@ -261,19 +288,24 @@
                 size: portrait;
                 margin: 0mm;
             }
+
             * {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
                 box-sizing: border-box !important;
             }
-            html, body {
+
+            html,
+            body {
                 background: #ffffff !important;
                 margin: 0 !important;
                 padding: 0 !important;
             }
+
             .no-print-wrapper {
                 display: none !important;
             }
+
             .invoice-container {
                 width: 100% !important;
                 min-height: 100vh !important;
@@ -284,6 +316,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Control Buttons -->
@@ -299,17 +332,17 @@
     </div>
 
     @php
-        $subTotalVal = $invoice->sub_total ?? 0;
-        $discountVal = $invoice->discount_amount ?? 0;
-        $paidVal = $invoice->paid_amount ?? 0;
-        $dueVal = $invoice->due_amount ?? 0;
-        $billTotalVal = $subTotalVal - $discountVal;
+    $subTotalVal = $invoice->sub_total ?? 0;
+    $discountVal = $invoice->discount_amount ?? 0;
+    $paidVal = $invoice->paid_amount ?? 0;
+    $dueVal = $invoice->due_amount ?? 0;
+    $billTotalVal = $subTotalVal - $discountVal;
     @endphp
 
     <!-- Printable Invoice Container -->
     <div class="invoice-container" id="printArea">
         <div class="bill-main-body">
-            
+
             <!-- Header Section -->
             <div class="header-top">
                 <div class="brand-logo-box d-flex align-items-center">
@@ -383,7 +416,7 @@
                 </thead>
                 <tbody>
                     @php
-                        $orderDetailsList = $invoice->details ?? $invoice->orderDetails ?? [];
+                    $orderDetailsList = $invoice->details ?? $invoice->orderDetails ?? [];
                     @endphp
                     @foreach($orderDetailsList as $index => $detail)
                     <tr>
@@ -457,27 +490,32 @@
         </div>
     </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let totalVal = Math.round({{ $subTotalVal }});
-        document.getElementById('taka_words_due').innerText = numberToWords(totalVal);
-    });
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let totalVal = Math.round({
+                {
+                    $subTotalVal
+                }
+            });
+            document.getElementById('taka_words_due').innerText = numberToWords(totalVal);
+        });
 
-    function numberToWords(num) {
-        const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
-        const b = ['', '', 'Twenty ', 'Thirty ', 'Forty ', 'Fifty ', 'Sixty ', 'Seventy ', 'Eighty ', 'Ninety '];
+        function numberToWords(num) {
+            const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
+            const b = ['', '', 'Twenty ', 'Thirty ', 'Forty ', 'Fifty ', 'Sixty ', 'Seventy ', 'Eighty ', 'Ninety '];
 
-        if ((num = num.toString()).length > 9) return 'overflow';
-        let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
-        if (!n) return ''; 
-        let str = '';
-        str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : '';
-        str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : '';
-        str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : '';
-        str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : '';
-        str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
-        return str.trim() ? str.trim() + ' Taka Only' : 'Zero Taka';
-    }
-</script>
+            if ((num = num.toString()).length > 9) return 'overflow';
+            let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+            if (!n) return '';
+            let str = '';
+            str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : '';
+            str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : '';
+            str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : '';
+            str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : '';
+            str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
+            return str.trim() ? str.trim() + ' Taka Only' : 'Zero Taka';
+        }
+    </script>
 </body>
+
 </html>

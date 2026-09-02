@@ -1,11 +1,13 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700;800&family=Valley+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 
 /* ====================
   Reset Default CSS Start
   ==================== */
 
 :root {
-  --primary-font: "Noto Sans Bengali", "Poppins", sans-serif;
+  --primary-font: "Valley Sans", "Baloo Da 2", sans-serif;
+  --english-font: "Valley Sans", sans-serif;
+  --bangla-font: "Baloo Da 2", sans-serif;
   --white: #ffffff;
   --text-color: #000000;
   --text-color2: #15803d;
@@ -170,7 +172,7 @@ button:focus:not(:focus-visible) {
   outline: none !important;
 }
 
-.btn-check:focus + .btn,
+.btn-check:focus+.btn,
 .btn:focus {
   box-shadow: none;
   padding: 0;
@@ -272,12 +274,7 @@ body[light-mode="dark"] .profile-wrapper .dropdown-menu .border-bottom h6 {
   color: var(--white);
 }
 
-body[light-mode="dark"]
-  .nav-wrapper
-  .fullscreen
-  .js-toggle-fullscreen-btn
-  svg
-  path {
+body[light-mode="dark"] .nav-wrapper .fullscreen .js-toggle-fullscreen-btn svg path {
   fill: var(--white);
 }
 
@@ -293,20 +290,11 @@ body[light-mode="dark"] #product-slider .swiper-wrapper .swiper-slide {
   background: var(--dark-mode-bg2);
 }
 
-body[light-mode="dark"]
-  #product-slider
-  .swiper-wrapper
-  .swiper-slide
-  .slider-item {
+body[light-mode="dark"] #product-slider .swiper-wrapper .swiper-slide .slider-item {
   background: var(--dark-mode-bg);
 }
 
-body[light-mode="dark"]
-  #product-slider
-  .swiper-wrapper
-  .swiper-slide
-  .title
-  h1 {
+body[light-mode="dark"] #product-slider .swiper-wrapper .swiper-slide .title h1 {
   color: var(--white);
 }
 
@@ -341,20 +329,12 @@ body[light-mode="dark"] .Order-list-wrapper .invoice-id {
   color: var(--gray);
 }
 
-body[light-mode="dark"] .draftmodal-wrapper .table-fixed thead > tr th,
-body[light-mode="dark"] .draftmodal-wrapper .table-fixed tbody > tr td,
-body[light-mode="dark"] .recent-draft-modal-wrapper .table-fixed thead > tr th,
-body[light-mode="dark"] .recent-draft-modal-wrapper .table-fixed tbody > tr td,
-body[light-mode="dark"]
-  .recent-draft-modal-wrapper
-  .order-details-table
-  .wrapper
-  strong,
-body[light-mode="dark"]
-  .draftmodal-wrapper
-  .order-details-table
-  .wrapper
-  strong,
+body[light-mode="dark"] .draftmodal-wrapper .table-fixed thead>tr th,
+body[light-mode="dark"] .draftmodal-wrapper .table-fixed tbody>tr td,
+body[light-mode="dark"] .recent-draft-modal-wrapper .table-fixed thead>tr th,
+body[light-mode="dark"] .recent-draft-modal-wrapper .table-fixed tbody>tr td,
+body[light-mode="dark"] .recent-draft-modal-wrapper .order-details-table .wrapper strong,
+body[light-mode="dark"] .draftmodal-wrapper .order-details-table .wrapper strong,
 body[light-mode="dark"] .recent-draft-modal-wrapper .order-summary p,
 body[light-mode="dark"] .recent-draft-modal-wrapper .order-summary p strong,
 body[light-mode="dark"] .recent-draft-modal-wrapper .heading,
@@ -418,6 +398,7 @@ body[light-mode="dark"] .recent-draft-modal-wrapper .order-item.active {
 body[light-mode="dark"] .draftmodal-wrapper .order-details-table {
   background: var(--dark-mode-bg);
 }
+
 body[light-mode="dark"] .recent-draft-modal-wrapper .order-no {
   background: var(--dark-mode-bg2);
 }
@@ -538,11 +519,7 @@ body[light-mode="dark"] #orderForm .input-wrapper input {
   color: var(--white);
 }
 
-body[light-mode="dark"]
-  #orderForm
-  .order-wrapper
-  .input-group
-  .input-group-text {
+body[light-mode="dark"] #orderForm .order-wrapper .input-group .input-group-text {
   color: var(--white);
 }
 
@@ -743,9 +720,11 @@ body[light-mode="dark"] .add-product-modal form select {
   .catagories-search-wrapper .searchbar label {
     width: 100%;
   }
+
   .catagories-search-wrapper .searchbar input {
     width: 100%;
   }
+
   .catagories-search-wrapper .searchbar {
     width: 100%;
   }
@@ -1119,11 +1098,13 @@ body[light-mode="dark"] .add-product-modal form select {
 }
 
 @media screen and (max-width: 576px) {
+
   .select-box-wrapper .add-warehouse-btn,
   .select-box-wrapper .add-customer-btn {
     width: 48%;
     font-size: 12px;
   }
+
   .select-box-wrapper label {
     width: 52%;
   }
@@ -1390,6 +1371,7 @@ tbody tr {
   align-items: center;
   margin-bottom: 10px;
 }
+
 #orderForm input {
   border: 1px solid var(--stroke);
   background: var(--white);
@@ -1601,6 +1583,7 @@ input::-webkit-inner-spin-button {
   display: flex;
   justify-content: center;
 }
+
 .payments .heading h2 {
   position: relative;
   font-size: 14px;
@@ -1666,33 +1649,33 @@ input::-webkit-inner-spin-button {
   display: block;
 }
 
-#paypal:checked ~ .category .paypalMethod,
-#paytm:checked ~ .category .paytmMethod,
-#stripe:checked ~ .category .stripeMethod,
-#bkash:checked ~ .category .bkashMethod,
-#nagad:checked ~ .category .nagadMethod,
-#rocket:checked ~ .category .rocketMethod,
-#cash:checked ~ .category .cashMethod,
-#pay:checked ~ .category .payMethod,
-#bank:checked ~ .category .bankMethod,
-#visa:checked ~ .category .visaMethod,
-#mastercard:checked ~ .category .mastercardMethod,
-#express:checked ~ .category .expressMethod {
+#paypal:checked~.category .paypalMethod,
+#paytm:checked~.category .paytmMethod,
+#stripe:checked~.category .stripeMethod,
+#bkash:checked~.category .bkashMethod,
+#nagad:checked~.category .nagadMethod,
+#rocket:checked~.category .rocketMethod,
+#cash:checked~.category .cashMethod,
+#pay:checked~.category .payMethod,
+#bank:checked~.category .bankMethod,
+#visa:checked~.category .visaMethod,
+#mastercard:checked~.category .mastercardMethod,
+#express:checked~.category .expressMethod {
   border: 1px solid var(--stroke);
 }
 
-#paypal:checked ~ .category .paypalMethod .check,
-#paytm:checked ~ .category .paytmMethod .check,
-#stripe:checked ~ .category .stripeMethod .check,
-#bkash:checked ~ .category .bkashMethod .check,
-#nagad:checked ~ .category .nagadMethod .check,
-#rocket:checked ~ .category .rocketMethod .check,
-#cash:checked ~ .category .cashMethod .check,
-#pay:checked ~ .category .payMethod .check,
-#bank:checked ~ .category .bankMethod .check,
-#visa:checked ~ .category .visaMethod .check,
-#mastercard:checked ~ .category .mastercardMethod .check,
-#express:checked ~ .category .expressMethod .check {
+#paypal:checked~.category .paypalMethod .check,
+#paytm:checked~.category .paytmMethod .check,
+#stripe:checked~.category .stripeMethod .check,
+#bkash:checked~.category .bkashMethod .check,
+#nagad:checked~.category .nagadMethod .check,
+#rocket:checked~.category .rocketMethod .check,
+#cash:checked~.category .cashMethod .check,
+#pay:checked~.category .payMethod .check,
+#bank:checked~.category .bankMethod .check,
+#visa:checked~.category .visaMethod .check,
+#mastercard:checked~.category .mastercardMethod .check,
+#express:checked~.category .expressMethod .check {
   display: block;
 }
 
@@ -1726,6 +1709,7 @@ input::-webkit-inner-spin-button {
   background: var(--white);
   border-radius: 50%;
 }
+
 .form-checks {
   display: flex;
   margin: 30px 0;
@@ -1790,6 +1774,7 @@ input::-webkit-inner-spin-button {
     border-radius: 8px;
   }
 }
+
 /* Payment End */
 
 @media screen and (max-width: 576px) {
@@ -2118,7 +2103,7 @@ input::-webkit-inner-spin-button {
   border-radius: 14px;
   border: 1px solid #e2e8f0;
   margin-top: 10px !important;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
 }
 
 .select-box-wrapper input {
@@ -2380,7 +2365,7 @@ input::-webkit-inner-spin-button {
   border-radius: 12px;
   padding: 8px 10px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
 }
 
 #payment .totals .subtotal,
@@ -2469,7 +2454,8 @@ body[light-mode="dark"] .table-wrapper .table tbody tr:hover {
 
 @media screen and (max-width: 991px) {
   #pos-main {
-    padding: 8px 8px 75px 8px !important; /* Space for floating bottom app dock */
+    padding: 8px 8px 75px 8px !important;
+    /* Space for floating bottom app dock */
   }
 
   /* Segmented App Tab Switcher Styling */
@@ -2486,7 +2472,7 @@ body[light-mode="dark"] .table-wrapper .table tbody tr:hover {
   }
 
   /* Product Grid on Mobile: Touch-friendly 2 Columns */
-  #product-card .row > [class*="col-"] {
+  #product-card .row>[class*="col-"] {
     padding-left: 4px !important;
     padding-right: 4px !important;
   }
@@ -2562,80 +2548,80 @@ body[light-mode="dark"] .table-wrapper .table tbody tr:hover {
 
 /* 1. Base Container & Top Navbar */
 body[light-mode="dark"] #pos-main {
-    background-color: #0f172a !important;
-    color: #f8fafc !important;
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
 }
 
 body[light-mode="dark"] #navbar .nav-wrapper {
-    background-color: #1e293b !important;
-    border-bottom-color: #15803d !important;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.4) !important;
+  background-color: #1e293b !important;
+  border-bottom-color: #15803d !important;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.4) !important;
 }
 
 body[light-mode="dark"] .nav_back_btn a {
-    background-color: #14532d !important;
-    border-color: #16a34a !important;
-    color: #86efac !important;
+  background-color: #14532d !important;
+  border-color: #16a34a !important;
+  color: #86efac !important;
 }
 
 body[light-mode="dark"] .nav_back_btn .nav_back_text,
 body[light-mode="dark"] .nav_back_btn i {
-    color: #86efac !important;
+  color: #86efac !important;
 }
 
 /* 2. White Card Wrappers inside POS (Search Container, Customer Box, Header Box) */
 body[light-mode="dark"] #pos-main .bg-white {
-    background-color: #1e293b !important;
-    border-color: #334155 !important;
-    color: #f8fafc !important;
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
 }
 
 body[light-mode="dark"] #pos-main .bg-light {
-    background-color: #0f172a !important;
-    color: #cbd5e1 !important;
+  background-color: #0f172a !important;
+  color: #cbd5e1 !important;
 }
 
 /* 3. Search Bars & Inputs */
 body[light-mode="dark"] .posSearchInput,
 body[light-mode="dark"] #productCodeSearch,
 body[light-mode="dark"] #productCodeSearchCart {
-    background-color: #0f172a !important;
-    color: #f8fafc !important;
-    border-color: #334155 !important;
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
 }
 
 body[light-mode="dark"] .posSearchInput::placeholder {
-    color: #94a3b8 !important;
+  color: #94a3b8 !important;
 }
 
 /* 4. Live Search Suggestions Dropdown */
 body[light-mode="dark"] .pos-search-suggestions {
-    background-color: #1e293b !important;
-    border-color: #334155 !important;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
 }
 
 body[light-mode="dark"] .pos-search-suggestions .list-group-item {
-    background-color: #1e293b !important;
-    color: #f8fafc !important;
-    border-color: #334155 !important;
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
 }
 
 body[light-mode="dark"] .pos-search-suggestions .list-group-item:hover,
 body[light-mode="dark"] .pos-search-suggestions .hover-bg-light:hover {
-    background-color: #334155 !important;
+  background-color: #334155 !important;
 }
 
 body[light-mode="dark"] .pos-search-suggestions .text-dark {
-    color: #f8fafc !important;
+  color: #f8fafc !important;
 }
 
 body[light-mode="dark"] .pos-search-suggestions .text-muted {
-    color: #94a3b8 !important;
+  color: #94a3b8 !important;
 }
 
 body[light-mode="dark"] .pos-search-suggestions img {
-    border-color: #334155 !important;
+  border-color: #334155 !important;
 }
 
 /* 5. Brand Slider Cards & Headings */
@@ -2643,8 +2629,8 @@ body[light-mode="dark"] #product-slider .slider-item,
 body[light-mode="dark"] #product-slider .brand-card,
 body[light-mode="dark"] .brand-card-item,
 body[light-mode="dark"] #product-slider .swiper-slide {
-    background-color: #1e293b !important;
-    border-color: #334155 !important;
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
 }
 
 body[light-mode="dark"] .catagories-search-wrapper .headding h1,
@@ -2657,11 +2643,11 @@ body[light-mode="dark"] #pos-main h5,
 body[light-mode="dark"] #pos-main h6,
 body[light-mode="dark"] #pos-main span,
 body[light-mode="dark"] #pos-main label {
-    color: #f8fafc !important;
+  color: #f8fafc !important;
 }
 
 body[light-mode="dark"] #pos-main .text-muted {
-    color: #94a3b8 !important;
+  color: #94a3b8 !important;
 }
 
 /* 6. Customer Header Fields & Custom Dropdowns */
@@ -2672,179 +2658,179 @@ body[light-mode="dark"] #CustomerName,
 body[light-mode="dark"] #CustomerMobileNumber,
 body[light-mode="dark"] #CustomerAddress,
 body[light-mode="dark"] #salesDate {
-    background-color: #0f172a !important;
-    background: #0f172a !important;
-    color: #f8fafc !important;
-    border-color: #334155 !important;
-    color-scheme: dark;
+  background-color: #0f172a !important;
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+  color-scheme: dark;
 }
 
 body[light-mode="dark"] .select-dropdown-selected span,
 body[light-mode="dark"] .select-dropdown-items .select-item {
-    color: #f8fafc !important;
+  color: #f8fafc !important;
 }
 
 body[light-mode="dark"] .select-dropdown-items {
-    background-color: #1e293b !important;
-    border-color: #334155 !important;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
 }
 
 body[light-mode="dark"] .select-dropdown-items .select-item:hover {
-    background-color: #334155 !important;
+  background-color: #334155 !important;
 }
 
 body[light-mode="dark"] .select-search-box {
-    background-color: #0f172a !important;
-    color: #f8fafc !important;
-    border-color: #334155 !important;
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
 }
 
 body[light-mode="dark"] #totalPreviousDueAmount {
-    background-color: #450a0a !important;
-    color: #fca5a5 !important;
-    border-color: #991b1b !important;
+  background-color: #450a0a !important;
+  color: #fca5a5 !important;
+  border-color: #991b1b !important;
 }
 
 body[light-mode="dark"] .input-group-text {
-    background-color: #1e293b !important;
-    color: #cbd5e1 !important;
-    border-color: #334155 !important;
+  background-color: #1e293b !important;
+  color: #cbd5e1 !important;
+  border-color: #334155 !important;
 }
 
 /* 7. Select2 Customer Dropdown */
 body[light-mode="dark"] .select2-container--default .select2-selection--single {
-    background-color: #0f172a !important;
-    border-color: #334155 !important;
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
 }
 
 body[light-mode="dark"] .select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: #f8fafc !important;
+  color: #f8fafc !important;
 }
 
 body[light-mode="dark"] .select2-dropdown {
-    background-color: #1e293b !important;
-    border-color: #334155 !important;
-    color: #f8fafc !important;
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
 }
 
 body[light-mode="dark"] .select2-results__option {
-    color: #f8fafc !important;
+  color: #f8fafc !important;
 }
 
 body[light-mode="dark"] .select2-results__option--highlighted[aria-selected] {
-    background-color: #15803d !important;
-    color: #ffffff !important;
+  background-color: #15803d !important;
+  color: #ffffff !important;
 }
 
 body[light-mode="dark"] .select2-search__field {
-    background-color: #0f172a !important;
-    color: #f8fafc !important;
-    border-color: #334155 !important;
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
 }
 
 /* 8. Order List / Cart Table & Row Controls */
 body[light-mode="dark"] .table-wrapper {
-    background-color: #1e293b !important;
-    border-color: #334155 !important;
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
 }
 
 body[light-mode="dark"] .table-wrapper table {
-    color: #f8fafc !important;
-    border-bottom-color: #334155 !important;
+  color: #f8fafc !important;
+  border-bottom-color: #334155 !important;
 }
 
 body[light-mode="dark"] .table-wrapper table thead {
-    border-bottom-color: #334155 !important;
+  border-bottom-color: #334155 !important;
 }
 
 body[light-mode="dark"] .table-wrapper table th {
-    background-color: #0f172a !important;
-    color: #cbd5e1 !important;
-    border-color: #334155 !important;
+  background-color: #0f172a !important;
+  color: #cbd5e1 !important;
+  border-color: #334155 !important;
 }
 
 body[light-mode="dark"] .table-wrapper table tbody tr {
-    background-color: #1e293b !important;
-    border-color: #334155 !important;
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
 }
 
 body[light-mode="dark"] .table-wrapper table tbody tr:hover {
-    background-color: #334155 !important;
+  background-color: #334155 !important;
 }
 
 body[light-mode="dark"] .table-wrapper table td {
-    background-color: transparent !important;
-    color: #f8fafc !important;
-    border-color: #334155 !important;
+  background-color: transparent !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
 }
 
 body[light-mode="dark"] .table-wrapper tbody tr td .product h2,
 body[light-mode="dark"] .table-wrapper tbody tr td h6,
 body[light-mode="dark"] .table-wrapper tbody tr td h1 {
-    color: #f8fafc !important;
+  color: #f8fafc !important;
 }
 
 /* Cart Quantity Controls & Price Inputs */
 body[light-mode="dark"] .table-wrapper .quantity-controls,
 body[light-mode="dark"] .quantity-controls {
-    background-color: #0f172a !important;
-    border-color: #334155 !important;
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
 }
 
 body[light-mode="dark"] .quantity-controls button {
-    color: #f8fafc !important;
-    background-color: transparent !important;
+  color: #f8fafc !important;
+  background-color: transparent !important;
 }
 
 body[light-mode="dark"] .quantity-controls button:hover {
-    background-color: #334155 !important;
+  background-color: #334155 !important;
 }
 
 body[light-mode="dark"] .quantity-controls input.quantity,
 body[light-mode="dark"] .quantity-controls input {
-    background-color: transparent !important;
-    color: #f8fafc !important;
+  background-color: transparent !important;
+  color: #f8fafc !important;
 }
 
 body[light-mode="dark"] .table-wrapper tbody tr td .price,
 body[light-mode="dark"] .table-wrapper input.price {
-    background-color: #0f172a !important;
-    color: #4ade80 !important;
-    border-color: #16a34a !important;
+  background-color: #0f172a !important;
+  color: #4ade80 !important;
+  border-color: #16a34a !important;
 }
 
 body[light-mode="dark"] .table-wrapper input.cost-price-input {
-    background-color: #0f172a !important;
-    color: #f87171 !important;
-    border-color: #991b1b !important;
+  background-color: #0f172a !important;
+  color: #f87171 !important;
+  border-color: #991b1b !important;
 }
 
 body[light-mode="dark"] .cost-price-placeholder {
-    background-color: #0f172a !important;
-    color: #94a3b8 !important;
-    border-color: #334155 !important;
+  background-color: #0f172a !important;
+  color: #94a3b8 !important;
+  border-color: #334155 !important;
 }
 
 /* Delete Button in Dark Mode */
 body[light-mode="dark"] .table-wrapper .action-btn rect {
-    fill: #450a0a !important;
+  fill: #450a0a !important;
 }
 
 body[light-mode="dark"] .table-wrapper .action-btn path {
-    stroke: #fca5a5 !important;
+  stroke: #fca5a5 !important;
 }
 
 /* 9. Payment Methods & Summary Panel */
 body[light-mode="dark"] .payment-method-wrapper,
 body[light-mode="dark"] .payment-summary-wrapper {
-    background-color: #1e293b !important;
-    border-color: #334155 !important;
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
 }
 
 body[light-mode="dark"] #pos-main input[type="number"],
 body[light-mode="dark"] #pos-main input[type="text"] {
-    background-color: #0f172a !important;
-    color: #f8fafc !important;
-    border-color: #334155 !important;
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
 }

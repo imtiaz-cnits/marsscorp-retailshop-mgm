@@ -9,10 +9,10 @@
   <!-- App favicon -->
   <link rel="shortcut icon" href="{{ asset('back-end/assets/icons/favicon.svg') }}" type="image/x-icon" />
 
-  <!-- Google Fonts: Noto Sans Bengali & Poppins -->
+  <!-- Google Fonts: Valley Sans & Baloo Da 2 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700;800&family=Valley+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 
   <!-- Bootstrap Css -->
   <link href="{{ asset('back-end/assets/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet"
@@ -853,8 +853,8 @@
         </span>
         <span class="logo-lg d-flex align-items-center gap-2">
           <img src="{{ asset('back-end/assets/img/marss-corporation-icon.svg') }}" alt="MARSS CORPORATION Icon" style="width: 36px; height: 36px; border-radius: 8px; object-fit: contain;" />
-          <span class="fw-bold text-white fs-5" style="font-family: 'Poppins', sans-serif; font-size: 16px !important; letter-spacing: 0.3px;">
-            মার্স কর্পোরেশন <span class="badge bg-success text-white px-2 py-1 ms-1" style="font-size: 10px; border-radius: 6px; font-weight: 600;">POS</span>
+          <span class="fw-bold text-white fs-5" style="font-family: 'Baloo Da 2', sans-serif; font-size: 16px !important; letter-spacing: 0.3px;">
+            মার্স কর্পোরেশন <span class="badge bg-success text-white px-2 py-1 ms-1" style="font-size: 10px; border-radius: 6px; font-weight: 600; font-family: 'Valley Sans', sans-serif;">POS</span>
           </span>
         </span>
       </a>

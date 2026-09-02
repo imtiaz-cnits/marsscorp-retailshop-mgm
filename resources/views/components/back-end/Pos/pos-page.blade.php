@@ -490,10 +490,10 @@
         }
     </style>
 
-    <!-- Google Fonts: Noto Sans Bengali & Poppins -->
+    <!-- Google Fonts: Valley Sans & Baloo Da 2 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700;800&family=Valley+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 
     <!-- HTML5 QR & Barcode Scanner Library -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -514,9 +514,9 @@
 
                 <div class="store-brand-header d-flex align-items-center gap-1 gap-md-2 px-2 px-md-3 py-1 bg-white border border-success-subtle rounded-pill shadow-sm overflow-hidden">
                     <img src="{{ asset('back-end/assets/img/marss-corporation-logo.svg') }}" alt="AS Logo" style="height: 24px; width: auto; object-fit: contain; flex-shrink: 0;" />
-                    <h5 class="fw-extrabold text-success m-0 p-0 d-flex align-items-center gap-1 text-truncate" style="font-size: 13px; font-family: 'Noto Sans Bengali', sans-serif; font-weight: 800;">
+                    <h5 class="fw-extrabold text-success m-0 p-0 d-flex align-items-center gap-1 text-truncate" style="font-size: 13px; font-family: 'Baloo Da 2', sans-serif; font-weight: 800;">
                         <span class="text-truncate">মার্স কর্পোরেশন (MARSS CORPORATION)</span>
-                        <span class="badge bg-success text-white fw-bold px-1.5 py-0.5 d-none d-md-inline" style="font-size: 9px; border-radius: 8px; font-family: 'Poppins', sans-serif;">POS</span>
+                        <span class="badge bg-success text-white fw-bold px-1.5 py-0.5 d-none d-md-inline" style="font-size: 9px; border-radius: 8px; font-family: 'Valley Sans', sans-serif;">POS</span>
                     </h5>
                 </div>
 
