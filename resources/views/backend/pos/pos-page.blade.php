@@ -1717,20 +1717,21 @@
             background: #ffffff !important;
             border-radius: 12px !important;
             border: 1.5px solid #e2e8f0 !important;
-            padding: 7px 9px !important;
-            min-height: 84px !important;
-            max-height: none !important;
-            margin: 3px 0 !important;
+            padding: 6px 8px !important;
+            height: 98px !important;
+            min-height: 98px !important;
+            max-height: 98px !important;
+            margin: 0 !important;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             display: flex !important;
             flex-direction: column !important;
-            justify-content: flex-start !important;
+            justify-content: space-between !important;
             text-decoration: none !important;
             position: relative !important;
             width: 100% !important;
             cursor: pointer !important;
-            overflow: visible !important;
+            overflow: hidden !important;
         }
 
         #product-card .card-wrapper:hover {
@@ -1747,11 +1748,11 @@
             min-height: auto !important;
             display: flex !important;
             align-items: flex-start !important;
-            margin: 2px 0 5px 0 !important;
+            margin: 1px 0 2px 0 !important;
         }
 
         #product-card .card-wrapper .name.product-main-title {
-            font-size: 12.5px !important;
+            font-size: 12px !important;
             font-weight: 700 !important;
             color: #0f172a !important;
             line-height: 1.25 !important;
@@ -1770,7 +1771,7 @@
         }
 
         #product-card .card-wrapper .product-id {
-            font-size: 11px !important;
+            font-size: 10.5px !important;
             font-family: var(--bs-font-monospace, monospace) !important;
             color: #0d9488 !important;
             font-weight: 700 !important;
@@ -1778,13 +1779,13 @@
         }
 
         #product-card .card-wrapper .product-brand-tag {
-            font-size: 9.5px !important;
+            font-size: 9px !important;
             font-weight: 600 !important;
             color: #475569 !important;
             background: #f1f5f9 !important;
             border: 1px solid #e2e8f0 !important;
             border-radius: 4px !important;
-            padding: 1px 6px !important;
+            padding: 1px 5px !important;
             display: inline-flex !important;
             align-items: center !important;
             gap: 3px !important;
@@ -1792,22 +1793,22 @@
             overflow: visible !important;
             text-overflow: clip !important;
             white-space: nowrap !important;
-            line-height: 1.25 !important;
+            line-height: 1.2 !important;
         }
 
         #product-card .card-wrapper .product-brand-tag i {
             color: #16a34a !important;
-            font-size: 8px !important;
+            font-size: 7.5px !important;
         }
 
         #product-card .card-wrapper .drescription {
             margin-top: auto !important;
-            padding-top: 3px !important;
+            padding-top: 2px !important;
             display: flex !important;
             align-items: center !important;
             flex-wrap: wrap !important;
-            gap: 4px !important;
-            row-gap: 3px !important;
+            gap: 3px !important;
+            row-gap: 2px !important;
         }
 
         .cart-item-brand-tag {
