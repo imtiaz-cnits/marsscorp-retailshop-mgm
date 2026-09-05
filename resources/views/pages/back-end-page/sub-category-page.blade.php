@@ -1,8 +1,8 @@
-@extends('layout.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title','Sub Category Page')
 @section('content')
-    @include('components.back-end.Sub-Category.sub-category-list')
-    @include('components.back-end.Sub-Category.sub-category-create')
-    @include('components.back-end.Sub-Category.sub-category-update')
-    @include('components.back-end.Sub-Category.sub-category-delete')
+    @include('backend.sub-category.sub-category-list')
+    @include('backend.sub-category.sub-category-create')
+    @include('backend.sub-category.sub-category-update')
+    @include('backend.sub-category.sub-category-delete')
 @endsection

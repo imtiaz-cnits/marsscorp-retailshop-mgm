@@ -34,10 +34,10 @@ class BrandController extends Controller
                 $t = time();
                 $file_name = $img->getClientOriginalName();
                 $img_name = "{$user_id}-{$t}-{$file_name}";
-                $img_url = "uploads/brand_img/{$img_name}";
+                $img_url = "uploads/brand-img/{$img_name}";
 
                 // Upload File
-                $img->move(public_path('uploads/brand_img'), $img_name);
+                $img->move(public_path('uploads/brand-img'), $img_name);
             }
 
             // Create new brand
@@ -94,10 +94,10 @@ public function BrandUpdate(Request $request)
             $t = time();
             $file_name = $img->getClientOriginalName();
             $img_name = "{$user_id}-{$t}-{$file_name}";
-            $img_url = "uploads/brand_img/{$img_name}";
+            $img_url = "uploads/brand-img/{$img_name}";
 
             // Upload File
-            $img->move(public_path('uploads/brand_img'), $img_name);
+            $img->move(public_path('uploads/brand-img'), $img_name);
 
             // Delete old image if it exists
             if ($BrandData_Update->logo && file_exists(public_path($BrandData_Update->logo))) {

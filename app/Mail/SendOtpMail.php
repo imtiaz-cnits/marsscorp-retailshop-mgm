@@ -40,7 +40,7 @@ class SendOtpMail extends Mailable
     public function build()
     {
         return $this->subject('New Order Notification')
-                    ->view('email.user-verification.OTPMail')
+                    ->view('emails.user-verification.OTPMail')
                     ->with('data', $this->otp);
     }
     /**

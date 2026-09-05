@@ -1,5 +1,5 @@
-@extends('layout.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title', 'Supplier Profile - মার্স কর্পোরেশন (MARSS CORPORATION)')
 @section('content')
-    @include('components.back-end.supplier.supplier-profile')
+    @include('backend.supplier.supplier-profile')
 @endsection

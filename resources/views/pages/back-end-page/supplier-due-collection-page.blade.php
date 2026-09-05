@@ -1,7 +1,7 @@
-@extends('layout.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title','Supplier Page')
 @section('content')
-    @include('components.back-end.Supplier.supplier-due-collection.supplier-due-collection-list')
-    @include('components.back-end.Supplier.supplier-due-collection.supplier-due')
+    @include('backend.supplier.supplier-due-collection.supplier-due-collection-list')
+    @include('backend.supplier.supplier-due-collection.supplier-due')
 
 @endsection

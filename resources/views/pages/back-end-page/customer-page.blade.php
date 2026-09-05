@@ -1,8 +1,8 @@
-@extends('layout.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title','Customer Page')
 @section('content')
-    @include('components.back-end.Customer.customer-list')
-    @include('components.back-end.Customer.customer-create')
-    @include('components.back-end.Customer.customer-update')
-    @include('components.back-end.Customer.customer-delete')
+    @include('backend.customer.customer-list')
+    @include('backend.customer.customer-create')
+    @include('backend.customer.customer-update')
+    @include('backend.customer.customer-delete')
 @endsection

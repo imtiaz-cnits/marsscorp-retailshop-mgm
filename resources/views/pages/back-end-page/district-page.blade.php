@@ -1,8 +1,8 @@
-@extends('layout.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title','District Page')
 @section('content')
-    @include('components.back-end.District.district-list')
-    @include('components.back-end.District.district-create')
-    @include('components.back-end.District.district-update')
-    @include('components.back-end.District.district-delete')
+    @include('backend.district.district-list')
+    @include('backend.district.district-create')
+    @include('backend.district.district-update')
+    @include('backend.district.district-delete')
 @endsection

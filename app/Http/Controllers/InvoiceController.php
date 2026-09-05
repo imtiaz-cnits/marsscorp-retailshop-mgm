@@ -415,7 +415,7 @@ public function InvoicePaymentDetailsUpdate(Request $request)
 //     $dueAmount = $subTotal - $paidAmount;
 
 //     // Pass the calculated values to the view
-//     return view('components.back-end.view-invoice.due-invoice-print', compact('invoice', 'subTotal', 'paidAmount', 'dueAmount'));
+//     return view('backend.view-invoice.due-invoice-print', compact('invoice', 'subTotal', 'paidAmount', 'dueAmount'));
 // }
 
 public function InvoiceShowDetails($id)
@@ -435,7 +435,7 @@ public function InvoiceShowDetails($id)
     $actualPreviousDue   = $customerPreviousDue + $previousOrdersDue;
     $totalDue            = $actualPreviousDue + $currentDue;
 
-    return view('components.back-end.view-invoice.due-invoice-print', compact(
+    return view('backend.view-invoice.due-invoice-print', compact(
         'invoice',
         'currentDue',
         'actualPreviousDue',

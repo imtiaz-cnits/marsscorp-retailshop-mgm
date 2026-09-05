@@ -3,7 +3,30 @@
 
 ---
 
-### 1. Typography & Font Standard (ফন্ট নীতিমালা) [STRICT RULE]
+### 1. CSS Framework & Styling Standard (টেইলউইন্ড সিএসএস স্ট্যান্ডার্ড) [STRICT RULE]
+> [!IMPORTANT]
+> **সমগ্র প্রোজেক্টে Tailwind CSS বাধ্যতামূলক এবং Bootstrap সম্পূর্ণ নিষিদ্ধ:**
+> 1. **Framework**: প্রোজেক্টের সমস্ত UI ডিজাইন **Tailwind CSS** (Vite কম্পাইল্ড) দিয়ে পরিচালিত হবে। Bootstrap সম্পূর্ণভাবে পরিহার/রিপ্লেস করতে হবে।
+> 2. **Custom CSS Reduction**: অপ্রয়োজনীয় কাস্টম CSS ফাইল কমিয়ে সবকিছু Tailwind utility classes দিয়ে ম্যানেজ করতে হবে। শুধুমাত্র জটিল অ্যানিমেশন, প্রিন্ট মিডিয়া বা স্পেশাল প্লাগইনের জন্য মিনিমাল সিএসএস `resources/css/app.css`-এ রাখা যাবে।
+> 3. **Design System & Colors**:
+>    - Brand Primary Green: `emerald-700` / `#15803d`, `emerald-600` / `#16a34a`
+>    - Hover Green: `emerald-800` / `#166534`, `emerald-900` / `#14532d`
+>    - Subtle Tint Backgrounds: `emerald-50` / `#f0fdf4`
+>    - Neutral Dark: `slate-900` / `#0f172a`, `slate-800` / `#1e293b`
+>    - Borders: `slate-200` / `#e2e8f0`, `slate-300` / `#cbd5e1`
+
+---
+
+### 2. Zero Functional & Logic Regression (ফাংশনালিটি ও লজিক অক্ষুণ্ণ রাখার নিয়ম) [STRICT RULE]
+> [!WARNING]
+> **ডিজাইন রূপান্তরের সময় কোনো ফাংশনালিটি বা ব্যাকএন্ড লজিক পরিবর্তন করা যাবে না:**
+> 1. সমস্ত DOM Element ID (`#CustomerSelectData`, `#subTotal`, `#paidAmountInput`, `#CustomerID`, ইত্যাদি) এবং JS ভ্যারিয়েবল/ফাংশন অবিকৃত থাকতে হবে।
+> 2. API এন্ডপয়েন্ট, Axios রিকোয়েস্ট, হেডার টোকেন, কন্ট্রোলার ও ডাটাবেজ মডেল ১০০% অপরিবর্তিত থাকবে।
+> 3. SweetAlert, Toastify, Html5QrcodeScanner, ভ্যালিডেশন এবং ইনভয়েস প্রিন্টিং কার্যকারিতা হুবহু অক্ষুণ্ণ রাখতে হবে।
+
+---
+
+### 3. Typography & Font Standard (ফন্ট নীতিমালা) [STRICT RULE]
 > [!IMPORTANT]
 > **সমগ্র প্রোজেক্টের ফন্ট ব্যবহারের কঠোর নিয়মাবলী:**
 > 1. **ইংরেজি ও নিউমেরিক টেক্সট (English & Numbers)**: অবশ্যই **`Valley Sans`** ফন্ট ব্যবহার করতে হবে।
@@ -16,68 +39,38 @@
 - **Primary Bangla Font**: `'Baloo Da 2', sans-serif`
   - **Google Font URL**: [https://fonts.google.com/specimen/Baloo+Da+2](https://fonts.google.com/specimen/Baloo+Da+2)
   - **Weights**: `400`, `500`, `600`, `700`, `800`
-- **Global CSS Font Stack**:
+- **Global Font Stack**:
   ```css
   font-family: 'Valley Sans', 'Baloo Da 2', sans-serif;
   ```
-  *(CSS ফলব্যাকের মাধ্যমে ইংরেজি ক্যারেক্টারগুলো সরাসরি `Valley Sans`-এ এবং বাংলা অক্ষরগুলো স্বয়ংক্রিয়ভাবে `Baloo Da 2`-তে রেন্ডার হয়)*
-- **CDN Import Link**:
-  ```html
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;500;600;700;800&family=Valley+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-  ```
 
 ---
 
-### 2. Design & Color Consistency (কালার ও ডিজাইন কনসিস্টেন্সি)
+### 4. Folder Structure & Laravel Conventions (ফোল্ডার স্ট্রাকচার স্ট্যান্ডার্ড)
 
-- **Brand Primary Green**: `#15803d` / `#16a34a` (বাটন, আইকন, হাইলাইট ও সেভ অ্যাকশন)
-- **Hover & Active Green**: `#166534` / `#14532d`
-- **Subtle Tint Backgrounds**: `#f0fdf4` / `#ecfdf5`
-- **Text & Heading Colors**:
-  - Primary Dark Text: `#0f172a` / `#1e293b`
-  - Secondary / Muted Text: `#64748b` / `#475569`
-  - White: `#ffffff`
-- **Borders & Dividers**: `#e2e8f0` / `#cbd5e1`
-- **Status & Variant Colors**:
-  - **Left Handed (বাম হাতি)**: Primary Blue `#2563eb` (`bg-primary-subtle text-primary border-primary-subtle`)
-  - **Right Handed (ডান হাতি)**: Success Green `#16a34a` (`bg-success-subtle text-success border-success-subtle`)
-  - **Both / Universal (উভয়মুখী)**: Teal / Purple `#0891b2` / `#7c3aed` (`bg-info-subtle text-info border-info-subtle`)
+1. **Views Architecture**:
+   - Layouts: `resources/views/layouts/` (যেমন `app.blade.php`, `dashboard-sidenav.blade.php`)
+   - Pages: `resources/views/pages/`
+   - Components: `resources/views/components/`
+2. **Assets & Pipeline**:
+   - `resources/css/app.css` & `resources/js/app.js` processed via Vite (`@vite(['resources/css/app.css', 'resources/js/app.js'])`)
+   - Static logos, icons, uploads located in `public/` directory.
 
 ---
 
-### 3. Door Category & Handedness Rules (ডোর ক্যাটাগরি ও পাল্লার দিক সম্পর্কিত নিয়ম)
+### 5. POS & Product Architecture Rules
 
-1. **ডোর স্পেসিফিকেশন (Door Handedness Specification)**:
-   - Door ক্যাটাগরি সিলেক্ট হলে ৩টি নির্দিষ্ট হ্যান্ডেডনেস অপশন থাকবে:
-     - `👈 Left Handed (বাম হাতি)`
-     - `👉 Right Handed (ডান হাতি)`
-     - `↔️ Both / Universal (উভয়মুখী)`
-2. **মডাল ও ফর্মে কোয়ান্টিটি ইনপুট লেআউট**:
-   - প্রতিটি কার্ডের ভেতর `QTY:` লেবেল এবং ইনপুট ফিল্ডটি অবশ্যই **১ লাইনে (Single Line Horizontal Layout)** থাকতে হবে।
-     - উদাহরণ: `QTY: [  4  ]`
-   - যেকোনো বক্সে স্টক লিখলে রিয়েল-টাইমে স্বয়ংক্রিয়ভাবে মোট স্টক হিসাব হয়ে মূল `Quantity` ফিল্ড এবং `মোট ডোর স্টক: X` ব্যাজে আপডেট হবে।
-3. **প্রোডাক্ট লিস্ট ও টেবিল ভিউ (Multi-Variant Row Grouping)**:
-   - একই নাম, মডেল, ব্র্যান্ড ও ক্যাটাগরির ভিন্ন ভিন্ন ডোর ভেরিয়েন্টগুলোকে টেবিলে আলাদা রো হিসেবে না দেখিয়ে **একই মূল রো-এর অধীনে** গ্রুপ করে দেখাতে হবে।
-   - মূল রো-তে সর্বমোট স্টক এবং হ্যান্ডেডনেস ব্রেকডাউন চিপস (`👈 Left: X | 👉 Right: Y | ↔️ Both: Z`) প্রদর্শিত হবে।
-   - বিস্তারিত ও পৃথক ভেরিয়েন্ট এডিট/ডিলিটের জন্য কোল্যাপসিবল একর্ডিয়ন সাব-টেবিল থাকবে।
+1. **POS 100vh Full Screen Rule**:
+   - POS পেজটি ব্রাউজারের কোনো পেজ-স্ক্রলিং ছাড়া `100vh` ভিউপোর্টে থাকবে।
+   - কার্ট প্রোডাক্ট টেবিল স্বাধীনভাবে স্ক্রল হবে (`overflow-y: auto`), টেবিল হেডার স্টিকি থাকবে।
+   - পেমেন্ট মেথড, অ্যামাউন্ট ও কনফার্মেশন বাটন সবসময় নিচে স্টিকি/পিন্ড থাকবে।
+2. **Door Handedness Specification**:
+   - ডোর ক্যাটাগরির পণ্যে Left, Right, Both হ্যান্ডেডনেস সাপোর্ট এবং মডাল ও ফর্মে ১ লাইনে `QTY: [ input ]` সিঙ্গেল লাইন লেআউট বজায় থাকবে।
+   - প্রোডাক্ট টেবিলে একই মডেলের ডোর ভেরিয়েন্ট গ্রুপ রো হিসেবে প্রদর্শিত হবে।
 
 ---
 
-### 4. UI Layout, Table & Modal Rules (মডাল ও টেবিল স্ট্যান্ডার্ড)
-
-- **ফিল্টার ও সার্চ কন্ট্রোলস**:
-  - **Row 1**: `Entries` ড্রপডাউন এবং `Search Product...` ইনপুট পাশাপাশি (`flex-nowrap`) বসবে। ডানপাশে `+ Add Product` এবং এক্সপোর্ট বাটন থাকবে।
-  - **Row 2**: `All Brands` এবং `All Categories` ফিল্টার ড্রপডাউন দুটি পাশাপাশি একই লাইনে বসবে (`42px` হাইট, `8px` বর্ডার রেডিয়াস)।
-- **মডাল স্ট্যান্ডার্ড**:
-  - ব্যাকড্রপ: `rgba(15, 23, 42, 0.6)` সাথে `backdrop-filter: blur(4px)`.
-  - বর্ডার রেডিয়াস: `12px` থেকে `16px`.
-  - বাটন ও অ্যাকশন: Cancel বাটনে সফট গ্রে এবং Save/Submit বাটনে গ্রেডিয়েন্ট গ্রিন `#15803d`.
-
----
-
-### 5. Backend & Architecture Rules (ব্যাকএন্ড ও এপিআই নীতিমালা)
+### 6. Backend & Architecture Rules (ব্যাকএন্ড ও এপিআই নীতিমালা)
 
 - **কন্ট্রোলার রেসপন্স ফরম্যাট**:
   - সাফল্য: `return response()->json(['status' => 'success', 'message' => '...', ...]);`
@@ -87,4 +80,4 @@
 - **টোকেন অথেনটিকেশন**:
   - ফ্রন্টএন্ড থেকে সকল এপিআই রিকোয়েস্টে `HeaderToken()` বা `HeaderTokenWithBlob()` হেডার পাস করতে হবে।
 - **ক্যাশ ও এসেট কম্পাইলেশন**:
-  - ফ্রন্টএন্ড বা ব্লেড ভিউতে বড় ধরনের সিএসএস/জেএস পরিবর্তনের পর `npm run build` এবং `php artisan optimize:clear` রান করতে হবে।
+  - প্রতিটি পরিবর্তনের পর `npm run build` এবং `php artisan optimize:clear` নিশ্চিত করতে হবে।

@@ -1,9 +1,9 @@
-@extends('layout.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title','Product Page')
 @section('content')
-    @include('components.back-end.Product.product-list')
-    @include('components.back-end.Product.product-create')
-    @include('components.back-end.Product.product-update')
-    @include('components.back-end.Product.product-delete')
+    @include('backend.product.product-list')
+    @include('backend.product.product-create')
+    @include('backend.product.product-update')
+    @include('backend.product.product-delete')
 @endsection
 

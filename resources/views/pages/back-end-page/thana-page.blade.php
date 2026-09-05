@@ -1,8 +1,8 @@
-@extends('layout.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title','Thana Page')
 @section('content')
-    @include('components.back-end.Thana.thana-list')
-    @include('components.back-end.Thana.thana-create')
-    @include('components.back-end.Thana.thana-update')
-    @include('components.back-end.Thana.thana-delete')
+    @include('backend.thana.thana-list')
+    @include('backend.thana.thana-create')
+    @include('backend.thana.thana-update')
+    @include('backend.thana.thana-delete')
 @endsection

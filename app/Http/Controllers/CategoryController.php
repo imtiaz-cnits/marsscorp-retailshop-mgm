@@ -96,10 +96,10 @@ public function CategoryCreate(Request $request)
             $t = time();
             $file_name = $img->getClientOriginalName();
             $img_name = "{$user_id}-{$t}-{$file_name}";
-            $img_url = "uploads/category_image/{$img_name}";
+            $img_url = "uploads/category-img/{$img_name}";
 
             // Upload File
-            $img->move(public_path('uploads/category_image'), $img_name);
+            $img->move(public_path('uploads/category-img'), $img_name);
         }
 
         // Create the category
@@ -162,10 +162,10 @@ try {
         $t = time();
         $file_name = $img->getClientOriginalName();
         $img_name = "{$user_id}-{$t}-{$file_name}";
-        $img_url = "uploads/category_image/{$img_name}";
+        $img_url = "uploads/category-img/{$img_name}";
 
         // Upload File
-        $img->move(public_path('uploads/category_image'), $img_name);
+        $img->move(public_path('uploads/category-img'), $img_name);
 
         // Delete old image if it exists
         if ($CategoryData_Update->img_url && file_exists(public_path($CategoryData_Update->img_url))) {

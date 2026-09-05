@@ -214,10 +214,10 @@ public function SupplierCreate(Request $request)
             $t = time();
             $file_name = $img->getClientOriginalName();
             $img_name = "{$user_id}-{$t}-{$file_name}";
-            $img_url = "uploads/Supplier-images/{$img_name}";
+            $img_url = "uploads/supplier-img/{$img_name}";
 
             // Upload File
-            $img->move(public_path('uploads/Supplier-images'), $img_name);
+            $img->move(public_path('uploads/supplier-img'), $img_name);
         }
 
         // Generate SupplierID
@@ -285,10 +285,10 @@ public function SupplierUpdate(Request $request)
             $t = time();
             $file_name = $img->getClientOriginalName();
             $img_name = "{$user_id}-{$t}-{$file_name}";
-            $img_url = "uploads/Supplier-images/{$img_name}";
+            $img_url = "uploads/supplier-img/{$img_name}";
 
             // Move the file to the desired directory
-            if ($img->move(public_path('uploads/Supplier-images/'), $img_name)) {
+            if ($img->move(public_path('uploads/supplier-img/'), $img_name)) {
                 // Delete the old image if it exists
                 if ($SupplierData_Update->img_url && file_exists(public_path($SupplierData_Update->img_url))) {
                     unlink(public_path($SupplierData_Update->img_url));

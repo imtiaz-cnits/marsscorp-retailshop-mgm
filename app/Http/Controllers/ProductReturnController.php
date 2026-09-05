@@ -46,7 +46,7 @@ class ProductReturnController extends Controller
     //     });
 
     //     // Pass the required data to the view
-    //     return view('components.back-end.view-return.return-details', compact('invoice', 'subTotal', 'paidAmount', 'dueAmount', 'filteredDetails'));
+    //     return view('backend.view-return.return-details', compact('invoice', 'subTotal', 'paidAmount', 'dueAmount', 'filteredDetails'));
     // }
 
 
@@ -68,7 +68,7 @@ class ProductReturnController extends Controller
         $dueAmount = $subTotal - $paidAmount;
 
         // Pass the calculated values to the view
-        return view('components.back-end.view-return.return-details', compact('invoice', 'subTotal', 'paidAmount', 'dueAmount'));
+        return view('backend.view-return.return-details', compact('invoice', 'subTotal', 'paidAmount', 'dueAmount'));
     }
 
 
@@ -426,7 +426,7 @@ public function ReturnProductCreate(Request $request)
 //     $totalPayableAmount = $dueAmount + ($purchase->supplier->purchase_payable_amount ?? 0);
 
 //     // Pass to view
-//     return view('components.back-end.view-return.purchase-return-details', compact(
+//     return view('backend.view-return.purchase-return-details', compact(
 //         'purchase',
 //         'subTotal',
 //         'paidAmount',
@@ -467,7 +467,7 @@ public function PurchaseReturnShowDetails($id)
     // $totalPayableAmount = $dueAmount;
     
     // Pass to view
-    return view('components.back-end.view-return.purchase-return-details', compact(
+    return view('backend.view-return.purchase-return-details', compact(
         'purchase',
         'subTotal',       // $purchase->grand_subtotal
         'paidAmount',     // $purchase->paid_amount

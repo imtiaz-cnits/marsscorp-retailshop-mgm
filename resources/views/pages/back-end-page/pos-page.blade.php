@@ -7,13 +7,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- App favicon -->
-  <link rel="shortcut icon" href="{{asset('back-end/assets/icons/favicon.png')}}" type="image/x-icon" />
+  <link rel="shortcut icon" href="{{asset('backend/assets/icons/favicon.png')}}" type="image/x-icon" />
 
   <!-- Bootstrap Css -->
-  <link href="{{asset('back-end/assets/css/bootstrap.min.css')}}" id="bootstrap-style" rel="stylesheet" type="text/css" />
+  <link href="{{asset('backend/assets/css/bootstrap.min.css')}}" id="bootstrap-style" rel="stylesheet" type="text/css" />
 
   <!-- Fontawesome link -->
-  <link href="{{asset('back-end/assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
+  <link href="{{asset('backend/assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
 
   <!-- Link Swiper's CSS -->
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
@@ -1557,14 +1557,14 @@
 
   <!-- JAVASCRIPT -->
 
-  <script src="{{asset('back-end/assets/js/fontawesome.js')}}"></script>
-  <script src="{{asset('back-end/assets/js/bootstrap.bundle.min.js')}}"></script>
-  <script src="{{asset('back-end/assets/js/pos-product-slider.js')}}"></script>
-  <script src="{{asset('back-end/assets/js/orderlist-table-qty.js')}}"></script>
-  <script src="{{asset('back-end/assets/js/finance-popup-modal.js')}}"></script>
-  <script src="{{asset('back-end/assets/js/full-screen-toggle.js')}}"></script>
-  <script src="{{asset('back-end/assets/js/app.js')}}"></script>
-  <script src="{{asset('back-end/assets/js/pos-model-category-click.js')}}"></script>
+  <script src="{{asset('backend/assets/js/fontawesome.js')}}"></script>
+  <script src="{{asset('backend/assets/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{asset('backend/assets/js/pos-product-slider.js')}}"></script>
+  <script src="{{asset('backend/assets/js/orderlist-table-qty.js')}}"></script>
+  <script src="{{asset('backend/assets/js/finance-popup-modal.js')}}"></script>
+  <script src="{{asset('backend/assets/js/full-screen-toggle.js')}}"></script>
+  <script src="{{asset('backend/assets/js/app.js')}}"></script>
+  <script src="{{asset('backend/assets/js/pos-model-category-click.js')}}"></script>
 </body>
 
 </html>

@@ -39,7 +39,7 @@ class PurchasesController extends Controller
     //     $dueAmount = $subTotal - $paidAmount;
 
     //     // Return the view with data
-    //     return view('components.back-end.Purchase.purchase-invoice-print',
+    //     return view('backend.purchase.purchase-invoice-print',
     //         compact('purchaseinvoicedata', 'paymentDetailsStatus', 'PreviousDueAmount', 'subTotal', 'paidAmount', 'dueAmount')
     //     );
     // }
@@ -73,7 +73,7 @@ public function PurchaseShowDetails($id)
     $totalDueFromAllPurchases = $supplierDueAmount + $purchaseDueAmount;
 
     // Return view with all variables
-    return view('components.back-end.Purchase.purchase-invoice-print', compact(
+    return view('backend.purchase.purchase-invoice-print', compact(
         'purchaseinvoicedata',
         'paymentDetailsStatus',
         'PreviousDueAmount',

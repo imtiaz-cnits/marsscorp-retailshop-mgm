@@ -1,3 +1,180 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        --primary-font: "Valley Sans", "Baloo Da 2", sans-serif;
+        --english-font: "Valley Sans", sans-serif;
+        --bangla-font: "Baloo Da 2", sans-serif;
+        --primary-color: #15803d;
+    }
+
+    * {
+        font-family: var(--primary-font);
+    }
+
+    body {
+        font-family: var(--primary-font);
+        color: #0f172a;
+        background-color: #f8fafc;
+    }
+
+    /* Custom Slim Scrollbars */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+        background-color: #f1f5f9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 9999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #16a34a;
+    }
+}
+
+@layer components {
+
+    /* Modern Tailwind Modal System (100% Bootstrap-compatible markup) */
+    .modal {
+        position: fixed;
+        inset: 0;
+        z-index: 1060 !important;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent !important;
+        backdrop-filter: none !important;
+        padding: 1rem;
+        overflow-y: auto;
+    }
+
+    .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 1050 !important;
+        background-color: rgba(15, 23, 42, 0.65) !important;
+        backdrop-filter: blur(4px) !important;
+    }
+
+    .modal.show,
+    .modal.flex {
+        display: flex !important;
+    }
+
+    .modal-dialog {
+        position: relative;
+        z-index: 1065 !important;
+        width: 100%;
+        max-width: 32rem;
+        margin: auto;
+        pointer-events: auto;
+        animation: modal-pop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-dialog.modal-sm {
+        max-width: 24rem;
+    }
+
+    .modal-dialog.modal-md {
+        max-width: 32rem;
+    }
+
+    .modal-dialog.modal-lg {
+        max-width: 48rem;
+    }
+
+    .modal-dialog.modal-xl {
+        max-width: 64rem;
+    }
+
+    @keyframes modal-pop {
+        0% {
+            opacity: 0;
+            transform: scale(0.96) translateY(8px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .modal-content {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        background-color: #ffffff;
+        border-radius: 1rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .modal-body {
+        position: relative;
+        flex: 1 1 auto;
+        padding: 1.5rem;
+    }
+
+    .modal-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-close {
+        background: transparent;
+        border: 0;
+        font-size: 1.25rem;
+        line-height: 1;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+
+    .btn-close:hover {
+        opacity: 1;
+    }
+
+    .btn-close-white {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+
+    /* Standard Button Styles */
+    .btn-brand {
+        background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+        color: #ffffff;
+        font-weight: 700;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-brand:hover {
+        background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.2);
+    }
+}

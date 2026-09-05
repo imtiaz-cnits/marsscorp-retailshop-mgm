@@ -1,4 +1,4 @@
-@extends('layout.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('content')
-    @include('components.back-end.user-role.user-role-management')
+    @include('backend.user-role.user-role-management')
 @endsection

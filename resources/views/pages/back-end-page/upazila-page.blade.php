@@ -1,8 +1,8 @@
-@extends('layout.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title','Upazila Page')
 @section('content')
-    @include('components.back-end.Upazila.upazila-list')
-    @include('components.back-end.Upazila.upazila-create')
-    @include('components.back-end.Upazila.upazila-update')
-    @include('components.back-end.Upazila.upazila-delete')
+    @include('backend.upazila.upazila-list')
+    @include('backend.upazila.upazila-create')
+    @include('backend.upazila.upazila-update')
+    @include('backend.upazila.upazila-delete')
 @endsection

@@ -1,8 +1,8 @@
-@extends('layout.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title','Supplier Page')
 @section('content')
-    @include('components.back-end.Supplier.supplier-list')
-    @include('components.back-end.Supplier.supplier-create')
-    @include('components.back-end.Supplier.supplier-update')
-    @include('components.back-end.Supplier.supplier-delete')
+    @include('backend.supplier.supplier-list')
+    @include('backend.supplier.supplier-create')
+    @include('backend.supplier.supplier-update')
+    @include('backend.supplier.supplier-delete')
 @endsection

@@ -144,8 +144,8 @@ class ProductController extends Controller
             if ($request->hasFile('img')) {
                 $productImg = $request->file('img');
                 $productImgName = time() . '-' . $user_id . '-' . $productImg->getClientOriginalName();
-                $productImgPath = "uploads/Product-img/{$productImgName}";
-                $productImg->move(public_path('uploads/Product-img'), $productImgName);
+                $productImgPath = "uploads/product-img/{$productImgName}";
+                $productImg->move(public_path('uploads/product-img'), $productImgName);
             }
 
             $leftQty = floatval($request->input('door_qty_left', 0));
@@ -251,8 +251,8 @@ class ProductController extends Controller
             if ($request->hasFile('img_url')) {
                 $img = $request->file('img_url');
                 $img_name = time() . '-' . $user_id . '-' . $img->getClientOriginalName();
-                $img_url = "uploads/Product-img/{$img_name}";
-                $img->move(public_path('uploads/Product-img'), $img_name);
+                $img_url = "uploads/product-img/{$img_name}";
+                $img->move(public_path('uploads/product-img'), $img_name);
 
                 // Remove old image if exists
                 if ($product->img_url && file_exists(public_path($product->img_url))) {

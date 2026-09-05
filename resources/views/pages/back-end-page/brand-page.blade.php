@@ -1,8 +1,8 @@
-@extends('layout.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title','Brand Page')
 @section('content')
-    @include('components.back-end.brand.brand-list')
-    @include('components.back-end.brand.brand-create')
-    @include('components.back-end.brand.brand-update')
-    @include('components.back-end.brand.brand-delete')
+    @include('backend.brand.brand-list')
+    @include('backend.brand.brand-create')
+    @include('backend.brand.brand-update')
+    @include('backend.brand.brand-delete')
 @endsection

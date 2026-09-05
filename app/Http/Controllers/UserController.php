@@ -71,31 +71,30 @@ class UserController extends Controller
     {
 
         try {
-        $request->validate([
-            'email' => 'required|string|email|max:50',
-            'password' => 'required|string|min:3'
-        ]);
+            $request->validate([
+                'email' => 'required|string|email|max:50',
+                'password' => 'required|string|min:3'
+            ]);
 
-        $user = User::where('email', $request->input('email'))->first();
+            $user = User::where('email', $request->input('email'))->first();
 
-        if (!$user || !Hash::check($request->input('password'), $user->password)) {
-            return response()->json(['status' => 'failed', 'message' => 'Invalid User']);
+            if (!$user || !Hash::check($request->input('password'), $user->password)) {
+                return response()->json(['status' => 'failed', 'message' => 'Invalid User']);
+            }
+
+            $token = $user->createToken('authToken')->plainTextToken;
+
+            // Include role and permissions in the response
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Login Successful',
+                'token' => $token,
+                'role' => $user->role,
+                'permissions' => $user->permissions ? json_decode($user->permissions, true) : null
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
-
-        $token = $user->createToken('authToken')->plainTextToken;
-
-        // Include role and permissions in the response
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Login Successful',
-            'token' => $token,
-            'role' => $user->role,
-            'permissions' => $user->permissions ? json_decode($user->permissions, true) : null
-        ]);
-
-    } catch (Exception $e) {
-        return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
-    }
         // try {
         //     $request->validate([
         //         'email' => 'required|email|max:50',
@@ -126,7 +125,7 @@ class UserController extends Controller
         // }
     }
 
-  public function SendOTPCode(Request $request)
+    public function SendOTPCode(Request $request)
     {
 
         try {
@@ -149,101 +148,100 @@ class UserController extends Controller
                     'message' => 'Invalid Email Address'
                 ]);
             }
-
         } catch (Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
     }
 
 
-//     public function VerifyOTP(Request $request)
-// {
-//     try {
-//         // Validate the request input
-//         $request->validate([
-//             'email' => 'required|string|email|max:50',
-//             'otp' => 'required|string|min:6|max:6', // Ensure OTP is exactly 6 digits
-//         ]);
+    //     public function VerifyOTP(Request $request)
+    // {
+    //     try {
+    //         // Validate the request input
+    //         $request->validate([
+    //             'email' => 'required|string|email|max:50',
+    //             'otp' => 'required|string|min:6|max:6', // Ensure OTP is exactly 6 digits
+    //         ]);
 
-//         $email = $request->input('email');
-//         $otp = $request->input('otp');
+    //         $email = $request->input('email');
+    //         $otp = $request->input('otp');
 
-//         // Find the user based on email
-//         $user = User::where('email', '=', $email)->first();
+    //         // Find the user based on email
+    //         $user = User::where('email', '=', $email)->first();
 
-//         // Check if user exists
-//         if (!$user) {
-//             return response()->json(['status' => 'fail', 'message' => 'User not found']);
-//         }
+    //         // Check if user exists
+    //         if (!$user) {
+    //             return response()->json(['status' => 'fail', 'message' => 'User not found']);
+    //         }
 
-//         // Check if OTP matches
-//         if ($user->otp !== $otp) {
-//             return response()->json(['status' => 'fail', 'message' => 'Invalid OTP']);
-//         }
+    //         // Check if OTP matches
+    //         if ($user->otp !== $otp) {
+    //             return response()->json(['status' => 'fail', 'message' => 'Invalid OTP']);
+    //         }
 
-//         // Check if OTP has expired
-//         if (Carbon::now()->gt($user->otp_expires_at)) {
-//             return response()->json(['status' => 'fail', 'message' => 'OTP expired']);
-//         }
+    //         // Check if OTP has expired
+    //         if (Carbon::now()->gt($user->otp_expires_at)) {
+    //             return response()->json(['status' => 'fail', 'message' => 'OTP expired']);
+    //         }
 
-//         // Clear OTP after successful verification
-//         $user->otp = null;
-//         $user->otp_expires_at = null;
-//         $user->save();
+    //         // Clear OTP after successful verification
+    //         $user->otp = null;
+    //         $user->otp_expires_at = null;
+    //         $user->save();
 
-//         // Create Sanctum token for authenticated user
-//         $token = $user->createToken('authToken')->plainTextToken;
+    //         // Create Sanctum token for authenticated user
+    //         $token = $user->createToken('authToken')->plainTextToken;
 
-//         return response()->json([
-//             'status' => 'success',
-//             'message' => 'OTP Verification Successful',
-//             'token' => $token,
-//             'role' => $user->role // If you want to include the user's role
-//         ]);
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'message' => 'OTP Verification Successful',
+    //             'token' => $token,
+    //             'role' => $user->role // If you want to include the user's role
+    //         ]);
 
-//     } catch (\Exception $e) {
-//         Log::error('OTP Verification failed: ' . $e->getMessage()); // Log error for debugging
-//         return response()->json(['status' => 'fail', 'message' => 'An error occurred during OTP verification']);
-//     }
-// }
-
-
-
-//   public function VerifyOTP(Request $request)
-//     {
-
-//         try {
-//             $request->validate([
-//                 'email' => 'required|string|email|max:50',
-//                 'otp' => 'required|string|min:4'
-//             ]);
-
-//             $email = $request->input('email');
-//             $otp = $request->input('otp');
-
-//             $user = User::where('email', '=', $email)->where('otp', '=', $otp)->first();
-
-//             if (!$user) {
-//                 return response()->json(['status' => 'fail', 'message' => 'Invalid OTP']);
-//             }
-
-//             // CurrentDate-UpdatedTe=4>Min
-
-//             User::where('email', '=', $email)->update(['otp' => '0']);
-
-//             $token = $user->createToken('authToken')->plainTextToken;
-//             return response()->json(['status' => 'success', 'message' => 'OTP Verification Successful', 'token' => $token]);
-
-//         } catch (Exception $e) {
-//             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
-//         }
-//     }
+    //     } catch (\Exception $e) {
+    //         Log::error('OTP Verification failed: ' . $e->getMessage()); // Log error for debugging
+    //         return response()->json(['status' => 'fail', 'message' => 'An error occurred during OTP verification']);
+    //     }
+    // }
 
 
 
+    //   public function VerifyOTP(Request $request)
+    //     {
+
+    //         try {
+    //             $request->validate([
+    //                 'email' => 'required|string|email|max:50',
+    //                 'otp' => 'required|string|min:4'
+    //             ]);
+
+    //             $email = $request->input('email');
+    //             $otp = $request->input('otp');
+
+    //             $user = User::where('email', '=', $email)->where('otp', '=', $otp)->first();
+
+    //             if (!$user) {
+    //                 return response()->json(['status' => 'fail', 'message' => 'Invalid OTP']);
+    //             }
+
+    //             // CurrentDate-UpdatedTe=4>Min
+
+    //             User::where('email', '=', $email)->update(['otp' => '0']);
+
+    //             $token = $user->createToken('authToken')->plainTextToken;
+    //             return response()->json(['status' => 'success', 'message' => 'OTP Verification Successful', 'token' => $token]);
+
+    //         } catch (Exception $e) {
+    //             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+    //         }
+    //     }
 
 
-public function VerifyOTP(Request $request)
+
+
+
+    public function VerifyOTP(Request $request)
     {
 
         try {
@@ -267,70 +265,68 @@ public function VerifyOTP(Request $request)
 
             $token = $user->createToken('authToken')->plainTextToken;
             return response()->json(['status' => 'success', 'message' => 'Login Successful', 'token' => $token]);
-
-
         } catch (Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
     }
 
 
-// public function VerifyOTP(Request $request)
-// {
-//     try {
-//         // Validate the request input
-//         $request->validate([
-//             'email' => 'required|string|email|max:50',
-//             'otp' => 'required|string|min:6|max:6', // Ensure OTP is exactly 6 digits
-//         ]);
+    // public function VerifyOTP(Request $request)
+    // {
+    //     try {
+    //         // Validate the request input
+    //         $request->validate([
+    //             'email' => 'required|string|email|max:50',
+    //             'otp' => 'required|string|min:6|max:6', // Ensure OTP is exactly 6 digits
+    //         ]);
 
-//         $email = $request->input('email');
-//         $otp = $request->input('otp');
+    //         $email = $request->input('email');
+    //         $otp = $request->input('otp');
 
-//         // Find the user based on email
-//         $user = User::where('email', '=', $email)->first();
+    //         // Find the user based on email
+    //         $user = User::where('email', '=', $email)->first();
 
-//         // Check if user exists
-//         if (!$user) {
-//             return response()->json(['status' => 'fail', 'message' => 'User not found']);
-//         }
+    //         // Check if user exists
+    //         if (!$user) {
+    //             return response()->json(['status' => 'fail', 'message' => 'User not found']);
+    //         }
 
-//         // Check if OTP matches
-//         if ($user->otp !== $otp) {
-//             return response()->json(['status' => 'fail', 'message' => 'Invalid OTP']);
-//         }
+    //         // Check if OTP matches
+    //         if ($user->otp !== $otp) {
+    //             return response()->json(['status' => 'fail', 'message' => 'Invalid OTP']);
+    //         }
 
-//         // Check if OTP has expired
-//         if (Carbon::now()->gt($user->otp_expires_at)) {
-//             return response()->json(['status' => 'fail', 'message' => 'OTP expired']);
-//         }
+    //         // Check if OTP has expired
+    //         if (Carbon::now()->gt($user->otp_expires_at)) {
+    //             return response()->json(['status' => 'fail', 'message' => 'OTP expired']);
+    //         }
 
-//         // Clear OTP after successful verification
-//         $user->otp = null;
-//         $user->otp_expires_at = null;
-//         $user->save();
+    //         // Clear OTP after successful verification
+    //         $user->otp = null;
+    //         $user->otp_expires_at = null;
+    //         $user->save();
 
-//         // Create Sanctum token for authenticated user
-//         $token = $user->createToken('authToken')->plainTextToken;
+    //         // Create Sanctum token for authenticated user
+    //         $token = $user->createToken('authToken')->plainTextToken;
 
-//         return response()->json([
-//             'status' => 'success',
-//             'message' => 'OTP Verification Successful',
-//             'token' => $token,
-//             'role' => $user->role // If you want to include the user's role
-//         ]);
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'message' => 'OTP Verification Successful',
+    //             'token' => $token,
+    //             'role' => $user->role // If you want to include the user's role
+    //         ]);
 
-//     } catch (\Exception $e) {
-//         // Log the exception message for debugging purposes
-//         Log::error('OTP Verification failed: ' . $e->getMessage()); // Log the detailed error
+    //     } catch (\Exception $e) {
+    //         // Log the exception message for debugging purposes
+    //         Log::error('OTP Verification failed: ' . $e->getMessage()); // Log the detailed error
 
-//         // Return a more detailed error message to the user
-//         return response()->json([
-//             'status' => 'fail',
-//             'message' => 'An error occurred during OTP verification. Please check the logs for details.'
-//         ]);
-//     }
-// }
+    //         // Return a more detailed error message to the user
+    //         return response()->json([
+    //             'status' => 'fail',
+    //             'message' => 'An error occurred during OTP verification. Please check the logs for details.'
+    //         ]);
+    //     }
+    // }
 
 
     function ResetPassword(Request $request)
@@ -344,14 +340,13 @@ public function VerifyOTP(Request $request)
             $password = $request->input('password');
             User::where('id', '=', $id)->update(['password' => Hash::make($password)]);
             return response()->json(['status' => 'success', 'message' => 'Request Successful']);
-
         } catch (Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage(),]);
         }
     }
 
 
-  public  function UserProfile(Request $request)
+    public  function UserProfile(Request $request)
     {
         return Auth::user();
     }
@@ -367,7 +362,7 @@ public function VerifyOTP(Request $request)
             'email'       => $user->email ?? '',
             'role'        => strtolower($user->role ?? 'user'),
             'mobile'      => $user->mobile ?? '',
-            'img_url'     => $user->img_url ? asset($user->img_url) : asset('back-end/assets/img/user-demo.png'),
+            'img_url'     => $user->img_url ? asset($user->img_url) : asset('backend/assets/img/profile-img.png'),
             'permissions' => $perms,
         ]);
     }
@@ -419,7 +414,7 @@ public function VerifyOTP(Request $request)
 
 
 
-   public function UserLogout(Request $request)
+    public function UserLogout(Request $request)
     {
         $request->user()->tokens()->delete();
         return redirect('/nexus-login-page');
@@ -433,7 +428,7 @@ public function VerifyOTP(Request $request)
             $users = User::select('id', 'name', 'email', 'mobile', 'role', 'status', 'permissions', 'img_url', 'created_at')
                 ->orderBy('id', 'desc')
                 ->get()
-                ->map(function($user) {
+                ->map(function ($user) {
                     $perms = $user->permissions ? json_decode($user->permissions, true) : null;
                     return [
                         'id'          => $user->id,
@@ -443,7 +438,7 @@ public function VerifyOTP(Request $request)
                         'role'        => $user->role ?? 'users',
                         'status'      => $user->status ?? 'approved',
                         'permissions' => $perms,
-                        'img_url'     => $user->img_url ? asset($user->img_url) : asset('back-end/assets/img/user-demo.png'),
+                        'img_url'     => $user->img_url ? asset($user->img_url) : asset('backend/assets/img/profile-img.png'),
                         'date'        => \Carbon\Carbon::parse($user->created_at)->format('d M Y'),
                     ];
                 });
@@ -611,5 +606,4 @@ public function VerifyOTP(Request $request)
             ], 500);
         }
     }
-
 }

@@ -40,10 +40,10 @@ Route::post('/verify-otp', [UserController::class, 'VerifyOtp']);
 // User Registration API Route End
 
 // Front-end View Route Api Start
-Route::view('/', 'components.front-end.auth.registration-form');
-Route::view('/admin-login-page', 'components.front-end.auth.registration-form');
+Route::view('/', 'frontend.auth.registration-form');
+Route::view('/admin-login-page', 'frontend.auth.registration-form');
 Route::redirect('/nexus-login-page', '/admin-login-page');
-Route::view('/user-verify-otp', 'components.front-end.otp.user-login-otp');
+Route::view('/user-verify-otp', 'frontend.otp.user-login-otp');
 Route::get('/user-profile', [UserController::class, 'UsersProfile'])->middleware('auth:sanctum');
 Route::post('/user-update', [UserController::class, 'UpdateProfile'])->middleware('auth:sanctum');
 
@@ -65,15 +65,15 @@ Route::view('/supplier-due-collection-page', 'pages.back-end-page.supplier-due-c
 Route::view('/supplier-due-page', 'pages.back-end-page.supplier-due-page');
 Route::view('/admin-dashboard-Purchase', 'pages.back-end-page.purchase-page');
 Route::view('/admin-dashboard-product', 'pages.back-end-page.product-page');
-Route::view('/admin-dashboard-barcode-genarate', 'components.back-end.barcode-genarate.barcode-print');
-Route::view('/admin-dashboard-product-barcode', 'components.back-end.product-barcode-print.barcode-print');
+Route::view('/admin-dashboard-barcode-genarate', 'backend.barcode-genarate.barcode-print');
+Route::view('/admin-dashboard-product-barcode', 'backend.product-barcode-print.barcode-print');
 Route::view('/admin-dashboard-warehouse', 'pages.back-end-page.warehouse-page');
-Route::view('/admin-dashboard-pos', 'components.back-end.Pos.pos-page');
+Route::view('/admin-dashboard-pos', 'backend.pos.pos-page');
 Route::view('/admin-dashboard-customer-invoice-report', 'pages.back-end-page.customer-invoice-report');
 
 
 
-Route::view('/admin-dashboard', 'components.back-end.admindashboard');
+Route::view('/admin-dashboard', 'backend.admindashboard');
 Route::view('/customer-page', 'pages.back-end-page.modal-page');
 Route::view('/customer-due-collection-page', 'pages.back-end-page.customer-due-collection-page');
 Route::view('/admin-dashboard-customer-due-list', 'pages.back-end-page.customer-due-page');
@@ -102,16 +102,16 @@ Route::post('/delete-user-admin', [UserController::class, 'DeleteUserByAdmin']);
 
 // report managment view page start
 
-Route::view('/admin-dashboard-due-invoice', 'components.back-end.report-management.invoice-due-report');
-Route::view('/admin-dashboard-stock-out', 'components.back-end.report-management.stock-out-report');
+Route::view('/admin-dashboard-due-invoice', 'backend.report-management.invoice-due-report');
+Route::view('/admin-dashboard-stock-out', 'backend.report-management.stock-out-report');
 
 // report managment view page end
 
 
 // invoice print start
 
-Route::view('/invoice-print', 'components.back-end.invoice.invoice-print');
-Route::view('/due-invoice-print/{id}', 'components.back-end.view-invoice.due-invoice-print');
+Route::view('/invoice-print', 'backend.invoice.invoice-print');
+Route::view('/due-invoice-print/{id}', 'backend.view-invoice.due-invoice-print');
 
 
 Route::prefix('invoice')->group(function () {
@@ -173,12 +173,12 @@ Route::view('/admin-dashboard-invest-list', 'pages.back-end-page.investor-info-l
 
 // Report Management View Page Start
 
-Route::view('/admin-dashboard-sales-report', 'components.back-end.report-management.sales-report');
-Route::view('/admin-dashboard-income-expense-report', 'components.back-end.report-management.income-expense-report');
-Route::view('/admin-dashboard-daily-receipt-payment-report', 'components.back-end.report-management.daily-receipt-payment-report');
-Route::view('/admin-dashboard-personal-transaction-report', 'components.back-end.report-management.personal-transaction-report');
-Route::view('/admin-best-selling-report', 'components.back-end.report-management.best-selling-report');
-Route::view('/admin-dashboard-daily-ledger-report', 'components.back-end.report-management.daily-ledger-report');
+Route::view('/admin-dashboard-sales-report', 'backend.report-management.sales-report');
+Route::view('/admin-dashboard-income-expense-report', 'backend.report-management.income-expense-report');
+Route::view('/admin-dashboard-daily-receipt-payment-report', 'backend.report-management.daily-receipt-payment-report');
+Route::view('/admin-dashboard-personal-transaction-report', 'backend.report-management.personal-transaction-report');
+Route::view('/admin-best-selling-report', 'backend.report-management.best-selling-report');
+Route::view('/admin-dashboard-daily-ledger-report', 'backend.report-management.daily-ledger-report');
 
 
 // Report Management View Page End
@@ -190,7 +190,7 @@ Route::view('/admin-dashboard-return-list', 'pages.back-end-page.return-page');
 // Return Managment View Page End
 
 
-Route::view('/admin-dashboard-user-profile', 'components.back-end.user-profile.user-profile-page');
+Route::view('/admin-dashboard-user-profile', 'backend.user-profile.user-profile-page');
 
 // কাস্টমার প্রোফাইল পেজ দেখানোর জন্য
 Route::get('/customer/profile/{id}', [App\Http\Controllers\CustomerController::class, 'CustomerProfilePage']);

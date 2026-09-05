@@ -214,8 +214,8 @@ public function CustomerCreate(Request $request)
         if ($request->hasFile('img')) {
             $productImg = $request->file('img');
             $productImgName = time() . '-' . $user_id . '-' . $productImg->getClientOriginalName();
-            $productImgPath = "uploads/cust-img/{$productImgName}";
-            $productImg->move(public_path('uploads/cust-img'), $productImgName);
+            $productImgPath = "uploads/customer-img/{$productImgName}";
+            $productImg->move(public_path('uploads/customer-img'), $productImgName);
         }
 
         // Create the CustomerData
@@ -303,10 +303,10 @@ public function CustomerUpdate(Request $request)
             $t = time();
             $file_name = $img->getClientOriginalName();
             $img_name = "{$user_id}-{$t}-{$file_name}";
-            $img_url = "uploads/cust-img/{$img_name}";
+            $img_url = "uploads/customer-img/{$img_name}";
 
             // Upload File
-            $img->move(public_path('uploads/cust-img'), $img_name);
+            $img->move(public_path('uploads/customer-img'), $img_name);
 
             // Delete old image if it exists
             if ($CustomerData_Update->img_url && file_exists(public_path($CustomerData_Update->img_url))) {
@@ -395,7 +395,7 @@ public function CustomerDelete(Request $request)
     public function CustomerProfilePage($id)
     {
         // কাস্টমারের আইডি ব্লেডে পাঠিয়ে দিচ্ছি, যাতে এপিআই কল করার সময় আইডিটা পাই
-        return view('components.back-end.Customer.customer-profile', compact('id')); 
+        return view('backend.customer.customer-profile', compact('id')); 
     }
 
     // ২. কাস্টমারের সমস্ত ডাটা এপিআই এর মাধ্যমে পাঠানোর জন্য

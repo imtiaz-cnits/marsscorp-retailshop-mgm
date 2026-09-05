@@ -1,5 +1,5 @@
-@extends('layout.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title','Customer Invoice Page')
 @section('content')
-    @include('components.back-end.Customer-invoice-report.customer-report')
+    @include('backend.customer-invoice-report.customer-report')
 @endsection
