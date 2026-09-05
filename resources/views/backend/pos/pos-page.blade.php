@@ -3591,7 +3591,7 @@
             }
         }
 
-        function renderProducts(products, limit = 25) {
+        function renderProducts(products, limit = 28) {
             $("#ProductCategoryWishDataItem").empty();
             if (!products || !products.length) {
                 $("#ProductCategoryWishDataItem").html('<div class="col-12 text-center text-muted p-4 fw-bold">❌ কোনো পণ্য পাওয়া যায়নি।</div>');
@@ -3640,8 +3640,8 @@
                 const remaining = products.length - limit;
                 const loadMoreBtn = `
                     <div class="col-12 text-center my-3" id="loadMoreProductsContainer">
-                        <button type="button" class="btn btn-outline-success fw-bold px-4 py-2 shadow-sm" onclick="renderProducts(allProducts, ${limit + 25})" style="border-radius: 20px; font-size: 13px;">
-                            <i class="fa-solid fa-plus-circle me-1"></i> আরও ২৫টি পণ্য দেখুন (বাকি ${remaining}টি)
+                        <button type="button" class="btn btn-outline-success fw-bold px-4 py-2 shadow-sm" onclick="renderProducts(allProducts, ${limit + 28})" style="border-radius: 20px; font-size: 13px;">
+                            <i class="fa-solid fa-plus-circle me-1"></i> আরও ২৮টি পণ্য দেখুন (বাকি ${remaining}টি)
                         </button>
                     </div>
                 `;
