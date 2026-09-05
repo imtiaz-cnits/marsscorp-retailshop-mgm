@@ -234,4 +234,28 @@
         border-color: #1e3a8a !important;
         color: #7dd3fc !important;
     }
+
+    /* Product Brand Tag - Full Name Display */
+    .product-brand-tag {
+        font-size: 9.5px !important;
+        font-weight: 600 !important;
+        color: #475569 !important;
+        background-color: #f1f5f9 !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 4px !important;
+        padding: 1px 6px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 3px !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        white-space: nowrap !important;
+        line-height: 1.25 !important;
+    }
+
+    .product-brand-tag i {
+        color: #16a34a !important;
+        font-size: 8px !important;
+    }
 }
