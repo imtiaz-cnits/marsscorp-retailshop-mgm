@@ -1918,6 +1918,69 @@
         }
 
         /* ========================================================
+           POS Skeleton Loading Animation System
+           ======================================================== */
+        @keyframes posSkeletonWave {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .pos-skeleton-shimmer {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%) !important;
+            background-size: 200% 100% !important;
+            animation: posSkeletonWave 1.4s ease-in-out infinite !important;
+            display: inline-block !important;
+        }
+
+        #product-slider .swiper-slide.skeleton-brand-card {
+            background: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            cursor: default !important;
+            pointer-events: none !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+            transform: none !important;
+        }
+
+        #product-card .card-wrapper.skeleton-card {
+            background: #ffffff !important;
+            border: 1.5px solid #e2e8f0 !important;
+            cursor: default !important;
+            pointer-events: none !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+            transform: none !important;
+        }
+
+        #product-card .card-wrapper.skeleton-card:hover {
+            transform: none !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+        }
+
+        /* Dark mode support for POS Skeletons */
+        body[light-mode="dark"] .pos-skeleton-shimmer {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%) !important;
+            background-size: 200% 100% !important;
+        }
+
+        body[light-mode="dark"] #product-slider .swiper-slide.skeleton-brand-card {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+        }
+
+        body[light-mode="dark"] #product-card .card-wrapper.skeleton-card {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+        }
+
+        body[light-mode="dark"] #product-card .card-wrapper.skeleton-card:hover {
+            border-color: #334155 !important;
+        }
+
+        /* ========================================================
            POS Cart Table & Redesigned Delete Button
            ======================================================== */
         .pos-cart-table-wrapper table {
@@ -2826,7 +2889,11 @@
                 <section id="product-slider" class="mb-1" style="flex-shrink: 0;">
                     <div class="swiper-container">
                         <div class="swiper-wrapper" id="ProductCategoryData">
-                            <!-- Add more slides as needed -->
+                            @for ($i = 0; $i < 6; $i++)
+                                <div class="swiper-slide brand-card skeleton-brand-card">
+                                    <div class="pos-skeleton-shimmer" style="width: 75px; height: 14px; border-radius: 6px;"></div>
+                                </div>
+                            @endfor
                         </div>
                     </div>
 
@@ -2842,6 +2909,25 @@
                 <!-- Pos Product Card Start (Scrollable Area) -->
                 <section id="product-card" class="flex-grow-1 overflow-auto">
                     <div class="row g-2" id="ProductCategoryWishDataItem">
+                        @for ($i = 0; $i < 28; $i++)
+                            <div class="col-xl-3 col-md-4 col-6 d-flex align-items-stretch">
+                                <div class="card-wrapper skeleton-card">
+                                    <div class="product-price d-flex align-items-center justify-content-between">
+                                        <div class="pos-skeleton-shimmer" style="width: 52px; height: 15px; border-radius: 4px;"></div>
+                                        <div class="pos-skeleton-shimmer" style="width: 44px; height: 15px; border-radius: 12px;"></div>
+                                    </div>
+                                    <div class="product-name-area my-1 d-flex flex-column gap-1">
+                                        <div class="pos-skeleton-shimmer" style="width: 85%; height: 12px; border-radius: 4px;"></div>
+                                        <div class="pos-skeleton-shimmer" style="width: 55%; height: 10px; border-radius: 4px;"></div>
+                                    </div>
+                                    <div class="drescription d-flex align-items-center flex-wrap gap-1 mt-auto pt-1">
+                                        <div class="pos-skeleton-shimmer" style="width: 46px; height: 15px; border-radius: 4px;"></div>
+                                        <div class="pos-skeleton-shimmer" style="width: 72px; height: 15px; border-radius: 4px;"></div>
+                                        <div class="pos-skeleton-shimmer" style="width: 65px; height: 15px; border-radius: 9999px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endfor
                     </div>
                 </section>
                 <!-- Pos Product Card End -->
@@ -3571,12 +3657,55 @@
 
 
 
+        // POS Skeleton Loader Renderers
+        function showProductSkeletons(count = 28) {
+            let skeletonHtml = '';
+            for (let i = 0; i < count; i++) {
+                skeletonHtml += `
+                <div class="col-xl-3 col-md-4 col-6 d-flex align-items-stretch">
+                    <div class="card-wrapper skeleton-card">
+                        <div class="product-price d-flex align-items-center justify-content-between">
+                            <div class="pos-skeleton-shimmer" style="width: 52px; height: 15px; border-radius: 4px;"></div>
+                            <div class="pos-skeleton-shimmer" style="width: 44px; height: 15px; border-radius: 12px;"></div>
+                        </div>
+                        <div class="product-name-area my-1 d-flex flex-column gap-1">
+                            <div class="pos-skeleton-shimmer" style="width: 85%; height: 12px; border-radius: 4px;"></div>
+                            <div class="pos-skeleton-shimmer" style="width: 55%; height: 10px; border-radius: 4px;"></div>
+                        </div>
+                        <div class="drescription d-flex align-items-center flex-wrap gap-1 mt-auto pt-1">
+                            <div class="pos-skeleton-shimmer" style="width: 46px; height: 15px; border-radius: 4px;"></div>
+                            <div class="pos-skeleton-shimmer" style="width: 72px; height: 15px; border-radius: 4px;"></div>
+                            <div class="pos-skeleton-shimmer" style="width: 65px; height: 15px; border-radius: 9999px;"></div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+            $("#ProductCategoryWishDataItem").html(skeletonHtml);
+        }
+
+        function showBrandSkeletons(count = 6) {
+            let skeletonHtml = '';
+            for (let i = 0; i < count; i++) {
+                skeletonHtml += `
+                <div class="swiper-slide brand-card skeleton-brand-card">
+                    <div class="pos-skeleton-shimmer" style="width: 75px; height: 14px; border-radius: 6px;"></div>
+                </div>`;
+            }
+            $("#ProductCategoryData").html(skeletonHtml);
+            if (typeof initPosSwiper === 'function') {
+                initPosSwiper();
+            }
+        }
+
         // Load Products By Brand
         async function loadProductsByBrand(brandId) {
             try {
                 // Toggle active brand styling
                 $('#ProductCategoryData .swiper-slide').removeClass('active active-brand');
                 $(`#ProductCategoryData .swiper-slide[data-id="${brandId}"]`).addClass('active active-brand');
+
+                // Show product skeletons immediately while loading
+                showProductSkeletons(28);
 
                 const res = await axios.get("/api/brand-wish-product-data-show", {
                     ...HeaderToken(),
@@ -3589,6 +3718,7 @@
                 renderProducts(allProducts);
             } catch (error) {
                 console.error("Error loading products:", error);
+                $("#ProductCategoryWishDataItem").html('<div class="col-12 text-center text-danger p-4 fw-bold">❌ পণ্য লোড করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।</div>');
             }
         }
 
