@@ -1717,10 +1717,10 @@
             background: #ffffff !important;
             border-radius: 12px !important;
             border: 1.5px solid #e2e8f0 !important;
-            padding: 6px 8px !important;
-            height: 98px !important;
-            min-height: 98px !important;
-            max-height: 98px !important;
+            padding: 8px 10px 10px 10px !important;
+            height: 116px !important;
+            min-height: 116px !important;
+            max-height: 116px !important;
             margin: 0 !important;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -1803,12 +1803,12 @@
 
         #product-card .card-wrapper .drescription {
             margin-top: auto !important;
-            padding-top: 2px !important;
+            padding-top: 3px !important;
             display: flex !important;
             align-items: center !important;
             flex-wrap: wrap !important;
-            gap: 3px !important;
-            row-gap: 2px !important;
+            gap: 4px !important;
+            row-gap: 3px !important;
         }
 
         .cart-item-brand-tag {
