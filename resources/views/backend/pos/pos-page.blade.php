@@ -1778,6 +1778,62 @@
             color: #cbd5e1 !important;
         }
 
+        /* Refined Door Handedness Badge System */
+        .pos-door-badge {
+            font-size: 10px !important;
+            font-weight: 600 !important;
+            color: #0369a1 !important;
+            background: #f0f9ff !important;
+            border: 1px solid #bae6fd !important;
+            border-radius: 9999px !important;
+            padding: 1.5px 8px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+            line-height: 1.3 !important;
+            white-space: nowrap !important;
+            letter-spacing: 0.2px !important;
+            box-shadow: 0 1px 2px rgba(3, 105, 161, 0.05) !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .pos-door-badge i {
+            color: #0284c7 !important;
+            font-size: 9px !important;
+        }
+
+        .pos-cart-door-badge {
+            font-size: 9.5px !important;
+            padding: 1px 6px !important;
+            border-radius: 4px !important;
+            margin-top: 2px !important;
+            background: #f0f9ff !important;
+            color: #0369a1 !important;
+            border: 1px solid #bae6fd !important;
+            box-shadow: none !important;
+        }
+
+        .pos-cart-door-badge i {
+            color: #0284c7 !important;
+            font-size: 8.5px !important;
+        }
+
+        body[light-mode="dark"] .pos-door-badge {
+            background: rgba(14, 165, 233, 0.12) !important;
+            border-color: #0369a1 !important;
+            color: #7dd3fc !important;
+        }
+
+        body[light-mode="dark"] .pos-door-badge i {
+            color: #38bdf8 !important;
+        }
+
+        body[light-mode="dark"] .pos-cart-door-badge {
+            background: rgba(14, 165, 233, 0.15) !important;
+            border-color: #1e3a8a !important;
+            color: #7dd3fc !important;
+        }
+
         body[light-mode="dark"] #product-card .card-wrapper .name.product-main-title {
             color: #f1f5f9 !important;
         }
@@ -3439,7 +3495,7 @@
 
                 const isOutOfStock = (product.quantity <= 0);
                 const stockBadgeClass = isOutOfStock ? 'out-of-stock' : '';
-                const doorBadge = product.door_side ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 12px; border-radius: 6px; padding: 2px 6px;"><i class="fa-solid fa-door-open me-1"></i>${product.door_side}</span>` : '';
+                const doorBadge = product.door_side ? `<span class="pos-door-badge" title="Door Handedness: ${product.door_side}"><i class="fa-solid fa-door-open"></i><span>${product.door_side}</span></span>` : '';
                 const brandName = (product.brand && product.brand.name) ? product.brand.name : (product.brand_name || '');
                 const brandBadge = brandName ? `<span class="product-brand-tag" title="Brand: ${brandName}"><i class="fa-solid fa-tag"></i><span>${brandName}</span></span>` : '';
 
@@ -3649,7 +3705,7 @@
                 const codeText = formatProductCode(product.product_code);
                 const categoryName = product.category ? (product.category.category_name || product.category.name || "") : "";
                 const categoryBadge = categoryName ? `<span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold" style="font-size: 12px; border-radius: 6px; padding: 2px 5px;"><i class="fa-solid fa-folder me-1"></i>${categoryName}</span>` : "";
-                const doorSideBadge = product.door_side ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold" style="font-size: 12px; border-radius: 6px; padding: 2px 5px;"><i class="fa-solid fa-door-open me-1"></i>${product.door_side}</span>` : "";
+                const doorSideBadge = product.door_side ? `<span class="pos-door-badge ms-1" style="font-size: 9.5px; padding: 1px 6px;"><i class="fa-solid fa-door-open"></i><span>${product.door_side}</span></span>` : "";
 
                 itemsHtml += `
             <a href="javascript:void(0)" 
@@ -3812,7 +3868,7 @@
                 const product = (typeof allProducts !== 'undefined' && allProducts.length) ? allProducts.find((p) => p.id === item.id) : null;
                 const itemBrand = item.brand_name || (product && product.brand && product.brand.name ? product.brand.name : (product && product.brand_name ? product.brand_name : ''));
                 const brandTag = itemBrand ? `<span class="cart-item-brand-tag ms-1" title="Brand: ${itemBrand}"><i class="fa-solid fa-tag"></i><span>${itemBrand}</span></span>` : '';
-                const doorTag = item.door_side ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold d-inline-flex align-items-center gap-1 mt-1" style="font-size: 12px; padding: 1px 5px; border-radius: 4px;"><i class="fa-solid fa-door-open" style="font-size: 12px;"></i> ${item.door_side}</span>` : '';
+                const doorTag = item.door_side ? `<span class="pos-door-badge pos-cart-door-badge" title="Door Handedness: ${item.door_side}"><i class="fa-solid fa-door-open"></i><span>${item.door_side}</span></span>` : '';
                 const row = `
                 <tr style="border-bottom: 1px solid #f1f5f9;">
                     <td style="padding: 7px 6px 7px 14px !important; vertical-align: middle; text-align: left; overflow: hidden;">

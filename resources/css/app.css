@@ -177,4 +177,61 @@
         transform: translateY(-1px);
         box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.2);
     }
+
+    /* Refined Door Handedness Badge System */
+    .pos-door-badge {
+        font-size: 10px !important;
+        font-weight: 600 !important;
+        color: #0369a1 !important;
+        background-color: #f0f9ff !important;
+        border: 1px solid #bae6fd !important;
+        border-radius: 9999px !important;
+        padding: 1.5px 8px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        line-height: 1.3 !important;
+        white-space: nowrap !important;
+        letter-spacing: 0.2px !important;
+        box-shadow: 0 1px 2px rgba(3, 105, 161, 0.06) !important;
+        transition: all 0.15s ease !important;
+    }
+
+    .pos-door-badge i {
+        color: #0284c7 !important;
+        font-size: 9px !important;
+    }
+
+    .pos-cart-door-badge {
+        font-size: 9.5px !important;
+        padding: 1px 6px !important;
+        border-radius: 4px !important;
+        margin-top: 2px !important;
+        background-color: #f0f9ff !important;
+        color: #0369a1 !important;
+        border: 1px solid #bae6fd !important;
+        box-shadow: none !important;
+    }
+
+    .pos-cart-door-badge i {
+        color: #0284c7 !important;
+        font-size: 8.5px !important;
+    }
+
+    /* Dark Mode */
+    [light-mode="dark"] .pos-door-badge {
+        background-color: rgba(14, 165, 233, 0.12) !important;
+        border-color: #0369a1 !important;
+        color: #7dd3fc !important;
+    }
+
+    [light-mode="dark"] .pos-door-badge i {
+        color: #38bdf8 !important;
+    }
+
+    [light-mode="dark"] .pos-cart-door-badge {
+        background-color: rgba(14, 165, 233, 0.15) !important;
+        border-color: #1e3a8a !important;
+        color: #7dd3fc !important;
+    }
 }
