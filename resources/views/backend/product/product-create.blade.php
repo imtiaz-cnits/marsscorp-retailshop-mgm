@@ -586,8 +586,8 @@
                 <!-- Select Dropdowns with Add Buttons -->
                 <div class="row g-2.5">
                     <div class="col-lg-6">
-                        <div class="form-row flex-column align-items-start gap-1">
-                            <label for="ProductBrand" class="fw-bold small" style="color: #334155; display: block; margin-bottom: 0px !important; font-size: 13px;">Brand</label>
+                        <div class="form-row flex-column align-items-start">
+                            <label for="ProductBrand" class="fw-semibold small" style="color: #334155; display: block; margin-bottom: 2px !important; font-size: 13px;">Brand</label>
                             <div class="d-flex align-items-center w-100 gap-2">
                                 <!-- Native select kept hidden for 100% backend & DOM compatibility -->
                                 <select class="form-select input-style d-none" id="ProductBrand"
@@ -617,8 +617,8 @@
                     </div>
 
                     <div class="col-lg-6">
-                        <div class="form-row flex-column align-items-start gap-1">
-                            <label for="ProductCategoryDataID" class="fw-bold small" style="color: #334155; display: block; margin-bottom: 0px !important; font-size: 13px;">Category <span class="text-danger">*</span></label>
+                        <div class="form-row flex-column align-items-start">
+                            <label for="ProductCategoryDataID" class="fw-semibold small" style="color: #334155; display: block; margin-bottom: 2px !important; font-size: 13px;">Category <span class="text-danger">*</span></label>
                             <div class="d-flex align-items-center w-100 gap-2">
                                 <!-- Native select kept hidden for 100% backend & DOM compatibility -->
                                 <select class="d-none" id="ProductCategoryDataID">
@@ -711,7 +711,7 @@
                 <div class="row mt-2 g-2.5">
                     <div class="col-lg-12">
                         <div class="upload-profile">
-                            <label class="fw-bold small" style="color: #334155; display: block; margin-bottom: 6px !important; font-size: 13px;">Product Photo</label>
+                            <label class="fw-semibold small" style="color: #334155; display: block; margin-bottom: 2px !important; font-size: 13px;">Product Photo</label>
                             <div class="item align-items-center">
                                 <div class="img-box" id="ProductImageBox" title="Product Image Preview" style="width: 84px; height: 70px; border-radius: 8px; background: #f8fafc; border: 1.5px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; position: relative;">
                                     <div id="ProductImageDefaultIcon" class="d-flex align-items-center justify-content-center w-100 h-100">
@@ -733,35 +733,35 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-12 mt-2">
-                        <div class="form-row flex-column align-items-start gap-1">
-                            <label for="ProductName" class="fw-bold small" style="color: #334155; display: block; margin-bottom: 0px !important; font-size: 13px;">Product Name <span class="text-danger">*</span></label>
+                    <div class="col-lg-12">
+                        <div class="form-row flex-column align-items-start">
+                            <label for="ProductName" class="fw-semibold small" style="color: #334155; display: block; margin-bottom: 2px !important; font-size: 13px;">Product Name <span class="text-danger">*</span></label>
                             <input type="text" placeholder="Product Name *" id="ProductName" class="form-control" style="width: 100%; height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
                         </div>
                     </div>
 
                     <div class="col-lg-4">
-                        <div class="form-row flex-column align-items-start gap-1">
-                            <label for="ProductQuantity" class="fw-bold small" style="color: #334155; display: block; margin-bottom: 0px !important; font-size: 13px;">Product Quantity</label>
+                        <div class="form-row flex-column align-items-start">
+                            <label for="ProductQuantity" class="fw-semibold small" style="color: #334155; display: block; margin-bottom: 2px !important; font-size: 13px;">Product Quantity</label>
                             <input type="text" placeholder="Quantity" id="ProductQuantity" class="form-control" style="height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <div class="form-row flex-column align-items-start gap-1">
-                            <label for="ProductCostPrice" class="fw-bold small" style="color: #334155; display: block; margin-bottom: 0px !important; font-size: 13px;">Cost Price</label>
+                        <div class="form-row flex-column align-items-start">
+                            <label for="ProductCostPrice" class="fw-semibold small" style="color: #334155; display: block; margin-bottom: 2px !important; font-size: 13px;">Cost Price</label>
                             <input type="text" placeholder="Cost Price" id="ProductCostPrice" class="form-control" style="height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <div class="form-row flex-column align-items-start gap-1">
-                            <label for="ProductSellingPrice" class="fw-bold small" style="color: #334155; display: block; margin-bottom: 0px !important; font-size: 13px;">Selling Price</label>
+                        <div class="form-row flex-column align-items-start">
+                            <label for="ProductSellingPrice" class="fw-semibold small" style="color: #334155; display: block; margin-bottom: 2px !important; font-size: 13px;">Selling Price</label>
                             <input type="text" placeholder="Selling Price" id="ProductSellingPrice" class="form-control" style="height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
                         </div>
                     </div>
 
                     <div class="col-lg-12">
-                        <div class="form-row flex-column align-items-start gap-1">
-                            <label for="ProductCodeInput" class="fw-bold small" style="color: #334155; display: block; margin-bottom: 0px !important; font-size: 13px;">Barcode / Product Code</label>
+                        <div class="form-row flex-column align-items-start">
+                            <label for="ProductCodeInput" class="fw-semibold small" style="color: #334155; display: block; margin-bottom: 2px !important; font-size: 13px;">Barcode / Product Code</label>
                             <div class="d-flex align-items-center gap-2 w-100">
                                 <input type="text" id="ProductCodeInput" class="form-control" placeholder="Enter or scan barcode..." style="flex: 1; height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
                                 <button type="button" class="btn text-white fw-bold text-nowrap d-flex align-items-center gap-2 px-3 shadow-sm" onclick="openProductCreateCameraScanner()" style="height: 42px; border-radius: 8px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none;">
@@ -1854,6 +1854,9 @@
                     resetProductImagePreview();
                     closeProductModal();
                     if (typeof getList === 'function') {
+                        if (typeof currentPage !== 'undefined') {
+                            currentPage = 1;
+                        }
                         await getList();
                     } else {
                         location.reload();

@@ -103,6 +103,14 @@ Reset Default CSS End
   border-radius: 12px !important;
 }
 
+body[light-mode="dark"] .data-table,
+body[data-layout-mode="dark"] .data-table,
+html.dark .data-table,
+body.dark-mode .data-table,
+body.dark .data-table {
+  background: transparent !important;
+}
+
 .bredcam {
   margin-bottom: 10px;
   margin: 0px 0px 10px 0px;

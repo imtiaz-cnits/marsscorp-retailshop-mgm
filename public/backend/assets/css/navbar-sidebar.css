@@ -96,7 +96,7 @@ label {
 /* Main Content Sizing Start */
 
 .main-content {
-  margin-left: 260px;
+  margin-left: 215px;
   transition: all 0.3s;
 }
 
@@ -117,7 +117,7 @@ body[data-sidebar-size="sm"] .main-content {
 @media (max-width: 992px) {
   .main-content {
     position: absolute;
-    left: -260px;
+    left: -215px;
     width: 100%;
   }
 }
@@ -129,7 +129,7 @@ body[data-sidebar-size="sm"] .main-content {
   position: fixed;
   top: 0;
   right: 0;
-  left: 260px;
+  left: 215px;
   z-index: 1005;
   background-color: var(--white);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -905,7 +905,7 @@ body[data-sidebar-size="sm"] .menu ul li.active ul li a {
 /* .....Sidebar Start..... */
 
 .vertical-menu {
-  width: 260px;
+  width: 215px;
   height: 100vh !important;
   z-index: 1005;
   background: var(--white);
@@ -1260,7 +1260,7 @@ body[data-sidebar-size="lg"] .vertical-menu-btn i {
   .vertical-menu {
     opacity: 0;
     top: 70px;
-    left: -260px;
+    left: -215px;
     transition: 0.3s;
   }
 

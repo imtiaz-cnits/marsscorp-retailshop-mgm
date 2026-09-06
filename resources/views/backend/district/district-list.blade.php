@@ -1,4 +1,4 @@
-   <style>
+﻿   <style>
     .data-table .table thead th:nth-child(2) {
 text-align: center;
     }
@@ -203,7 +203,7 @@ width: 40px;
                 </div>
             </div>
             <div class="copyright">
-                <footer class="footer text-center py-3 mt-4 text-muted small border-top">&copy; 2026 মার্স কর্পোরেশন (MARSS CORPORATION) | Software By: <a href="https://www.codenextit.com" target="_blank" class="text-success fw-bold text-decoration-none">CodeNext IT</a></footer>
+                <footer class="footer text-center py-3 mt-4 text-muted small border-top">&copy; {{ date('Y') }} MARSS CORPORATION | Software By: <a href="https://www.codenextit.com" target="_blank" class="text-success fw-bold text-decoration-none">CodeNext IT</a></footer>
             </div>
 
         </div>

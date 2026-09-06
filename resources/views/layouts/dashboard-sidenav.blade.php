@@ -64,6 +64,7 @@
   <style>
     /* Vibrant Colorful Emerald Teal Mesh Gradient Theme for Sidebar */
     .vertical-menu {
+      width: 215px !important;
       background: linear-gradient(165deg, #064e3b 0%, #047857 35%, #0d9488 70%, #0f766e 100%) !important;
       border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
       box-shadow: 4px 0 25px rgba(4, 120, 87, 0.25) !important;
@@ -71,6 +72,56 @@
       flex-direction: column !important;
       height: 100vh !important;
       overflow: hidden !important;
+    }
+
+    /* Desktop Main Content & Topbar offset for 215px sidebar */
+    @media (min-width: 992px) {
+      .main-content {
+        margin-left: 215px !important;
+      }
+      .isvertical-topbar,
+      #page-topbar {
+        left: 215px !important;
+      }
+    }
+
+    /* Collapsed Sidebar size offset */
+    body[data-sidebar-size="sm"] .main-content {
+      margin-left: 70px !important;
+    }
+    body[data-sidebar-size="sm"] .isvertical-topbar,
+    body[data-sidebar-size="sm"] #page-topbar {
+      left: 70px !important;
+    }
+
+    /* Compact Left/Right gap for sidebar items in desktop mode */
+    .vertical-menu .sidebar-panel-scroll {
+      padding-left: 7px !important;
+      padding-right: 7px !important;
+    }
+
+    .vertical-menu .sidebar-link,
+    .vertical-menu .sidebar-drilldown-trigger {
+      padding: 7.5px 8px !important;
+      gap: 8px !important;
+    }
+
+    .vertical-menu .sidebar-submenu-panel a,
+    .vertical-menu .sidebar-submenu-panel .sidebar-back-btn {
+      padding: 7.5px 8px !important;
+      gap: 8px !important;
+    }
+
+    .vertical-menu .navbar-brand-box {
+      padding: 0 10px !important;
+    }
+
+    .vertical-menu .sidebar-bottom-logout {
+      padding: 8px 9px !important;
+    }
+
+    .vertical-menu .sidebar-bottom-logout .sidebar-logout-btn {
+      padding: 7.5px 9px !important;
     }
 
     /* Prevent Duplicate Logo on Topbar on Desktop */
@@ -208,62 +259,6 @@
       width: 100% !important;
       position: relative !important;
       overflow: hidden !important;
-    }
-
-    /* Drilldown Panel Base Styles */
-    .vertical-menu #sidebar-main-panel,
-    .vertical-menu .sidebar-submenu-panel {
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100% !important;
-      height: 100% !important;
-      background: linear-gradient(165deg, #064e3b 0%, #047857 35%, #0d9488 70%, #0f766e 100%) !important;
-      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease, visibility 0.28s ease !important;
-    }
-
-    /* Submenu Link Styling Reset */
-    .vertical-menu .sidebar-submenu-panel a {
-      color: #cbd5e1 !important;
-      text-decoration: none !important;
-    }
-
-    .vertical-menu .sidebar-submenu-panel a:hover {
-      color: #ffffff !important;
-      background: rgba(255, 255, 255, 0.12) !important;
-    }
-
-    /* Expanded (Default) Sidebar Sliding Drilldown Rules */
-    .vertical-menu #sidebar-main-panel.translate-x-0 {
-      transform: translateX(0) !important;
-      opacity: 1 !important;
-      visibility: visible !important;
-      pointer-events: auto !important;
-      z-index: 10 !important;
-    }
-
-    .vertical-menu #sidebar-main-panel.-translate-x-full {
-      transform: translateX(-100%) !important;
-      opacity: 0 !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
-      z-index: 5 !important;
-    }
-
-    .vertical-menu .sidebar-submenu-panel.translate-x-full {
-      transform: translateX(100%) !important;
-      opacity: 0 !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
-      z-index: 5 !important;
-    }
-
-    .vertical-menu .sidebar-submenu-panel.translate-x-0 {
-      transform: translateX(0) !important;
-      opacity: 1 !important;
-      visibility: visible !important;
-      pointer-events: auto !important;
-      z-index: 20 !important;
     }
 
     .vertical-menu .sidebar-panel-scroll {
@@ -680,6 +675,25 @@
     body[data-layout-mode="dark"] .page-content,
     body[data-sidebar="dark"] .page-content {
       background-color: #0f172a !important;
+    }
+
+    /* Dark Mode Topbar Background (#0b0f19) */
+    body[light-mode="dark"] #page-topbar,
+    body[data-layout-mode="dark"] #page-topbar,
+    html.dark #page-topbar,
+    body.dark-mode #page-topbar,
+    body[light-mode="dark"] .isvertical-topbar,
+    body[data-layout-mode="dark"] .isvertical-topbar,
+    html.dark .isvertical-topbar,
+    body.dark-mode .isvertical-topbar,
+    body[light-mode="dark"] .navbar-header,
+    body[data-layout-mode="dark"] .navbar-header,
+    html.dark .navbar-header,
+    body.dark-mode .navbar-header {
+      background-color: #0b0f19 !important;
+      background: #0b0f19 !important;
+      border-bottom: 1px solid #1e293b !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
     }
 
     /* Card & Card Header Dark Mode Styling */
@@ -1274,7 +1288,7 @@
         </button>
 
         <a href="{{ url('/admin-dashboard-home') }}" class="navbar-top-logo-link d-flex d-lg-none align-items-center ms-2 text-decoration-none py-1">
-          <img src="{{ asset('backend/assets/icons/favicon.svg') }}" alt="মার্স কর্পোরেশন (MARSS CORPORATION)" class="navbar-top-logo" style="height: 38px; max-width: 170px; object-fit: contain;" />
+          <img src="{{ asset('backend/assets/img/marss-corporation-logo.svg') }}" alt="মার্স কর্পোরেশন (MARSS CORPORATION)" class="navbar-top-logo" style="height: 38px; max-width: 170px; object-fit: contain;" />
         </a>
 
         <!-- navbar searchbar -->
@@ -1531,7 +1545,7 @@
       })();
     </script>
     <!-- LOGO Box -->
- <div class="navbar-brand-box">
+    <div class="navbar-brand-box">
   <a href="{{url('admin-dashboard')}}" class="logo logo-dark d-flex align-items-center text-decoration-none">
     
     <!-- Collapsed Sidebar Icon (Small Mode) -->
@@ -1540,16 +1554,9 @@
     </span>
     
     <!-- Expanded Sidebar Icon (Large Mode) -->
-    <span class="logo-lg d-flex align-items-center gap-2">
-      
-      <!-- Icon size increased significantly -->
-      <img src="{{ asset('backend/assets/img/marss-corporation-icon.svg') }}" alt="MARSS CORPORATION" style="width: 180px; height: auto; max-height: 80px; border-radius: 8px; object-fit: contain;" />
-      
-      <!-- POS Badge -->
-      <span class="badge bg-success text-white px-1 py-1 ms-1" style="font-size: 8px; border-radius: 4px; font-weight: 600; font-family: 'Valley Sans', sans-serif;">
-        POS
-      </span>
-      
+    <span class="logo-lg d-flex align-items-center">
+      <!-- Full MARSS CORPORATION Logo -->
+      <img src="{{ asset('backend/assets/img/marss-corporation-icon.svg') }}" alt="MARSS CORPORATION" style="width: 175px; height: auto; max-height: 55px; border-radius: 8px; object-fit: contain;" />
     </span>
   </a>
 </div>
@@ -1582,7 +1589,7 @@
     <div id="sidebar-slider-wrapper" class="relative flex-1 w-full overflow-hidden">
       
       <!-- Panel 1: Main Menu Panel -->
-      <div id="sidebar-main-panel" class="sidebar-panel-scroll absolute inset-0 w-full h-full overflow-y-auto overflow-x-hidden transition-transform duration-300 ease-in-out py-2 px-3 {{ $activeParent ? '-translate-x-full pointer-events-none' : 'translate-x-0 pointer-events-auto' }}">
+      <div id="sidebar-main-panel" class="sidebar-panel-scroll absolute inset-0 w-full h-full overflow-y-auto overflow-x-hidden transition-transform duration-300 ease-in-out py-2 px-3 {{ $activeParent ? '-translate-x-full pointer-events-none' : 'translate-x-0' }}">
         <ul class="space-y-1">
           
           <!-- 1. Dashboard -->
@@ -2287,7 +2294,7 @@
         });
 
         // Slide main panel out to the left
-        mainPanel.classList.remove('translate-x-0', 'pointer-events-auto');
+        mainPanel.classList.remove('translate-x-0');
         mainPanel.classList.add('-translate-x-full', 'pointer-events-none');
 
         // Slide target panel in from the right
@@ -2308,7 +2315,7 @@
 
         // Slide main panel back in from the left
         mainPanel.classList.remove('-translate-x-full', 'pointer-events-none');
-        mainPanel.classList.add('translate-x-0', 'pointer-events-auto');
+        mainPanel.classList.add('translate-x-0');
       };
 
       document.addEventListener('DOMContentLoaded', function() {

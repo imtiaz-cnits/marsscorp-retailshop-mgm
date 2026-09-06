@@ -1,328 +1,926 @@
+<!-- Flatpickr Styles & Scripts -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <!-- Hero Main Content Start -->
 <div class="main-content">
-    <div class="page-content">
-        <!-- Table Start -->
-        <div class="bredcam">
-            <div class="bredcam-title">
-                <h1>Invoices List</h1>
-            </div>
-        </div>
-        <div class="data-table">
-            <div class="card">
-                <div class="card-body">
-                    <div class="date-wrapper mb-3">
-
-                        <div class="item mb-2">
-                            <div class="form-row w-100">
-                                <label for="title">Start Date *</label> <br>
-                                <input type="date" id="startDate" name="dateInput">
+    <div class="page-content min-h-screen flex flex-col justify-between">
+        <div class="data-table flex-grow">
+            <div class="card bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm overflow-hidden mb-4 transition-colors">
+                <div class="card-body product-card-body p-4 sm:p-6 md:p-10">
+                    
+                    <!-- 1. Top Section: Page Title (Zero bottom margin, description removed) -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 flex items-center justify-center border border-emerald-100 dark:border-slate-800 shadow-sm flex-shrink-0">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
                             </div>
+                            <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white tracking-tight leading-none m-0 p-0">Invoices List</h1>
                         </div>
-
-                        <div class="item mb-2">
-                            <div class="form-row w-100">
-                                <label for="title">End Date *</label> <br>
-                                <input type="date" id="endDate" name="dateInput">
-                            </div>
-                        </div>
-
-                        <button class="search-btn" onclick="fetchInvoiceReport()">Search</button>
-
                     </div>
-                    <!-- Action Buttons -->
-                    <div class="button-wrapper mb-3">
-                        <!-- Search and Filter -->
-                        <div class="d-flex">
-                            <div class="input-group">
-                                <input type="text" id="searchInput" class="form-control"
-                                    placeholder="Searching Invoice..." />
-                                <!-- Entries per page -->
-                                <div
-                                    style="
-                          display: flex;
-                          align-items: center;
-                          gap: 10px;
-                          justify-content: center;
-                        ">
-                                    <div class="entries-page">
-                                        <label for="entries" class="mr-2">Entries:</label>
-                                        <div class="select-container">
-                                            <select id="entries" class="form-control" style="width: auto">
-                                                <option value="10">10</option>
-                                                <option value="25">25</option>
-                                                <option value="50" selected>50</option>
-                                                <option value="100">100</option>
-                                            </select>
-                                            <span class="dropdown-icon">&#9662;</span>
-                                            <!-- Dropdown icon -->
-                                        </div>
-                                    </div>
 
-                                    <div class="input-group-append">
-                                        <div class="dropdown-custom">
-                                            <button class="dropdown-button">
-                                                <svg width="32" height="32" viewBox="0 0 39 38" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <rect y="1" width="25" height="3" rx="1.5"
-                                                        fill="#192045" />
-                                                    <rect y="11" width="25" height="3" rx="1.5"
-                                                        fill="#192045" />
-                                                    <rect y="21" width="25" height="3" rx="1.5"
-                                                        fill="#192045" />
-                                                    <path
-                                                        d="M32 1C32 0.447715 31.5523 -2.41411e-08 31 0C30.4477 2.41411e-08 30 0.447715 30 1L32 1ZM30.2929 37.7071C30.6834 38.0976 31.3166 38.0976 31.7071 37.7071L38.0711 31.3431C38.4616 30.9526 38.4616 30.3195 38.0711 29.9289C37.6805 29.5384 37.0474 29.5384 36.6569 29.9289L31 35.5858L25.3431 29.9289C24.9526 29.5384 24.3195 29.5384 23.9289 29.9289C23.5384 30.3195 23.5384 30.9526 23.9289 31.3431L30.2929 37.7071ZM30 1L30 37L32 37L32 1L30 1Z"
-                                                        fill="#192045" />
-                                                </svg>
-                                                <span>Filter</span>
-                                            </button>
-                                            <div class="dropdown-menus">
-                                                <a href="#" data-filter="all">All time</a>
-                                                <a href="#" data-filter="today">Today</a>
-                                                <a href="#" data-filter="7">Last 7 Days</a>
-                                                <a href="#" data-filter="30">Last Month</a>
-                                                <a href="#" data-filter="365">Last Year</a>
-                                            </div>
-                                        </div>
+                    <!-- 2. Controls & Filter Rows: Searchbar + 2 Date Fields in Row 1; Show Entries + Filter + Export in Row 2 -->
+                    <!-- Row 1: 3 Columns in 1 Row on Desktop: Search Bar, Start Date, End Date -->
+                    <div class="row-controls-grid grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 mb-3 sm:mb-4 w-full">
+                        <!-- 1st Column: Search Bar -->
+                        <div class="search-input-wrapper unified-ui-border h-[38px] flex items-center px-4 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm transition-all focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20">
+                            <svg class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0 mr-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input type="text" id="searchInput" style="border: none !important; outline: none !important; box-shadow: none !important; width: 100% !important; padding: 0 8px !important;" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0 focus:border-0 focus:outline-none" placeholder="Searching Invoice..." />
+                        </div>
+
+                        <!-- 2nd Column: Start Date with Flatpickr -->
+                        <div class="date-input-wrapper unified-ui-border h-[38px] flex items-center px-4 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer">
+                            <input type="text" id="startDate" name="dateInput" placeholder="Start Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-400 p-0 cursor-pointer" />
+                            <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </div>
+
+                        <!-- 3rd Column: End Date with Flatpickr -->
+                        <div class="date-input-wrapper unified-ui-border h-[38px] flex items-center px-4 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer">
+                            <input type="text" id="endDate" name="dateInput" placeholder="End Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-400 p-0 cursor-pointer" />
+                            <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Show Entries + Filter on Left, Export Buttons on Right above Table (Centered on Mobile) -->
+                    <div class="row-actions-bar flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 mb-4 w-full">
+                        <!-- Left Group: Show Entries + Filter Dropdown (Centered on Mobile, Left-aligned on Desktop) -->
+                        <div class="filter-controls-group flex items-center justify-center sm:justify-start gap-2 sm:gap-2.5 flex-wrap w-full sm:w-auto">
+                            <!-- Entries Selector (Default 15) -->
+                            <div class="entries-wrapper unified-ui-border flex items-center gap-1 bg-white dark:bg-slate-800/90 px-3 h-[38px] rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 shadow-sm transition-all hover:border-emerald-500 flex-shrink-0">
+                                <span class="text-slate-400 dark:text-slate-400 text-[11px] uppercase tracking-wider font-bold">Show:</span>
+                                <select id="entries" class="bg-transparent border-0 text-xs font-bold text-emerald-700 dark:text-emerald-400 focus:outline-none cursor-pointer py-1 pr-1">
+                                    <option value="10" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">10</option>
+                                    <option value="15" selected class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">15</option>
+                                    <option value="25" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">25</option>
+                                    <option value="50" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">50</option>
+                                    <option value="100" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">100</option>
+                                </select>
+                            </div>
+
+                            <!-- Custom Quick Filter Dropdown (Compact width) -->
+                            <div class="custom-searchable-select custom-filter-dropdown w-[130px] sm:w-[145px] flex-shrink-0" id="invoiceFilterDropdown">
+                                <div class="select-trigger unified-ui-border flex items-center justify-between px-3 h-[38px] bg-white dark:bg-slate-800/90 rounded-xl shadow-sm text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer hover:border-emerald-500 transition-all duration-150" onclick="toggleCustomInvoiceFilter()">
+                                    <div class="flex items-center gap-1.5 overflow-hidden">
+                                        <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                                        </svg>
+                                        <span id="selectedFilterLabel" class="selected-text truncate font-semibold">Filter</span>
+                                    </div>
+                                    <svg class="w-3.5 h-3.5 text-slate-400 chevron-icon transition-transform duration-200 flex-shrink-0 ms-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="select-menu dropdown-menus shadow-xl" style="min-width: 170px;">
+                                    <div class="select-options-list">
+                                        <a href="#" data-filter="all" class="select-option-item active" onclick="selectInvoiceFilterOption(event, 'all', 'All time')">
+                                            <span>All time</span>
+                                            <i class="fa-solid fa-check small text-emerald-600 check-icon"></i>
+                                        </a>
+                                        <a href="#" data-filter="today" class="select-option-item" onclick="selectInvoiceFilterOption(event, 'today', 'Today')">
+                                            <span>Today</span>
+                                        </a>
+                                        <a href="#" data-filter="7" class="select-option-item" onclick="selectInvoiceFilterOption(event, '7', 'Last 7 Days')">
+                                            <span>Last 7 Days</span>
+                                        </a>
+                                        <a href="#" data-filter="30" class="select-option-item" onclick="selectInvoiceFilterOption(event, '30', 'Last Month')">
+                                            <span>Last Month</span>
+                                        </a>
+                                        <a href="#" data-filter="365" class="select-option-item" onclick="selectInvoiceFilterOption(event, '365', 'Last Year')">
+                                            <span>Last Year</span>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="button-item">
-
-                            <div class="icon-buttons">
-                                <button id="copyBtn">
-                                    <svg width="32" height="32" viewBox="0 0 44 44" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <rect x="0.5" y="0.5" width="43" height="43" rx="5.5"
-                                            stroke="#192045" />
-                                        <path
-                                            d="M33.3002 17.45H21.1502C19.659 17.45 18.4502 18.6588 18.4502 20.15V32.3C18.4502 33.7912 19.659 35 21.1502 35H33.3002C34.7914 35 36.0002 33.7912 36.0002 32.3V20.15C36.0002 18.6588 34.7914 17.45 33.3002 17.45Z"
-                                            stroke="#192045" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round" />
-                                        <path
-                                            d="M13.05 25.55H11.7C10.9839 25.55 10.2972 25.2655 9.79081 24.7592C9.28446 24.2528 9 23.5661 9 22.85V10.7C9 9.98392 9.28446 9.29716 9.79081 8.79081C10.2972 8.28446 10.9839 8 11.7 8H23.85C24.5661 8 25.2528 8.28446 25.7592 8.79081C26.2655 9.29716 26.55 9.98392 26.55 10.7V12.05"
-                                            stroke="#192045" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round" />
-                                    </svg>
-                                </button>
-                                <button id="csvBtn">
-                                    <svg width="32" height="32" viewBox="0 0 44 44" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <rect x="0.5" y="0.5" width="43" height="43" rx="5.5"
-                                            stroke="#192045" />
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                            d="M36 14.7144V33.1114C36 34.1386 35.5936 35.1238 34.8703 35.8501C34.1469 36.5765 33.1658 36.9845 32.1429 36.9845H30.2143V35.048H32.1429C32.6543 35.048 33.1449 34.8439 33.5066 34.4808C33.8682 34.1176 34.0714 33.625 34.0714 33.1114V14.7144H30.2143C29.4471 14.7144 28.7112 14.4084 28.1687 13.8636C27.6262 13.3188 27.3214 12.58 27.3214 11.8096V7.93653H16.7143C16.2028 7.93653 15.7123 8.14056 15.3506 8.50373C14.9889 8.8669 14.7857 9.35946 14.7857 9.87306V27.3018H12.8571V9.87306C12.8571 8.84586 13.2635 7.86073 13.9869 7.13439C14.7102 6.40805 15.6913 6 16.7143 6H27.3214L36 14.7144ZM15.7828 34.7401C15.7938 35.0452 15.8683 35.3446 16.0015 35.6191C16.1347 35.8936 16.3236 36.1371 16.5561 36.3338C16.8069 36.543 17.1135 36.7056 17.478 36.8218C17.8444 36.94 18.2706 36.9981 18.7605 36.9981C19.4124 36.9981 19.9639 36.8954 20.4171 36.6921C20.8723 36.4888 21.2194 36.2041 21.4566 35.84C21.6977 35.474 21.8173 35.0499 21.8173 34.5697C21.8173 34.1359 21.7305 33.7757 21.5589 33.4852C21.3823 33.195 21.1329 32.9566 20.8356 32.7939C20.494 32.6043 20.1261 32.4673 19.7441 32.3872L18.5464 32.1083C18.2641 32.0562 17.9975 31.9396 17.7673 31.7675C17.6793 31.6994 17.6084 31.6115 17.5602 31.511C17.5119 31.4105 17.4878 31.3 17.4896 31.1885C17.4896 30.8864 17.6091 30.6385 17.8464 30.4448C18.0874 30.2493 18.4172 30.1505 18.8338 30.1505C19.1096 30.1505 19.3468 30.195 19.5474 30.2822C19.732 30.3577 19.895 30.4782 20.0218 30.6327C20.1405 30.7764 20.2202 30.9485 20.2532 31.1323H21.6996C21.6756 30.7379 21.5419 30.3582 21.3139 30.0362C21.0702 29.6886 20.7368 29.4142 20.3496 29.2423C19.8761 29.0336 19.3623 28.9331 18.8454 28.9479C18.2803 28.9479 17.7827 29.0447 17.3488 29.2384C16.9149 29.4301 16.5774 29.7031 16.3324 30.0537C16.0875 30.4061 15.966 30.8186 15.966 31.2911C15.966 31.6803 16.0431 32.0192 16.2013 32.3058C16.3594 32.5944 16.587 32.8287 16.8801 33.0166C17.1733 33.2005 17.5204 33.34 17.9196 33.429L19.1115 33.7079C19.5107 33.8028 19.8077 33.9267 20.0044 34.0816C20.1005 34.1552 20.1774 34.2511 20.2285 34.361C20.2795 34.471 20.3033 34.5918 20.2976 34.713C20.3013 34.9126 20.2441 35.1085 20.1336 35.2745C20.0095 35.4446 19.8385 35.5745 19.6419 35.6483C19.4278 35.7393 19.1616 35.7839 18.8454 35.7839C18.6197 35.7839 18.4153 35.7587 18.2282 35.7064C18.0577 35.659 17.8961 35.5837 17.7499 35.4837C17.6215 35.4003 17.5116 35.2912 17.427 35.1632C17.3424 35.0353 17.2849 34.8913 17.2581 34.7401H15.7828ZM10.5544 32.5169C10.5544 32.0367 10.62 31.6261 10.7511 31.2911C10.8655 30.9817 11.0681 30.713 11.3336 30.5184C11.6042 30.3368 11.9243 30.2441 12.2496 30.2531C12.5389 30.2531 12.7954 30.3151 13.0172 30.441C13.2346 30.5576 13.416 30.7317 13.5418 30.9445C13.6762 31.1685 13.7555 31.4214 13.7732 31.6823H15.2486V31.5429C15.2358 31.1861 15.1493 30.836 14.9946 30.5146C14.8399 30.1933 14.6203 29.9077 14.3499 29.676C14.0728 29.4403 13.7524 29.2613 13.4068 29.1493C13.0305 29.0214 12.6354 28.9579 12.2381 28.9615C11.5515 28.9615 10.9652 29.1048 10.4811 29.3933C9.999 29.6799 9.63257 30.0885 9.378 30.6172C9.12729 31.1478 9 31.7791 9 32.5131V33.4774C9 34.2114 9.12343 34.8408 9.37221 35.3675C9.62486 35.8923 9.99321 36.297 10.4754 36.5798C10.9575 36.8606 11.5438 37 12.2381 37C12.8031 37 13.3065 36.8935 13.752 36.6824C14.1956 36.4694 14.5504 36.1789 14.8127 35.8032C15.0788 35.4187 15.23 34.9659 15.2486 34.498V34.3508H13.7751C13.757 34.6002 13.6789 34.8414 13.5476 35.0538C13.419 35.2594 13.2379 35.4266 13.023 35.5379C12.7822 35.6549 12.5171 35.7127 12.2496 35.7064C11.9238 35.7157 11.6027 35.6266 11.3278 35.4508C11.0637 35.262 10.8627 34.9973 10.7511 34.6917C10.6101 34.3029 10.5434 33.891 10.5544 33.4774V32.5189V32.5169ZM26.4439 36.8509H24.606L22.0256 29.1067H23.7941L25.5221 35.1835H25.5954L27.3079 29.1067H29.0031L26.4439 36.8528V36.8509Z"
-                                            fill="#192045" />
-                                    </svg>
-                                </button>
-                                <button id="pdfBtn">
-                                    <svg width="32" height="32" viewBox="0 0 44 44" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <rect x="0.5" y="0.5" width="43" height="43" rx="5.5"
-                                            stroke="#192045" />
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                            d="M36 15V34C36 35.0609 35.5936 36.0783 34.8703 36.8284C34.1469 37.5786 33.1658 38 32.1429 38H30.2143V36H32.1429C32.6543 36 33.1449 35.7893 33.5066 35.4142C33.8682 35.0391 34.0714 34.5304 34.0714 34V15H30.2143C29.4471 15 28.7112 14.6839 28.1687 14.1213C27.6262 13.5587 27.3214 12.7956 27.3214 12V8H16.7143C16.2028 8 15.7123 8.21071 15.3506 8.58579C14.9889 8.96086 14.7857 9.46957 14.7857 10V28H12.8571V10C12.8571 8.93913 13.2635 7.92172 13.9869 7.17157C14.7102 6.42143 15.6913 6 16.7143 6H27.3214L36 15ZM12.0857 29.7H9V37.698H10.5255V35.014H12.0741C12.6276 35.014 13.0982 34.9 13.4859 34.668C13.8774 34.434 14.1763 34.118 14.3788 33.72C14.589 33.3024 14.6957 32.8371 14.6893 32.366C14.6893 31.866 14.5871 31.414 14.3846 31.012C14.1832 30.6124 13.8752 30.2812 13.4974 30.058C13.1117 29.818 12.6431 29.7 12.0857 29.7ZM13.1368 32.366C13.1437 32.6295 13.0874 32.8907 12.9729 33.126C12.8701 33.3309 12.7101 33.4989 12.5139 33.608C12.2893 33.7232 12.041 33.7795 11.7906 33.772H10.5197V30.96H11.7926C12.213 30.96 12.5428 31.08 12.78 31.322C13.0172 31.566 13.1368 31.914 13.1368 32.366ZM15.4839 29.7V37.698H18.2996C19.0729 37.698 19.7151 37.538 20.2243 37.224C20.7395 36.9043 21.1419 36.4212 21.3718 35.846C21.6225 35.246 21.7498 34.522 21.7498 33.678C21.7498 32.838 21.6244 32.122 21.3718 31.528C21.1446 30.9594 20.7461 30.4824 20.2359 30.168C19.7267 29.856 19.0806 29.7 18.2976 29.7H15.4839ZM17.0094 30.99H18.0951C18.5734 30.99 18.963 31.09 19.2696 31.294C19.5879 31.5099 19.8281 31.8293 19.9524 32.202C20.1047 32.604 20.1799 33.106 20.1799 33.708C20.1859 34.1069 20.1418 34.5049 20.0488 34.892C19.9801 35.1973 19.8514 35.4846 19.6708 35.736C19.503 35.9603 19.2807 36.1342 19.0266 36.24C18.729 36.3555 18.4129 36.4111 18.0951 36.404H17.0094V30.99ZM24.228 34.516V37.698H22.7044V29.7H27.6184V31.006H24.228V33.24H27.3253V34.516H24.228Z"
-                                            fill="#192045" />
-                                    </svg>
-                                </button>
-                                <button id="printBtn">
-                                    <svg width="32" height="32" viewBox="0 0 44 44" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <rect x="0.5" y="0.5" width="43" height="43" rx="5.5"
-                                            stroke="#192045" />
-                                        <path
-                                            d="M29.817 17.0382H14.1692C13.8755 17.0382 13.5939 16.9216 13.3863 16.714C13.1787 16.5063 13.062 16.2247 13.062 15.9311V8.10716C13.062 7.81352 13.1787 7.53191 13.3863 7.32428C13.5939 7.11665 13.8755 7 14.1692 7H29.817C30.1107 7 30.3923 7.11665 30.5999 7.32428C30.8075 7.53191 30.9242 7.81352 30.9242 8.10716V15.9311C30.9242 16.2247 30.8075 16.5063 30.5999 16.714C30.3923 16.9216 30.1107 17.0382 29.817 17.0382ZM15.2763 14.8239H28.7099V9.21432H15.2763V14.8239Z"
-                                            fill="#192045" />
-                                        <path
-                                            d="M29.817 36.6719H14.1692C13.8755 36.6719 13.5939 36.5552 13.3863 36.3476C13.1787 36.14 13.062 35.8584 13.062 35.5647V23.5402C13.062 23.2466 13.1787 22.965 13.3863 22.7573C13.5939 22.5497 13.8755 22.4331 14.1692 22.4331H29.817C30.1107 22.4331 30.3923 22.5497 30.5999 22.7573C30.8075 22.965 30.9242 23.2466 30.9242 23.5402V35.5647C30.9242 35.8584 30.8075 36.14 30.5999 36.3476C30.3923 36.5552 30.1107 36.6719 29.817 36.6719ZM15.2763 34.4576H28.7099V24.6474H15.2763V34.4576Z"
-                                            fill="#192045" />
-                                        <path
-                                            d="M33.3784 31.4313H29.8171C29.5234 31.4313 29.2418 31.3147 29.0342 31.107C28.8266 30.8994 28.7099 30.6178 28.7099 30.3242C28.7099 30.0305 28.8266 29.7489 29.0342 29.5413C29.2418 29.3337 29.5234 29.217 29.8171 29.217H33.3784C33.7479 29.2166 34.1021 29.0697 34.3634 28.8084C34.6247 28.5472 34.7716 28.1929 34.772 27.8235V18.4325C34.7718 18.0629 34.6249 17.7085 34.3637 17.4471C34.1024 17.1857 33.748 17.0386 33.3784 17.0382H10.6079C10.2383 17.0386 9.88393 17.1857 9.62265 17.4471C9.36137 17.7085 9.21451 18.0629 9.21432 18.4325V27.8235C9.21471 28.1929 9.36165 28.5472 9.62291 28.8084C9.88417 29.0697 10.2384 29.2166 10.6079 29.217H14.1692C14.4629 29.217 14.7445 29.3337 14.9521 29.5413C15.1597 29.7489 15.2764 30.0305 15.2764 30.3242C15.2764 30.6178 15.1597 30.8994 14.9521 31.107C14.7445 31.3147 14.4629 31.4313 14.1692 31.4313H10.6079C9.65136 31.4302 8.73437 31.0497 8.05801 30.3733C7.38166 29.697 7.00117 28.78 7 27.8235V18.4325C7.00098 17.4759 7.38138 16.5587 8.05775 15.8822C8.73413 15.2057 9.65123 14.8251 10.6079 14.8239H33.3784C34.3351 14.8251 35.2522 15.2057 35.9286 15.8822C36.6049 16.5587 36.9853 17.4759 36.9863 18.4325V27.8235C36.9851 28.78 36.6046 29.697 35.9283 30.3733C35.2519 31.0497 34.335 31.4302 33.3784 31.4313Z"
-                                            fill="#192045" />
-                                        <path
-                                            d="M12.9884 20.8764C12.9519 20.8765 12.9155 20.8748 12.8792 20.8712C12.8437 20.8675 12.8054 20.8616 12.7721 20.855C12.7389 20.8484 12.6983 20.8388 12.6666 20.8284C12.6349 20.8181 12.598 20.8055 12.5647 20.7915C12.5315 20.7775 12.499 20.762 12.4673 20.745C12.435 20.7284 12.4037 20.7099 12.3736 20.6897C12.344 20.6697 12.3145 20.6483 12.2865 20.6254C12.2584 20.6026 12.2311 20.5775 12.2053 20.5516C12.1794 20.5258 12.1551 20.4985 12.1315 20.4704C12.1086 20.4425 12.0872 20.4135 12.0673 20.3833C12.0471 20.3528 12.0286 20.3218 12.0119 20.2903C11.9949 20.2586 11.9794 20.2254 11.9654 20.1922C11.9514 20.159 11.9396 20.1243 11.9285 20.0903C11.9174 20.0564 11.9093 20.0165 11.9019 19.9848C11.8945 19.953 11.8894 19.911 11.8857 19.8777C11.8786 19.8041 11.8786 19.73 11.8857 19.6563C11.8894 19.6209 11.8953 19.5825 11.9019 19.5493C11.9086 19.5161 11.9182 19.4755 11.9285 19.4437C11.9388 19.412 11.9514 19.3751 11.9654 19.3419C11.9794 19.3087 11.9949 19.2754 12.0119 19.2437C12.0289 19.212 12.0473 19.181 12.0673 19.1507C12.0872 19.1206 12.1086 19.0915 12.1315 19.0636C12.1543 19.0356 12.1794 19.0083 12.2053 18.9824C12.2311 18.9566 12.2584 18.9322 12.2865 18.9086C12.3145 18.885 12.344 18.8643 12.3736 18.8444C12.4037 18.8241 12.435 18.8056 12.4673 18.789C12.4993 18.7723 12.5318 18.7568 12.5647 18.7425C12.598 18.7285 12.6326 18.7167 12.6666 18.7056C12.7005 18.6946 12.7404 18.6864 12.7721 18.6791C12.8039 18.6717 12.846 18.6665 12.8792 18.6628C12.9516 18.6562 13.0245 18.6562 13.0969 18.6628C13.1331 18.6665 13.1707 18.6724 13.2047 18.6791C13.2386 18.6857 13.2785 18.6953 13.3095 18.7056C13.3405 18.716 13.3789 18.7285 13.4121 18.7425C13.4453 18.7566 13.4778 18.7721 13.5095 18.789C13.5417 18.8058 13.573 18.8243 13.6033 18.8444C13.6328 18.8643 13.6623 18.8857 13.6903 18.9086C13.7184 18.9315 13.7457 18.9566 13.7715 18.9824C13.7974 19.0083 13.821 19.0356 13.8454 19.0636C13.8697 19.0917 13.8896 19.1212 13.9096 19.1507C13.9295 19.1802 13.9479 19.212 13.9649 19.2437C13.9819 19.2754 13.9974 19.3087 14.0114 19.3419C14.0254 19.3751 14.0373 19.4098 14.0483 19.4437C14.0594 19.4777 14.0675 19.5175 14.0749 19.5493C14.0823 19.581 14.0875 19.6231 14.0911 19.6563C14.0982 19.73 14.0982 19.8041 14.0911 19.8777C14.0875 19.9132 14.0815 19.9516 14.0749 19.9848C14.0683 20.018 14.0587 20.0586 14.0483 20.0903C14.038 20.1221 14.0254 20.159 14.0114 20.1922C13.9974 20.2254 13.9819 20.2586 13.9649 20.2903C13.9479 20.3221 13.9295 20.3531 13.9096 20.3833C13.8896 20.4136 13.8675 20.4424 13.8454 20.4704C13.8232 20.4985 13.7974 20.5258 13.7715 20.5516C13.7457 20.5775 13.7184 20.6018 13.6903 20.6254C13.6623 20.6491 13.6328 20.6697 13.6033 20.6897C13.573 20.7098 13.5417 20.7283 13.5095 20.745C13.4775 20.7617 13.4451 20.7772 13.4121 20.7915C13.3789 20.8055 13.3442 20.8174 13.3095 20.8284C13.2748 20.8395 13.2401 20.8476 13.2047 20.855C13.1692 20.8624 13.1309 20.8675 13.0969 20.8712C13.0609 20.8748 13.0246 20.8765 12.9884 20.8764Z"
-                                            fill="#192045" />
-                                        <path
-                                            d="M16.236 20.8764C16.1998 20.8764 16.1622 20.8764 16.1267 20.8712C16.0913 20.8661 16.0529 20.8616 16.0197 20.855C15.9865 20.8484 15.9459 20.8388 15.9142 20.8284C15.8824 20.8181 15.8455 20.8055 15.8123 20.7915C15.7791 20.7775 15.7459 20.762 15.7141 20.745C15.6824 20.728 15.6514 20.7096 15.6211 20.6897C15.591 20.6698 15.5619 20.6483 15.534 20.6254C15.506 20.6026 15.4787 20.5775 15.4528 20.5516C15.427 20.5258 15.4026 20.4985 15.379 20.4704C15.3554 20.4424 15.3347 20.4129 15.3148 20.3833C15.2946 20.3531 15.2758 20.3218 15.2587 20.2896C15.2425 20.2579 15.227 20.2254 15.213 20.1922C15.1989 20.159 15.1871 20.1243 15.176 20.0903C15.165 20.0564 15.1569 20.0165 15.1495 19.9848C15.1421 19.953 15.1369 19.911 15.1332 19.8777C15.1262 19.8041 15.1262 19.7299 15.1332 19.6563C15.1369 19.6209 15.1428 19.5825 15.1495 19.5493C15.1561 19.5161 15.1657 19.4755 15.176 19.4437C15.1864 19.412 15.1989 19.3751 15.213 19.3419C15.227 19.3087 15.2425 19.2762 15.2587 19.2444C15.2758 19.2123 15.2946 19.181 15.3148 19.1507C15.3347 19.1212 15.3561 19.0917 15.379 19.0636C15.4019 19.0356 15.427 19.0083 15.4528 18.9824C15.4787 18.9566 15.506 18.9322 15.534 18.9086C15.5619 18.8857 15.591 18.8643 15.6211 18.8444C15.6516 18.8242 15.6826 18.8058 15.7141 18.789C15.7459 18.7721 15.7791 18.7566 15.8123 18.7425C15.8455 18.7285 15.8802 18.7167 15.9142 18.7056C15.9481 18.6946 15.988 18.6864 16.0197 18.6791C16.0514 18.6717 16.0935 18.6665 16.1267 18.6628C16.2004 18.656 16.2745 18.656 16.3482 18.6628C16.3836 18.6665 16.422 18.6724 16.4552 18.6791C16.4884 18.6857 16.529 18.6953 16.5607 18.7056C16.5925 18.716 16.6294 18.7285 16.6626 18.7425C16.6958 18.7566 16.7283 18.7721 16.76 18.789C16.7918 18.806 16.8235 18.8245 16.8538 18.8444C16.884 18.8643 16.9128 18.8857 16.9409 18.9086C16.9689 18.9315 16.9962 18.9566 17.0221 18.9824C17.0479 19.0083 17.0715 19.0356 17.0959 19.0636C17.1202 19.0917 17.1401 19.1212 17.1601 19.1507C17.1801 19.181 17.1986 19.2123 17.2154 19.2444C17.2322 19.2764 17.2477 19.3089 17.2619 19.3419C17.276 19.3751 17.2878 19.4098 17.2988 19.4437C17.3099 19.4777 17.318 19.5175 17.3254 19.5493C17.3328 19.581 17.338 19.6231 17.3417 19.6563C17.3487 19.7299 17.3487 19.8041 17.3417 19.8777C17.338 19.9132 17.3321 19.9516 17.3254 19.9848C17.3188 20.018 17.3092 20.0586 17.2988 20.0903C17.2885 20.1221 17.276 20.159 17.2619 20.1922C17.2479 20.2254 17.2324 20.2579 17.2154 20.2896C17.1986 20.3218 17.1801 20.3531 17.1601 20.3833C17.1401 20.4129 17.118 20.4424 17.0959 20.4704C17.0737 20.4985 17.0479 20.5258 17.0221 20.5516C16.9962 20.5775 16.9689 20.6018 16.9409 20.6254C16.9128 20.6491 16.8833 20.6697 16.8538 20.6897C16.8242 20.7096 16.7918 20.728 16.76 20.745C16.7283 20.762 16.6958 20.7775 16.6626 20.7915C16.6294 20.8055 16.5947 20.8174 16.5607 20.8284C16.5268 20.8395 16.4869 20.8476 16.4552 20.855C16.4234 20.8624 16.3814 20.8675 16.3482 20.8712C16.3149 20.8749 16.2721 20.8764 16.236 20.8764Z"
-                                            fill="#192045" />
-                                        <path
-                                            d="M26.3481 28.8479H17.6384C17.3448 28.8479 17.0632 28.7313 16.8555 28.5237C16.6479 28.316 16.5312 28.0344 16.5312 27.7408C16.5312 27.4472 16.6479 27.1655 16.8555 26.9579C17.0632 26.7503 17.3448 26.6336 17.6384 26.6336H26.3481C26.6417 26.6336 26.9233 26.7503 27.1309 26.9579C27.3386 27.1655 27.4552 27.4472 27.4552 27.7408C27.4552 28.0344 27.3386 28.316 27.1309 28.5237C26.9233 28.7313 26.6417 28.8479 26.3481 28.8479Z"
-                                            fill="#192045" />
-                                        <path
-                                            d="M26.3481 32.7599H17.6384C17.3448 32.7599 17.0632 32.6433 16.8555 32.4356C16.6479 32.228 16.5312 31.9464 16.5312 31.6528C16.5312 31.3591 16.6479 31.0775 16.8555 30.8699C17.0632 30.6622 17.3448 30.5456 17.6384 30.5456H26.3481C26.6417 30.5456 26.9233 30.6622 27.1309 30.8699C27.3386 31.0775 27.4552 31.3591 27.4552 31.6528C27.4552 31.9464 27.3386 32.228 27.1309 32.4356C26.9233 32.6433 26.6417 32.7599 26.3481 32.7599Z"
-                                            fill="#192045" />
-                                    </svg>
-                                </button>
-                                <button id="xlsxBtn">
-                                    <svg width="32" height="32" viewBox="0 0 44 44" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <rect x="0.5" y="0.5" width="43" height="43" rx="5.5"
-                                            stroke="#192045" />
-                                        <path
-                                            d="M31.311 37.6837H12.689C11.4457 37.6821 10.2539 37.1874 9.37488 36.3082C8.49586 35.429 8.00142 34.2371 8 32.9938V10.689C8.00165 9.44591 8.4962 8.25421 9.3752 7.37521C10.2542 6.49621 11.4459 6.00166 12.689 6.00001H24.5811C25.1989 5.99879 25.8107 6.11998 26.3814 6.35658C26.9521 6.59318 27.4702 6.94051 27.9059 7.37849L34.6206 14.087C35.5011 14.9717 35.9968 16.1681 36 17.4162V32.9938C35.9986 34.2371 35.5041 35.429 34.6251 36.3082C33.7461 37.1874 32.5543 37.6821 31.311 37.6837ZM12.689 8.23201C12.0376 8.23272 11.413 8.49181 10.9524 8.95243C10.4918 9.41305 10.2327 10.0376 10.232 10.689V32.9938C10.2327 33.6453 10.4918 34.27 10.9524 34.7307C11.413 35.1915 12.0375 35.4508 12.689 35.4517H31.311C31.9625 35.4508 32.587 35.1915 33.0476 34.7307C33.5082 34.27 33.7673 33.6453 33.768 32.9938V17.4136C33.7664 16.7578 33.5059 16.1292 33.043 15.6646L26.3274 8.95518C26.0986 8.7252 25.8264 8.54287 25.5267 8.41874C25.2269 8.29461 24.9055 8.23114 24.5811 8.23201H12.689Z"
-                                            fill="#192045" />
-                                        <path
-                                            d="M33.8932 17.1279H29.7363C28.4971 17.1267 27.309 16.6339 26.4327 15.7576C25.5565 14.8814 25.0637 13.6933 25.0625 12.4541V7.11958H27.2945V12.4541C27.2952 13.1014 27.5527 13.7221 28.0105 14.1799C28.4682 14.6377 29.0889 14.8952 29.7363 14.8959H33.8932V17.1279Z"
-                                            fill="#192045" />
-                                        <path
-                                            d="M30.0858 31.4564H13.9136V16.7431H30.0858V31.4564ZM16.1456 29.2244H27.8538V18.9751H16.1456V29.2244Z"
-                                            fill="#192045" />
-                                        <path
-                                            d="M28.6242 25.2157H15.4643C15.1792 25.1996 14.9111 25.075 14.715 24.8675C14.5189 24.66 14.4097 24.3853 14.4097 24.0997C14.4097 23.8142 14.5189 23.5395 14.715 23.332C14.9111 23.1245 15.1792 22.9999 15.4643 22.9837H28.6242C28.9092 22.9999 29.1773 23.1245 29.3734 23.332C29.5695 23.5395 29.6788 23.8142 29.6788 24.0997C29.6788 24.3853 29.5695 24.66 29.3734 24.8675C29.1773 25.075 28.9092 25.1996 28.6242 25.2157Z"
-                                            fill="#192045" />
-                                        <path
-                                            d="M20.2146 31.2511C19.8916 31.2209 19.5934 31.0648 19.3846 30.8165C19.1757 30.5683 19.073 30.2478 19.0986 29.9244V18.2751C19.073 17.9517 19.1757 17.6312 19.3846 17.383C19.5934 17.1347 19.8916 16.9786 20.2146 16.9484C20.5376 16.9786 20.8357 17.1347 21.0446 17.383C21.2534 17.6312 21.3561 17.9517 21.3306 18.2751V29.9244C21.3561 30.2478 21.2534 30.5683 21.0446 30.8165C20.8357 31.0648 20.5376 31.2209 20.2146 31.2511Z"
-                                            fill="#192045" />
-                                    </svg>
-                                </button>
-                            </div>
+                        <!-- Right Group: Export Action Buttons (Centered on Mobile, Right-aligned on Desktop) -->
+                        <div class="export-buttons-group flex items-center justify-center sm:justify-end gap-1.5 flex-wrap w-full sm:w-auto sm:ms-auto">
+                            <button id="copyBtn" type="button" title="Copy Table" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
+                            <button id="csvBtn" type="button" title="Export CSV" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="8" y1="13" x2="16" y2="13"></line>
+                                    <line x1="8" y1="17" x2="16" y2="17"></line>
+                                </svg>
+                            </button>
+                            <button id="pdfBtn" type="button" title="Export PDF" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                </svg>
+                            </button>
+                            <button id="printBtn" type="button" title="Print Table" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                                    <rect x="6" y="14" width="12" height="8"></rect>
+                                </svg>
+                            </button>
+                            <button id="xlsxBtn" type="button" title="Export Excel" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="9" y1="13" x2="15" y2="17"></line>
+                                    <line x1="15" y1="13" x2="9" y2="17"></line>
+                                </svg>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Table View (Desktop screens >= 768px) -->
-                    <div class="table-responsive d-none d-md-block">
-                        <table id="printTable" class="table table-bordered table-hover align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="text-center" style="width: 50px;">Serial No</th>
-                                    <th class="text-start" style="width: 130px;">Invoice No</th>
-                                    <th class="text-start">Customer Info</th>
-                                    <th class="text-start">Financial Summary</th>
-                                    <th class="text-start">Created By</th>
-                                    <th class="text-start">Date</th>
-                                    <th class="text-center" style="width: 110px;">Status</th>
-                                    <th class="text-center" style="width: 120px;">Action</th>
+                    <!-- 3. Desktop Table (SL header, solid emerald header, single line, 10px padding) -->
+                    <div class="table-responsive unified-ui-border hidden md:block w-full max-w-full overflow-x-auto rounded-2xl shadow-sm bg-white dark:bg-slate-900 mb-4">
+                        <table id="printTable" class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-[#15803d] text-white text-xs font-semibold uppercase tracking-wider">
+                                    <th class="p-[10px] text-center w-[50px] rounded-tl-2xl whitespace-nowrap">SL</th>
+                                    <th class="p-[10px] text-start w-[125px] whitespace-nowrap">Invoice No</th>
+                                    <th class="p-[10px] text-start whitespace-nowrap">Customer Info</th>
+                                    <th class="p-[10px] text-start whitespace-nowrap">Financial Summary</th>
+                                    <th class="p-[10px] text-start w-[115px] whitespace-nowrap">Created By</th>
+                                    <th class="p-[10px] text-start w-[115px] whitespace-nowrap">Date</th>
+                                    <th class="p-[10px] text-center w-[110px] whitespace-nowrap">Status</th>
+                                    <th class="p-[10px] text-center w-[150px] rounded-tr-2xl whitespace-nowrap">Action</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-sm text-slate-700 dark:text-slate-200"></tbody>
                         </table>
                     </div>
 
-                    <!-- Mobile Card List View (Shown on Mobile Screens < 768px) -->
-                    <div id="mobileCardList" class="d-block d-md-none mb-3"></div>
+                    <!-- 4. Mobile Card List View (Shown on Mobile Screens < 768px) -->
+                    <div id="mobileCardList" class="block md:hidden mb-3 space-y-3"></div>
 
-                    <!-- Smart Pagination & Display Info Footer -->
-                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between pt-3 mt-3 border-top gap-2">
-                        <div class="text-muted small fw-medium" id="display-info">
-                            Showing <strong>0</strong> to <strong>0</strong> of <strong>0</strong> entries
-                        </div>
-                        <div id="pagination" class="d-flex align-items-center gap-1 flex-wrap justify-content-center"></div>
+                    <!-- 5. Modern Smart Pagination & Display Info Footer -->
+                    <div class="flex flex-col sm:flex-row items-center justify-between pt-4 mt-4 border-t border-slate-200 dark:border-slate-800 gap-3">
+                        <div id="display-info"></div>
+                        <div id="pagination" class="flex items-center gap-1 sm:gap-1.5 flex-nowrap justify-center max-w-full overflow-x-auto pb-1"></div>
                     </div>
+
                 </div>
             </div>
         </div>
-        <div class="copyright">
-            <footer class="footer text-center py-3 mt-4 text-muted small border-top">&copy; 2026 মার্স কর্পোরেশন (MARSS CORPORATION) | Software By: <a href="https://www.codenextit.com" target="_blank" class="text-success fw-bold text-decoration-none">CodeNext IT</a></footer>
+
+        <!-- 6. Sticky Bottom Copyright Section with flex mt-auto for zoom-out safety -->
+        <div class="copyright sticky bottom-0 z-10 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 py-3 text-center shadow-[0_-4px_12px_rgba(0,0,0,0.03)] mt-auto">
+            <footer class="footer text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
+                &copy; {{ date('Y') }} MARSS CORPORATION | Software By: <a href="https://www.codenextit.com" target="_blank" class="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 font-bold hover:underline transition-colors">CodeNext IT</a>
+            </footer>
         </div>
-        <!-- Table End -->
+
     </div>
 </div>
 <!-- Hero Main Content End -->
 
 <style>
-    .bg-purple-subtle {
-        background-color: #f3e8ff !important;
-        color: #7e22ce !important;
+    /* Full Height & Zoom-Out Sticky Footer Fix */
+    html, body {
+        min-height: 100vh !important;
+    }
+    .main-content {
+        min-height: 100vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    .page-content {
+        min-height: 100vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        flex-grow: 1 !important;
+        padding-bottom: 0 !important;
+    }
+    .data-table {
+        flex-grow: 1 !important;
+    }
+    .copyright {
+        margin-top: auto !important;
+        width: 100% !important;
     }
 
-    /* Invoice Mobile Card & Dark Mode Styling */
-    body[light-mode="dark"] .invoice-mobile-card {
-        background-color: #1e293b !important;
-        border-color: #334155 !important;
-        color: #f8fafc !important;
+    /* Card-body padding standard */
+    .product-card-body {
+        padding: 14px !important;
+    }
+    @media (min-width: 640px) {
+        .product-card-body {
+            padding: 18px !important;
+        }
+    }
+    @media (min-width: 768px) {
+        .product-card-body {
+            padding: 24px !important;
+        }
     }
 
-    body[light-mode="dark"] .invoice-mobile-card .text-dark,
-    body[light-mode="dark"] .invoice-mobile-card h6 {
-        color: #f8fafc !important;
+    /* Unified UI Border Color for Light Mode across all fields, buttons, and table */
+    .unified-ui-border {
+        border: 1.5px solid #cbd5e1 !important;
     }
 
-    body[light-mode="dark"] .invoice-mobile-card .bg-light {
+    /* 3 Columns in Row 1 on Desktop & Tablet (>= 640px) */
+    .row-controls-grid {
+        display: grid !important;
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    @media (min-width: 640px) {
+        .row-controls-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 12px !important;
+        }
+    }
+
+    /* Mobile centering for Show Entries, Filter dropdown, and Export buttons */
+    @media (max-width: 639px) {
+        .row-actions-bar {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+        }
+        .filter-controls-group {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+        .export-buttons-group {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+    }
+    @media (min-width: 640px) {
+        .row-actions-bar {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+        }
+        .filter-controls-group {
+            display: flex !important;
+            justify-content: flex-start !important;
+            width: auto !important;
+            margin: 0 !important;
+        }
+        .export-buttons-group {
+            display: flex !important;
+            justify-content: flex-end !important;
+            width: auto !important;
+            margin-left: auto !important;
+            margin-right: 0 !important;
+        }
+    }
+
+    /* Generous Left-Right Padding for Search and Date Fields */
+    .search-input-wrapper,
+    .date-input-wrapper {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+    }
+
+    /* Search input wrapper focus ring */
+    .search-input-wrapper:focus-within,
+    .date-input-wrapper:focus-within {
+        border-color: #15803d !important;
+        box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.25) !important;
+    }
+
+    /* Inner input inside searchbar must never have its own focus border, outline, or shadow */
+    #searchInput,
+    #searchInput:focus,
+    #searchInput:focus-visible,
+    #searchInput:active,
+    body[light-mode="dark"] #searchInput,
+    body[light-mode="dark"] #searchInput:focus,
+    .flatpickr-input,
+    .flatpickr-input:focus {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+
+    /* Table headers strictly 1 line, no wrapping */
+    #printTable thead th {
+        white-space: nowrap !important;
+    }
+
+    /* Table row hover in light and dark mode (never turns white in dark mode) */
+    #printTable tbody tr {
+        transition: background-color 0.15s ease-in-out;
+    }
+    #printTable tbody tr:hover {
+        background-color: rgba(241, 245, 249, 0.7) !important;
+    }
+    body[light-mode="dark"] #printTable tbody tr:hover,
+    body[data-layout-mode="dark"] #printTable tbody tr:hover,
+    html.dark #printTable tbody tr:hover,
+    body.dark-mode #printTable tbody tr:hover {
+        background-color: rgba(30, 41, 59, 0.6) !important;
+    }
+
+    /* Custom Filter Dropdown Styling */
+    .custom-filter-dropdown {
+        position: relative;
+        user-select: none;
+    }
+    .custom-filter-dropdown.is-open {
+        z-index: 50 !important;
+    }
+    .custom-filter-dropdown .select-trigger {
+        transition: all 0.2s ease;
+    }
+    .custom-filter-dropdown .select-trigger:hover {
+        border-color: #16a34a !important;
+    }
+    .custom-filter-dropdown.is-open .select-trigger {
+        border-color: #16a34a !important;
+        box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15) !important;
+    }
+    .custom-filter-dropdown .select-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        min-width: 170px;
+        z-index: 9999 !important;
+        background: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 12px;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+        padding: 6px;
+    }
+    .custom-filter-dropdown.is-open .select-menu {
+        display: block !important;
+    }
+    .custom-filter-dropdown .select-option-item {
+        background-color: #ffffff !important;
+        color: #334155;
+        padding: 8px 12px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer !important;
+        border-radius: 6px;
+        border-left: 4px solid transparent !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.15s ease-in-out;
+        margin-bottom: 2px;
+        text-decoration: none !important;
+    }
+    .custom-filter-dropdown .select-option-item:hover {
+        background-color: #f0fdf4 !important;
+        color: #15803d !important;
+        border-left: 4px solid #16a34a !important;
+    }
+    .custom-filter-dropdown .select-option-item.active {
+        background-color: #dcfce7 !important;
+        color: #15803d !important;
+        border-left: 4px solid #16a34a !important;
+        font-weight: 600;
+    }
+
+    /* Customer ID Badge, Status Badge & Action Button Borders in Light Mode */
+    .customer-id-badge {
+        border: 1.5px solid #cbd5e1 !important;
+    }
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.25rem 0.65rem;
+        border-radius: 9999px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        border: 1.5px solid #cbd5e1 !important;
+    }
+    .action-btn {
+        border: 1.5px solid #cbd5e1 !important;
+        background-color: #f8fafc;
+    }
+    .action-btn-print { color: #15803d; }
+    .action-btn-print:hover { background-color: #dcfce7; border-color: #16a34a !important; }
+    .action-btn-return { color: #d97706; }
+    .action-btn-return:hover { background-color: #fef3c7; border-color: #f59e0b !important; }
+    .action-btn-due { color: #2563eb; }
+    .action-btn-due:hover { background-color: #dbeafe; border-color: #3b82f6 !important; }
+    .action-btn-edit { color: #7c3aed; }
+    .action-btn-edit:hover { background-color: #ede9fe; border-color: #8b5cf6 !important; }
+
+    /* Flatpickr Theme & No-Month-Dropdown Enhancements */
+    .flatpickr-calendar {
+        border-radius: 14px !important;
+        box-shadow: 0 16px 36px rgba(0,0,0,0.14) !important;
+        border: 1.5px solid #cbd5e1 !important;
+        font-family: inherit !important;
+    }
+    .flatpickr-calendar .flatpickr-monthDropdown-months {
+        display: none !important;
+    }
+    .flatpickr-current-month .cur-month {
+        font-weight: 700 !important;
+        margin-left: 0 !important;
+    }
+    .flatpickr-day.selected, 
+    .flatpickr-day.startRange, 
+    .flatpickr-day.endRange {
+        background: #15803d !important;
+        border-color: #15803d !important;
+        color: #fff !important;
+    }
+    .flatpickr-day:hover {
+        background: #dcfce7 !important;
+        color: #15803d !important;
+    }
+
+    /* Mobile Financial Summary Grid (2-column side-by-side with top margin) */
+    .mobile-fin-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+        margin-top: 14px !important;
+        margin-bottom: 10px !important;
+    }
+
+    /* Display Info Badge in Light and Dark Mode */
+    .display-info-badge {
+        background-color: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #475569 !important;
+    }
+    .display-info-badge .stat-count {
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #0f172a !important;
+    }
+    .display-info-badge .stat-total {
+        background-color: #ecfdf5 !important;
+        border: 1px solid #a7f3d0 !important;
+        color: #047857 !important;
+    }
+
+    /* Data-table background fix: completely transparent to eliminate white gaps */
+    .data-table {
+        background: transparent !important;
+    }
+
+    body[light-mode="dark"] .data-table,
+    body[data-layout-mode="dark"] .data-table,
+    html.dark .data-table,
+    body.dark-mode .data-table,
+    body.dark .data-table {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+
+    /* ==========================================================================
+       DARK MODE SPECIFIC STYLING (Zero White Background Glitches, Unified #334155 Borders)
+       ========================================================================== */
+    body[light-mode="dark"] .main-content,
+    body[data-layout-mode="dark"] .main-content,
+    html.dark .main-content {
+        background-color: #0b0f19 !important;
+    }
+
+    body[light-mode="dark"] .card,
+    body[data-layout-mode="dark"] .card,
+    html.dark .card,
+    body.dark-mode .card,
+    body.dark .card {
         background-color: #0f172a !important;
         border-color: #334155 !important;
     }
 
-    body[light-mode="dark"] .invoice-mobile-card .text-muted {
+    body[light-mode="dark"] .card-body,
+    body[data-layout-mode="dark"] .card-body,
+    html.dark .card-body,
+    body.dark-mode .card-body,
+    body.dark .card-body {
+        background-color: #0f172a !important;
+    }
+
+    body[light-mode="dark"] .page-content,
+    body[data-layout-mode="dark"] .page-content,
+    html.dark .page-content {
+        background-color: #0b0f19 !important;
+    }
+
+    body[light-mode="dark"] .table-responsive,
+    body[data-layout-mode="dark"] .table-responsive,
+    html.dark .table-responsive {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+    }
+
+    body[light-mode="dark"] .unified-ui-border,
+    body[data-layout-mode="dark"] .unified-ui-border,
+    html.dark .unified-ui-border {
+        border-color: #334155 !important;
+    }
+
+    body[light-mode="dark"] #printTable,
+    body[light-mode="dark"] #printTable th,
+    body[light-mode="dark"] #printTable td,
+    body[light-mode="dark"] #printTable tr {
+        border-color: #334155 !important;
+    }
+
+    /* Unified #334155 border across customer info, status, and action buttons */
+    body[light-mode="dark"] .customer-id-badge,
+    body[data-layout-mode="dark"] .customer-id-badge,
+    html.dark .customer-id-badge {
+        border: 1.5px solid #334155 !important;
+        background-color: #1e293b !important;
+        color: #cbd5e1 !important;
+    }
+
+    body[light-mode="dark"] .status-pill,
+    body[data-layout-mode="dark"] .status-pill,
+    html.dark .status-pill {
+        border: 1.5px solid #334155 !important;
+    }
+
+    body[light-mode="dark"] .action-btn,
+    body[data-layout-mode="dark"] .action-btn,
+    html.dark .action-btn {
+        border: 1.5px solid #334155 !important;
+        background-color: #1e293b !important;
+    }
+
+    /* Specific vibrant action colors in Dark Mode */
+    body[light-mode="dark"] .action-btn-print,
+    body[data-layout-mode="dark"] .action-btn-print,
+    html.dark .action-btn-print {
+        color: #34d399 !important;
+        background-color: rgba(6, 78, 59, 0.3) !important;
+    }
+    body[light-mode="dark"] .action-btn-print:hover,
+    body[data-layout-mode="dark"] .action-btn-print:hover,
+    html.dark .action-btn-print:hover {
+        background-color: #059669 !important;
+        color: #ffffff !important;
+    }
+
+    /* Sales return icon: bright warm amber / gold, clearly visible in dark mode */
+    body[light-mode="dark"] .action-btn-return,
+    body[data-layout-mode="dark"] .action-btn-return,
+    html.dark .action-btn-return {
+        color: #fbbf24 !important;
+        background-color: rgba(245, 158, 11, 0.2) !important;
+    }
+    body[light-mode="dark"] .action-btn-return:hover,
+    body[data-layout-mode="dark"] .action-btn-return:hover,
+    html.dark .action-btn-return:hover {
+        background-color: #d97706 !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] .action-btn-due,
+    body[data-layout-mode="dark"] .action-btn-due,
+    html.dark .action-btn-due {
+        color: #60a5fa !important;
+        background-color: rgba(37, 99, 235, 0.2) !important;
+    }
+    body[light-mode="dark"] .action-btn-due:hover,
+    body[data-layout-mode="dark"] .action-btn-due:hover,
+    html.dark .action-btn-due:hover {
+        background-color: #2563eb !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] .action-btn-edit,
+    body[data-layout-mode="dark"] .action-btn-edit,
+    html.dark .action-btn-edit {
+        color: #c084fc !important;
+        background-color: rgba(147, 51, 234, 0.2) !important;
+    }
+    body[light-mode="dark"] .action-btn-edit:hover,
+    body[data-layout-mode="dark"] .action-btn-edit:hover,
+    html.dark .action-btn-edit:hover {
+        background-color: #7c3aed !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] #searchInput,
+    body[light-mode="dark"] .search-input-wrapper,
+    body[light-mode="dark"] .date-input-wrapper,
+    body[light-mode="dark"] .entries-wrapper,
+    body[light-mode="dark"] .custom-filter-dropdown .select-trigger,
+    body[light-mode="dark"] .custom-filter-dropdown .select-menu,
+    body[light-mode="dark"] #copyBtn,
+    body[light-mode="dark"] #csvBtn,
+    body[light-mode="dark"] #pdfBtn,
+    body[light-mode="dark"] #printBtn,
+    body[light-mode="dark"] #xlsxBtn,
+    body[light-mode="dark"] .invoice-mobile-card {
+        border-color: #334155 !important;
+    }
+
+    body[light-mode="dark"] .custom-filter-dropdown .select-menu {
+        background-color: #0f172a !important;
+    }
+
+    body[light-mode="dark"] .custom-filter-dropdown .select-option-item {
+        background-color: #0f172a !important;
+        color: #cbd5e1 !important;
+    }
+
+    body[light-mode="dark"] .custom-filter-dropdown .select-option-item:hover {
+        background-color: #1e293b !important;
+        color: #34d399 !important;
+        border-left-color: #10b981 !important;
+    }
+
+    body[light-mode="dark"] .custom-filter-dropdown .select-option-item.active {
+        background-color: #064e3b !important;
+        color: #6ee7b7 !important;
+        border-left-color: #10b981 !important;
+    }
+
+    body[light-mode="dark"] .invoice-mobile-card {
+        background-color: #1e293b !important;
+        color: #f8fafc !important;
+    }
+
+    body[light-mode="dark"] .mobile-fin-grid > div {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+    }
+
+    /* Dark Mode Flatpickr */
+    body[light-mode="dark"] .flatpickr-calendar {
+        background: #0f172a !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+    body[light-mode="dark"] .flatpickr-day {
+        color: #cbd5e1 !important;
+    }
+    body[light-mode="dark"] .flatpickr-day:hover {
+        background: #1e293b !important;
+        color: #34d399 !important;
+    }
+    body[light-mode="dark"] .flatpickr-current-month,
+    body[light-mode="dark"] .flatpickr-month {
+        color: #fff !important;
+        fill: #fff !important;
+    }
+    body[light-mode="dark"] .flatpickr-months .flatpickr-prev-month, 
+    body[light-mode="dark"] .flatpickr-months .flatpickr-next-month {
+        color: #fff !important;
+        fill: #fff !important;
+    }
+    body[light-mode="dark"] span.flatpickr-weekday {
         color: #94a3b8 !important;
     }
 
-    /* Modern Smart Pagination Button Styles */
-    .custom-pagination-btn {
-        min-width: 36px;
-        height: 36px;
-        padding: 0 12px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 13px;
-        font-weight: 600;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        background-color: #ffffff;
-        color: #475569;
-        transition: all 0.2s ease-in-out;
-        text-decoration: none;
-        cursor: pointer;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    /* Dark Mode Showing Box & Pagination Fix (Strictly dark bg, no white box) */
+    body[light-mode="dark"] .display-info-badge,
+    body[data-layout-mode="dark"] .display-info-badge,
+    html.dark .display-info-badge,
+    body.dark-mode .display-info-badge {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        color: #94a3b8 !important;
+    }
+    body[light-mode="dark"] .display-info-badge .stat-count,
+    body[data-layout-mode="dark"] .display-info-badge .stat-count,
+    html.dark .display-info-badge .stat-count,
+    body.dark-mode .display-info-badge .stat-count {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+    body[light-mode="dark"] .display-info-badge .stat-total,
+    body[data-layout-mode="dark"] .display-info-badge .stat-total,
+    html.dark .display-info-badge .stat-total,
+    body.dark-mode .display-info-badge .stat-total {
+        background-color: #064e3b !important;
+        border-color: #047857 !important;
+        color: #6ee7b7 !important;
     }
 
-    .custom-pagination-btn:hover:not(.disabled):not(.active) {
-        background-color: #f1f5f9;
-        color: #0f172a;
-        border-color: #cbd5e1;
-    }
-
-    .custom-pagination-btn.active {
-        background: linear-gradient(135deg, #16a34a, #15803d) !important;
-        color: #ffffff !important;
-        border-color: #16a34a !important;
-        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35) !important;
-        font-weight: 700;
-    }
-
-    .custom-pagination-btn.disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-        background-color: #f8fafc;
-        border-color: #e2e8f0;
-        color: #94a3b8;
-    }
-
-    /* Dark Mode Smart Pagination */
-    body[light-mode="dark"] .custom-pagination-btn {
+    body[light-mode="dark"] #pagination button,
+    body[data-layout-mode="dark"] #pagination button {
         background-color: #1e293b !important;
         border-color: #334155 !important;
         color: #cbd5e1 !important;
     }
-
-    body[light-mode="dark"] .custom-pagination-btn:hover:not(.disabled):not(.active) {
+    body[light-mode="dark"] #pagination button:hover:not([disabled]),
+    body[data-layout-mode="dark"] #pagination button:hover:not([disabled]) {
         background-color: #334155 !important;
         color: #ffffff !important;
     }
-
-    body[light-mode="dark"] .custom-pagination-btn.active {
-        background: linear-gradient(135deg, #16a34a, #15803d) !important;
-        color: #ffffff !important;
-        border-color: #16a34a !important;
-    }
-
-    body[light-mode="dark"] .custom-pagination-btn.disabled {
+    body[light-mode="dark"] #pagination button[disabled],
+    body[data-layout-mode="dark"] #pagination button[disabled] {
         background-color: #0f172a !important;
         border-color: #1e293b !important;
         color: #475569 !important;
+    }
+    body[light-mode="dark"] #pagination button.border-emerald-700,
+    body[data-layout-mode="dark"] #pagination button.border-emerald-700 {
+        background-color: #15803d !important;
+        border-color: #15803d !important;
+        color: #ffffff !important;
     }
 </style>
 
 <script>
     let currentPage = 1;
-    let pageSize = 50;
+    let pageSize = 15;
     let rawInvoiceData = [];
+    let startPicker = null;
+    let endPicker = null;
+
+    // Helper: Dynamic Bangladeshi Currency Formatter
+    function formatBdCurrency(amount) {
+        let val = parseFloat(amount) || 0;
+        return val.toLocaleString('en-IN', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    // Sync Tailwind dark class automatically with application light-mode state
+    function syncThemeClasses() {
+        let isDark = document.body.getAttribute('light-mode') === 'dark' || 
+                     document.body.getAttribute('data-layout-mode') === 'dark' ||
+                     localStorage.getItem('lightMode') === 'dark';
+        if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.body.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.body.classList.remove('dark');
+        }
+    }
 
     $(document).ready(function() {
-        $("#entries").val("50");
+        syncThemeClasses();
+        $("#entries").val("15");
+        initFlatpickr();
         fetchInvoiceReport();
+
+        // Close custom filter dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('invoiceFilterDropdown');
+            if (dropdown && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('is-open');
+                const chevron = dropdown.querySelector('.chevron-icon');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            }
+        });
     });
+
+    $(document).on('click', '.pos-theme-toggle-btn, .light-mode-button', function() {
+        setTimeout(syncThemeClasses, 50);
+    });
+
+    function initFlatpickr() {
+        startPicker = flatpickr("#startDate", {
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d/m/Y",
+            altInputClass: "w-full bg-transparent border-0 outline-none text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-400 p-0 m-0 cursor-pointer",
+            allowInput: true,
+            monthSelectorType: "static",
+            onChange: function(selectedDates, dateStr) {
+                if (endPicker) {
+                    endPicker.set("minDate", dateStr);
+                }
+                fetchInvoiceReport();
+            },
+            onClose: function() {
+                fetchInvoiceReport();
+            }
+        });
+
+        endPicker = flatpickr("#endDate", {
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d/m/Y",
+            altInputClass: "w-full bg-transparent border-0 outline-none text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-400 p-0 m-0 cursor-pointer",
+            allowInput: true,
+            monthSelectorType: "static",
+            onChange: function(selectedDates, dateStr) {
+                if (startPicker) {
+                    startPicker.set("maxDate", dateStr);
+                }
+                fetchInvoiceReport();
+            },
+            onClose: function() {
+                fetchInvoiceReport();
+            }
+        });
+    }
+
+    function toggleCustomInvoiceFilter() {
+        const dropdown = document.getElementById('invoiceFilterDropdown');
+        if (!dropdown) return;
+        const isOpen = dropdown.classList.contains('is-open');
+        dropdown.classList.toggle('is-open', !isOpen);
+        const chevron = dropdown.querySelector('.chevron-icon');
+        if (chevron) {
+            chevron.style.transform = !isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+    }
+
+    function selectInvoiceFilterOption(e, filterVal, labelText) {
+        if (e) e.preventDefault();
+        const dropdown = document.getElementById('invoiceFilterDropdown');
+        if (dropdown) {
+            const labelEl = document.getElementById('selectedFilterLabel');
+            if (labelEl) labelEl.textContent = labelText;
+
+            dropdown.querySelectorAll('.select-option-item').forEach(item => {
+                if (item.getAttribute('data-filter') === filterVal) {
+                    item.classList.add('active');
+                    if (!item.querySelector('.check-icon')) {
+                        item.innerHTML = `<span>${labelText}</span><i class="fa-solid fa-check small text-emerald-600 check-icon"></i>`;
+                    }
+                } else {
+                    item.classList.remove('active');
+                    const check = item.querySelector('.check-icon');
+                    if (check) check.remove();
+                }
+            });
+
+            dropdown.classList.remove('is-open');
+            const chevron = dropdown.querySelector('.chevron-icon');
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+        }
+
+        // Apply date range
+        let today = new Date();
+        let startDate = '';
+        let endDate = today.toISOString().split('T')[0];
+
+        if (filterVal === 'today') {
+            startDate = endDate;
+        } else if (filterVal === '7') {
+            let d = new Date();
+            d.setDate(d.getDate() - 7);
+            startDate = d.toISOString().split('T')[0];
+        } else if (filterVal === '30') {
+            let d = new Date();
+            d.setDate(d.getDate() - 30);
+            startDate = d.toISOString().split('T')[0];
+        } else if (filterVal === '365') {
+            let d = new Date();
+            d.setDate(d.getDate() - 365);
+            startDate = d.toISOString().split('T')[0];
+        }
+
+        if (startPicker) {
+            startPicker.setDate(startDate, false);
+        } else {
+            $("#startDate").val(startDate);
+        }
+
+        if (endPicker) {
+            endPicker.setDate(endDate, false);
+        } else {
+            $("#endDate").val(endDate);
+        }
+
+        fetchInvoiceReport();
+    }
 
     $("#searchInput").on("keyup search input", function () {
         currentPage = 1;
@@ -330,37 +928,9 @@
     });
 
     $("#entries").on("change", function () {
-        pageSize = parseInt($(this).val()) || 50;
+        pageSize = parseInt($(this).val()) || 15;
         currentPage = 1;
         renderPaginatedList();
-    });
-
-    $('.dropdown-menus a').on('click', function(e) {
-        e.preventDefault();
-        let filter = $(this).data('filter');
-        let today = new Date();
-        let startDate = '';
-        let endDate = today.toISOString().split('T')[0];
-
-        if (filter === 'today') {
-            startDate = endDate;
-        } else if (filter === '7') {
-            let d = new Date();
-            d.setDate(d.getDate() - 7);
-            startDate = d.toISOString().split('T')[0];
-        } else if (filter === '30') {
-            let d = new Date();
-            d.setDate(d.getDate() - 30);
-            startDate = d.toISOString().split('T')[0];
-        } else if (filter === '365') {
-            let d = new Date();
-            d.setDate(d.getDate() - 365);
-            startDate = d.toISOString().split('T')[0];
-        }
-
-        $("#startDate").val(startDate);
-        $("#endDate").val(endDate);
-        fetchInvoiceReport();
     });
 
     function viewReturn(id) {
@@ -372,8 +942,8 @@
     }
 
     async function fetchInvoiceReport() {
-        const startDate = document.getElementById("startDate").value;
-        const endDate = document.getElementById("endDate").value;
+        const startDate = document.getElementById("startDate") ? document.getElementById("startDate").value : '';
+        const endDate = document.getElementById("endDate") ? document.getElementById("endDate").value : '';
         await getList(startDate, endDate);
     }
 
@@ -391,6 +961,8 @@
 
             if (Array.isArray(res.data['InvoicePaymentDetails'])) {
                 rawInvoiceData = res.data['InvoicePaymentDetails'];
+                // Sort by ID descending so newest invoices appear at the top (Section 7 & 8)
+                rawInvoiceData.sort((a, b) => (parseInt(b.id) || 0) - (parseInt(a.id) || 0));
             } else {
                 rawInvoiceData = [];
             }
@@ -421,6 +993,9 @@
             return !searchTerm || orderNo.includes(searchTerm) || customerName.includes(searchTerm) || customerMobile.includes(searchTerm) || customerId.includes(searchTerm) || userName.includes(searchTerm);
         });
 
+        // Sort descending by id as guaranteed by Section 7 & 8 of PROJECT_RULES
+        filtered.sort((a, b) => (parseInt(b.id) || 0) - (parseInt(a.id) || 0));
+
         // 2. Pagination Calculations
         let totalItems = filtered.length;
         let totalPages = Math.ceil(totalItems / pageSize) || 1;
@@ -438,162 +1013,161 @@
         mobileCardList.empty();
 
         if (pageItems.length === 0) {
-            tableList.html('<tr><td colspan="8" class="text-center text-danger p-4 fw-bold">❌ কোনো ইনভয়েস পাওয়া যায়নি।</td></tr>');
-            mobileCardList.html('<div class="p-4 text-center text-danger fw-bold bg-white rounded-3 border shadow-sm">❌ কোনো ইনভয়েস পাওয়া যায়নি।</div>');
+            tableList.html('<tr><td colspan="8" class="text-center text-rose-500 dark:text-rose-400 p-8 font-semibold"><div class="flex flex-col items-center justify-center gap-2"><svg class="w-8 h-8 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg><span>কোনো ইনভয়েস পাওয়া যায়নি।</span></div></td></tr>');
+            mobileCardList.html('<div class="p-6 text-center text-rose-500 dark:text-rose-400 font-semibold bg-white dark:bg-slate-800/60 rounded-2xl unified-ui-border shadow-sm">❌ কোনো ইনভয়েস পাওয়া যায়নি।</div>');
         } else {
             pageItems.forEach(function (item, idx) {
                 let realIndex = startIndex + idx;
-                const subTotal = item['sub_total'] ? parseFloat(item['sub_total']).toFixed(2) : '0.00';
-                const discountAmount = item['discount_amount'] ? parseFloat(item['discount_amount']).toFixed(2) : '0.00';
-                const paidAmount = item['paid_amount'] ? parseFloat(item['paid_amount']).toFixed(2) : '0.00';
-                const dueAmount = item['due_amount'] ? parseFloat(item['due_amount']).toFixed(2) : '0.00';
+                const subTotal = item['sub_total'] ? parseFloat(item['sub_total']) : 0;
+                const discountAmount = item['discount_amount'] ? parseFloat(item['discount_amount']) : 0;
+                const paidAmount = item['paid_amount'] ? parseFloat(item['paid_amount']) : 0;
+                const dueAmount = item['due_amount'] ? parseFloat(item['due_amount']) : 0;
 
                 let paymentStatus = '';
                 let statusBadgeClass = '';
-                if (parseFloat(dueAmount) === 0 && parseFloat(paidAmount) > 0) {
+                if (dueAmount === 0 && paidAmount > 0) {
                     paymentStatus = 'Fully Paid';
-                    statusBadgeClass = 'bg-success-subtle text-success border border-success-subtle';
-                } else if (parseFloat(dueAmount) > 0 && parseFloat(paidAmount) > 0) {
+                    statusBadgeClass = 'status-badge-paid bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400';
+                } else if (dueAmount > 0 && paidAmount > 0) {
                     paymentStatus = 'Partial Paid';
-                    statusBadgeClass = 'bg-warning-subtle text-warning-emphasis border border-warning-subtle';
-                } else if (parseFloat(dueAmount) > 0 && parseFloat(paidAmount) === 0) {
+                    statusBadgeClass = 'status-badge-partial bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400';
+                } else if (dueAmount > 0 && paidAmount === 0) {
                     paymentStatus = 'Unpaid';
-                    statusBadgeClass = 'bg-danger-subtle text-danger border border-danger-subtle';
+                    statusBadgeClass = 'status-badge-unpaid bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400';
                 } else {
                     paymentStatus = 'Return';
-                    statusBadgeClass = 'bg-purple-subtle text-purple border border-purple-subtle';
+                    statusBadgeClass = 'status-badge-return bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-400';
                 }
 
                 let formattedDate = item['invoice_date'] ? new Intl.DateTimeFormat('en-US', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(item['invoice_date'])) : 'N/A';
 
-                // Desktop Row
+                // Desktop Row (matches product-list row styling, sleek hover, unified borders)
                 let row = `
-                    <tr>
-                        <td class="text-center fw-bold">${realIndex + 1}</td>
-                        <td class="fw-bold text-dark">${item['order_no'] || '-'}</td>
-                        <td>
+                    <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800">
+                        <td class="p-[10px] text-center font-bold text-slate-500 dark:text-slate-400">${realIndex + 1}</td>
+                        <td class="p-[10px] font-bold text-slate-800 dark:text-slate-100">${item['order_no'] || '-'}</td>
+                        <td class="p-[10px]">
                             ${item['customer']?.id ? `
-                                <a href="/customer/profile/${item['customer'].id}" class="text-decoration-none" title="View Customer Profile">
-                                    <div class="fw-bold text-primary">${item['customer']?.customer_name ?? 'Walk-in Customer'}</div>
+                                <a href="/customer/profile/${item['customer'].id}" class="text-emerald-700 dark:text-emerald-400 font-bold hover:underline" title="View Customer Profile">
+                                    <div>${item['customer']?.customer_name ?? 'Walk-in Customer'}</div>
                                 </a>
                             ` : `
-                                <div class="fw-bold text-dark">${item['customer']?.customer_name ?? 'Walk-in Customer'}</div>
+                                <div class="font-bold text-slate-800 dark:text-slate-100">${item['customer']?.customer_name ?? 'Walk-in Customer'}</div>
                             `}
-                            <div class="small text-muted"><i class="fa-solid fa-phone me-1 fs-7"></i>${item['customer']?.mobile ?? '-'}</div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5"><i class="fa-solid fa-phone text-[10px]"></i><span>${item['customer']?.mobile ?? '-'}</span></div>
                             ${item['customer']?.customer_id ? `
-                                <a href="/customer/profile/${item['customer'].id}" class="text-decoration-none" title="View Customer Profile">
-                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold" style="font-size: 10px; cursor: pointer;">
-                                        ID: ${item['customer'].customer_id} <i class="fa-solid fa-arrow-up-right-from-square ms-1" style="font-size: 8px;"></i>
+                                <a href="/customer/profile/${item['customer'].id}" class="inline-block mt-1">
+                                    <span class="customer-id-badge inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-bold text-[10px]">
+                                        ID: ${item['customer'].customer_id} <i class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i>
                                     </span>
                                 </a>
                             ` : ''}
                         </td>
-                        <td>
-                            <div class="small">মোট: <span class="fw-bold">৳ ${subTotal}</span></div>
-                            <div class="small text-muted">ডিসকাউন্ট: ৳ ${discountAmount}</div>
-                            <div class="small text-success">পরিশোধ: <span class="fw-bold">৳ ${paidAmount}</span></div>
-                            ${parseFloat(dueAmount) > 0 ? `<div class="small text-danger fw-bold">বকেয়া: ৳ ${dueAmount}</div>` : ''}
+                        <td class="p-[10px] text-xs">
+                            <div class="text-slate-700 dark:text-slate-200">মোট: <span class="font-bold text-slate-900 dark:text-white">৳ ${formatBdCurrency(subTotal)}</span></div>
+                            <div class="text-slate-500 dark:text-slate-400">ডিসকাউন্ট: ৳ ${formatBdCurrency(discountAmount)}</div>
+                            <div class="text-emerald-600 dark:text-emerald-400 font-medium">পরিশোধ: <span class="font-bold">৳ ${formatBdCurrency(paidAmount)}</span></div>
+                            ${dueAmount > 0 ? `<div class="text-rose-600 dark:text-rose-400 font-bold">বকেয়া: ৳ ${formatBdCurrency(dueAmount)}</div>` : ''}
                         </td>
-                        <td class="small fw-semibold text-secondary"><i class="fa-solid fa-user me-1"></i>${item['user']?.name ?? 'System'}</td>
-                        <td class="small text-muted"><i class="fa-regular fa-calendar me-1"></i>${formattedDate}</td>
-                        <td class="text-center">
-                            <span class="badge ${statusBadgeClass} px-2 py-1 fw-bold" style="font-size: 11px; border-radius: 12px;">
+                        <td class="p-[10px] text-xs font-semibold text-slate-600 dark:text-slate-300 whitespace-nowrap"><i class="fa-solid fa-user me-1 text-slate-400"></i>${item['user']?.name ?? 'System'}</td>
+                        <td class="p-[10px] text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap"><i class="fa-regular fa-calendar me-1 text-slate-400"></i>${formattedDate}</td>
+                        <td class="p-[10px] text-center">
+                            <span class="status-pill ${statusBadgeClass}">
                                 ${paymentStatus}
                             </span>
                         </td>
-                        <td class="text-center">
-                            <div class="d-flex align-items-center justify-content-center gap-1">
-                                <button class="btn btn-sm btn-outline-primary rounded-circle d-flex align-items-center justify-content-center p-0" onclick="viewInvoice(${item.id})" title="Print Invoice (প্রিন্ট ইনভয়েস)" style="width: 34px; height: 34px;">
-                                    <i class="fa-solid fa-print"></i>
+                        <td class="p-[10px] text-center">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <button class="action-btn action-btn-print w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" onclick="viewInvoice(${item.id})" title="Print Invoice (প্রিন্ট ইনভয়েস)">
+                                    <i class="fa-solid fa-print text-xs"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-warning text-dark rounded-circle d-flex align-items-center justify-content-center p-0" onclick="viewReturn(${item.id})" title="Sales Return (পণ্য ফেরত)" style="width: 34px; height: 34px;">
-                                    <i class="fa-solid fa-rotate-left"></i>
+                                <button class="action-btn action-btn-return w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" onclick="viewReturn(${item.id})" title="Sales Return (পণ্য ফেরত)">
+                                    <i class="fa-solid fa-rotate-left text-xs"></i>
                                 </button>
-                                <a data-id="${item['id']}" href="#" class="edit-link btn btn-sm btn-outline-success border-2 rounded-circle d-flex align-items-center justify-content-center p-0" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Due Collection / Payment (বকেয়া সংগ্রহ)" style="width: 34px; height: 34px;">
-                                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                                <a data-id="${item['id']}" href="#" class="action-btn action-btn-due edit-link w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Due Collection / Payment (বকেয়া সংগ্রহ)">
+                                    <i class="fa-solid fa-hand-holding-dollar text-xs"></i>
                                 </a>
-                                <a data-id="${item['id']}" href="#" class="edit-link btn btn-sm btn-outline-info border-2 rounded-circle d-flex align-items-center justify-content-center p-0" data-bs-toggle="modal" data-bs-target="#invoiceFullEditModal" title="Edit Invoice (ইনভয়েস এডিট)" style="width: 34px; height: 34px;">
-                                    <i class="fa-solid fa-pen-to-square"></i>
+                                <a data-id="${item['id']}" href="#" class="action-btn action-btn-edit edit-link w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" data-bs-toggle="modal" data-bs-target="#invoiceFullEditModal" title="Edit Invoice (ইনভয়েস এডিট)">
+                                    <i class="fa-solid fa-pen-to-square text-xs"></i>
                                 </a>
                             </div>
                         </td>
                     </tr>`;
                 tableList.append(row);
 
-                // Mobile Card View
+                // Mobile Card View (2x2 side-by-side financial box with margin top)
                 let mobileCard = `
-                    <div class="invoice-mobile-card card border shadow-sm rounded-4 mb-3 p-3 position-relative bg-white">
-                        <div class="d-flex align-items-center justify-content-between pb-2 mb-2 border-bottom">
-                            <div class="d-flex align-items-center gap-1">
-                                <span class="badge bg-secondary-subtle text-secondary fw-bold" style="font-size: 10px;">#${realIndex + 1}</span>
-                                <span class="badge bg-light text-dark border fw-bold" style="font-size: 11px;">
-                                    <i class="fa-solid fa-file-invoice me-1 text-primary"></i>${item['order_no'] || '-'}
+                    <div class="invoice-mobile-card unified-ui-border rounded-2xl p-3.5 bg-white dark:bg-slate-800/60 shadow-sm mb-3">
+                        <div class="flex items-center justify-between pb-2 mb-2.5 border-b border-slate-100 dark:border-slate-700">
+                            <div class="flex items-center gap-1.5">
+                                <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs">#${realIndex + 1}</span>
+                                <span class="font-bold text-slate-800 dark:text-slate-100 text-xs flex items-center gap-1">
+                                    <i class="fa-solid fa-file-invoice text-emerald-600"></i>${item['order_no'] || '-'}
                                 </span>
                             </div>
                             <div>
-                                <span class="badge ${statusBadgeClass} px-2 py-1 fw-bold" style="font-size: 10px; border-radius: 12px;">
+                                <span class="status-pill ${statusBadgeClass}">
                                     ${paymentStatus}
                                 </span>
                             </div>
                         </div>
 
-                        <div class="mb-2">
+                        <div>
                             ${item['customer']?.id ? `
-                                <a href="/customer/profile/${item['customer'].id}" class="text-decoration-none" title="View Customer Profile">
-                                    <h6 class="fw-bold text-primary mb-1" style="font-size: 14px;">
-                                        <i class="fa-solid fa-user-circle text-success me-1"></i>${item['customer']?.customer_name ?? 'Walk-in Customer'}
-                                    </h6>
+                                <a href="/customer/profile/${item['customer'].id}" class="text-emerald-700 dark:text-emerald-400 font-bold text-sm hover:underline block mb-0.5" title="View Customer Profile">
+                                    <i class="fa-solid fa-user-circle text-emerald-600 me-1"></i>${item['customer']?.customer_name ?? 'Walk-in Customer'}
                                 </a>
                             ` : `
-                                <h6 class="fw-bold text-dark mb-1" style="font-size: 14px;">
-                                    <i class="fa-solid fa-user-circle text-success me-1"></i>${item['customer']?.customer_name ?? 'Walk-in Customer'}
-                                </h6>
+                                <div class="font-bold text-slate-800 dark:text-slate-100 text-sm mb-0.5">
+                                    <i class="fa-solid fa-user-circle text-emerald-600 me-1"></i>${item['customer']?.customer_name ?? 'Walk-in Customer'}
+                                </div>
                             `}
-                            <div class="d-flex align-items-center gap-2 text-muted small" style="font-size: 11px;">
+                            <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs">
                                 <span><i class="fa-solid fa-phone me-1"></i>${item['customer']?.mobile ?? '-'}</span>
                                 ${item['customer']?.customer_id ? `
-                                    <a href="/customer/profile/${item['customer'].id}" class="text-decoration-none">
-                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1 fw-bold">ID: ${item['customer'].customer_id}</span>
+                                    <a href="/customer/profile/${item['customer'].id}">
+                                        <span class="customer-id-badge px-1.5 py-0.5 rounded font-bold text-[10px]">ID: ${item['customer'].customer_id}</span>
                                     </a>
                                 ` : ''}
                             </div>
                         </div>
 
-                        <div class="row g-2 bg-light p-2 rounded-3 my-2 text-center align-items-center" style="border: 1px solid #f1f5f9;">
-                            <div class="col-3 border-end">
-                                <span class="text-muted d-block small fw-bold" style="font-size: 9px; text-transform: uppercase;">মোট</span>
-                                <span class="fw-bold text-dark" style="font-size: 11px;">৳ ${subTotal}</span>
+                        <!-- 2x2 Grid Side-by-Side (Left-Right) with margin-top -->
+                        <div class="mobile-fin-grid">
+                            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700">
+                                <span class="text-slate-500 dark:text-slate-400 text-xs font-semibold">মোট:</span>
+                                <span class="font-bold text-slate-800 dark:text-slate-100 text-xs">৳ ${formatBdCurrency(subTotal)}</span>
                             </div>
-                            <div class="col-3 border-end">
-                                <span class="text-muted d-block small fw-bold" style="font-size: 9px; text-transform: uppercase;">ছাড়</span>
-                                <span class="fw-bold text-muted" style="font-size: 11px;">৳ ${discountAmount}</span>
+                            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700">
+                                <span class="text-slate-500 dark:text-slate-400 text-xs font-semibold">ছাড়:</span>
+                                <span class="font-bold text-slate-600 dark:text-slate-300 text-xs">৳ ${formatBdCurrency(discountAmount)}</span>
                             </div>
-                            <div class="col-3 border-end">
-                                <span class="text-muted d-block small fw-bold" style="font-size: 9px; text-transform: uppercase;">পরিশোধ</span>
-                                <span class="fw-bold text-success" style="font-size: 11px;">৳ ${paidAmount}</span>
+                            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-slate-700">
+                                <span class="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">পরিশোধ:</span>
+                                <span class="font-bold text-emerald-600 dark:text-emerald-400 text-xs">৳ ${formatBdCurrency(paidAmount)}</span>
                             </div>
-                            <div class="col-3">
-                                <span class="text-muted d-block small fw-bold" style="font-size: 9px; text-transform: uppercase;">বকেয়া</span>
-                                <span class="fw-bold ${parseFloat(dueAmount) > 0 ? 'text-danger' : 'text-muted'}" style="font-size: 11px;">৳ ${dueAmount}</span>
+                            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl ${dueAmount > 0 ? 'bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-slate-700' : 'bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700'}">
+                                <span class="${dueAmount > 0 ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 dark:text-slate-400'} text-xs font-semibold">বকেয়া:</span>
+                                <span class="font-bold ${dueAmount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-500 dark:text-slate-400'} text-xs">৳ ${formatBdCurrency(dueAmount)}</span>
                             </div>
                         </div>
 
-                        <div class="d-flex align-items-center justify-content-between pt-2 mt-1 border-top">
-                            <div class="text-muted small" style="font-size: 11px;">
+                        <div class="flex items-center justify-between pt-2.5 mt-1 border-t border-slate-100 dark:border-slate-700">
+                            <div class="text-slate-500 dark:text-slate-400 text-xs">
                                 <i class="fa-regular fa-calendar me-1"></i>${formattedDate} <span class="ms-1">(${item['user']?.name ?? 'System'})</span>
                             </div>
-                            <div class="d-flex align-items-center gap-1">
-                                <button class="btn btn-sm btn-outline-primary rounded-circle d-flex align-items-center justify-content-center p-0" onclick="viewInvoice(${item.id})" title="Print Invoice" style="width: 32px; height: 32px;">
-                                    <i class="fa-solid fa-print fs-6"></i>
+                            <div class="flex items-center gap-1.5">
+                                <button class="action-btn action-btn-print w-[30px] h-[30px] rounded-lg flex items-center justify-center shadow-sm" onclick="viewInvoice(${item.id})" title="Print Invoice">
+                                    <i class="fa-solid fa-print text-xs"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-warning text-dark rounded-circle d-flex align-items-center justify-content-center p-0" onclick="viewReturn(${item.id})" title="Return Product" style="width: 32px; height: 32px;">
-                                    <i class="fa-solid fa-rotate-left fs-6"></i>
+                                <button class="action-btn action-btn-return w-[30px] h-[30px] rounded-lg flex items-center justify-center shadow-sm" onclick="viewReturn(${item.id})" title="Return Product">
+                                    <i class="fa-solid fa-rotate-left text-xs"></i>
                                 </button>
-                                <a data-id="${item['id']}" href="#" class="edit-link btn btn-sm btn-outline-success border-2 rounded-circle d-flex align-items-center justify-content-center p-0" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Due Collection / Payment" style="width: 32px; height: 32px;">
-                                    <i class="fa-solid fa-hand-holding-dollar fs-6"></i>
+                                <a data-id="${item['id']}" href="#" class="action-btn action-btn-due edit-link w-[30px] h-[30px] rounded-lg flex items-center justify-center shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Due Collection / Payment">
+                                    <i class="fa-solid fa-hand-holding-dollar text-xs"></i>
                                 </a>
-                                <a data-id="${item['id']}" href="#" class="edit-link btn btn-sm btn-outline-info border-2 rounded-circle d-flex align-items-center justify-content-center p-0" data-bs-toggle="modal" data-bs-target="#invoiceFullEditModal" title="Edit Invoice" style="width: 32px; height: 32px;">
-                                    <i class="fa-solid fa-pen-to-square fs-6"></i>
+                                <a data-id="${item['id']}" href="#" class="action-btn action-btn-edit edit-link w-[30px] h-[30px] rounded-lg flex items-center justify-center shadow-sm" data-bs-toggle="modal" data-bs-target="#invoiceFullEditModal" title="Edit Invoice">
+                                    <i class="fa-solid fa-pen-to-square text-xs"></i>
                                 </a>
                             </div>
                         </div>
@@ -602,10 +1176,19 @@
             });
         }
 
-        // 3. Update Display Info & Pagination UI
+        // 3. Update Display Info & Pagination UI (Fixed dark mode bg)
         let fromCount = totalItems > 0 ? startIndex + 1 : 0;
         let toCount = endIndex;
-        $("#display-info").html(`Showing <span class="badge bg-light text-dark border px-2 py-1 mx-1 fw-bold fs-6">${fromCount} - ${toCount}</span> of <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 mx-1 fw-bold fs-6">${totalItems}</span> entries`);
+        $("#display-info").html(`
+            <div class="display-info-badge px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 flex-wrap shadow-sm">
+                <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Showing</span>
+                <span class="stat-count px-2 py-0.5 rounded-md font-bold">${fromCount} – ${toCount}</span>
+                <span>of</span>
+                <span class="stat-total px-2 py-0.5 rounded-md font-bold">${totalItems}</span>
+                <span>invoices</span>
+            </div>
+        `);
 
         renderPaginationControls(totalPages);
     }
@@ -614,44 +1197,66 @@
         let pagContainer = $("#pagination");
         pagContainer.empty();
 
-        if (totalPages <= 1) return;
+        let pages = Math.max(1, totalPages || 1);
 
         // Prev Button
-        let prevDisabled = currentPage === 1 ? 'disabled' : '';
-        let prevBtn = `<button type="button" class="custom-pagination-btn ${prevDisabled}" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">
-            <i class="fa-solid fa-chevron-left me-1"></i> Prev
-        </button>`;
+        let prevDisabled = currentPage <= 1;
+        let prevBtn = `
+            <button type="button" class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all ${
+                prevDisabled
+                    ? 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-300 dark:text-slate-600 cursor-not-allowed'
+                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 shadow-sm'
+            }" ${prevDisabled ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">
+                &lsaquo; Prev
+            </button>
+        `;
         pagContainer.append(prevBtn);
 
         // Smart Page Numbers
         let startPage = Math.max(1, currentPage - 2);
-        let endPage = Math.min(totalPages, currentPage + 2);
+        let endPage = Math.min(pages, currentPage + 2);
 
         if (startPage > 1) {
-            pagContainer.append(`<button type="button" class="custom-pagination-btn" onclick="goToPage(1)">1</button>`);
+            pagContainer.append(`
+                <button type="button" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-sm transition-all" onclick="goToPage(1)">1</button>
+            `);
             if (startPage > 2) {
-                pagContainer.append(`<span class="px-1 text-muted fw-bold">...</span>`);
+                pagContainer.append(`<span class="px-1 text-slate-400 font-bold text-xs">...</span>`);
             }
         }
 
         for (let p = startPage; p <= endPage; p++) {
-            let activeClass = (p === currentPage) ? 'active' : '';
-            let pageBtn = `<button type="button" class="custom-pagination-btn ${activeClass}" onclick="goToPage(${p})">${p}</button>`;
+            let isActive = p === currentPage;
+            let pageBtn = `
+                <button type="button" class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all ${
+                    isActive
+                        ? 'border-emerald-700 bg-emerald-700 text-white shadow-sm'
+                        : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-sm'
+                }" onclick="goToPage(${p})">${p}</button>
+            `;
             pagContainer.append(pageBtn);
         }
 
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) {
-                pagContainer.append(`<span class="px-1 text-muted fw-bold">...</span>`);
+        if (endPage < pages) {
+            if (endPage < pages - 1) {
+                pagContainer.append(`<span class="px-1 text-slate-400 font-bold text-xs">...</span>`);
             }
-            pagContainer.append(`<button type="button" class="custom-pagination-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`);
+            pagContainer.append(`
+                <button type="button" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-sm transition-all" onclick="goToPage(${pages})">${pages}</button>
+            `);
         }
 
         // Next Button
-        let nextDisabled = currentPage === totalPages ? 'disabled' : '';
-        let nextBtn = `<button type="button" class="custom-pagination-btn ${nextDisabled}" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">
-            Next <i class="fa-solid fa-chevron-right ms-1"></i>
-        </button>`;
+        let nextDisabled = currentPage >= pages;
+        let nextBtn = `
+            <button type="button" class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all ${
+                nextDisabled
+                    ? 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-300 dark:text-slate-600 cursor-not-allowed'
+                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 shadow-sm'
+            }" ${nextDisabled ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">
+                Next &rsaquo;
+            </button>
+        `;
         pagContainer.append(nextBtn);
     }
 
@@ -662,4 +1267,3 @@
     }
 
 </script>
-

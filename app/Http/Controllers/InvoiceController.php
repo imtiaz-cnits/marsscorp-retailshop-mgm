@@ -242,15 +242,21 @@ public function InvoiceOrderPaymentDetails(Request $request)
             'due_amount', 'customer_id', 'user_id', 'invoice_date'
         ]);
 
-        // Apply date filters if both dates are provided and are in valid format
+        // Apply date filters if both or either date is provided
         if ($startDate && $endDate) {
             $startDate = Carbon::parse($startDate)->startOfDay();
             $endDate = Carbon::parse($endDate)->endOfDay();
             $query->whereBetween('invoice_date', [$startDate, $endDate]);
+        } elseif ($startDate) {
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $query->where('invoice_date', '>=', $startDate);
+        } elseif ($endDate) {
+            $endDate = Carbon::parse($endDate)->endOfDay();
+            $query->where('invoice_date', '<=', $endDate);
         }
 
-        // Order the results by the most recent `created_at` date
-        $query->orderBy('invoice_date', 'DESC');
+        // Order results so the newest invoices always appear at the top (Section 7 & 8)
+        $query->orderBy('id', 'DESC');
 
         // Get the results
         $InvoicePaymentDetails = $query->get()->map(function ($order) {

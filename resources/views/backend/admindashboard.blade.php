@@ -1,4 +1,4 @@
-@extends('layouts.dashboard-sidenav')
+﻿@extends('layouts.dashboard-sidenav')
 @section('title', 'Admin Dashboard - মার্স কর্পোরেশন (MARSS CORPORATION)')
 @section('content')
 
@@ -344,7 +344,7 @@
 
             <!-- Footer copyright -->
             <div class="text-center text-muted py-3 border-top mt-4" style="font-size: 13px;">
-                &copy; {{ date('Y') }} মার্স কর্পোরেশন (MARSS CORPORATION) | Software By: <a href="https://www.codenextit.com" target="_blank" class="text-success fw-bold text-decoration-none">CodeNext IT</a>
+                &copy; {{ date('Y') }} MARSS CORPORATION | Software By: <a href="https://www.codenextit.com" target="_blank" class="text-success fw-bold text-decoration-none">CodeNext IT</a>
             </div>
 
         </div>

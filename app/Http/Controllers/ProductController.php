@@ -86,7 +86,7 @@ class ProductController extends Controller
     public function ProductList()
     {
         try {
-            $ProductData = Product::with(['category', 'subCategory', 'unit', 'brand'])->get();
+            $ProductData = Product::with(['category', 'subCategory', 'unit', 'brand'])->latest('id')->get();
             return response()->json(['status' => 'success', 'ProductData' => $ProductData]);
         } catch (Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
