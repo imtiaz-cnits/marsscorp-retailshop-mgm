@@ -1274,7 +1274,7 @@
         </button>
 
         <a href="{{ url('/admin-dashboard-home') }}" class="navbar-top-logo-link d-flex d-lg-none align-items-center ms-2 text-decoration-none py-1">
-          <img src="{{ asset('backend/assets/img/marss-corporation-logo.svg') }}" alt="মার্স কর্পোরেশন (MARSS CORPORATION)" class="navbar-top-logo" style="height: 38px; max-width: 170px; object-fit: contain;" />
+          <img src="{{ asset('backend/assets/icons/favicon.svg') }}" alt="মার্স কর্পোরেশন (MARSS CORPORATION)" class="navbar-top-logo" style="height: 38px; max-width: 170px; object-fit: contain;" />
         </a>
 
         <!-- navbar searchbar -->
