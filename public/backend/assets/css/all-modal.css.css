@@ -138,8 +138,8 @@ Reset Default CSS End
 }
 
 .financemodal .modal-content .close-btn i {
-  font-size: 30px;
-  color: var(--text-color2);
+  font-size: 20px;
+  color: var(--white);
   cursor: pointer;
   padding: 3px 6px;
   border-radius: 50%;

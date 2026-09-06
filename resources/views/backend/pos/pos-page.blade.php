@@ -9,7 +9,7 @@
 
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('backend/assets/icons/nexus-pos-logo.svg') }}" type="image/x-icon" />
+     <link rel="shortcut icon" href="{{ asset('backend/assets/icons/favicon.svg') }}" type="image/x-icon" />
 
     <!-- Google Fonts: Valley Sans & Baloo Da 2 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2795,9 +2795,8 @@
                 </div>
 
                 <div class="store-brand-header d-flex align-items-center gap-1 gap-md-2 px-2 px-md-3 py-1 bg-white border-0 rounded-pill overflow-hidden" style="border: none !important;">
-                    <img src="{{ asset('backend/assets/icons/favicon.svg') }}" alt="MARSS Icon" style="height: 26px; width: 26px; object-fit: contain; flex-shrink: 0; border-radius: 6px;" />
+                    <img src="{{ asset('backend/assets/img/marss-corporation-icon2.svg') }}" alt="MARSS Icon" style="width: 180px; height: auto; max-height: 80px; border-radius: 8px; object-fit: contain;" />
                     <h5 class="fw-extrabold text-success m-0 p-0 d-flex align-items-center gap-1 text-truncate" style="font-size: 13px; font-family: 'Baloo Da 2', sans-serif; font-weight: 800;">
-                        <span class="text-truncate">মার্স কর্পোরেশন (MARSS CORPORATION)</span>
                         <span class="badge bg-success text-white fw-bold px-1.5 py-0.5 d-none d-md-inline" style="font-size: 12px; border-radius: 8px; font-family: 'Valley Sans', sans-serif;">POS</span>
                     </h5>
                 </div>

@@ -32,7 +32,7 @@
                             </div>
 
                             <div class="button-item">
-                                <button id="openModalBtns" type="button" class="create-invoice" type="button">
+                                <button id="openModalBtns" onclick="openProductCreateModal()" type="button" class="create-invoice">
                                     + Add Product
                                 </button>
                                 <div class="icon-buttons">

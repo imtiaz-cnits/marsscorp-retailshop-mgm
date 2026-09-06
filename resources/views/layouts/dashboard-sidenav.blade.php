@@ -1531,19 +1531,28 @@
       })();
     </script>
     <!-- LOGO Box -->
-    <div class="navbar-brand-box">
-      <a href="{{url('admin-dashboard')}}" class="logo logo-dark d-flex align-items-center text-decoration-none">
-        <span class="logo-sm">
-          <img src="{{ asset('backend/assets/img/marss-corporation-icon.svg') }}" alt="MARSS CORPORATION Icon" width="36" height="36" style="border-radius: 8px; object-fit: contain;" />
-        </span>
-        <span class="logo-lg d-flex align-items-center gap-2">
-          <img src="{{ asset('backend/assets/img/marss-corporation-icon.svg') }}" alt="MARSS CORPORATION Icon" style="width: 36px; height: 36px; border-radius: 8px; object-fit: contain;" />
-          <span class="fw-bold text-white fs-5" style="font-family: 'Baloo Da 2', sans-serif; font-size: 16px !important; letter-spacing: 0.3px;">
-            মার্স কর্পোরেশন <span class="badge bg-success text-white px-2 py-1 ms-1" style="font-size: 10px; border-radius: 6px; font-weight: 600; font-family: 'Valley Sans', sans-serif;">POS</span>
-          </span>
-        </span>
-      </a>
-    </div>
+ <div class="navbar-brand-box">
+  <a href="{{url('admin-dashboard')}}" class="logo logo-dark d-flex align-items-center text-decoration-none">
+    
+    <!-- Collapsed Sidebar Icon (Small Mode) -->
+    <span class="logo-sm">
+      <img src="{{ asset('backend/assets/img/marss-corporation-icon.svg') }}" alt="MARSS CORPORATION Icon" width="100" height="100" style="border-radius: 8px; object-fit: contain;" />
+    </span>
+    
+    <!-- Expanded Sidebar Icon (Large Mode) -->
+    <span class="logo-lg d-flex align-items-center gap-2">
+      
+      <!-- Icon size increased significantly -->
+      <img src="{{ asset('backend/assets/img/marss-corporation-icon.svg') }}" alt="MARSS CORPORATION" style="width: 180px; height: auto; max-height: 80px; border-radius: 8px; object-fit: contain;" />
+      
+      <!-- POS Badge -->
+      <span class="badge bg-success text-white px-1 py-1 ms-1" style="font-size: 8px; border-radius: 4px; font-weight: 600; font-family: 'Valley Sans', sans-serif;">
+        POS
+      </span>
+      
+    </span>
+  </a>
+</div>
     <!-- Logo Box End -->
 
     @php

@@ -19,6 +19,7 @@
         padding: 0 6px !important;
     }
 
+    #createProduct.financemodal,
     .financemodal {
         position: fixed !important;
         top: 0 !important;
@@ -29,16 +30,209 @@
         height: 100vh !important;
         margin: 0 !important;
         margin-left: 0 !important;
-        padding: 0 !important;
-        z-index: 9991 !important;
+        padding: 20px 10px !important;
+        box-sizing: border-box !important;
+        background: rgba(15, 23, 42, 0.65) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        z-index: 99999 !important;
+        display: none;
+        overflow-y: auto !important;
     }
 
+    #createProduct.financemodal.show,
+    #createProduct.financemodal.show-modal,
+    .financemodal.show,
+    .financemodal.show-modal {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    #createProduct .modal-content,
     .financemodal .modal-content {
         position: relative !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        margin: 0 !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin: auto !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+        border-radius: 12px !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    /* Custom Searchable Select Dropdowns (Identical to POS Page) */
+    .custom-searchable-select {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+        z-index: 1;
+    }
+
+    .custom-searchable-select.is-open {
+        z-index: 9999 !important;
+        position: relative !important;
+    }
+
+    #createProduct .col-lg-6:has(.custom-searchable-select.is-open),
+    #createProduct .col-lg-6.has-open-dropdown {
+        z-index: 9999 !important;
+        position: relative !important;
+    }
+
+    .custom-searchable-select .select-trigger {
+        height: 42px;
+        border-radius: 8px;
+        cursor: pointer !important;
+        border: 1px solid #d1d5db !important;
+        background: #ffffff;
+        transition: all 0.2s ease;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 14px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1e293b;
+    }
+
+    .custom-searchable-select .select-trigger:hover {
+        border-color: #16a34a !important;
+    }
+
+    .custom-searchable-select.is-open .select-trigger {
+        border-color: #16a34a !important;
+        box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15) !important;
+    }
+
+    .custom-searchable-select .select-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        width: 100%;
+        min-width: 100%;
+        z-index: 99999 !important;
+        background: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 10px;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        padding: 6px;
+    }
+
+    .custom-searchable-select.is-open .select-menu {
+        display: block !important;
+    }
+
+    .custom-searchable-select .search-wrap {
+        padding: 4px 6px;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 4px;
+        position: relative;
+        background: #ffffff !important;
+        z-index: 2;
+    }
+
+    .custom-searchable-select .search-wrap input {
+        height: 34px !important;
+        font-size: 13px !important;
+        border-radius: 6px !important;
+        border: 1px solid #cbd5e1 !important;
+        padding-left: 30px !important;
+        padding-right: 8px !important;
+        width: 100% !important;
+        outline: none !important;
+        box-sizing: border-box !important;
+        background: #ffffff !important;
+    }
+
+    .custom-searchable-select .search-wrap input:focus {
+        border-color: #16a34a !important;
+        box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.1) !important;
+    }
+
+    .custom-searchable-select .select-options-list {
+        max-height: 180px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
+    }
+
+    .custom-searchable-select .select-options-list::-webkit-scrollbar {
+        width: 4px;
+    }
+    .custom-searchable-select .select-options-list::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .custom-searchable-select .select-option-item {
+        padding: 8px 10px;
+        font-size: 13px;
+        cursor: pointer !important;
+        border-radius: 6px;
+        margin: 1px 2px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #334155;
+        transition: all 0.15s ease;
+        user-select: none;
+    }
+
+    .custom-searchable-select .select-option-item:hover {
+        background-color: #f0fdf4;
+        color: #15803d;
+    }
+
+    .custom-searchable-select .select-option-item.active {
+        background-color: #dcfce7;
+        color: #15803d;
+        font-weight: 700;
+    }
+
+    /* General pointer cursor for select fields in modal */
+    #createProduct select,
+    .financemodal select,
+    .financemodal .form-row select,
+    .btn-add {
+        cursor: pointer !important;
+    }
+
+    /* Dark mode support */
+    body[light-mode="dark"] .custom-searchable-select .select-trigger {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+    body[light-mode="dark"] .custom-searchable-select .select-trigger .selected-text {
+        color: #cbd5e1 !important;
+    }
+    body[light-mode="dark"] .custom-searchable-select .select-menu {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+    }
+    body[light-mode="dark"] .custom-searchable-select .search-wrap {
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .custom-searchable-select .search-wrap input {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+    body[light-mode="dark"] .custom-searchable-select .select-option-item {
+        color: #cbd5e1 !important;
+    }
+    body[light-mode="dark"] .custom-searchable-select .select-option-item:hover {
+        background-color: #334155 !important;
+        color: #ffffff !important;
+    }
+    body[light-mode="dark"] .custom-searchable-select .select-option-item.active {
+        background-color: rgba(22, 163, 74, 0.25) !important;
+        color: #4ade80 !important;
     }
 
     /* Clean Modern Modal Styling for Add New Brand & Add New Category */
@@ -328,39 +522,129 @@
     .door-hand-radio:checked+.door-hand-card .door-hand-icon {
         transform: scale(1.15);
     }
+
+    /* Product Image Upload & Preview */
+    #createProduct .upload-profile .item .img-box {
+        width: 84px !important;
+        height: 70px !important;
+        border-radius: 8px !important;
+        background: #f8fafc !important;
+        border: 1.5px dashed #cbd5e1 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        overflow: hidden !important;
+        position: relative !important;
+        flex-shrink: 0 !important;
+    }
+
+    #createProduct #ProductImagePreview {
+        width: 100% !important;
+        height: 100% !important;
+        min-width: 100% !important;
+        min-height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        object-fit: cover !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        border-radius: 7px !important;
+        z-index: 10 !important;
+        display: none;
+    }
+
+    #createProduct .upload-profile .item .img-box img {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        object-fit: cover !important;
+    }
+
+    #createProduct .upload-profile .item .custom-file-input-wrapper {
+        cursor: pointer !important;
+    }
 </style>
 
 <!-- Create Product Modal Start -->
 <section id="createProduct" class="financemodal">
-    <div class="modal-content">
-        <a class="close-btn closes">
-            <i class="fa-solid fa-xmark"></i>
-        </a>
-        <h2 class="heading">Add New Product</h2>
-        <div id="popup-modal">
-            <form onsubmit="return Save(event)" id="signup">
+    <div class="modal-content border-0 shadow-lg d-flex flex-column" style="border-radius: 16px; overflow: hidden; background: #ffffff; padding: 0 !important; max-width: 750px; width: 95%; max-height: 90vh;">
+        <!-- POS Style Primary Green Sticky Header -->
+        <div class="modal-header text-white py-2.5 px-4 d-flex align-items-center justify-content-between flex-shrink-0" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 20;">
+            <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2 m-0 fs-5">
+                <i class="fa-solid fa-cart-plus me-1"></i> Add New Product
+            </h5>
+            <button type="button" class="close-btn closes d-flex align-items-center justify-content-center border-0 shadow-sm" onclick="closeProductModal()" style="width: 24px; height: 24px; border-radius: 50%; background: #ef4444; color: #ffffff; font-size: 11px; cursor: pointer; transition: all 0.2s ease;" title="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Scrollable Form Body -->
+        <div id="popup-modal" style="padding: 18px 24px; overflow-y: auto; flex: 1 1 auto; max-height: calc(90vh - 120px);">
+            <form onsubmit="return ProductDataSave(event)" id="signup">
                 <!-- Select Dropdowns with Add Buttons -->
-                <div class="row">
+                <div class="row g-2.5">
                     <div class="col-lg-6">
-                        <div class="form-row">
-                            <select class="form-select input-style" id="ProductBrand"
-                                aria-label="Default select example">
-                                <option value="none">Select Brand</option>
-                            </select>
-                            <button type="button" class="btn-add newbrand-open">+ Add</button>
+                        <div class="form-row flex-column align-items-start gap-1">
+                            <label for="ProductBrand" class="fw-bold small" style="color: #334155; display: block; margin-bottom: 0px !important; font-size: 13px;">Brand</label>
+                            <div class="d-flex align-items-center w-100 gap-2">
+                                <!-- Native select kept hidden for 100% backend & DOM compatibility -->
+                                <select class="form-select input-style d-none" id="ProductBrand"
+                                    aria-label="Default select example">
+                                    <option value="none">Select Brand</option>
+                                </select>
+
+                                <!-- Custom Searchable Brand Dropdown (Identical to POS Page) -->
+                                <div class="custom-searchable-select flex-grow-1" id="createBrandDropdown">
+                                    <div class="select-trigger d-flex align-items-center justify-content-between px-3" onclick="toggleCustomProductDropdown('createBrandDropdown')">
+                                        <span class="selected-text text-truncate" style="font-size: 14px; font-weight: 500; color: #64748b;">Select Brand</span>
+                                        <i class="fa-solid fa-chevron-down ms-1 text-muted" style="font-size: 12px; transition: transform 0.2s;"></i>
+                                    </div>
+                                    <div class="select-menu">
+                                        <div class="search-wrap">
+                                            <i class="fa-solid fa-magnifying-glass position-absolute text-muted" style="top: 50%; transform: translateY(-50%); left: 10px; font-size: 12px;"></i>
+                                            <input type="text" placeholder="Search Brand..." oninput="filterCustomProductDropdown('createBrandDropdown', this.value)">
+                                        </div>
+                                        <div class="select-options-list">
+                                            <!-- Brand options will load here -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-add newbrand-open text-nowrap" style="height: 42px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; font-weight: 600;">+ Add</button>
+                            </div>
                         </div>
                     </div>
 
                     <div class="col-lg-6">
-                        <div class="form-row">
-                            <select required id="ProductCategoryDataID">
-                                <option disabled selected>
-                                    Select Category <span class="star">*</span>
-                                </option>
-                            </select>
-                            <button type="button" class="btn-add newcategory-open">
-                                + Add
-                            </button>
+                        <div class="form-row flex-column align-items-start gap-1">
+                            <label for="ProductCategoryDataID" class="fw-bold small" style="color: #334155; display: block; margin-bottom: 0px !important; font-size: 13px;">Category <span class="text-danger">*</span></label>
+                            <div class="d-flex align-items-center w-100 gap-2">
+                                <!-- Native select kept hidden for 100% backend & DOM compatibility -->
+                                <select class="d-none" id="ProductCategoryDataID">
+                                    <option value="none" selected>Select Category</option>
+                                </select>
+
+                                <!-- Custom Searchable Category Dropdown (Identical to POS Page) -->
+                                <div class="custom-searchable-select flex-grow-1" id="createCategoryDropdown">
+                                    <div class="select-trigger d-flex align-items-center justify-content-between px-3" onclick="toggleCustomProductDropdown('createCategoryDropdown')">
+                                        <span class="selected-text text-truncate" style="font-size: 14px; font-weight: 500; color: #64748b;">Select Category <span class="text-danger">*</span></span>
+                                        <i class="fa-solid fa-chevron-down ms-1 text-muted" style="font-size: 12px; transition: transform 0.2s;"></i>
+                                    </div>
+                                    <div class="select-menu">
+                                        <div class="search-wrap">
+                                            <i class="fa-solid fa-magnifying-glass position-absolute text-muted" style="top: 50%; transform: translateY(-50%); left: 10px; font-size: 12px;"></i>
+                                            <input type="text" placeholder="Search Category..." oninput="filterCustomProductDropdown('createCategoryDropdown', this.value)">
+                                        </div>
+                                        <div class="select-options-list">
+                                            <!-- Category options will load here -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-add newcategory-open text-nowrap" style="height: 42px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; font-weight: 600;">
+                                    + Add
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -372,9 +656,9 @@
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <label class="fw-bold text-success m-0 d-flex align-items-center gap-2" style="font-size: 13px;">
                                     <i class="fa-solid fa-door-open fs-5 text-success"></i>
-                                    <span>Door Handedness & Specific Quantities (ডোর সাইড অনুযায়ী স্টক এন্ট্রি)</span>
+                                    <span>Door Handedness & Specific Quantities</span>
                                 </label>
-                                <span class="badge bg-success text-white px-2 py-1 small fw-bold" id="createDoorTotalBadge">মোট ডোর স্টক: 0</span>
+                                <span class="badge bg-success text-white px-2 py-1 small fw-bold" id="createDoorTotalBadge">Total Door Stock: 0</span>
                             </div>
                             <div class="row g-2 mt-1">
                                 <!-- Left Handed Card & Qty Input -->
@@ -382,7 +666,7 @@
                                     <div class="door-hand-box-create rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center" style="border-radius: 10px; padding: 10px 12px;">
                                         <div class="d-flex align-items-center justify-content-center gap-1.5 mb-2 text-primary fw-bold" style="font-size: 13px;">
                                             <span class="fs-5">👈</span>
-                                            <span>Left Handed (বাম)</span>
+                                            <span>Left Handed</span>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-center gap-2">
                                             <label for="createDoorQtyLeft" class="fw-bold text-secondary m-0" style="font-size: 12px; letter-spacing: 0.5px;">QTY:</label>
@@ -396,7 +680,7 @@
                                     <div class="door-hand-box-create rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center" style="border-radius: 10px; padding: 10px 12px;">
                                         <div class="d-flex align-items-center justify-content-center gap-1.5 mb-2 text-success fw-bold" style="font-size: 13px;">
                                             <span class="fs-5">👉</span>
-                                            <span>Right Handed (ডান)</span>
+                                            <span>Right Handed</span>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-center gap-2">
                                             <label for="createDoorQtyRight" class="fw-bold text-secondary m-0" style="font-size: 12px; letter-spacing: 0.5px;">QTY:</label>
@@ -410,7 +694,7 @@
                                     <div class="door-hand-box-create rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center" style="border-radius: 10px; padding: 10px 12px;">
                                         <div class="d-flex align-items-center justify-content-center gap-1.5 mb-2 text-info fw-bold" style="font-size: 13px;">
                                             <span class="fs-5">↔️</span>
-                                            <span>Both / Universal (উভয়)</span>
+                                            <span>Both / Universal</span>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-center gap-2">
                                             <label for="createDoorQtyBoth" class="fw-bold text-secondary m-0" style="font-size: 12px; letter-spacing: 0.5px;">QTY:</label>
@@ -424,92 +708,78 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row mt-2 g-2.5">
                     <div class="col-lg-12">
-                        <h3 class="heading2">Product Information</h3>
-                        <div class="mb-2">
-                            <div class="upload-profile">
-                                <div class="item">
-                                    <div class="img-box">
-                                        <svg width="32" height="32" viewBox="0 0 50 50" fill="red"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink">
-                                            <rect width="50" height="50" fill="url(#pattern0_1204_6)"
-                                                fill-opacity="0.5" />
-                                            <defs>
-                                                <pattern id="pattern0_1204_6"
-                                                    patternContentUnits="objectBoundingBox" width="1"
-                                                    height="1">
-                                                    <use xlink:href="#image0_1204_6" transform="scale(0.005)" />
-                                                </pattern>
-                                                <image id="image0_1204_6" width="200" height="200"
-                                                    xlink:href="data:image/png;base64,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" />
-                                            </defs>
-                                        </svg>
+                        <div class="upload-profile">
+                            <label class="fw-bold small" style="color: #334155; display: block; margin-bottom: 6px !important; font-size: 13px;">Product Photo</label>
+                            <div class="item align-items-center">
+                                <div class="img-box" id="ProductImageBox" title="Product Image Preview" style="width: 84px; height: 70px; border-radius: 8px; background: #f8fafc; border: 1.5px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; position: relative;">
+                                    <div id="ProductImageDefaultIcon" class="d-flex align-items-center justify-content-center w-100 h-100">
+                                        <i class="fa-regular fa-image fs-3 text-secondary"></i>
                                     </div>
+                                    <img id="ProductImagePreview" src="" alt="Product Preview" style="width: 100% !important; height: 100% !important; min-width: 100% !important; min-height: 100% !important; max-width: 100% !important; max-height: 100% !important; object-fit: cover !important; position: absolute !important; top: 0 !important; left: 0 !important; z-index: 10 !important; border-radius: 7px !important; display: none;" />
+                                </div>
 
-                                    <div class="profile-wrapper">
-                                        <label class="custom-file-input-wrapper">
-                                            <input type="file" class="custom-file-input" id="ProductImage"
-                                                aria-label="Upload Photo" />
-                                        </label>
-                                        <p>PNG,JPEG or GIF (up to 1 MB)</p>
+                                <div class="profile-wrapper">
+                                    <label class="custom-file-input-wrapper mb-1">
+                                        <input type="file" class="custom-file-input" id="ProductImage"
+                                            accept="image/*" onchange="previewProductImage(event)" aria-label="Upload Photo" />
+                                    </label>
+                                    <div id="ProductImageFileInfo" class="mt-1" style="font-size: 12px; color: #64748b; line-height: 1.4;">
+                                        <span>PNG, JPEG or GIF (up to 1 MB)</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
-                    <div class="col-lg-12">
-                        <div class="form-row mb-2">
-                            <div class="d-flex align-items-center justify-content-between mb-1" style="width: 100%;">
-                                <label for="ProductName" style="font-weight: 600; color: #15803d; margin: 0;">Product Name *</label>
-                                <button type="button" id="translateBtn" onclick="translateProductName()" class="btn btn-sm text-white d-inline-flex align-items-center gap-1" style="background-color: #15803d; font-size: 13px; font-weight: 600; padding: 5px 14px; border-radius: 6px; border: none; cursor: pointer;">
-                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
-                                    </svg>
-                                    <span>বাংলায় রূপান্তর (Translate to Bangla)</span>
-                                </button>
-                            </div>
-                            <input type="text" placeholder="Product Name (বাংলা বা English) *" id="ProductName" style="width: 100%; height: 46px; border-radius: 6px;" />
+                    <div class="col-lg-12 mt-2">
+                        <div class="form-row flex-column align-items-start gap-1">
+                            <label for="ProductName" class="fw-bold small" style="color: #334155; display: block; margin-bottom: 0px !important; font-size: 13px;">Product Name <span class="text-danger">*</span></label>
+                            <input type="text" placeholder="Product Name *" id="ProductName" class="form-control" style="width: 100%; height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
                         </div>
                     </div>
 
                     <div class="col-lg-4">
-                        <div class="form-row">
-                            <input type="text" placeholder="Product Quantity" id="ProductQuantity" />
+                        <div class="form-row flex-column align-items-start gap-1">
+                            <label for="ProductQuantity" class="fw-bold small" style="color: #334155; display: block; margin-bottom: 0px !important; font-size: 13px;">Product Quantity</label>
+                            <input type="text" placeholder="Quantity" id="ProductQuantity" class="form-control" style="height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <div class="form-row">
-                            <input type="text" placeholder="Product Cost Price" id="ProductCostPrice" />
+                        <div class="form-row flex-column align-items-start gap-1">
+                            <label for="ProductCostPrice" class="fw-bold small" style="color: #334155; display: block; margin-bottom: 0px !important; font-size: 13px;">Cost Price</label>
+                            <input type="text" placeholder="Cost Price" id="ProductCostPrice" class="form-control" style="height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <div class="form-row">
-                            <input type="text" placeholder="Selling Price" id="ProductSellingPrice" />
+                        <div class="form-row flex-column align-items-start gap-1">
+                            <label for="ProductSellingPrice" class="fw-bold small" style="color: #334155; display: block; margin-bottom: 0px !important; font-size: 13px;">Selling Price</label>
+                            <input type="text" placeholder="Selling Price" id="ProductSellingPrice" class="form-control" style="height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
                         </div>
                     </div>
 
                     <div class="col-lg-12">
-                        <div class="form-row">
-                            <div class="d-flex align-items-center gap-2">
-                                <input type="text" id="ProductCodeInput" placeholder="Enter or scan barcode..." style="flex: 1; height: 46px; border-radius: 6px;" />
-                                <button type="button" class="btn btn-primary fw-bold text-nowrap d-flex align-items-center gap-2 px-3 shadow-sm" onclick="openProductCreateCameraScanner()" style="height: 46px; border-radius: 8px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none;">
+                        <div class="form-row flex-column align-items-start gap-1">
+                            <label for="ProductCodeInput" class="fw-bold small" style="color: #334155; display: block; margin-bottom: 0px !important; font-size: 13px;">Barcode / Product Code</label>
+                            <div class="d-flex align-items-center gap-2 w-100">
+                                <input type="text" id="ProductCodeInput" class="form-control" placeholder="Enter or scan barcode..." style="flex: 1; height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
+                                <button type="button" class="btn text-white fw-bold text-nowrap d-flex align-items-center gap-2 px-3 shadow-sm" onclick="openProductCreateCameraScanner()" style="height: 42px; border-radius: 8px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none;">
                                     <i class="fa-solid fa-camera fs-5"></i>
-                                    <span class="d-none d-sm-inline">ক্যামেরা স্ক্যান</span>
+                                    <span class="d-none d-sm-inline">Camera Scan</span>
                                 </button>
                             </div>
                         </div>
-                        <div id="BarcodeContainer" class="d-flex flex-wrap gap-2 mt-2 mb-3"></div>
-                    </div>
-                    <div class="actions d-flex align-items-center justify-content-end gap-2 mt-3">
-                        <button type="button" onclick="resetProductForm()" class="btn btn-outline-secondary px-4" style="height: 46px; border-radius: 8px; font-weight: 600;">Reset</button>
-                        <button type="button" onclick="ProductDataSave(event)" class="btn-save" style="height: 46px; margin: 0;">Submit</button>
+                        <div id="BarcodeContainer" class="d-flex flex-wrap gap-2 mt-2 mb-1"></div>
                     </div>
                 </div>
             </form>
+        </div>
+
+        <!-- Sticky Footer (Fixed at Bottom) -->
+        <div class="modal-footer px-4 py-2.5 bg-white d-flex align-items-center justify-content-end gap-2 flex-shrink-0" style="position: sticky; bottom: 0; z-index: 20; border-top: 1px solid #e2e8f0 !important;">
+            <button type="button" onclick="resetProductForm()" class="btn btn-outline-secondary px-4 fw-semibold" style="height: 40px; border-radius: 8px; font-size: 14px;">Reset</button>
+            <button type="button" onclick="ProductDataSave(event)" class="btn text-white fw-bold px-5 shadow-sm" style="height: 40px; border-radius: 8px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none; font-size: 14px;">Submit</button>
         </div>
     </div>
 </section>
@@ -677,7 +947,7 @@
     async function refreshBrandList(selectedBrandId = null) {
         try {
             const res = await axios.get("/api/brand-list", HeaderToken());
-            const Brand = res.data.BrandData;
+            const Brand = res.data.BrandData || [];
 
             const optionsHtmlBrand = Brand.map(brand =>
                 `<option value="${brand.id}" ${selectedBrandId == brand.id ? 'selected' : ''}>${brand.name}</option>`
@@ -688,6 +958,34 @@
                 brandDropdown.innerHTML = `<option value="none" selected>Select Brand</option>` + optionsHtmlBrand;
                 if (selectedBrandId) {
                     brandDropdown.value = String(selectedBrandId);
+                }
+            }
+
+            // Populate custom searchable brand dropdown (POS style)
+            const brandCustomList = document.querySelector('#createBrandDropdown .select-options-list');
+            const brandTriggerText = document.querySelector('#createBrandDropdown .selected-text');
+            if (brandCustomList) {
+                let currentVal = selectedBrandId ? String(selectedBrandId) : (brandDropdown ? brandDropdown.value : 'none');
+                let defaultLabel = 'Select Brand';
+
+                let html = `<div class="select-option-item ${(currentVal === 'none' || !currentVal) ? 'active' : ''}" data-value="none" data-label="Select Brand" onclick="selectCustomProductDropdownItem('createBrandDropdown', 'ProductBrand', 'none', 'Select Brand')">
+                    <span>Select Brand</span>
+                    ${(currentVal === 'none' || !currentVal) ? '<i class="fa-solid fa-check small text-success"></i>' : ''}
+                </div>`;
+
+                Brand.forEach(b => {
+                    const isSelected = String(currentVal) === String(b.id);
+                    if (isSelected) defaultLabel = b.name;
+                    html += `<div class="select-option-item ${isSelected ? 'active' : ''}" data-value="${b.id}" data-label="${b.name}" onclick="selectCustomProductDropdownItem('createBrandDropdown', 'ProductBrand', '${b.id}', '${b.name}')">
+                        <span>${b.name}</span>
+                        ${isSelected ? '<i class="fa-solid fa-check small text-success"></i>' : ''}
+                    </div>`;
+                });
+
+                brandCustomList.innerHTML = html;
+                if (brandTriggerText) {
+                    brandTriggerText.textContent = defaultLabel;
+                    brandTriggerText.style.color = (currentVal && currentVal !== 'none') ? '#0f172a' : '#64748b';
                 }
             }
         } catch (error) {
@@ -847,7 +1145,7 @@
             const res = await axios.get("/api/category-list", HeaderToken());
 
             if (res.data.status === "success") {
-                const categories = res.data.CategoryData;
+                const categories = res.data.CategoryData || [];
 
                 let optionsHtml = `<option value="none" selected>Select Category</option>`;
                 optionsHtml += categories
@@ -862,7 +1160,36 @@
                         categoryDropdown.value = String(selectedCategoryId);
                     }
 
+                    categoryDropdown.removeEventListener('change', handleCategoryChange);
                     categoryDropdown.addEventListener('change', handleCategoryChange);
+                }
+
+                // Populate custom searchable category dropdown (POS style)
+                const catCustomList = document.querySelector('#createCategoryDropdown .select-options-list');
+                const catTriggerText = document.querySelector('#createCategoryDropdown .selected-text');
+                if (catCustomList) {
+                    let currentVal = selectedCategoryId ? String(selectedCategoryId) : (categoryDropdown ? categoryDropdown.value : 'none');
+                    let defaultLabel = 'Select Category *';
+
+                    let html = `<div class="select-option-item ${(currentVal === 'none' || !currentVal) ? 'active' : ''}" data-value="none" data-label="Select Category" onclick="selectCustomProductDropdownItem('createCategoryDropdown', 'ProductCategoryDataID', 'none', 'Select Category *')">
+                        <span>Select Category</span>
+                        ${(currentVal === 'none' || !currentVal) ? '<i class="fa-solid fa-check small text-success"></i>' : ''}
+                    </div>`;
+
+                    categories.forEach(c => {
+                        const isSelected = String(currentVal) === String(c.id);
+                        if (isSelected) defaultLabel = c.category_name;
+                        html += `<div class="select-option-item ${isSelected ? 'active' : ''}" data-value="${c.id}" data-label="${c.category_name}" onclick="selectCustomProductDropdownItem('createCategoryDropdown', 'ProductCategoryDataID', '${c.id}', '${c.category_name}')">
+                            <span>${c.category_name}</span>
+                            ${isSelected ? '<i class="fa-solid fa-check small text-success"></i>' : ''}
+                        </div>`;
+                    });
+
+                    catCustomList.innerHTML = html;
+                    if (catTriggerText) {
+                        catTriggerText.textContent = defaultLabel;
+                        catTriggerText.style.color = (currentVal && currentVal !== 'none') ? '#0f172a' : '#64748b';
+                    }
                 }
             } else {
                 errorToast("Failed to update categories. Please try again.");
@@ -1140,6 +1467,251 @@
         resetDoorSide();
         const doorCont = document.getElementById('doorHandednessContainer');
         if (doorCont) doorCont.style.display = 'none';
+
+        // Reset Brand & Category custom dropdowns
+        resetCustomProductDropdown('createBrandDropdown', 'ProductBrand', 'Select Brand', 'none');
+        resetCustomProductDropdown('createCategoryDropdown', 'ProductCategoryDataID', 'Select Category *', 'none');
+
+        // Reset Product Image Preview and File info
+        resetProductImagePreview();
+    }
+
+    // Image Preview and File Info Handler
+    function previewProductImage(event) {
+        const input = event.target;
+        const file = input.files && input.files[0];
+        const previewImg = document.getElementById('ProductImagePreview');
+        const defaultIcon = document.getElementById('ProductImageDefaultIcon');
+        const fileInfo = document.getElementById('ProductImageFileInfo');
+        const imgBox = document.getElementById('ProductImageBox');
+
+        if (file) {
+            // Calculate file size formatted
+            let sizeFormatted = '';
+            if (file.size < 1024) {
+                sizeFormatted = file.size + ' B';
+            } else if (file.size < 1024 * 1024) {
+                sizeFormatted = (file.size / 1024).toFixed(1) + ' KB';
+            } else {
+                sizeFormatted = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+            }
+
+            const isOversize = file.size > (1024 * 1024);
+            const badgeBg = isOversize ? '#fef2f2' : '#ecfdf5';
+            const badgeColor = isOversize ? '#b91c1c' : '#047857';
+            const badgeBorder = isOversize ? '#fecaca' : '#a7f3d0';
+
+            // Show Preview Image in left box
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (previewImg) {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                }
+                if (defaultIcon) {
+                    defaultIcon.style.display = 'none';
+                }
+                if (imgBox) {
+                    imgBox.style.border = '1px solid #16a34a';
+                    imgBox.style.background = '#ffffff';
+                }
+            };
+            reader.readAsDataURL(file);
+
+            // Show File Details (File name, size badge, and remove button)
+            if (fileInfo) {
+                fileInfo.innerHTML = `
+                    <div class="d-flex align-items-center gap-2 flex-wrap" style="font-size: 12px; margin-top: 4px;">
+                        <span class="text-truncate" style="max-width: 170px; font-weight: 600; color: #0f172a;" title="${file.name}">
+                            <i class="fa-solid fa-image text-success me-1"></i>${file.name}
+                        </span>
+                        <span class="badge" style="background-color: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeBorder}; font-size: 11px; padding: 2px 7px; border-radius: 6px; font-weight: 600;">
+                            <i class="fa-solid fa-hard-drive me-1"></i>${sizeFormatted}
+                        </span>
+                        <button type="button" onclick="removeProductImage()" class="btn btn-sm btn-link text-danger p-0 ms-1" style="font-size: 13px; text-decoration: none;" title="Remove image">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </button>
+                    </div>
+                `;
+            }
+        } else {
+            resetProductImagePreview();
+        }
+    }
+
+    function removeProductImage() {
+        const input = document.getElementById('ProductImage');
+        if (input) {
+            input.value = '';
+        }
+        resetProductImagePreview();
+    }
+
+    function resetProductImagePreview() {
+        const previewImg = document.getElementById('ProductImagePreview');
+        const defaultIcon = document.getElementById('ProductImageDefaultIcon');
+        const fileInfo = document.getElementById('ProductImageFileInfo');
+        const imgBox = document.getElementById('ProductImageBox');
+
+        if (previewImg) {
+            previewImg.src = '';
+            previewImg.style.display = 'none';
+        }
+        if (defaultIcon) {
+            defaultIcon.style.display = 'flex';
+        }
+        if (imgBox) {
+            imgBox.style.border = '1.5px dashed #cbd5e1';
+            imgBox.style.background = '#f8fafc';
+        }
+        if (fileInfo) {
+            fileInfo.innerHTML = '<span>PNG, JPEG or GIF (up to 1 MB)</span>';
+        }
+    }
+
+    window.previewProductImage = previewProductImage;
+    window.removeProductImage = removeProductImage;
+    window.resetProductImagePreview = resetProductImagePreview;
+
+    // Custom Searchable Dropdown Helper Functions (Identical to POS Page)
+    function toggleCustomProductDropdown(dropdownId) {
+        const dropdown = document.getElementById(dropdownId);
+        if (!dropdown) return;
+        const isOpen = dropdown.classList.contains('is-open');
+
+        closeAllCustomProductDropdowns();
+
+        if (!isOpen) {
+            dropdown.classList.add('is-open');
+            const parentCol = dropdown.closest('.col-lg-6');
+            if (parentCol) {
+                parentCol.classList.add('has-open-dropdown');
+                parentCol.style.zIndex = '9999';
+                parentCol.style.position = 'relative';
+            }
+            const chevron = dropdown.querySelector('.fa-chevron-down');
+            if (chevron) chevron.style.transform = 'rotate(180deg)';
+            const searchInput = dropdown.querySelector('.search-wrap input');
+            if (searchInput) {
+                searchInput.value = '';
+                filterCustomProductDropdown(dropdownId, '');
+                setTimeout(() => searchInput.focus(), 60);
+            }
+        }
+    }
+
+    function closeAllCustomProductDropdowns() {
+        document.querySelectorAll('#createProduct .custom-searchable-select').forEach(d => {
+            d.classList.remove('is-open');
+            const chevron = d.querySelector('.fa-chevron-down');
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+        });
+        document.querySelectorAll('#createProduct .col-lg-6').forEach(col => {
+            col.classList.remove('has-open-dropdown');
+            col.style.zIndex = '';
+            col.style.position = '';
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#createProduct .custom-searchable-select')) {
+            closeAllCustomProductDropdowns();
+        }
+    });
+
+    function filterCustomProductDropdown(dropdownId, searchVal) {
+        const dropdown = document.getElementById(dropdownId);
+        if (!dropdown) return;
+        const listEl = dropdown.querySelector('.select-options-list');
+        if (!listEl) return;
+        const items = listEl.querySelectorAll('.select-option-item');
+        const query = (searchVal || '').trim().toLowerCase();
+        let matchCount = 0;
+
+        items.forEach(item => {
+            const text = (item.getAttribute('data-label') || '').toLowerCase();
+            if (!query || text.includes(query)) {
+                item.style.display = 'flex';
+                matchCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        let noResultEl = listEl.querySelector('.no-results-msg');
+        if (matchCount === 0) {
+            if (!noResultEl) {
+                noResultEl = document.createElement('div');
+                noResultEl.className = 'no-results-msg text-center py-2 text-muted';
+                noResultEl.style.fontSize = '12px';
+                noResultEl.textContent = 'কোনো ফলাফল পাওয়া যায়নি';
+                listEl.appendChild(noResultEl);
+            }
+        } else if (noResultEl) {
+            noResultEl.remove();
+        }
+    }
+
+    function selectCustomProductDropdownItem(dropdownId, hiddenInputId, val, label) {
+        const dropdown = document.getElementById(dropdownId);
+        const hiddenInput = document.getElementById(hiddenInputId);
+        const triggerText = dropdown ? dropdown.querySelector('.selected-text') : null;
+
+        if (hiddenInput) {
+            hiddenInput.value = val;
+            hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        if (triggerText) {
+            triggerText.textContent = label;
+            triggerText.style.color = (val && val !== 'none') ? '#0f172a' : '#64748b';
+        }
+
+        if (dropdown) {
+            dropdown.querySelectorAll('.select-option-item').forEach(item => {
+                if (item.getAttribute('data-value') === String(val)) {
+                    item.classList.add('active');
+                    if (!item.querySelector('.fa-check')) {
+                        item.innerHTML = `<span>${item.getAttribute('data-label')}</span><i class="fa-solid fa-check small text-success"></i>`;
+                    }
+                } else {
+                    item.classList.remove('active');
+                    const check = item.querySelector('.fa-check');
+                    if (check) check.remove();
+                }
+            });
+        }
+
+        closeAllCustomProductDropdowns();
+    }
+
+    function resetCustomProductDropdown(dropdownId, hiddenInputId, defaultText = "Select Option", defaultVal = "none") {
+        const dropdown = document.getElementById(dropdownId);
+        const hiddenInput = document.getElementById(hiddenInputId);
+        if (hiddenInput) hiddenInput.value = defaultVal;
+        if (!dropdown) return;
+        const triggerText = dropdown.querySelector('.selected-text');
+        const searchInput = dropdown.querySelector('.search-wrap input');
+
+        if (triggerText) {
+            triggerText.textContent = defaultText;
+            triggerText.style.color = (defaultVal && defaultVal !== 'none') ? '#0f172a' : '#64748b';
+        }
+        if (searchInput) searchInput.value = '';
+        filterCustomProductDropdown(dropdownId, '');
+
+        dropdown.querySelectorAll('.select-option-item').forEach(item => {
+            if (item.getAttribute('data-value') === String(defaultVal)) {
+                item.classList.add('active');
+                if (!item.querySelector('.fa-check')) {
+                    item.innerHTML = `<span>${item.getAttribute('data-label')}</span><i class="fa-solid fa-check small text-success"></i>`;
+                }
+            } else {
+                item.classList.remove('active');
+                const check = item.querySelector('.fa-check');
+                if (check) check.remove();
+            }
+        });
     }
 </script>
 
@@ -1279,8 +1851,8 @@
                     barcodeList = [];
                     renderBarcodes();
                     resetDoorSide();
-                    const modal = document.getElementById('myModal');
-                    closeModal(modal);
+                    resetProductImagePreview();
+                    closeProductModal();
                     if (typeof getList === 'function') {
                         await getList();
                     } else {
@@ -1296,12 +1868,113 @@
         return false;
     }
 
-    function closeModal(modal) {
+    function openProductCreateModal() {
+        const modal = document.getElementById('createProduct') || document.querySelector('.financemodal');
         if (modal) {
-            modal.style.display = 'none';
+            if (modal.parentNode && modal.parentNode !== document.body) {
+                document.body.appendChild(modal);
+            }
+            modal.classList.add('show');
+            modal.classList.add('show-modal');
+            modal.style.setProperty('display', 'flex', 'important');
+            modal.style.opacity = '1';
+            modal.style.visibility = 'visible';
+            document.body.style.overflow = 'hidden';
+            closeAllCustomProductDropdowns();
+
+            if (typeof refreshBrandList === 'function') {
+                const brandDropdown = document.getElementById("ProductBrand");
+                if (!brandDropdown || brandDropdown.options.length <= 1) {
+                    refreshBrandList();
+                }
+            }
+            if (typeof refreshCategoryList === 'function') {
+                const catDropdown = document.getElementById("ProductCategoryDataID");
+                if (!catDropdown || catDropdown.options.length <= 1) {
+                    refreshCategoryList();
+                }
+            }
+            if (typeof refreshUnitList === 'function') {
+                const unitDropdown = document.getElementById("ProductUnit");
+                if (!unitDropdown || unitDropdown.options.length <= 1) {
+                    refreshUnitList();
+                }
+            }
         }
-        resetProductForm();
     }
+
+    function closeProductModal(modal) {
+        if (!modal || !(modal instanceof HTMLElement)) {
+            modal = document.getElementById('createProduct') || document.querySelector('.financemodal');
+        }
+        if (modal) {
+            modal.classList.remove('show');
+            modal.classList.remove('show-modal');
+            modal.style.setProperty('display', 'none', 'important');
+            modal.style.opacity = '0';
+            modal.style.visibility = 'hidden';
+        }
+        document.body.style.overflow = '';
+        if (typeof resetProductForm === 'function') {
+            resetProductForm();
+        }
+    }
+
+    function closeModal(modal) {
+        closeProductModal(modal);
+    }
+
+    window.openProductCreateModal = openProductCreateModal;
+    window.closeProductModal = closeProductModal;
+    window.closeModal = closeModal;
+    window.Save = ProductDataSave;
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const modal = document.getElementById('createProduct');
+        if (modal) {
+            if (modal.parentNode && modal.parentNode !== document.body) {
+                document.body.appendChild(modal);
+            }
+
+            modal.querySelectorAll('.close-btn, .closes').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    closeProductModal(modal);
+                });
+            });
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeProductModal(modal);
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && (modal.classList.contains('show') || modal.style.display === 'flex')) {
+                    const brandModal = document.getElementById('addBrandModal');
+                    const catModal = document.getElementById('addCategoryModal');
+                    if (brandModal && (brandModal.classList.contains('show') || brandModal.style.display === 'flex')) {
+                        closeBrandModal();
+                        return;
+                    }
+                    if (catModal && (catModal.classList.contains('show') || catModal.style.display === 'flex')) {
+                        closeCategoryModal();
+                        return;
+                    }
+                    closeProductModal(modal);
+                }
+            });
+        }
+
+        document.querySelectorAll('#openModalBtns, .create-invoice').forEach(btn => {
+            if (btn.innerText.includes('Product') || window.location.pathname.includes('product')) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openProductCreateModal();
+                });
+            }
+        });
+    });
 </script>
 
 <!-- Create Product Camera Barcode Scanner Modal -->
