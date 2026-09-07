@@ -287,4 +287,93 @@
     &copy; {{ date('Y') }} MARSS CORPORATION | Software By: <a href="https://www.codenextit.com" target="_blank" class="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 font-bold hover:underline transition-colors">CodeNext IT</a>
     ```
 
+---
+
+### 10. Modal Architecture & Standard (মডাল সম্পূর্ণ ডিজাইন ও আর্কিটেকচার স্ট্যান্ডার্ড) [STRICT RULE]
+> [!IMPORTANT]
+> **প্রোজেক্টের প্রতিটি মডাল (Add/Create, Edit, Due Update, Confirmation ইত্যাদি) হুবহু একই আধুনিক আর্কিটেকচার, হেডার, ফুটার, বাটন ও ফিল্ড স্পেসিফিকেশন মেনে চলবে:**
+
+#### ১. Modal Container & Outer Box Standard (ডুপ্লিকেট বক্স রিমুভ নিয়ম)
+- **Outer Box Prevention [CRITICAL]**:
+  - কোনো অবস্থাতেই মডালের চারপাশে ডুপ্লিকেট/ডাবল বক্স তৈরি হতে পারবে না।
+  - Bootstrap বা কাস্টম CSS (`all-modal.css.css`)-এর `.modal-dialog` ব্যাকগ্রাউন্ড ও প্যাডিং সম্পূর্ণভাবে রিসেট করতে হবে:
+    ```css
+    .modal .modal-dialog {
+        background: transparent !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    ```
+  - মডালের মূল কন্টেইনার `.modal-content` হবে ফ্লেক্স-কলাম বিশিষ্ট এবং ফিক্সড ম্যাক্স-হাইট সম্পন্ন:
+    ```css
+    .modal-content {
+        background: #ffffff !important;
+        border-radius: 16px !important;
+        border: none !important;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+        overflow: hidden !important;
+        max-height: 90vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 0 !important;
+    }
+    ```
+  - ডার্ক মোডে:
+    ```css
+    body[light-mode="dark"] .modal-content {
+        background-color: #0f172a !important;
+        color: #f1f5f9 !important;
+        border: 1px solid #1e293b !important;
+    }
+    ```
+
+#### ২. Sticky Header Standard
+- **ব্যাকগ্রাউন্ড**: সলিড এমারেল্ড গ্রিন `#15803d` (`background-color: #15803d !important;`).
+- **পজিশন**: সর্বদা উপরে স্টিকি থাকবে (`position: sticky; top: 0; z-index: 20;`).
+- **হেডিং টেক্সট**:
+  - সম্পূর্ণ ইংরেজি হবে। কোনো বাংলা অনুবাদ বা ব্র্যাকেটের ভেতরের বাংলা টেক্সট থাকবে না (যেমন: `Invoice & Due Update`, `Edit Invoice & Product Items`, `Add New Supplier`).
+  - কালার: পিওর হোয়াইট (`#ffffff`), সাইজ `17px - 18px`, `font-weight: 700`.
+- **ক্লোজ বাটন**:
+  - ডানপাশে বৃত্তাকার লাল বাটন (`width: 28px; height: 28px; border-radius: 50%; background-color: #dc2626; color: #ffffff; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer;`).
+  - ভেতরে সাদা ক্রস আইকন (`<i class="fa-solid fa-xmark"></i>`).
+
+#### ৩. Scrollable Body Standard
+- **কন্টেন্ট স্ক্রোলিং**:
+  - মডালের ভেতরের কন্টেন্ট বেশি হলে শুধুমাত্র বডি অংশ স্ক্রল হবে (`overflow-y: auto; flex: 1 1 auto; max-height: calc(90vh - 135px);`).
+  - প্যাডিং: চারদিকে `padding: 20px 24px;`.
+- **লেবেল টেক্সট**:
+  - সমস্ত ইনপুট লেবেল, সামারি বক্স টাইটেল ও ফিল্ডের নাম সম্পূর্ণ ক্লিন ইংরেজিতে হবে (যেমন: `Invoice No`, `Payment Date`, `Previous Paid`, `Remaining Due`, `Pay Due Amount (৳)`, `Customer` ইত্যাদি)।
+  - কোনো বাংলা ব্র্যাকেট বা বাংলা নাম রাখা সম্পূর্ণ নিষিদ্ধ।
+
+#### ৪. Form Controls, Select & Date Picker Standard
+- **Form Field Dimensions & Reset [STRICT]**:
+  - সমস্ত ইনপুট ফিল্ড ও স্ট্যাটাস বক্সের হাইট ঠিক `42px` (`height: 42px !important;`) এবং কলামের ভেতর সম্পূর্ণ ১০০% উইডথ (`width: 100% !important;`) হতে হবে।
+  - কোনো অবস্থাতেই লেগাসি সিএসএস (`all-modal.css.css`-এর `#paymentForm` এর মতো) থেকে ব্যাকগ্রাউন্ড কালার (`#f2faff`), বাড়তি প্যাডিং বা সঙ্কুচিত উইডথ (`width: 30%`) থাকতে পারবে না; এগুলো অবশ্যই `background: transparent !important; padding: 0 !important; width: 100% !important;` দিয়ে রিসেট করতে হবে।
+- **Searchable Filter Dropdown (Select2)**:
+  - কাস্টমার, সাপ্লায়ার বা ক্যাটাগরির সিলেক্ট ফিল্ড ড্রপডাউন সার্চ ফিল্টারযুক্ত হতে হবে।
+  - মডালের ভেতর Select2 ব্যবহার করার সময় অবশ্যই `dropdownParent: $(modalSelector)` সেট করতে হবে, যেন সার্চ ইনপুটে স্বাভাবিক টাইপিং ও ফোকাস কাজ করে।
+  - হাইট: `42px`, বর্ডার: `1.5px solid #cbd5e1`, ফোকাস রিং: `#15803d`, ড্রপডাউন শ্যাডো ও রাউন্ডেড কর্নার।
+- **Calendar Standard (Flatpickr)**:
+  - ডেট ফিল্ডে Flatpickr ব্যবহার বাধ্যতামূলক।
+  - ক্যালেন্ডারে কোনো মাসের ড্রপডাউন সিলেক্টর থাকবে না (`monthSelectorType: "static"`), ইউজার বাম ও ডান অ্যারো (`<` ও `>`) ক্লিক করে সরাসরি মাস পরিবর্তন করবেন।
+  - ফরম্যাট: `dateFormat: "Y-m-d"`, `altInput: true`, `altFormat: "d/m/Y"`.
+  - ক্যালেন্ডারের z-index মডালের উপরে থাকতে হবে (`.flatpickr-calendar { z-index: 999999 !important; }`).
+
+#### ৫. Sticky Footer & Button Standard
+- **পজিশন**: সর্বদা নিচে স্টিকি থাকবে (`position: sticky; bottom: 0; z-index: 20;`).
+- **ব্যাকগ্রাউন্ড**: লাইট মোডে `#ffffff`, ডার্ক মোডে `#0f172a`, হালকা টপ বর্ডার `border-top: 1px solid #f1f5f9` (ডার্ক: `#1e293b`).
+- **বাটনসমূহ**:
+  - **Cancel Button**: লাল ব্যাকগ্রাউন্ড `#dc2626` ও সাদা টেক্সট (`background-color: #dc2626 !important; color: #ffffff !important; border: none; border-radius: 8px; font-weight: 600; padding: 8px 20px;`).
+  - **Save / Submit / Update Button**: এমারেল্ড গ্রিন ব্যাকগ্রাউন্ড `#15803d` ও সাদা টেক্সট (`background-color: #15803d !important; color: #ffffff !important; border: none; border-radius: 8px; font-weight: 600; padding: 8px 20px;`).
+
+#### ৬. Modal Dark Mode Specifications [STRICT]
+- **মডাল ব্যাকগ্রাউন্ড**: সলিড ডার্ক স্লেট `bg-slate-900` (`#0f172a !important`).
+- **সামারি ও ইনফো কার্ড**: মডালের ভেতরের সামারি বক্স, অর্ডার ইনফো বক্স, প্রোডাক্ট সার্চ বক্স ও ফাইন্যান্সিয়াল হিসাব বক্স ডার্ক মোডে `#1e293b !important` এবং বর্ডার `#334155 !important` হবে। কোনো অবস্থাতেই সাদা বা হালকা ব্যাকগ্রাউন্ড থাকতে পারবে না।
+- **টেক্সট ও লেবেল কালার**: সমস্ত লেবেল, ফিল্ড টাইটেল ও সাবটোটাল টেক্সট সাদা বা উজ্জ্বল স্লেট (`#ffffff` ও `#e2e8f0` / `#cbd5e1`) হতে হবে, যাতে ডার্ক মোডে অত্যন্ত স্পষ্ট ও সহজে পড়া যায়।
+- **ইনপুট ফিল্ড ও ড্রপডাউন**: ইনপুট, টেক্সট-এরিয়া, সিলেক্ট ড্রপডাউন ব্যাকগ্রাউন্ড `#0f172a` বা `#1e293b`, বর্ডার `#334155`, টেক্সট `#ffffff`।
+- **স্টিকি ফুটার**: ডার্ক মোডে ফুটার ব্যাকগ্রাউন্ড `#0f172a !important;` ও টপ বর্ডার `#1e293b !important;`।
+
+
+
 

@@ -1,55 +1,296 @@
 <style>
+    /* Override duplicate outer box and dialog constraints */
     #exampleModal .modal-dialog {
-        max-width: 65%;
-        height: auto;
+        background: transparent !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        max-width: 750px !important;
+        width: 95% !important;
+        margin: 1.75rem auto !important;
+        height: auto !important;
+        min-height: auto !important;
+        text-align: left !important;
+    }
+
+    #exampleModal .modal-content {
+        border-radius: 16px !important;
+        overflow: hidden !important;
+        background: #ffffff;
+        padding: 0 !important;
+        height: auto !important;
+        min-height: auto !important;
+        max-height: 90vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        border: none !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
+        text-align: left !important;
     }
 
     #exampleModal form .form-row {
-        margin-bottom: 12px;
+        margin-bottom: 0px;
     }
 
     #exampleModal form select,
     #exampleModal form input[type="text"],
-    #exampleModal form input[type="number"] {
+    #exampleModal form input[type="number"],
+    #exampleModal .form-control,
+    #exampleModal .form-select {
         width: 100%;
-        height: 44px;
-        border-radius: 6px;
-        border: 1px solid #ced4da;
+        height: 42px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
         padding: 8px 12px;
         font-size: 14px;
+        color: #1e293b;
+        background-color: #ffffff;
+        transition: all 0.2s ease;
     }
 
-    #exampleModal .img-box-wrapper {
+    #exampleModal .form-control:focus,
+    #exampleModal .form-select:focus {
+        border-color: #16a34a;
+        box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+    }
+
+    #exampleModal label,
+    #exampleModal .update-file-info,
+    #exampleModal .form-row {
+        color: #334155;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 3px;
+        text-align: left !important;
+    }
+
+    /* Modal Close Button Compact Styling & Placement */
+    #exampleModal .modal-dialog .close-btn,
+    #exampleModal .modal-header .close-btn,
+    #exampleModal .close-btn {
+        position: relative !important;
+        right: auto !important;
+        top: auto !important;
+        left: auto !important;
+        bottom: auto !important;
+        margin: 0 !important;
+        width: 22px !important;
+        height: 22px !important;
+        min-width: 22px !important;
+        min-height: 22px !important;
+        border-radius: 50% !important;
+        background: #ef4444 !important;
+        color: #ffffff !important;
+        font-size: 10px !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border: none !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+        cursor: pointer !important;
+        flex-shrink: 0 !important;
+    }
+
+    #exampleModal .modal-dialog .close-btn i,
+    #exampleModal .close-btn i {
+        font-size: 10px !important;
+        color: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        line-height: 1 !important;
+        background: transparent !important;
+    }
+
+    #exampleModal .modal-dialog .close-btn:hover,
+    #exampleModal .modal-dialog .close-btn i:hover,
+    #exampleModal .close-btn:hover i {
+        background: transparent !important;
+    }
+
+    /* Custom Searchable Select Dropdowns (Identical to POS Page & Add Product) */
+    #exampleModal .custom-searchable-select {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+        z-index: 1;
+    }
+
+    #exampleModal .custom-searchable-select.is-open {
+        z-index: 9999 !important;
+        position: relative !important;
+    }
+
+    #exampleModal .col-lg-6:has(.custom-searchable-select.is-open),
+    #exampleModal .col-lg-6.has-open-dropdown {
+        z-index: 9999 !important;
+        position: relative !important;
+    }
+
+    #exampleModal .custom-searchable-select .select-trigger {
+        height: 42px;
+        border-radius: 8px;
+        cursor: pointer !important;
+        border: 1px solid #cbd5e1 !important;
+        background: #ffffff;
+        transition: all 0.2s ease;
+        user-select: none;
         display: flex;
         align-items: center;
-        gap: 15px;
-        background: #f8f9fa;
-        padding: 10px;
+        justify-content: space-between;
+        padding: 0 14px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1e293b;
+    }
+
+    #exampleModal .custom-searchable-select .select-trigger:hover {
+        border-color: #16a34a !important;
+    }
+
+    #exampleModal .custom-searchable-select.is-open .select-trigger {
+        border-color: #16a34a !important;
+        box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15) !important;
+    }
+
+    #exampleModal .custom-searchable-select .select-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        width: 100%;
+        min-width: 100%;
+        z-index: 99999 !important;
+        background: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 10px;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        padding: 6px;
+    }
+
+    #exampleModal .custom-searchable-select.is-open .select-menu {
+        display: block !important;
+    }
+
+    #exampleModal .custom-searchable-select .search-wrap {
+        padding: 4px 6px;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 4px;
+        position: relative;
+        background: #ffffff !important;
+        z-index: 2;
+    }
+
+    #exampleModal .custom-searchable-select .search-wrap input {
+        height: 34px !important;
+        font-size: 13px !important;
+        border-radius: 6px !important;
+        border: 1px solid #cbd5e1 !important;
+        padding-left: 30px !important;
+        padding-right: 8px !important;
+        width: 100% !important;
+        outline: none !important;
+        box-sizing: border-box !important;
+        background: #ffffff !important;
+    }
+
+    #exampleModal .custom-searchable-select .search-wrap input:focus {
+        border-color: #16a34a !important;
+        box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.1) !important;
+    }
+
+    #exampleModal .custom-searchable-select .select-options-list {
+        max-height: 180px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
+    }
+
+    #exampleModal .custom-searchable-select .select-options-list::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    #exampleModal .custom-searchable-select .select-option-item {
+        padding: 8px 10px;
+        font-size: 13px;
+        cursor: pointer !important;
+        border-radius: 6px;
+        margin: 1px 2px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #334155;
+        transition: all 0.15s ease;
+        user-select: none;
+    }
+
+    #exampleModal .custom-searchable-select .select-option-item:hover {
+        background-color: #f0fdf4;
+        color: #15803d;
+    }
+
+    #exampleModal .custom-searchable-select .select-option-item.active {
+        background-color: #dcfce7;
+        color: #15803d;
+        font-weight: 700;
+    }
+
+    /* Product Photo Preview Box & Upload Button matching Add Product */
+    #exampleModal .update-img-box {
+        width: 84px !important;
+        height: 70px !important;
+        border-radius: 8px !important;
+        background: #f8fafc;
+        border: 1.5px dashed #cbd5e1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    #exampleModal .update-img-box img {
+        width: 100% !important;
+        height: 100% !important;
+        min-width: 100% !important;
+        min-height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        object-fit: cover !important;
+        border-radius: 7px !important;
+    }
+
+    #exampleModal .update-file-btn-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 42px;
         border-radius: 8px;
-        border: 1px dashed #ced4da;
-    }
-
-    #exampleModal .img-box-preview {
-        width: 80px;
-        height: 80px;
-        border-radius: 6px;
-        object-fit: cover;
-        border: 1px solid #ddd;
-        background-color: #fff;
-    }
-
-    #exampleModal .btn-save {
-        background-color: #15803d;
-        color: #fff;
+        background: #ededed;
+        color: #334155;
+        font-size: 14px;
         font-weight: 600;
-        padding: 10px 24px;
-        border-radius: 6px;
-        border: none;
-        transition: background-color 0.2s ease;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
     }
 
-    #exampleModal .btn-save:hover {
-        background-color: #166534;
+    #exampleModal .update-file-btn-wrapper:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    #exampleModal .update-file-btn-wrapper input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        cursor: pointer;
     }
 
     /* Door Handedness Selector Styles for Update Modal */
@@ -85,55 +326,267 @@
     .door-hand-radio-update:checked+.door-hand-card-update .door-hand-icon-update {
         transform: scale(1.15);
     }
+
+    /* Dark Mode Styling for Edit Product Modal */
+    body[light-mode="dark"] #exampleModal .modal-content,
+    html[light-mode="dark"] #exampleModal .modal-content,
+    body[data-layout-mode="dark"] #exampleModal .modal-content,
+    html.dark #exampleModal .modal-content,
+    body.dark #exampleModal .modal-content,
+    body.dark-mode #exampleModal .modal-content {
+        background-color: #0f172a !important;
+        color: #f1f5f9 !important;
+        border: 1px solid #1e293b !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .modal-body-scroll,
+    html[light-mode="dark"] #exampleModal .modal-body-scroll,
+    body[data-layout-mode="dark"] #exampleModal .modal-body-scroll {
+        background-color: #0f172a !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .modal-footer,
+    html[light-mode="dark"] #exampleModal .modal-footer,
+    body[data-layout-mode="dark"] #exampleModal .modal-footer,
+    html.dark #exampleModal .modal-footer,
+    body.dark #exampleModal .modal-footer,
+    body.dark-mode #exampleModal .modal-footer {
+        background-color: #0f172a !important;
+        border-top-color: #1e293b !important;
+    }
+
+    body[light-mode="dark"] #exampleModal label,
+    html[light-mode="dark"] #exampleModal label,
+    body[data-layout-mode="dark"] #exampleModal label,
+    html.dark #exampleModal label,
+    body.dark #exampleModal label,
+    body.dark-mode #exampleModal label {
+        color: #cbd5e1 !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .form-control,
+    body[light-mode="dark"] #exampleModal .form-select,
+    html[light-mode="dark"] #exampleModal .form-control,
+    html[light-mode="dark"] #exampleModal .form-select,
+    body[data-layout-mode="dark"] #exampleModal .form-control,
+    body[data-layout-mode="dark"] #exampleModal .form-select,
+    html.dark #exampleModal .form-control,
+    html.dark #exampleModal .form-select,
+    body.dark #exampleModal .form-control,
+    body.dark #exampleModal .form-select {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .form-control::placeholder,
+    html[light-mode="dark"] #exampleModal .form-control::placeholder {
+        color: #94a3b8 !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .custom-searchable-select .select-trigger,
+    html[light-mode="dark"] #exampleModal .custom-searchable-select .select-trigger,
+    body[data-layout-mode="dark"] #exampleModal .custom-searchable-select .select-trigger,
+    html.dark #exampleModal .custom-searchable-select .select-trigger,
+    body.dark #exampleModal .custom-searchable-select .select-trigger,
+    body.dark-mode #exampleModal .custom-searchable-select .select-trigger {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .custom-searchable-select .selected-text,
+    html[light-mode="dark"] #exampleModal .custom-searchable-select .selected-text,
+    body[data-layout-mode="dark"] #exampleModal .custom-searchable-select .selected-text,
+    html.dark #exampleModal .custom-searchable-select .selected-text,
+    body.dark #exampleModal .custom-searchable-select .selected-text,
+    body.dark-mode #exampleModal .custom-searchable-select .selected-text {
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .custom-searchable-select .select-menu,
+    html[light-mode="dark"] #exampleModal .custom-searchable-select .select-menu,
+    body[data-layout-mode="dark"] #exampleModal .custom-searchable-select .select-menu,
+    html.dark #exampleModal .custom-searchable-select .select-menu,
+    body.dark #exampleModal .custom-searchable-select .select-menu,
+    body.dark-mode #exampleModal .custom-searchable-select .select-menu {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .custom-searchable-select .search-wrap,
+    html[light-mode="dark"] #exampleModal .custom-searchable-select .search-wrap,
+    body[data-layout-mode="dark"] #exampleModal .custom-searchable-select .search-wrap,
+    html.dark #exampleModal .custom-searchable-select .search-wrap,
+    body.dark #exampleModal .custom-searchable-select .search-wrap,
+    body.dark-mode #exampleModal .custom-searchable-select .search-wrap {
+        background-color: #0f172a !important;
+        border-bottom-color: #334155 !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .custom-searchable-select .search-wrap input,
+    html[light-mode="dark"] #exampleModal .custom-searchable-select .search-wrap input,
+    body[data-layout-mode="dark"] #exampleModal .custom-searchable-select .search-wrap input,
+    html.dark #exampleModal .custom-searchable-select .search-wrap input,
+    body.dark #exampleModal .custom-searchable-select .search-wrap input,
+    body.dark-mode #exampleModal .custom-searchable-select .search-wrap input {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .custom-searchable-select .select-option-item,
+    html[light-mode="dark"] #exampleModal .custom-searchable-select .select-option-item,
+    body[data-layout-mode="dark"] #exampleModal .custom-searchable-select .select-option-item,
+    html.dark #exampleModal .custom-searchable-select .select-option-item,
+    body.dark #exampleModal .custom-searchable-select .select-option-item,
+    body.dark-mode #exampleModal .custom-searchable-select .select-option-item {
+        color: #cbd5e1 !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .custom-searchable-select .select-option-item:hover,
+    html[light-mode="dark"] #exampleModal .custom-searchable-select .select-option-item:hover,
+    body[data-layout-mode="dark"] #exampleModal .custom-searchable-select .select-option-item:hover,
+    html.dark #exampleModal .custom-searchable-select .select-option-item:hover,
+    body.dark #exampleModal .custom-searchable-select .select-option-item:hover,
+    body.dark-mode #exampleModal .custom-searchable-select .select-option-item:hover {
+        background-color: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .custom-searchable-select .select-option-item.active,
+    html[light-mode="dark"] #exampleModal .custom-searchable-select .select-option-item.active,
+    body[data-layout-mode="dark"] #exampleModal .custom-searchable-select .select-option-item.active,
+    html.dark #exampleModal .custom-searchable-select .select-option-item.active,
+    body.dark #exampleModal .custom-searchable-select .select-option-item.active,
+    body.dark-mode #exampleModal .custom-searchable-select .select-option-item.active {
+        background-color: rgba(22, 163, 74, 0.25) !important;
+        color: #4ade80 !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .update-img-box,
+    html[light-mode="dark"] #exampleModal .update-img-box {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .update-file-btn-wrapper,
+    html[light-mode="dark"] #exampleModal .update-file-btn-wrapper {
+        background-color: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+    body[light-mode="dark"] #exampleModal .update-file-btn-wrapper:hover,
+    html[light-mode="dark"] #exampleModal .update-file-btn-wrapper:hover {
+        background-color: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] #exampleModal #updateDoorHandednessContainer > div,
+    html[light-mode="dark"] #exampleModal #updateDoorHandednessContainer > div {
+        background: #1e293b !important;
+        border-color: #16a34a !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .door-hand-box-update,
+    html[light-mode="dark"] #exampleModal .door-hand-box-update {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .door-qty-input-update,
+    html[light-mode="dark"] #exampleModal .door-qty-input-update {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
 </style>
 
 <!-- Action Button Edit Modal Start -->
 <section class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content p-3">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold text-success" id="exampleModalLabel">
-                    <i class="fa-solid fa-pen-to-square me-2"></i>Product Update
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg d-flex flex-column">
+            <!-- POS Style Primary Green Sticky Header -->
+            <div class="modal-header text-white py-2 px-4 d-flex align-items-center justify-content-between flex-shrink-0" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 20; padding: 12px 20px !important;">
+                <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2 m-0 fs-5" id="exampleModalLabel">
+                    <i class="fa-solid fa-pen-to-square me-1"></i> Product Update
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close-btn closes d-flex align-items-center justify-content-center border-0 shadow-sm" data-bs-dismiss="modal" aria-label="Close" style="width: 22px !important; height: 22px !important; min-width: 22px !important; min-height: 22px !important; border-radius: 50% !important; background: #ef4444 !important; color: #ffffff !important; font-size: 10px !important; cursor: pointer; transition: all 0.2s ease; position: relative !important; right: auto !important; top: auto !important; margin: 0 !important; padding: 0 !important;" title="Close">
+                    <i class="fa-solid fa-xmark" style="font-size: 10px !important; color: #ffffff !important;"></i>
+                </button>
             </div>
 
-            <div class="modal-body">
+            <!-- Scrollable Form Body -->
+            <div class="modal-body-scroll" style="padding: 18px 24px; overflow-y: auto; flex: 0 1 auto !important; height: auto !important; max-height: calc(90vh - 120px);">
                 <form id="updateProductForm" onsubmit="Update(event)">
                     <input type="hidden" id="updateID">
 
                     <!-- Brand & Category Row -->
-                    <div class="row">
+                    <div class="row g-2.5">
                         <div class="col-lg-6">
-                            <div class="form-row">
-                                <div class="d-flex align-items-center justify-content-between mb-1">
-                                    <label for="UpdateProductBrand" class="form-label fw-semibold small m-0">Brand</label>
-                                    <button type="button" class="btn btn-sm text-white newbrand-open" onclick="openBrandModal()" style="background-color: #15803d; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 4px; border: none; cursor: pointer;">
-                                        + Add
-                                    </button>
+                            <div class="form-row flex-column align-items-start text-start">
+                                <label for="UpdateProductBrand" class="fw-semibold small text-start d-block" style="margin-bottom: 2px !important; font-size: 13px; text-align: left !important;">Brand</label>
+                                <div class="d-flex align-items-center w-100 gap-2">
+                                    <!-- Native select kept hidden for 100% backend & DOM compatibility -->
+                                    <select id="UpdateProductBrand" class="form-select d-none">
+                                        <option value="">Select Brand</option>
+                                    </select>
+
+                                    <!-- Custom Searchable Brand Dropdown -->
+                                    <div class="custom-searchable-select flex-grow-1" id="updateBrandDropdown">
+                                        <div class="select-trigger d-flex align-items-center justify-content-between px-3" onclick="toggleCustomUpdateDropdown('updateBrandDropdown')">
+                                            <span class="selected-text text-truncate" style="font-size: 14px; font-weight: 500; color: #64748b;">Select Brand</span>
+                                            <i class="fa-solid fa-chevron-down ms-1 text-muted" style="font-size: 12px; transition: transform 0.2s;"></i>
+                                        </div>
+                                        <div class="select-menu">
+                                            <div class="search-wrap">
+                                                <i class="fa-solid fa-magnifying-glass position-absolute text-muted" style="top: 50%; transform: translateY(-50%); left: 10px; font-size: 12px;"></i>
+                                                <input type="text" placeholder="Search Brand..." oninput="filterCustomUpdateDropdown('updateBrandDropdown', this.value)">
+                                            </div>
+                                            <div class="select-options-list">
+                                                <!-- Brand options will load here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn text-white newbrand-open text-nowrap" onclick="openBrandModal()" style="height: 42px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); font-size: 13px; font-weight: 600; padding: 0 16px; border-radius: 8px; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">+ Add</button>
                                 </div>
-                                <select id="UpdateProductBrand" class="form-select">
-                                    <option value="">Select Brand</option>
-                                </select>
                             </div>
                         </div>
+
                         <div class="col-lg-6">
-                            <div class="form-row">
-                                <div class="d-flex align-items-center justify-content-between mb-1">
-                                    <label for="UpdateProductCategory" class="form-label fw-semibold small m-0">Category <span class="text-danger">*</span></label>
-                                    <button type="button" class="btn btn-sm text-white newcategory-open" onclick="openCategoryModal()" style="background-color: #15803d; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 4px; border: none; cursor: pointer;">
-                                        + Add
-                                    </button>
+                            <div class="form-row flex-column align-items-start text-start">
+                                <label for="UpdateProductCategory" class="fw-semibold small text-start d-block" style="margin-bottom: 2px !important; font-size: 13px; text-align: left !important;">Category <span class="text-danger">*</span></label>
+                                <div class="d-flex align-items-center w-100 gap-2">
+                                    <!-- Native select kept hidden for 100% backend & DOM compatibility -->
+                                    <select required id="UpdateProductCategory" class="form-select d-none">
+                                        <option value="">Select Category</option>
+                                    </select>
+
+                                    <!-- Custom Searchable Category Dropdown -->
+                                    <div class="custom-searchable-select flex-grow-1" id="updateCategoryDropdown">
+                                        <div class="select-trigger d-flex align-items-center justify-content-between px-3" onclick="toggleCustomUpdateDropdown('updateCategoryDropdown')">
+                                            <span class="selected-text text-truncate" style="font-size: 14px; font-weight: 500; color: #64748b;">Select Category <span class="text-danger">*</span></span>
+                                            <i class="fa-solid fa-chevron-down ms-1 text-muted" style="font-size: 12px; transition: transform 0.2s;"></i>
+                                        </div>
+                                        <div class="select-menu">
+                                            <div class="search-wrap">
+                                                <i class="fa-solid fa-magnifying-glass position-absolute text-muted" style="top: 50%; transform: translateY(-50%); left: 10px; font-size: 12px;"></i>
+                                                <input type="text" placeholder="Search Category..." oninput="filterCustomUpdateDropdown('updateCategoryDropdown', this.value)">
+                                            </div>
+                                            <div class="select-options-list">
+                                                <!-- Category options will load here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn text-white newcategory-open text-nowrap" onclick="openCategoryModal()" style="height: 42px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); font-size: 13px; font-weight: 600; padding: 0 16px; border-radius: 8px; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">+ Add</button>
                                 </div>
-                                <select required id="UpdateProductCategory" class="form-select">
-                                    <option value="">Select Category</option>
-                                </select>
                             </div>
                         </div>
                     </div>
 
                     <!-- Door Handedness Dynamic Selection & Quantity Inputs (Shown only when Door category is selected) -->
-                    <div class="row mt-1" id="updateDoorHandednessContainer" style="display: none;">
+                    <div class="row mt-2" id="updateDoorHandednessContainer" style="display: none;">
                         <div class="col-lg-12">
                             <div class="p-3 mb-2 rounded-3" style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1.5px dashed #86efac;">
                                 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -191,62 +644,62 @@
                         </div>
                     </div>
 
-                    <!-- Image Upload with Live Preview -->
-                    <div class="row my-2">
-                        <div class="col-lg-12">
-                            <div class="img-box-wrapper">
-                                <img id="UpdateShowImage" src="{{ asset('backend/assets/img/product-img.svg') }}" class="img-box-preview" alt="Product Image Preview">
-                                <div class="flex-grow-1">
-                                    <label for="UpdateProductImage" class="form-label fw-semibold small mb-1">Product Photo</label>
-                                    <input type="file" id="UpdateProductImage" class="form-control" accept="image/*" />
-                                    <div class="form-text text-muted small">JPG, PNG or GIF (Recommended max 1MB)</div>
+                    <!-- Image Upload with Live Preview (matching Add Product layout) -->
+                    <div class="row mt-2 g-2.5">
+                        <div class="col-lg-12 text-start">
+                            <label class="fw-semibold small text-start d-block" style="margin-bottom: 2px !important; font-size: 13px; text-align: left !important;">Product Photo</label>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="update-img-box flex-shrink-0" title="Product Image Preview">
+                                    <img id="UpdateShowImage" src="{{ asset('backend/assets/img/product-img.svg') }}" alt="Product Image Preview">
+                                </div>
+
+                                <div class="flex-grow-1 text-start">
+                                    <label class="update-file-btn-wrapper mb-1">
+                                        <i class="fa-solid fa-arrow-up-from-bracket me-2 text-primary"></i> Upload Photo
+                                        <input type="file" id="UpdateProductImage" accept="image/*" />
+                                    </label>
+                                    <div class="mt-1 update-file-info text-start" style="font-size: 12px; color: #64748b; line-height: 1.4; text-align: left !important;">
+                                        <span style="text-align: left !important; display: block;">PNG, JPEG or GIF (up to 1 MB)</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Product Name & Translation -->
+                    <!-- Product Name -->
                     <div class="row mt-2">
-                        <div class="col-lg-12">
-                            <div class="form-row">
-                                <div class="d-flex align-items-center justify-content-between mb-1">
-                                    <label for="UpdateProductName" class="form-label fw-semibold small m-0 text-success">Product Name <span class="text-danger">*</span></label>
-                                    <button type="button" id="translateUpdateBtn" onclick="translateUpdateProductName()" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 py-1 px-2" style="font-size: 12px; font-weight: 600;">
-                                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
-                                        </svg>
-                                        <span>বাংলায় রূপান্তর</span>
-                                    </button>
-                                </div>
-                                <input type="text" id="UpdateProductName" class="form-control" placeholder="Enter Product Name (বাংলা / English)..." required />
+                        <div class="col-lg-12 text-start">
+                            <div class="form-row flex-column align-items-start text-start">
+                                <label for="UpdateProductName" class="fw-semibold small text-start d-block mb-1" style="font-size: 13px; text-align: left !important;">Product Name <span class="text-danger">*</span></label>
+                                <input type="text" id="UpdateProductName" class="form-control" placeholder="Product Name *" required style="width: 100%; height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
                             </div>
                         </div>
                     </div>
 
                     <!-- Quantity, Cost Price, Selling Price, Status -->
-                    <div class="row">
+                    <div class="row mt-2 g-2.5">
                         <div class="col-lg-3 col-md-6">
-                            <div class="form-row">
-                                <label for="UpdateProductQuantity" class="form-label fw-semibold small mb-1">Quantity</label>
-                                <input type="number" step="any" id="UpdateProductQuantity" class="form-control" placeholder="0" />
+                            <div class="form-row flex-column align-items-start">
+                                <label for="UpdateProductQuantity" class="fw-semibold small" style="display: block; margin-bottom: 2px !important; font-size: 13px;">Quantity</label>
+                                <input type="number" step="any" id="UpdateProductQuantity" class="form-control" placeholder="Quantity" style="height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6">
-                            <div class="form-row">
-                                <label for="UpdateProductCostPrice" class="form-label fw-semibold small mb-1">Cost Price</label>
-                                <input type="number" step="any" id="UpdateProductCostPrice" class="form-control" placeholder="0.00" />
+                            <div class="form-row flex-column align-items-start">
+                                <label for="UpdateProductCostPrice" class="fw-semibold small" style="display: block; margin-bottom: 2px !important; font-size: 13px;">Cost Price</label>
+                                <input type="number" step="any" id="UpdateProductCostPrice" class="form-control" placeholder="Cost Price" style="height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6">
-                            <div class="form-row">
-                                <label for="UpdateProductSellingPrice" class="form-label fw-semibold small mb-1">Selling Price</label>
-                                <input type="number" step="any" id="UpdateProductSellingPrice" class="form-control" placeholder="0.00" />
+                            <div class="form-row flex-column align-items-start">
+                                <label for="UpdateProductSellingPrice" class="fw-semibold small" style="display: block; margin-bottom: 2px !important; font-size: 13px;">Selling Price</label>
+                                <input type="number" step="any" id="UpdateProductSellingPrice" class="form-control" placeholder="Selling Price" style="height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6">
-                            <div class="form-row">
-                                <label for="UpdateProductStatus" class="form-label fw-semibold small mb-1">Status</label>
-                                <select id="UpdateProductStatus" class="form-select">
+                            <div class="form-row flex-column align-items-start">
+                                <label for="UpdateProductStatus" class="fw-semibold small" style="display: block; margin-bottom: 2px !important; font-size: 13px;">Status</label>
+                                <select id="UpdateProductStatus" class="form-select" style="height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;">
                                     <option value="Active">Active</option>
                                     <option value="InActive">Inactive</option>
                                 </select>
@@ -257,24 +710,25 @@
                     <!-- Barcode Section -->
                     <div class="row mt-2">
                         <div class="col-lg-12">
-                            <div class="form-row">
-                                <label for="ProductBarCodeInput" class="form-label fw-semibold small mb-1">Product Barcode</label>
-                                <div class="d-flex align-items-center gap-2">
-                                    <input type="text" id="ProductBarCodeInput" class="form-control" placeholder="Enter or scan barcode..." />
-                                    <button type="button" class="btn btn-primary fw-bold text-nowrap d-flex align-items-center gap-2 px-3 shadow-sm" onclick="openProductUpdateCameraScanner()" style="height: 38px; border-radius: 8px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none;">
-                                        <i class="fa-solid fa-camera fs-6"></i>
-                                        <span class="d-none d-sm-inline">ক্যামেরা স্ক্যান</span>
+                            <div class="form-row flex-column align-items-start">
+                                <label for="ProductBarCodeInput" class="fw-semibold small" style="display: block; margin-bottom: 2px !important; font-size: 13px;">Barcode / Product Code</label>
+                                <div class="d-flex align-items-center gap-2 w-100">
+                                    <input type="text" id="ProductBarCodeInput" class="form-control" placeholder="Enter or scan barcode..." style="flex: 1; height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
+                                    <button type="button" class="btn text-white fw-bold text-nowrap d-flex align-items-center gap-2 px-3 shadow-sm" onclick="openProductUpdateCameraScanner()" style="height: 42px; border-radius: 8px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none;">
+                                        <i class="fa-solid fa-camera fs-5"></i>
+                                        <span class="d-none d-sm-inline">Camera Scan</span>
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="modal-footer border-0 px-0 pb-0 mt-3">
-                        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn-save px-4"><i class="fa-solid fa-check me-1"></i> Save Changes</button>
-                    </div>
                 </form>
+            </div>
+
+            <!-- Sticky Footer (Fixed at Bottom matching Add Product) -->
+            <div class="modal-footer px-4 py-2.5 d-flex align-items-center justify-content-end gap-2 flex-shrink-0" style="position: sticky; bottom: 0; z-index: 20; border-top: 1px solid #e2e8f0 !important; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; background: #ffffff;">
+                <button type="button" class="btn fw-semibold px-4" data-bs-dismiss="modal" style="height: 40px; border-radius: 8px; font-size: 14px; background-color: #dc2626 !important; color: #ffffff !important; border: none !important; cursor: pointer; transition: opacity 0.2s;">Close</button>
+                <button type="button" onclick="Update(event)" class="btn text-white fw-bold px-5 shadow-sm" style="height: 40px; border-radius: 8px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none; font-size: 14px; cursor: pointer;"><i class="fa-solid fa-check me-1"></i> Save Changes</button>
             </div>
         </div>
     </div>
@@ -283,6 +737,173 @@
 
 <script>
     let isFormLoading = false;
+
+    // Custom Searchable Dropdown Helper Functions for Update Modal
+    function toggleCustomUpdateDropdown(dropdownId) {
+        const dropdown = document.getElementById(dropdownId);
+        if (!dropdown) return;
+        const isOpen = dropdown.classList.contains('is-open');
+
+        closeAllCustomUpdateDropdowns();
+
+        if (!isOpen) {
+            dropdown.classList.add('is-open');
+            const parentCol = dropdown.closest('.col-lg-6');
+            if (parentCol) {
+                parentCol.classList.add('has-open-dropdown');
+                parentCol.style.zIndex = '9999';
+                parentCol.style.position = 'relative';
+            }
+            const chevron = dropdown.querySelector('.fa-chevron-down');
+            if (chevron) chevron.style.transform = 'rotate(180deg)';
+            const searchInput = dropdown.querySelector('.search-wrap input');
+            if (searchInput) {
+                searchInput.value = '';
+                filterCustomUpdateDropdown(dropdownId, '');
+                setTimeout(() => searchInput.focus(), 60);
+            }
+        }
+    }
+
+    function closeAllCustomUpdateDropdowns() {
+        document.querySelectorAll('#exampleModal .custom-searchable-select').forEach(d => {
+            d.classList.remove('is-open');
+            const chevron = d.querySelector('.fa-chevron-down');
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+        });
+        document.querySelectorAll('#exampleModal .col-lg-6').forEach(col => {
+            col.classList.remove('has-open-dropdown');
+            col.style.zIndex = '';
+            col.style.position = '';
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#exampleModal .custom-searchable-select')) {
+            closeAllCustomUpdateDropdowns();
+        }
+    });
+
+    function filterCustomUpdateDropdown(dropdownId, searchVal) {
+        const dropdown = document.getElementById(dropdownId);
+        if (!dropdown) return;
+        const listEl = dropdown.querySelector('.select-options-list');
+        if (!listEl) return;
+        const items = listEl.querySelectorAll('.select-option-item');
+        const query = (searchVal || '').trim().toLowerCase();
+        let matchCount = 0;
+
+        items.forEach(item => {
+            const text = (item.getAttribute('data-label') || '').toLowerCase();
+            if (!query || text.includes(query)) {
+                item.style.display = 'flex';
+                matchCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        let noResultEl = listEl.querySelector('.no-results-msg');
+        if (matchCount === 0) {
+            if (!noResultEl) {
+                noResultEl = document.createElement('div');
+                noResultEl.className = 'no-results-msg text-center py-2 text-muted';
+                noResultEl.style.fontSize = '12px';
+                noResultEl.textContent = 'কোনো ফলাফল পাওয়া যায়নি';
+                listEl.appendChild(noResultEl);
+            }
+        } else if (noResultEl) {
+            noResultEl.remove();
+        }
+    }
+
+    function selectCustomUpdateDropdownItem(dropdownId, hiddenInputId, val, label) {
+        const dropdown = document.getElementById(dropdownId);
+        const hiddenInput = document.getElementById(hiddenInputId);
+        const triggerText = dropdown ? dropdown.querySelector('.selected-text') : null;
+
+        if (hiddenInput) {
+            hiddenInput.value = val;
+            $(hiddenInput).trigger('change');
+        }
+
+        if (triggerText) {
+            triggerText.textContent = label;
+            triggerText.style.color = (val && val !== 'none') ? '#0f172a' : '#64748b';
+        }
+
+        if (dropdown) {
+            dropdown.querySelectorAll('.select-option-item').forEach(item => {
+                if (item.getAttribute('data-value') === String(val)) {
+                    item.classList.add('active');
+                    if (!item.querySelector('.fa-check')) {
+                        item.innerHTML = `<span>${item.getAttribute('data-label')}</span><i class="fa-solid fa-check small text-success"></i>`;
+                    }
+                } else {
+                    item.classList.remove('active');
+                    const check = item.querySelector('.fa-check');
+                    if (check) check.remove();
+                }
+            });
+        }
+
+        closeAllCustomUpdateDropdowns();
+    }
+
+    function updateCustomDropdownSelected(dropdownId, val) {
+        const dropdown = document.getElementById(dropdownId);
+        if (!dropdown) return;
+        const triggerText = dropdown.querySelector('.selected-text');
+        let matchedLabel = '';
+
+        dropdown.querySelectorAll('.select-option-item').forEach(item => {
+            if (item.getAttribute('data-value') === String(val)) {
+                item.classList.add('active');
+                matchedLabel = item.getAttribute('data-label');
+                if (!item.querySelector('.fa-check')) {
+                    item.innerHTML = `<span>${matchedLabel}</span><i class="fa-solid fa-check small text-success"></i>`;
+                }
+            } else {
+                item.classList.remove('active');
+                const check = item.querySelector('.fa-check');
+                if (check) check.remove();
+            }
+        });
+
+        if (matchedLabel && triggerText) {
+            triggerText.textContent = matchedLabel;
+            triggerText.style.color = '#0f172a';
+        }
+    }
+
+    function resetCustomUpdateDropdown(dropdownId, hiddenInputId, defaultText = "Select Option", defaultVal = "") {
+        const dropdown = document.getElementById(dropdownId);
+        const hiddenInput = document.getElementById(hiddenInputId);
+        if (hiddenInput) hiddenInput.value = defaultVal;
+        if (!dropdown) return;
+        const triggerText = dropdown.querySelector('.selected-text');
+        const searchInput = dropdown.querySelector('.search-wrap input');
+
+        if (triggerText) {
+            triggerText.textContent = defaultText;
+            triggerText.style.color = (defaultVal && defaultVal !== 'none') ? '#0f172a' : '#64748b';
+        }
+        if (searchInput) searchInput.value = '';
+        filterCustomUpdateDropdown(dropdownId, '');
+
+        dropdown.querySelectorAll('.select-option-item').forEach(item => {
+            if (item.getAttribute('data-value') === String(defaultVal)) {
+                item.classList.add('active');
+                if (!item.querySelector('.fa-check')) {
+                    item.innerHTML = `<span>${item.getAttribute('data-label')}</span><i class="fa-solid fa-check small text-success"></i>`;
+                }
+            } else {
+                item.classList.remove('active');
+                const check = item.querySelector('.fa-check');
+                if (check) check.remove();
+            }
+        });
+    }
 
     // Door Handedness helpers for Update Modal
     function calculateUpdateDoorTotal() {
@@ -356,6 +977,9 @@
             $('#updateID').val('');
             $('#UpdateShowImage').attr('src', "{{ asset('backend/assets/img/product-img.svg') }}");
             resetUpdateDoorSide();
+            closeAllCustomUpdateDropdowns();
+            resetCustomUpdateDropdown('updateBrandDropdown', 'UpdateProductBrand', 'Select Brand', '');
+            resetCustomUpdateDropdown('updateCategoryDropdown', 'UpdateProductCategory', 'Select Category *', '');
         });
 
         // Modal show listener (bootstrap fallback)
@@ -382,6 +1006,34 @@
                 if (selectedCategoryId) {
                     $('#UpdateProductCategory').val(String(selectedCategoryId));
                 }
+
+                // Populate custom searchable category dropdown
+                const catCustomList = document.querySelector('#updateCategoryDropdown .select-options-list');
+                const catTriggerText = document.querySelector('#updateCategoryDropdown .selected-text');
+                if (catCustomList) {
+                    let currentVal = selectedCategoryId ? String(selectedCategoryId) : ($('#UpdateProductCategory').val() || '');
+                    let defaultLabel = 'Select Category *';
+
+                    let html = `<div class="select-option-item ${(!currentVal || currentVal === 'none') ? 'active' : ''}" data-value="" data-label="Select Category" onclick="selectCustomUpdateDropdownItem('updateCategoryDropdown', 'UpdateProductCategory', '', 'Select Category *')">
+                        <span>Select Category</span>
+                        ${(!currentVal || currentVal === 'none') ? '<i class="fa-solid fa-check small text-success"></i>' : ''}
+                    </div>`;
+
+                    res.data.CategoryData.forEach(c => {
+                        const isSelected = String(currentVal) === String(c.id);
+                        if (isSelected) defaultLabel = c.category_name;
+                        html += `<div class="select-option-item ${isSelected ? 'active' : ''}" data-value="${c.id}" data-label="${c.category_name}" onclick="selectCustomUpdateDropdownItem('updateCategoryDropdown', 'UpdateProductCategory', '${c.id}', '${c.category_name}')">
+                            <span>${c.category_name}</span>
+                            ${isSelected ? '<i class="fa-solid fa-check small text-success"></i>' : ''}
+                        </div>`;
+                    });
+
+                    catCustomList.innerHTML = html;
+                    if (catTriggerText) {
+                        catTriggerText.textContent = defaultLabel;
+                        catTriggerText.style.color = (currentVal && currentVal !== 'none') ? '#0f172a' : '#64748b';
+                    }
+                }
             }
         } catch (error) {
             console.error("Category Load Error:", error);
@@ -399,51 +1051,37 @@
                 if (selectedBrandId) {
                     $('#UpdateProductBrand').val(String(selectedBrandId));
                 }
+
+                // Populate custom searchable brand dropdown
+                const brandCustomList = document.querySelector('#updateBrandDropdown .select-options-list');
+                const brandTriggerText = document.querySelector('#updateBrandDropdown .selected-text');
+                if (brandCustomList) {
+                    let currentVal = selectedBrandId ? String(selectedBrandId) : ($('#UpdateProductBrand').val() || '');
+                    let defaultLabel = 'Select Brand';
+
+                    let html = `<div class="select-option-item ${(!currentVal || currentVal === 'none') ? 'active' : ''}" data-value="" data-label="Select Brand" onclick="selectCustomUpdateDropdownItem('updateBrandDropdown', 'UpdateProductBrand', '', 'Select Brand')">
+                        <span>Select Brand</span>
+                        ${(!currentVal || currentVal === 'none') ? '<i class="fa-solid fa-check small text-success"></i>' : ''}
+                    </div>`;
+
+                    res.data.BrandData.forEach(b => {
+                        const isSelected = String(currentVal) === String(b.id);
+                        if (isSelected) defaultLabel = b.name;
+                        html += `<div class="select-option-item ${isSelected ? 'active' : ''}" data-value="${b.id}" data-label="${b.name}" onclick="selectCustomUpdateDropdownItem('updateBrandDropdown', 'UpdateProductBrand', '${b.id}', '${b.name}')">
+                            <span>${b.name}</span>
+                            ${isSelected ? '<i class="fa-solid fa-check small text-success"></i>' : ''}
+                        </div>`;
+                    });
+
+                    brandCustomList.innerHTML = html;
+                    if (brandTriggerText) {
+                        brandTriggerText.textContent = defaultLabel;
+                        brandTriggerText.style.color = (currentVal && currentVal !== 'none') ? '#0f172a' : '#64748b';
+                    }
+                }
             }
         } catch (error) {
             console.error("Brand Load Error:", error);
-        }
-    }
-
-    async function translateUpdateProductName() {
-        const nameInput = document.getElementById('UpdateProductName');
-        const text = nameInput ? nameInput.value.trim() : '';
-
-        if (!text) {
-            errorToast("অনুগ্রহ করে প্রথমে প্রোডাক্টের নাম লিখুন!");
-            return;
-        }
-
-        const translateBtn = document.getElementById('translateUpdateBtn');
-        const originalContent = translateBtn ? translateBtn.innerHTML : '';
-        if (translateBtn) {
-            translateBtn.disabled = true;
-            translateBtn.innerHTML = `<span>অনুবাদ হচ্ছে...</span>`;
-        }
-
-        try {
-            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=bn&dt=t&q=${encodeURIComponent(text)}`;
-            const res = await axios.get(url);
-
-            if (res.data && res.data[0] && Array.isArray(res.data[0])) {
-                const translatedText = res.data[0].map(item => item[0]).filter(Boolean).join('');
-                if (translatedText) {
-                    nameInput.value = translatedText;
-                    successToast("বাংলায় রূপান্তর সফল হয়েছে!");
-                } else {
-                    errorToast("অনুবাদ ব্যর্থ হয়েছে। আবার চেষ্টা করুন।");
-                }
-            } else {
-                errorToast("অনুবাদ ব্যর্থ হয়েছে।");
-            }
-        } catch (err) {
-            console.error("Translation error:", err);
-            errorToast("অনুবাদ করতে সমস্যা হয়েছে। ইন্টারনেট সংযোগ পরীক্ষা করুন।");
-        } finally {
-            if (translateBtn) {
-                translateBtn.disabled = false;
-                translateBtn.innerHTML = originalContent;
-            }
         }
     }
 
@@ -488,9 +1126,16 @@
 
             if (data.brand_id) {
                 $('#UpdateProductBrand').val(String(data.brand_id));
+                updateCustomDropdownSelected('updateBrandDropdown', String(data.brand_id));
+            } else {
+                resetCustomUpdateDropdown('updateBrandDropdown', 'UpdateProductBrand', 'Select Brand', '');
             }
             if (data.category_id) {
                 $('#UpdateProductCategory').val(String(data.category_id));
+                updateCustomDropdownSelected('updateCategoryDropdown', String(data.category_id));
+                checkUpdateDoorCategory();
+            } else {
+                resetCustomUpdateDropdown('updateCategoryDropdown', 'UpdateProductCategory', 'Select Category *', '');
             }
 
             // Image preview

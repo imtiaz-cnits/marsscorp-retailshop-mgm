@@ -1,11 +1,125 @@
+<style>
+    /* Dark mode styles for Brand Create Modal */
+    body[light-mode="dark"] #brandCreateModal .modal-content,
+    html[light-mode="dark"] #brandCreateModal .modal-content,
+    body[data-layout-mode="dark"] #brandCreateModal .modal-content,
+    html.dark #brandCreateModal .modal-content,
+    body.dark #brandCreateModal .modal-content,
+    body.dark-mode #brandCreateModal .modal-content {
+        background-color: #0f172a !important;
+        border: 1px solid #1e293b !important;
+    }
+
+    body[light-mode="dark"] #brandCreateModal .modal-body,
+    html[light-mode="dark"] #brandCreateModal .modal-body,
+    body[data-layout-mode="dark"] #brandCreateModal .modal-body,
+    html.dark #brandCreateModal .modal-body,
+    body.dark #brandCreateModal .modal-body,
+    body.dark-mode #brandCreateModal .modal-body {
+        background-color: #0f172a !important;
+    }
+
+    body[light-mode="dark"] #brandCreateModal .card,
+    html[light-mode="dark"] #brandCreateModal .card,
+    body[data-layout-mode="dark"] #brandCreateModal .card,
+    html.dark #brandCreateModal .card,
+    body.dark #brandCreateModal .card,
+    body.dark-mode #brandCreateModal .card {
+        background-color: #1e293b !important;
+        border: 1px solid #334155 !important;
+    }
+
+    body[light-mode="dark"] #brandCreateModal label,
+    html[light-mode="dark"] #brandCreateModal label,
+    body[data-layout-mode="dark"] #brandCreateModal label,
+    html.dark #brandCreateModal label,
+    body.dark #brandCreateModal label,
+    body.dark-mode #brandCreateModal label {
+        color: #f1f5f9 !important;
+    }
+
+    body[light-mode="dark"] #brandCreateModal .form-control,
+    body[light-mode="dark"] #brandCreateModal .form-select,
+    html[light-mode="dark"] #brandCreateModal .form-control,
+    html[light-mode="dark"] #brandCreateModal .form-select,
+    body[data-layout-mode="dark"] #brandCreateModal .form-control,
+    body[data-layout-mode="dark"] #brandCreateModal .form-select,
+    html.dark #brandCreateModal .form-control,
+    html.dark #brandCreateModal .form-select,
+    body.dark #brandCreateModal .form-control,
+    body.dark #brandCreateModal .form-select,
+    body.dark-mode #brandCreateModal .form-control,
+    body.dark-mode #brandCreateModal .form-select {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] #brandCreateModal .form-control:focus,
+    body[light-mode="dark"] #brandCreateModal .form-select:focus,
+    html[light-mode="dark"] #brandCreateModal .form-control:focus,
+    html[light-mode="dark"] #brandCreateModal .form-select:focus,
+    body[data-layout-mode="dark"] #brandCreateModal .form-control:focus,
+    body[data-layout-mode="dark"] #brandCreateModal .form-select:focus,
+    html.dark #brandCreateModal .form-control:focus,
+    html.dark #brandCreateModal .form-select:focus,
+    body.dark #brandCreateModal .form-control:focus,
+    body.dark #brandCreateModal .form-select:focus,
+    body.dark-mode #brandCreateModal .form-control:focus,
+    body.dark-mode #brandCreateModal .form-select:focus {
+        background-color: #0f172a !important;
+        border-color: #10b981 !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25) !important;
+    }
+
+    body[light-mode="dark"] #brandCreateModal .form-control::placeholder,
+    html[light-mode="dark"] #brandCreateModal .form-control::placeholder,
+    body[data-layout-mode="dark"] #brandCreateModal .form-control::placeholder,
+    html.dark #brandCreateModal .form-control::placeholder,
+    body.dark #brandCreateModal .form-control::placeholder,
+    body.dark-mode #brandCreateModal .form-control::placeholder {
+        color: #94a3b8 !important;
+    }
+
+    body[light-mode="dark"] #brandCreateModal .form-select option,
+    html[light-mode="dark"] #brandCreateModal .form-select option,
+    body[data-layout-mode="dark"] #brandCreateModal .form-select option,
+    html.dark #brandCreateModal .form-select option,
+    body.dark #brandCreateModal .form-select option,
+    body.dark-mode #brandCreateModal .form-select option {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] #brandCreateModal .text-muted,
+    html[light-mode="dark"] #brandCreateModal .text-muted,
+    body[data-layout-mode="dark"] #brandCreateModal .text-muted,
+    html.dark #brandCreateModal .text-muted,
+    body.dark #brandCreateModal .text-muted,
+    body.dark-mode #brandCreateModal .text-muted {
+        color: #94a3b8 !important;
+    }
+
+    body[light-mode="dark"] #brandCreateModal #createBrandShowImage,
+    html[light-mode="dark"] #brandCreateModal #createBrandShowImage,
+    body[data-layout-mode="dark"] #brandCreateModal #createBrandShowImage,
+    html.dark #brandCreateModal #createBrandShowImage,
+    body.dark #brandCreateModal #createBrandShowImage,
+    body.dark-mode #brandCreateModal #createBrandShowImage {
+        background: #0f172a !important;
+        border-color: #15803d !important;
+    }
+</style>
+
 <!-- Create Brand Modal Start -->
 <div class="modal fade" id="brandCreateModal" tabindex="-1" aria-labelledby="brandCreateModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
             <div class="modal-header text-white px-4 py-3" style="background: linear-gradient(135deg, #15803d 0%, #166534 100%);">
-                <h5 class="modal-title fw-bold d-flex align-items-center gap-2 m-0" id="brandCreateModalLabel">
-                    <i class="fa-solid fa-tag"></i>
-                    <span>Add New Brand (নতুন ব্র্যান্ড)</span>
+                <h5 class="modal-title fw-bold d-flex align-items-center gap-2 m-0 text-white" id="brandCreateModalLabel" style="color: #ffffff !important;">
+                    <i class="fa-solid fa-tag text-white" style="color: #ffffff !important;"></i>
+                    <span class="text-white" style="color: #ffffff !important;">Add New Brand</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -29,22 +143,22 @@
                     <!-- Brand Form Fields -->
                     <div class="card border-0 shadow-sm rounded-3 p-3 bg-white">
                         <div class="mb-3">
-                            <label for="createBrandName" class="form-label fw-bold small text-dark">Brand Name (ব্র্যান্ড নাম) <span class="text-danger">*</span></label>
+                            <label for="createBrandName" class="form-label fw-bold small text-dark">Brand Name <span class="text-danger">*</span></label>
                             <input type="text" id="createBrandName" class="form-control" placeholder="e.g. Akij, Rosa, RFL..." required style="height: 42px; border-radius: 8px;" />
                         </div>
 
                         <div class="mb-0">
-                            <label for="createBrandStatus" class="form-label fw-bold small text-dark">Status (স্ট্যাটাস) <span class="text-danger">*</span></label>
-                            <select id="createBrandStatus" class="form-select" required style="height: 42px; border-radius: 8px;">
-                                <option value="Active" selected>Active (সক্রিয়)</option>
-                                <option value="InActive">Inactive (নিষ্ক্রিয়)</option>
+                            <label for="createBrandStatus" class="form-label fw-bold small text-dark">Status <span class="text-danger">*</span></label>
+                            <select id="createBrandStatus" class="form-select unified-ui-border" required style="height: 42px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13.5px; border: 1.5px solid #cbd5e1;">
+                                <option value="Active" selected>Active</option>
+                                <option value="InActive">Inactive</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Actions -->
                     <div class="d-flex align-items-center justify-content-end gap-2 mt-4">
-                        <button type="button" class="btn btn-secondary px-4 py-2 fw-semibold" data-bs-dismiss="modal" style="border-radius: 8px;">Cancel</button>
+                        <button type="button" class="btn px-4 py-2 fw-semibold text-white" data-bs-dismiss="modal" style="background-color: #dc2626 !important; color: #ffffff !important; border-radius: 8px; border: none !important;">Cancel</button>
                         <button type="submit" class="btn btn-success px-4 py-2 fw-bold" style="background-color: #15803d; border-radius: 8px; border: none;">
                             <i class="fa-solid fa-check me-1"></i> Save Brand
                         </button>

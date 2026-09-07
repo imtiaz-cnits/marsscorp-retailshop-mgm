@@ -41,12 +41,148 @@
         transform: scale(0.9) !important;
         transition: transform 0.3s ease !important;
         background: #ffffff !important;
-        padding: 24px !important;
-        border-radius: 12px !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        border-radius: 16px !important;
         width: 650px !important;
-        max-width: 92% !important;
+        max-width: 95% !important;
+        max-height: 90vh !important;
+        display: flex !important;
+        flex-direction: column !important;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4) !important;
         margin: auto !important;
+        text-align: left !important;
+    }
+
+    /* Dark Mode Rules for Supplier Create Modal */
+    body[light-mode="dark"] #supplierCreateModal .newbrand-content,
+    html[light-mode="dark"] #supplierCreateModal .newbrand-content,
+    body[data-layout-mode="dark"] #supplierCreateModal .newbrand-content,
+    html.dark #supplierCreateModal .newbrand-content,
+    body.dark #supplierCreateModal .newbrand-content,
+    body.dark-mode #supplierCreateModal .newbrand-content,
+    [data-theme="dark"] #supplierCreateModal .newbrand-content {
+        background-color: #0f172a !important;
+        border: 1px solid #334155 !important;
+        color: #f8fafc !important;
+    }
+
+    body[light-mode="dark"] #supplierCreateModal #popup-modal,
+    html[light-mode="dark"] #supplierCreateModal #popup-modal,
+    body[data-layout-mode="dark"] #supplierCreateModal #popup-modal,
+    html.dark #supplierCreateModal #popup-modal,
+    body.dark #supplierCreateModal #popup-modal,
+    body.dark-mode #supplierCreateModal #popup-modal,
+    [data-theme="dark"] #supplierCreateModal #popup-modal {
+        background-color: #0f172a !important;
+    }
+
+    body[light-mode="dark"] #supplierCreateModal .modal-footer-sticky,
+    html[light-mode="dark"] #supplierCreateModal .modal-footer-sticky,
+    body[data-layout-mode="dark"] #supplierCreateModal .modal-footer-sticky,
+    html.dark #supplierCreateModal .modal-footer-sticky,
+    body.dark #supplierCreateModal .modal-footer-sticky,
+    body.dark-mode #supplierCreateModal .modal-footer-sticky,
+    [data-theme="dark"] #supplierCreateModal .modal-footer-sticky {
+        background-color: #0f172a !important;
+        border-top-color: #334155 !important;
+    }
+
+    .form-label-title {
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        margin-bottom: 6px !important;
+        display: block !important;
+        line-height: 1.3 !important;
+    }
+    body[light-mode="dark"] #supplierCreateModal .form-label-title,
+    html[light-mode="dark"] #supplierCreateModal .form-label-title,
+    body[data-layout-mode="dark"] #supplierCreateModal .form-label-title,
+    html.dark #supplierCreateModal .form-label-title,
+    body.dark #supplierCreateModal .form-label-title,
+    body.dark-mode #supplierCreateModal .form-label-title,
+    [data-theme="dark"] #supplierCreateModal .form-label-title {
+        color: #cbd5e1 !important;
+    }
+
+    #supplierCreateModal input[type="text"],
+    #supplierCreateModal input[type="email"],
+    #supplierCreateModal input[type="number"],
+    #supplierCreateModal .form-select,
+    #supplierCreateModal select {
+        width: 100% !important;
+        height: 42px !important;
+        font-size: 13.5px !important;
+        color: #334155 !important;
+        padding: 8px 14px !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        outline: none !important;
+        background: #ffffff !important;
+        transition: border-color 0.2s, box-shadow 0.2s !important;
+    }
+    #supplierCreateModal input:focus,
+    #supplierCreateModal .form-select:focus,
+    #supplierCreateModal select:focus {
+        border-color: #15803d !important;
+        box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.2) !important;
+    }
+
+    body[light-mode="dark"] #supplierCreateModal input[type="text"],
+    body[light-mode="dark"] #supplierCreateModal input[type="email"],
+    body[light-mode="dark"] #supplierCreateModal input[type="number"],
+    body[light-mode="dark"] #supplierCreateModal .form-select,
+    body[light-mode="dark"] #supplierCreateModal select,
+    html[light-mode="dark"] #supplierCreateModal input[type="text"],
+    html[light-mode="dark"] #supplierCreateModal input[type="email"],
+    html[light-mode="dark"] #supplierCreateModal input[type="number"],
+    html[light-mode="dark"] #supplierCreateModal .form-select,
+    html[light-mode="dark"] #supplierCreateModal select,
+    body[data-layout-mode="dark"] #supplierCreateModal input[type="text"],
+    body[data-layout-mode="dark"] #supplierCreateModal input[type="email"],
+    body[data-layout-mode="dark"] #supplierCreateModal input[type="number"],
+    body[data-layout-mode="dark"] #supplierCreateModal .form-select,
+    body[data-layout-mode="dark"] #supplierCreateModal select,
+    html.dark #supplierCreateModal input[type="text"],
+    html.dark #supplierCreateModal input[type="email"],
+    html.dark #supplierCreateModal input[type="number"],
+    html.dark #supplierCreateModal .form-select,
+    html.dark #supplierCreateModal select,
+    body.dark #supplierCreateModal input[type="text"],
+    body.dark #supplierCreateModal input[type="email"],
+    body.dark #supplierCreateModal input[type="number"],
+    body.dark #supplierCreateModal .form-select,
+    body.dark #supplierCreateModal select,
+    body.dark-mode #supplierCreateModal input[type="text"],
+    body.dark-mode #supplierCreateModal input[type="email"],
+    body.dark-mode #supplierCreateModal input[type="number"],
+    body.dark-mode #supplierCreateModal .form-select,
+    body.dark-mode #supplierCreateModal select {
+        background-color: #1e293b !important;
+        color: #f8fafc !important;
+        border-color: #334155 !important;
+    }
+
+    body[light-mode="dark"] #supplierCreateModal .custom-file-input-wrapper,
+    html[light-mode="dark"] #supplierCreateModal .custom-file-input-wrapper,
+    body[data-layout-mode="dark"] #supplierCreateModal .custom-file-input-wrapper,
+    html.dark #supplierCreateModal .custom-file-input-wrapper,
+    body.dark #supplierCreateModal .custom-file-input-wrapper,
+    body.dark-mode #supplierCreateModal .custom-file-input-wrapper {
+        background: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+
+    body[light-mode="dark"] #supplierCreateModal #supplierCreateImgBox,
+    html[light-mode="dark"] #supplierCreateModal #supplierCreateImgBox,
+    body[data-layout-mode="dark"] #supplierCreateModal #supplierCreateImgBox,
+    html.dark #supplierCreateModal #supplierCreateImgBox,
+    body.dark #supplierCreateModal #supplierCreateImgBox,
+    body.dark-mode #supplierCreateModal #supplierCreateImgBox {
+        background: #1e293b !important;
+        border-color: #334155 !important;
     }
 
     #myModal.newbrand.show .newbrand-content,
@@ -242,93 +378,96 @@
 </style>
 
 <div class="newbrand" id="supplierCreateModal" style="display: none;">
-    <div class="newbrand-content" style="width: 650px; max-width: 95%; margin: auto; border-radius: 12px; background: #fff; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-        <a class="close-btn closes" style="position: absolute; right: 20px; top: 20px; cursor: pointer; font-size: 20px;">
-            <i class="fa-solid fa-xmark"></i>
-        </a>
-        <h2 style="font-size: 22px; font-weight: 600; text-align: center; margin-bottom: 20px; color: #192045;">Add New Supplier</h2>
-        <div id="popup-modal">
-                    <form onsubmit="return SupplierDataSave(event)" id="supplierCreateForm">
-                        <div class="row">
-                            <div class="col-lg-6 mb-3">
-                                <div class="form-row">
-                                    <input type="text" placeholder="Enter Supplier Name *" id="supplierName" required />
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <div class="form-row">
-                                    <input type="text" placeholder="Enter Supplier Mobile *" id="supplierMobile" required />
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <div class="form-row">
-                                    <input type="text" placeholder="Enter Supplier Company" id="supplierCompany" />
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <div class="form-row">
-                                    <input type="text" placeholder="Enter Supplier Address" id="supplierAddress" />
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <div class="form-row">
-                                    <input type="email" placeholder="Enter Supplier Email" id="supplierEmail" />
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <div class="form-row">
-                                    <input type="number" step="any" placeholder="Enter Purchase Payable Amount" id="supplierPurchasePayableAmount" />
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <div class="form-row">
-                                    <select class="form-select input-style" id="supplierStatus">
-                                        <option value="Active" selected>Active</option>
-                                        <option value="InActive">Inactive</option>
-                                    </select>
-                                </div>
-                            </div>
+    <div class="newbrand-content" style="width: 650px; max-width: 95%; max-height: 90vh; margin: auto; border-radius: 16px; background: #fff; padding: 0; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.4); position: relative; display: flex; flex-direction: column;">
+        <!-- Sticky Green Header with White Text & Red Close Icon -->
+        <div style="background-color: #15803d; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; position: sticky; top: 0; z-index: 10; border-top-left-radius: 16px; border-top-right-radius: 16px;">
+            <h2 style="font-size: 18px; font-weight: 700; color: #ffffff; margin: 0; padding: 0; line-height: 1.2;">Add New Supplier</h2>
+            <button type="button" onclick="closeSupplierCreateModal()" class="close-btn closes" style="width: 28px; height: 28px; min-width: 28px; min-height: 28px; border-radius: 50%; background-color: #dc2626; color: #ffffff; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: all 0.15s ease;" title="Close">
+                <i class="fa-solid fa-xmark" style="color: #ffffff; font-size: 14px;"></i>
+            </button>
+        </div>
 
-                            <!-- Upload Photo moved to bottom -->
-                            <div class="col-lg-12">
-                                <div class="mb-3">
-                                    <div class="upload-profile">
-                                        <div class="item">
-                                            <div class="img-box">
-                                                <svg width="32" height="32" viewBox="0 0 50 50" fill="red"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                                                    <rect width="50" height="50" fill="url(#pattern0_1204_6)"
-                                                        fill-opacity="0.5" />
-                                                    <defs>
-                                                        <pattern id="pattern0_1204_6"
-                                                            patternContentUnits="objectBoundingBox" width="1"
-                                                            height="1">
-                                                            <use xlink:href="#image0_1204_6" transform="scale(0.005)" />
-                                                        </pattern>
-                                                        <image id="image0_1204_6" width="200" height="200"
-                                                            xlink:href="data:image/png;base64,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" />
-                                                    </defs>
-                                                </svg>
-                                            </div>
+        <!-- Scrollable Modal Body -->
+        <div id="popup-modal" style="padding: 20px 24px; overflow-y: auto; flex: 1 1 auto; max-height: calc(90vh - 130px); text-align: left;">
+            <form onsubmit="return SupplierDataSave(event)" id="supplierCreateForm">
+                <div class="row">
+                    <div class="col-lg-6 mb-2">
+                        <label for="supplierName" class="form-label-title">Supplier Name <span style="color: #ef4444;">*</span></label>
+                        <div class="form-row">
+                            <input type="text" placeholder="Enter Supplier Name" id="supplierName" required />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-2">
+                        <label for="supplierMobile" class="form-label-title">Supplier Mobile <span style="color: #ef4444;">*</span></label>
+                        <div class="form-row">
+                            <input type="text" placeholder="Enter Supplier Mobile" id="supplierMobile" required />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-2">
+                        <label for="supplierCompany" class="form-label-title">Supplier Company</label>
+                        <div class="form-row">
+                            <input type="text" placeholder="Enter Supplier Company" id="supplierCompany" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-2">
+                        <label for="supplierAddress" class="form-label-title">Supplier Address</label>
+                        <div class="form-row">
+                            <input type="text" placeholder="Enter Supplier Address" id="supplierAddress" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-2">
+                        <label for="supplierEmail" class="form-label-title">Supplier Email</label>
+                        <div class="form-row">
+                            <input type="email" placeholder="Enter Supplier Email" id="supplierEmail" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-2">
+                        <label for="supplierPurchasePayableAmount" class="form-label-title">Purchase Payable Amount</label>
+                        <div class="form-row">
+                            <input type="number" step="any" placeholder="Enter Purchase Payable Amount" id="supplierPurchasePayableAmount" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-2">
+                        <label for="supplierStatus" class="form-label-title">Status <span style="color: #ef4444;">*</span></label>
+                        <div class="form-row">
+                            <select class="form-select input-style" id="supplierStatus" style="cursor: pointer !important;">
+                                <option value="Active" selected>Active</option>
+                                <option value="InActive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
 
-                                            <div class="profile-wrapper">
-                                                <label class="custom-file-input-wrapper">
-                                                    <input type="file" class="custom-file-input" id="supplierImage"
-                                                        aria-label="Upload Photo" />
-                                                </label>
-                                                <p>PNG, JPEG or GIF (up to 1 MB)</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <!-- Upload Photo -->
+                    <div class="col-lg-12 mb-1">
+                        <label class="form-label-title">Supplier Image</label>
+                        <div class="upload-profile">
+                            <div class="item" style="display: flex; align-items: center; gap: 14px;">
+                                <div class="img-box" id="supplierCreateImgBox" style="width: 80px; height: 70px; min-width: 80px; border-radius: 8px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1.5px dashed #cbd5e1;">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                        <polyline points="21 15 16 10 5 21"></polyline>
+                                    </svg>
                                 </div>
-                            </div>
 
-                            <div class="actions mt-3">
-                                <button type="button" onclick="SupplierDataSave(event)" class="btn-save save-btn">Submit</button>
+                                <div class="profile-wrapper" style="flex: 1;">
+                                    <label class="custom-file-input-wrapper" style="cursor: pointer;">
+                                        <input type="file" class="custom-file-input" id="supplierImage"
+                                            aria-label="Upload Photo" accept="image/*" style="cursor: pointer;" />
+                                    </label>
+                                    <p style="margin: 4px 0 0 0; font-size: 11px; color: #94a3b8;">PNG, JPEG or GIF (up to 1 MB)</p>
+                                </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sticky Bottom Footer with Submit Button -->
+        <div style="padding: 12px 24px 16px; background: #ffffff; border-top: 1px solid #f1f5f9; flex-shrink: 0; position: sticky; bottom: 0; z-index: 10;" class="modal-footer-sticky">
+            <button type="button" onclick="SupplierDataSave(event)" class="btn-save save-btn" style="width: 100% !important; height: 42px !important; background-color: #15803d !important; color: #ffffff !important; border-radius: 8px !important; font-weight: 600 !important; font-size: 15px !important; border: none !important; cursor: pointer !important; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s ease;">Submit</button>
+        </div>
     </div>
 </div>
 
@@ -420,6 +559,19 @@
         }
     }
 
+    const defaultSupplierSvg = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+        <polyline points="21 15 16 10 5 21"></polyline>
+    </svg>`;
+
+    function resetSupplierCreateModal() {
+        const suppForm = document.getElementById("supplierCreateForm") || document.querySelector('#supplierCreateModal form');
+        if (suppForm) suppForm.reset();
+        const imgBox = document.getElementById('supplierCreateImgBox');
+        if (imgBox) imgBox.innerHTML = defaultSupplierSvg;
+    }
+
     function closeModal(modal) {
         if (!modal) modal = document.getElementById('supplierCreateModal') || document.getElementById('myModal');
         if (modal) {
@@ -428,10 +580,28 @@
             modal.style.setProperty('display', 'none', 'important');
             modal.style.opacity = '0';
             modal.style.visibility = 'hidden';
+            resetSupplierCreateModal();
         }
     }
 
     document.addEventListener("DOMContentLoaded", function() {
+        const fileInput = document.getElementById('supplierImage');
+        const imgBox = document.getElementById('supplierCreateImgBox');
+        if (fileInput && imgBox) {
+            fileInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imgBox.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;" />`;
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    imgBox.innerHTML = defaultSupplierSvg;
+                }
+            });
+        }
+
         const suppModal = document.getElementById('supplierCreateModal') || document.getElementById('myModal');
         if (suppModal) {
             if (suppModal.parentNode && suppModal.parentNode !== document.body) {
@@ -447,32 +617,48 @@
                 });
             });
 
-            document.querySelectorAll('#supplierCreateModal .closes, #myModal .closes').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    closeModal(suppModal);
+            document.querySelectorAll('#supplierCreateModal .closes, #myModal .closes, #supplierCreateModal .close-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    closeSupplierCreateModal();
                 });
             });
 
             // Close on backdrop click
             suppModal.addEventListener('click', function(e) {
-                if (e.target === suppModal || e.target.classList.contains('page-content')) {
-                    closeModal(suppModal);
+                const content = suppModal.querySelector('.newbrand-content');
+                if (e.target === suppModal || (content && !content.contains(e.target))) {
+                    closeSupplierCreateModal();
                 }
             });
 
             // Close on Escape key
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && (suppModal.classList.contains('show') || suppModal.classList.contains('show-modal'))) {
-                    closeModal(suppModal);
+                if (e.key === 'Escape' && (suppModal.classList.contains('show') || suppModal.classList.contains('show-modal') || suppModal.style.display === 'flex')) {
+                    closeSupplierCreateModal();
                 }
             });
         }
     });
 
+    function closeSupplierCreateModal() {
+        const modal = document.getElementById('supplierCreateModal') || document.getElementById('myModal');
+        if (modal) {
+            modal.style.setProperty('display', 'none', 'important');
+            modal.style.setProperty('opacity', '0', 'important');
+            modal.style.setProperty('visibility', 'hidden', 'important');
+            modal.classList.remove('show');
+            modal.classList.remove('show-modal');
+            const form = document.getElementById('supplierCreateForm') || document.getElementById('signup');
+            if (form) form.reset();
+        }
+    }
+
     // Prevent Bootstrap focus trap from stealing focus from nested supplier modal inputs
     document.addEventListener('focusin', function(e) {
         const suppModal = document.getElementById('supplierCreateModal') || document.getElementById('myModal');
-        if (suppModal && (suppModal.classList.contains('show') || suppModal.classList.contains('show-modal'))) {
+        if (suppModal && (suppModal.classList.contains('show') || suppModal.classList.contains('show-modal') || suppModal.style.display === 'flex')) {
             if (suppModal.contains(e.target)) {
                 e.stopImmediatePropagation();
             }

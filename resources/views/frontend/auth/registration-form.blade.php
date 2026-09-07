@@ -105,12 +105,12 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    max-width: 220px;
+    width: 100%;
     margin-bottom: 28px;
   }
 
   .brand-logo-box img {
-    max-width: 100%;
+    width: 100%;
     height: auto;
     max-height: 75px;
     object-fit: contain;

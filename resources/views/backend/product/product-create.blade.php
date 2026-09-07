@@ -565,6 +565,134 @@
     #createProduct .upload-profile .item .custom-file-input-wrapper {
         cursor: pointer !important;
     }
+
+    /* Dark Mode for Add Product Modal */
+    body[light-mode="dark"] #createProduct .modal-content,
+    html[light-mode="dark"] #createProduct .modal-content,
+    body[data-layout-mode="dark"] #createProduct .modal-content,
+    html.dark #createProduct .modal-content,
+    body.dark #createProduct .modal-content,
+    body.dark-mode #createProduct .modal-content {
+        background-color: #0f172a !important;
+        color: #f1f5f9 !important;
+        border: 1px solid #1e293b !important;
+    }
+
+    body[light-mode="dark"] #createProduct #popup-modal,
+    html[light-mode="dark"] #createProduct #popup-modal,
+    body[data-layout-mode="dark"] #createProduct #popup-modal {
+        background-color: #0f172a !important;
+    }
+
+    body[light-mode="dark"] #createProduct .modal-footer,
+    html[light-mode="dark"] #createProduct .modal-footer,
+    body[data-layout-mode="dark"] #createProduct .modal-footer,
+    html.dark #createProduct .modal-footer,
+    body.dark #createProduct .modal-footer,
+    body.dark-mode #createProduct .modal-footer {
+        background-color: #0f172a !important;
+        border-top-color: #1e293b !important;
+    }
+
+    body[light-mode="dark"] #createProduct label,
+    html[light-mode="dark"] #createProduct label,
+    body[data-layout-mode="dark"] #createProduct label,
+    html.dark #createProduct label,
+    body.dark #createProduct label,
+    body.dark-mode #createProduct label {
+        color: #cbd5e1 !important;
+    }
+
+    body[light-mode="dark"] #createProduct .form-control,
+    body[light-mode="dark"] #createProduct .form-select,
+    html[light-mode="dark"] #createProduct .form-control,
+    html[light-mode="dark"] #createProduct .form-select,
+    body[data-layout-mode="dark"] #createProduct .form-control,
+    body[data-layout-mode="dark"] #createProduct .form-select,
+    html.dark #createProduct .form-control,
+    html.dark #createProduct .form-select,
+    body.dark #createProduct .form-control,
+    body.dark #createProduct .form-select {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] #createProduct .form-control::placeholder,
+    html[light-mode="dark"] #createProduct .form-control::placeholder {
+        color: #94a3b8 !important;
+    }
+
+    body[light-mode="dark"] #createProduct .custom-searchable-select .select-trigger,
+    html[light-mode="dark"] #createProduct .custom-searchable-select .select-trigger {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+    body[light-mode="dark"] #createProduct .custom-searchable-select .selected-text,
+    html[light-mode="dark"] #createProduct .custom-searchable-select .selected-text {
+        color: #ffffff !important;
+    }
+    body[light-mode="dark"] #createProduct .custom-searchable-select .select-menu,
+    html[light-mode="dark"] #createProduct .custom-searchable-select .select-menu {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #createProduct .custom-searchable-select .search-wrap input,
+    html[light-mode="dark"] #createProduct .custom-searchable-select .search-wrap input {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+    body[light-mode="dark"] #createProduct .custom-searchable-select .select-option-item,
+    html[light-mode="dark"] #createProduct .custom-searchable-select .select-option-item {
+        color: #cbd5e1 !important;
+        border-bottom-color: #1e293b !important;
+    }
+    body[light-mode="dark"] #createProduct .custom-searchable-select .select-option-item:hover,
+    html[light-mode="dark"] #createProduct .custom-searchable-select .select-option-item:hover {
+        background-color: #1e293b !important;
+        color: #34d399 !important;
+    }
+
+    body[light-mode="dark"] #createProduct .img-box,
+    html[light-mode="dark"] #createProduct .img-box {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #createProduct .custom-file-input-wrapper,
+    html[light-mode="dark"] #createProduct .custom-file-input-wrapper {
+        background-color: #1e293b !important;
+        color: #cbd5e1 !important;
+        border: 1px solid #334155 !important;
+    }
+
+    body[light-mode="dark"] #createProduct #doorHandednessContainer > div,
+    html[light-mode="dark"] #createProduct #doorHandednessContainer > div {
+        background: #1e293b !important;
+        border-color: #16a34a !important;
+    }
+    body[light-mode="dark"] #createProduct .door-hand-card,
+    html[light-mode="dark"] #createProduct .door-hand-card {
+        background: #0f172a !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+    body[light-mode="dark"] #createProduct .door-hand-text,
+    html[light-mode="dark"] #createProduct .door-hand-text {
+        color: #cbd5e1 !important;
+    }
+    body[light-mode="dark"] #createProduct .door-hand-box,
+    html[light-mode="dark"] #createProduct .door-hand-box {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #createProduct .door-qty-input-create,
+    html[light-mode="dark"] #createProduct .door-qty-input-create {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
 </style>
 
 <!-- Create Product Modal Start -->
@@ -733,7 +861,7 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-12">
+                    <div class="col-lg-12 mt-2">
                         <div class="form-row flex-column align-items-start">
                             <label for="ProductName" class="fw-semibold small" style="color: #334155; display: block; margin-bottom: 2px !important; font-size: 13px;">Product Name <span class="text-danger">*</span></label>
                             <input type="text" placeholder="Product Name *" id="ProductName" class="form-control" style="width: 100%; height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
@@ -777,9 +905,9 @@
         </div>
 
         <!-- Sticky Footer (Fixed at Bottom) -->
-        <div class="modal-footer px-4 py-2.5 bg-white d-flex align-items-center justify-content-end gap-2 flex-shrink-0" style="position: sticky; bottom: 0; z-index: 20; border-top: 1px solid #e2e8f0 !important;">
-            <button type="button" onclick="resetProductForm()" class="btn btn-outline-secondary px-4 fw-semibold" style="height: 40px; border-radius: 8px; font-size: 14px;">Reset</button>
-            <button type="button" onclick="ProductDataSave(event)" class="btn text-white fw-bold px-5 shadow-sm" style="height: 40px; border-radius: 8px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none; font-size: 14px;">Submit</button>
+        <div class="modal-footer px-4 py-2.5 d-flex align-items-center justify-content-end gap-2 flex-shrink-0" style="position: sticky; bottom: 0; z-index: 20; border-top: 1px solid #e2e8f0 !important; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; background: #ffffff;">
+            <button type="button" onclick="resetProductForm()" class="btn fw-semibold px-4" style="height: 40px; border-radius: 8px; font-size: 14px; background-color: #dc2626 !important; color: #ffffff !important; border: none !important; cursor: pointer; transition: opacity 0.2s;">Reset</button>
+            <button type="button" onclick="ProductDataSave(event)" class="btn text-white fw-bold px-5 shadow-sm" style="height: 40px; border-radius: 8px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none; font-size: 14px; cursor: pointer;">Submit</button>
         </div>
     </div>
 </section>

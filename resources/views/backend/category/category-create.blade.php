@@ -1,11 +1,125 @@
+<style>
+    /* Dark mode styles for Category Create Modal */
+    body[light-mode="dark"] #categoryCreateModal .modal-content,
+    html[light-mode="dark"] #categoryCreateModal .modal-content,
+    body[data-layout-mode="dark"] #categoryCreateModal .modal-content,
+    html.dark #categoryCreateModal .modal-content,
+    body.dark #categoryCreateModal .modal-content,
+    body.dark-mode #categoryCreateModal .modal-content {
+        background-color: #0f172a !important;
+        border: 1px solid #1e293b !important;
+    }
+
+    body[light-mode="dark"] #categoryCreateModal .modal-body,
+    html[light-mode="dark"] #categoryCreateModal .modal-body,
+    body[data-layout-mode="dark"] #categoryCreateModal .modal-body,
+    html.dark #categoryCreateModal .modal-body,
+    body.dark #categoryCreateModal .modal-body,
+    body.dark-mode #categoryCreateModal .modal-body {
+        background-color: #0f172a !important;
+    }
+
+    body[light-mode="dark"] #categoryCreateModal .card,
+    html[light-mode="dark"] #categoryCreateModal .card,
+    body[data-layout-mode="dark"] #categoryCreateModal .card,
+    html.dark #categoryCreateModal .card,
+    body.dark #categoryCreateModal .card,
+    body.dark-mode #categoryCreateModal .card {
+        background-color: #1e293b !important;
+        border: 1px solid #334155 !important;
+    }
+
+    body[light-mode="dark"] #categoryCreateModal label,
+    html[light-mode="dark"] #categoryCreateModal label,
+    body[data-layout-mode="dark"] #categoryCreateModal label,
+    html.dark #categoryCreateModal label,
+    body.dark #categoryCreateModal label,
+    body.dark-mode #categoryCreateModal label {
+        color: #f1f5f9 !important;
+    }
+
+    body[light-mode="dark"] #categoryCreateModal .form-control,
+    body[light-mode="dark"] #categoryCreateModal .form-select,
+    html[light-mode="dark"] #categoryCreateModal .form-control,
+    html[light-mode="dark"] #categoryCreateModal .form-select,
+    body[data-layout-mode="dark"] #categoryCreateModal .form-control,
+    body[data-layout-mode="dark"] #categoryCreateModal .form-select,
+    html.dark #categoryCreateModal .form-control,
+    html.dark #categoryCreateModal .form-select,
+    body.dark #categoryCreateModal .form-control,
+    body.dark #categoryCreateModal .form-select,
+    body.dark-mode #categoryCreateModal .form-control,
+    body.dark-mode #categoryCreateModal .form-select {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] #categoryCreateModal .form-control:focus,
+    body[light-mode="dark"] #categoryCreateModal .form-select:focus,
+    html[light-mode="dark"] #categoryCreateModal .form-control:focus,
+    html[light-mode="dark"] #categoryCreateModal .form-select:focus,
+    body[data-layout-mode="dark"] #categoryCreateModal .form-control:focus,
+    body[data-layout-mode="dark"] #categoryCreateModal .form-select:focus,
+    html.dark #categoryCreateModal .form-control:focus,
+    html.dark #categoryCreateModal .form-select:focus,
+    body.dark #categoryCreateModal .form-control:focus,
+    body.dark #categoryCreateModal .form-select:focus,
+    body.dark-mode #categoryCreateModal .form-control:focus,
+    body.dark-mode #categoryCreateModal .form-select:focus {
+        background-color: #0f172a !important;
+        border-color: #10b981 !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25) !important;
+    }
+
+    body[light-mode="dark"] #categoryCreateModal .form-control::placeholder,
+    html[light-mode="dark"] #categoryCreateModal .form-control::placeholder,
+    body[data-layout-mode="dark"] #categoryCreateModal .form-control::placeholder,
+    html.dark #categoryCreateModal .form-control::placeholder,
+    body.dark #categoryCreateModal .form-control::placeholder,
+    body.dark-mode #categoryCreateModal .form-control::placeholder {
+        color: #94a3b8 !important;
+    }
+
+    body[light-mode="dark"] #categoryCreateModal .form-select option,
+    html[light-mode="dark"] #categoryCreateModal .form-select option,
+    body[data-layout-mode="dark"] #categoryCreateModal .form-select option,
+    html.dark #categoryCreateModal .form-select option,
+    body.dark #categoryCreateModal .form-select option,
+    body.dark-mode #categoryCreateModal .form-select option {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] #categoryCreateModal .text-muted,
+    html[light-mode="dark"] #categoryCreateModal .text-muted,
+    body[data-layout-mode="dark"] #categoryCreateModal .text-muted,
+    html.dark #categoryCreateModal .text-muted,
+    body.dark #categoryCreateModal .text-muted,
+    body.dark-mode #categoryCreateModal .text-muted {
+        color: #94a3b8 !important;
+    }
+
+    body[light-mode="dark"] #categoryCreateModal #createCategoryShowImage,
+    html[light-mode="dark"] #categoryCreateModal #createCategoryShowImage,
+    body[data-layout-mode="dark"] #categoryCreateModal #createCategoryShowImage,
+    html.dark #categoryCreateModal #createCategoryShowImage,
+    body.dark #categoryCreateModal #createCategoryShowImage,
+    body.dark-mode #categoryCreateModal #createCategoryShowImage {
+        background: #0f172a !important;
+        border-color: #15803d !important;
+    }
+</style>
+
 <!-- Create Category Modal Start -->
 <div class="modal fade" id="categoryCreateModal" tabindex="-1" aria-labelledby="categoryCreateModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
             <div class="modal-header text-white px-4 py-3" style="background: linear-gradient(135deg, #15803d 0%, #166534 100%);">
-                <h5 class="modal-title fw-bold d-flex align-items-center gap-2 m-0" id="categoryCreateModalLabel">
-                    <i class="fa-solid fa-folder-tree"></i>
-                    <span>Add New Category (নতুন ক্যাটাগরি)</span>
+                <h5 class="modal-title fw-bold d-flex align-items-center gap-2 m-0 text-white" id="categoryCreateModalLabel" style="color: #ffffff !important;">
+                    <i class="fa-solid fa-folder-tree text-white" style="color: #ffffff !important;"></i>
+                    <span class="text-white" style="color: #ffffff !important;">Add New Category</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -29,22 +143,22 @@
                     <!-- Category Form Fields -->
                     <div class="card border-0 shadow-sm rounded-3 p-3 bg-white">
                         <div class="mb-3">
-                            <label for="createCategoryName" class="form-label fw-bold small text-dark">Category Name (ক্যাটাগরি নাম) <span class="text-danger">*</span></label>
+                            <label for="createCategoryName" class="form-label fw-bold small text-dark">Category Name <span class="text-danger">*</span></label>
                             <input type="text" id="createCategoryName" class="form-control" placeholder="e.g. Door, Fitting Stocks, WPC..." required style="height: 42px; border-radius: 8px;" />
                         </div>
 
                         <div class="mb-0">
-                            <label for="createCategoryStatus" class="form-label fw-bold small text-dark">Status (স্ট্যাটাস) <span class="text-danger">*</span></label>
-                            <select id="createCategoryStatus" class="form-select" required style="height: 42px; border-radius: 8px;">
-                                <option value="Active" selected>Active (সক্রিয়)</option>
-                                <option value="InActive">Inactive (নিষ্ক্রিয়)</option>
+                            <label for="createCategoryStatus" class="form-label fw-bold small text-dark">Status <span class="text-danger">*</span></label>
+                            <select id="createCategoryStatus" class="form-select unified-ui-border" required style="height: 42px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13.5px; border: 1.5px solid #cbd5e1;">
+                                <option value="Active" selected>Active</option>
+                                <option value="InActive">Inactive</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Actions -->
                     <div class="d-flex align-items-center justify-content-end gap-2 mt-4">
-                        <button type="button" class="btn btn-secondary px-4 py-2 fw-semibold" data-bs-dismiss="modal" style="border-radius: 8px;">Cancel</button>
+                        <button type="button" class="btn px-4 py-2 fw-semibold text-white" data-bs-dismiss="modal" style="background-color: #dc2626 !important; color: #ffffff !important; border-radius: 8px; border: none !important;">Cancel</button>
                         <button type="submit" class="btn btn-success px-4 py-2 fw-bold" style="background-color: #15803d; border-radius: 8px; border: none;">
                             <i class="fa-solid fa-check me-1"></i> Save Category
                         </button>

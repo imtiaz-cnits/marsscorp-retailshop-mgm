@@ -1,209 +1,190 @@
+<!-- Flatpickr Styles & Scripts -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <style>
+    /* Flatpickr Calendar on Top of Modals */
+    .flatpickr-calendar {
+        z-index: 999999 !important;
+    }
+
     #exampleModal .modal-dialog {
         max-width: 1080px !important;
         width: 95% !important;
         margin: 1.75rem auto;
+        padding: 0 !important;
     }
 
     #exampleModal .modal-content {
-        border-radius: 20px !important;
+        border-radius: 16px !important;
         border: none !important;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
         overflow: hidden;
         background: #ffffff;
-    }
-
-    #exampleModal .purchase-modal-header {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        padding: 18px 24px;
-        color: #ffffff;
+        max-height: 90vh;
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        flex-direction: column;
+        padding: 0 !important;
     }
 
-    #exampleModal .purchase-modal-header h4 {
-        margin: 0;
-        font-size: 20px;
-        font-weight: 700;
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+    /* Dark Mode Modal Content */
+    body[light-mode="dark"] #exampleModal .modal-content,
+    html[light-mode="dark"] #exampleModal .modal-content,
+    body[data-layout-mode="dark"] #exampleModal .modal-content,
+    html.dark #exampleModal .modal-content,
+    body.dark #exampleModal .modal-content,
+    body.dark-mode #exampleModal .modal-content {
+        background-color: #0f172a !important;
+        color: #f8fafc !important;
     }
 
-    #exampleModal .purchase-modal-header .btn-close-custom {
-        background: rgba(255, 255, 255, 0.15);
-        color: #ffffff;
-        border: none;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        cursor: pointer;
-        transition: all 0.2s ease;
+    body[light-mode="dark"] #exampleModal .purchase-modal-body,
+    html[light-mode="dark"] #exampleModal .purchase-modal-body,
+    body[data-layout-mode="dark"] #exampleModal .purchase-modal-body,
+    html.dark #exampleModal .purchase-modal-body,
+    body.dark #exampleModal .purchase-modal-body,
+    body.dark-mode #exampleModal .purchase-modal-body {
+        background-color: #0f172a !important;
     }
 
-    #exampleModal .purchase-modal-header .btn-close-custom:hover {
-        background: rgba(239, 68, 68, 0.8);
-        transform: rotate(90deg);
+    body[light-mode="dark"] #exampleModal .purchase-modal-footer,
+    html[light-mode="dark"] #exampleModal .purchase-modal-footer,
+    body[data-layout-mode="dark"] #exampleModal .purchase-modal-footer,
+    html.dark #exampleModal .purchase-modal-footer,
+    body.dark #exampleModal .purchase-modal-footer,
+    body.dark-mode #exampleModal .purchase-modal-footer {
+        background-color: #0f172a !important;
+        border-top-color: #334155 !important;
     }
 
-    #exampleModal .purchase-card {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 14px;
-        padding: 16px;
-        margin-bottom: 20px;
+    body[light-mode="dark"] #exampleModal .purchase-clean-card,
+    html[light-mode="dark"] #exampleModal .purchase-clean-card,
+    body[data-layout-mode="dark"] #exampleModal .purchase-clean-card,
+    html.dark #exampleModal .purchase-clean-card,
+    body.dark #exampleModal .purchase-clean-card,
+    body.dark-mode #exampleModal .purchase-clean-card {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
     }
 
-    #exampleModal .purchase-card-title {
-        font-size: 13px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: #64748b;
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
+    body[light-mode="dark"] #exampleModal .form-control,
+    body[light-mode="dark"] #exampleModal .form-select,
+    html[light-mode="dark"] #exampleModal .form-control,
+    html[light-mode="dark"] #exampleModal .form-select,
+    body[data-layout-mode="dark"] #exampleModal .form-control,
+    body[data-layout-mode="dark"] #exampleModal .form-select,
+    html.dark #exampleModal .form-control,
+    html.dark #exampleModal .form-select,
+    body.dark #exampleModal .form-control,
+    body.dark #exampleModal .form-select,
+    body.dark-mode #exampleModal .form-control,
+    body.dark-mode #exampleModal .form-select {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
     }
 
-    #exampleModal .search-barcode-box {
-        background: #ffffff;
-        border: 2px solid #0d9488;
-        border-radius: 12px;
-        padding: 4px;
-        box-shadow: 0 4px 12px rgba(13, 148, 136, 0.1);
-        transition: all 0.2s ease;
+    body[light-mode="dark"] #supplierDropdownList,
+    html[light-mode="dark"] #supplierDropdownList,
+    body[data-layout-mode="dark"] #supplierDropdownList,
+    html.dark #supplierDropdownList,
+    body.dark #supplierDropdownList,
+    body.dark-mode #supplierDropdownList {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
     }
 
-    #exampleModal .search-barcode-box:focus-within {
-        box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.25);
+    body[light-mode="dark"] #supplierDropdownList .supplier-select-item:hover,
+    html[light-mode="dark"] #supplierDropdownList .supplier-select-item:hover,
+    body[data-layout-mode="dark"] #supplierDropdownList .supplier-select-item:hover,
+    html.dark #supplierDropdownList .supplier-select-item:hover,
+    body.dark #supplierDropdownList .supplier-select-item:hover,
+    body.dark-mode #supplierDropdownList .supplier-select-item:hover {
+        background-color: #0f172a !important;
     }
 
-    #exampleModal #productInputData {
-        border: none !important;
-        outline: none !important;
-        box-shadow: none !important;
-        font-size: 15px;
-        font-weight: 600;
-        padding: 10px 16px;
-        background: transparent;
+    body[light-mode="dark"] #exampleModal .table-container,
+    html[light-mode="dark"] #exampleModal .table-container,
+    body[data-layout-mode="dark"] #exampleModal .table-container,
+    html.dark #exampleModal .table-container,
+    body.dark #exampleModal .table-container,
+    body.dark-mode #exampleModal .table-container {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
     }
 
-    #exampleModal #productDropdown {
-        border-radius: 12px;
-        border: 1px solid #cbd5e1;
-        overflow: hidden;
-        margin-top: 6px;
+    body[light-mode="dark"] #exampleModal .responsive-table th,
+    html[light-mode="dark"] #exampleModal .responsive-table th {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+        border-color: #334155 !important;
     }
 
-    #exampleModal #productDropdown .list-group-item {
-        cursor: pointer;
-        transition: background-color 0.15s ease;
+    body[light-mode="dark"] #exampleModal .responsive-table td,
+    html[light-mode="dark"] #exampleModal .responsive-table td {
+        border-color: #334155 !important;
+        color: #ffffff !important;
     }
 
-    #exampleModal #productDropdown .list-group-item:hover {
-        background-color: #f0fdf4;
+    #exampleModal label {
+        text-align: left !important;
     }
 
-    #exampleModal .table-container {
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        overflow: hidden;
-        margin: 10px 0 20px 0;
-        background: #ffffff;
+    #exampleModal select,
+    #exampleModal .form-select {
+        cursor: pointer !important;
     }
 
-    #exampleModal .responsive-table {
-        width: 100%;
-        margin: 0;
-        border-collapse: collapse;
+    /* Modern Styled Select Dropdown */
+    .modern-select-dropdown {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2310b981' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 12px center !important;
+        background-size: 14px 10px !important;
+        padding-right: 36px !important;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
     }
 
-    #exampleModal .table-header {
-        background: #0f172a;
-        color: #ffffff;
+    #productDropdown:empty {
+        display: none !important;
     }
 
-    #exampleModal .header-cell {
-        padding: 12px 14px;
-        font-size: 13px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: #f8fafc;
-        border: none;
+    #productDropdown .list-group-item {
+        padding: 8px 12px;
+        transition: all 0.15s ease;
+        border-color: #e2e8f0;
     }
 
-    #exampleModal .body-row {
-        border-bottom: 1px solid #f1f5f9;
-        transition: background-color 0.2s ease;
+    body[light-mode="dark"] #productDropdown,
+    html[light-mode="dark"] #productDropdown,
+    body[data-layout-mode="dark"] #productDropdown,
+    html.dark #productDropdown,
+    body.dark #productDropdown {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
     }
 
-    #exampleModal .body-row:hover {
-        background-color: #f8fafc;
+    body[light-mode="dark"] #productDropdown .list-group-item,
+    html[light-mode="dark"] #productDropdown .list-group-item,
+    body[data-layout-mode="dark"] #productDropdown .list-group-item,
+    html.dark #productDropdown .list-group-item,
+    body.dark #productDropdown .list-group-item {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
     }
 
-    #exampleModal .summary-box {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 14px;
-        padding: 20px;
+    body[light-mode="dark"] #productDropdown .list-group-item:hover,
+    html[light-mode="dark"] #productDropdown .list-group-item:hover,
+    body[data-layout-mode="dark"] #productDropdown .list-group-item:hover,
+    html.dark #productDropdown .list-group-item:hover,
+    body.dark #productDropdown .list-group-item:hover {
+        background-color: #0f172a !important;
     }
 
-    #exampleModal .summary-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 0;
-        border-bottom: 1px dashed #e2e8f0;
-        font-size: 14px;
-    }
-
-    #exampleModal .summary-row:last-child {
-        border-bottom: none;
-    }
-
-    #exampleModal .net-payable-badge {
-        background: #0f172a;
-        color: #ffffff;
-        padding: 12px 16px;
-        border-radius: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 10px 0;
-    }
-
-    #exampleModal .btn-submit-purchase {
-        background: linear-gradient(135deg, #0d9488 0%, #059669 100%);
-        color: #ffffff;
-        font-size: 16px;
-        font-weight: 700;
-        padding: 14px 28px;
-        border-radius: 12px;
-        border: none;
-        width: 100%;
-        box-shadow: 0 10px 20px -5px rgba(13, 148, 136, 0.4);
-        transition: all 0.25s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        cursor: pointer;
-    }
-
-    #exampleModal .btn-submit-purchase:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 14px 25px -5px rgba(13, 148, 136, 0.5);
-        background: linear-gradient(135deg, #0f766e 0%, #047857 100%);
-    }
-
+    /* Modern Badges */
     .partial-payment-status {
         background-color: #fef3c7;
         color: #92400e;
@@ -225,46 +206,51 @@
 
 <!-- Action Button Edit Modal Start -->
 <section class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <!-- Sleek Header -->
-            <div class="purchase-modal-header">
-                <h4>
-                    <i class="fa-solid fa-cart-flatbed text-teal me-1" style="color: #2dd4bf;"></i> Purchase Product (নতুন পণ্য ক্রয়)
-                </h4>
-                <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-xmark"></i>
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="padding: 0 !important;">
+        <div class="modal-content" style="padding: 0 !important;">
+            <!-- Sticky Green Header with White Text & Red Close Icon -->
+            <div style="background-color: #15803d; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; position: sticky; top: 0; z-index: 20; border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                <h2 style="font-size: 18px; font-weight: 700; color: #ffffff; margin: 0; padding: 0; line-height: 1.2; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-cart-flatbed text-white text-base"></i>
+                    <span>Purchase Product</span>
+                </h2>
+                <button type="button" class="close-btn close" data-bs-dismiss="modal" aria-label="Close" style="position: static !important; width: 28px; height: 28px; min-width: 28px; min-height: 28px; border-radius: 50%; background-color: #dc2626; color: #ffffff; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: all 0.15s ease; margin: 0; padding: 0;" title="Close">
+                    <i class="fa-solid fa-xmark" style="color: #ffffff; font-size: 14px;"></i>
                 </button>
             </div>
 
-            <form onsubmit="return PurchaseDataSave(event)" id="purchaseCreateForm">
-                <div class="p-4">
+            <form onsubmit="return PurchaseDataSave(event)" id="purchaseCreateForm" style="display: flex; flex-direction: column; flex: 1 1 auto; overflow: hidden; margin: 0;">
+                <!-- Scrollable Body Content -->
+                <div class="purchase-modal-body p-4 sm:p-5" style="overflow-y: auto; flex: 1 1 auto; max-height: calc(90vh - 130px); text-align: left;">
+                    
                     <!-- Top Info Cards: Supplier & Invoice Details -->
                     <div class="row g-3 mb-3">
                         <div class="col-lg-6">
-                            <div class="purchase-card h-100 mb-0">
-                                <div class="purchase-card-title">
-                                    <i class="fa-solid fa-truck-field text-teal" style="color: #0d9488;"></i> Supplier Information (সাপ্লায়ার)
-                                </div>
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="position-relative flex-grow-1" id="searchableSupplierWrapper">
-                                        <input type="text" id="supplierSearchInput" class="form-control form-control-lg bg-white" placeholder="🔍 Search or Select Supplier *" autocomplete="off" style="font-size: 14px; border-radius: 10px;" />
+                            <div class="purchase-clean-card rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 p-4 h-100">
+                                <h5 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-3 text-left">
+                                    <i class="fa-solid fa-truck-field text-emerald-600 dark:text-emerald-400"></i>
+                                    <span>Supplier Information</span>
+                                </h5>
+                                <div class="flex items-center gap-2">
+                                    <div class="relative flex-grow" id="searchableSupplierWrapper">
+                                        <input type="text" id="supplierSearchInput" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" placeholder="Search or Select Supplier *" autocomplete="off" />
                                         <input type="hidden" id="SupplierDataList" value="none">
-                                        <div id="supplierDropdownList" class="dropdown-menu shadow-lg w-100 p-0 overflow-auto" style="max-height: 250px; display: none; position: absolute; z-index: 1050; top: 100%; left: 0;"></div>
+                                        <div id="supplierDropdownList" class="dropdown-menu shadow-xl w-full p-0 overflow-auto rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800" style="max-height: 250px; display: none; position: absolute; z-index: 1050; top: 100%; left: 0;"></div>
                                     </div>
-                                    <button type="button" class="btn text-white px-3 fw-bold text-nowrap d-flex align-items-center justify-content-center" onclick="openSupplierCreateModal()" style="border-radius: 10px; height: 48px; background-color: #0d9488;">
-                                        <i class="fa-solid fa-plus me-1"></i> New
+                                    <button type="button" class="inline-flex items-center gap-1 px-3 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 flex-shrink-0 cursor-pointer" onclick="openSupplierCreateModal()">
+                                        <i class="fa-solid fa-plus text-xs"></i>
+                                        <span>New</span>
                                     </button>
                                 </div>
 
                                 <div id="supplierCreditNotice" class="mt-3 d-none">
-                                    <div class="p-2 rounded-3 d-flex justify-content-between align-items-center" style="background-color: #e6fffa; border: 1.5px dashed #0d9488;">
-                                        <span id="supplierCreditBadge" class="fw-bold text-dark" style="font-size: 13px;">
-                                            <i class="fa-solid fa-gift me-1" style="color: #0d9488;"></i> ফেরত ব্যালেন্স আছে: <strong>৳ 0.00</strong>
+                                    <div class="p-2.5 rounded-xl flex justify-between items-center bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40">
+                                        <span id="supplierCreditBadge" class="font-bold text-xs text-slate-800 dark:text-white">
+                                            <i class="fa-solid fa-gift me-1 text-emerald-600 dark:text-emerald-400"></i> Return Credit Available: <strong>৳ 0.00</strong>
                                         </span>
-                                        <label class="d-flex align-items-center gap-2 mb-0 px-2 py-1 bg-white rounded border shadow-sm" style="cursor: pointer; border-color: #0d9488 !important;">
-                                            <input type="checkbox" id="useReturnCreditCheckboxBanner" onchange="syncReturnCreditCheckbox(this.checked)" style="width: 18px; height: 18px; accent-color: #0d9488; cursor: pointer; margin: 0;">
-                                            <span class="fw-bold small" style="color: #0d9488;">সমন্বয় করুন (Adjust)</span>
+                                        <label class="flex items-center gap-2 mb-0 px-2 py-1 bg-white dark:bg-slate-800 rounded-lg border border-emerald-300 dark:border-emerald-700 shadow-sm cursor-pointer">
+                                            <input type="checkbox" id="useReturnCreditCheckboxBanner" onchange="syncReturnCreditCheckbox(this.checked)" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer">
+                                            <span class="font-bold text-xs text-emerald-700 dark:text-emerald-400">Adjust Return Credit</span>
                                         </label>
                                     </div>
                                 </div>
@@ -272,26 +258,27 @@
                         </div>
 
                         <div class="col-lg-6">
-                            <div class="purchase-card h-100 mb-0">
-                                <div class="purchase-card-title">
-                                    <i class="fa-solid fa-file-invoice text-primary"></i> Invoice & Voucher Details
-                                </div>
+                            <div class="purchase-clean-card rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 p-4 h-100">
+                                <h5 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-3 text-left">
+                                    <i class="fa-solid fa-file-invoice text-emerald-600 dark:text-emerald-400"></i>
+                                    <span>Invoice & Voucher Details</span>
+                                </h5>
                                 <div class="row g-2">
                                     <div class="col-md-6">
-                                        <label class="form-label small text-muted mb-1">Ref / Invoice No *</label>
-                                        <input type="text" placeholder="Reference No *" id="ReferenceNo" class="form-control bg-white" style="border-radius: 8px; font-weight: 600;" required />
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Ref / Invoice No <span class="text-rose-500">*</span></label>
+                                        <input type="text" placeholder="Reference No *" id="ReferenceNo" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" required />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label small text-muted mb-1">Purchase Date *</label>
-                                        <input type="date" class="form-control bg-white" id="PurchaseDate" style="border-radius: 8px; font-weight: 600;" required />
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Purchase Date <span class="text-rose-500">*</span></label>
+                                        <input type="text" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" id="PurchaseDate" placeholder="DD-MM-YYYY" autocomplete="off" required style="cursor: pointer;" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label small text-muted mb-1">Payable Balance</label>
-                                        <input type="text" readonly placeholder="Payable Amount" id="PurchasePayableAmount" class="form-control bg-light fw-bold" style="border-radius: 8px; color: #0d9488;" />
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Payable Balance</label>
+                                        <input type="text" readonly placeholder="Payable Amount" id="PurchasePayableAmount" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/80 text-emerald-700 dark:text-emerald-400 text-xs font-bold" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label small text-muted mb-1">Attach Invoice Doc</label>
-                                        <input type="file" id="AttachDocument" class="form-control bg-white" style="border-radius: 8px; font-size: 12px;" />
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Attach Invoice Doc</label>
+                                        <input type="file" id="AttachDocument" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs" />
                                     </div>
                                 </div>
                             </div>
@@ -299,36 +286,37 @@
                     </div>
 
                     <!-- Product Search & Scanner Box -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold text-dark fs-6 mb-1 d-flex justify-content-between align-items-center">
-                            <span><i class="fa-solid fa-barcode me-1" style="color: #0d9488;"></i> Scan Barcode or Select Product *</span>
-                            <span class="badge bg-success-subtle text-success small font-monospace"><i class="fa-solid fa-bolt me-1"></i> Auto-Cart Enabled</span>
+                    <div class="purchase-clean-card rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 p-4 mb-3">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2 flex justify-between items-center text-left">
+                            <span><i class="fa-solid fa-barcode text-emerald-600 dark:text-emerald-400 me-1"></i> Scan Barcode or Select Product <span class="text-rose-500">*</span></span>
+                            <span class="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold"><i class="fa-solid fa-bolt me-1"></i> Auto-Cart Enabled</span>
                         </label>
-                        <div class="search-barcode-box d-flex align-items-center gap-2">
-                            <div class="flex-grow-1 position-relative">
-                                <input type="text" id="productInputData" class="form-control" placeholder="⚡ বারকোড স্ক্যান করুন বা প্রোডাক্টের নাম/কোড টাইপ করুন (Auto-adds to list)..." autocomplete="off" />
-                                <ul id="productDropdown" class="list-group position-absolute w-100 shadow-lg" style="z-index: 1050; max-height: 280px; overflow-y: auto;"></ul>
+                        <div class="flex items-center gap-2">
+                            <div class="flex-grow relative">
+                                <input type="text" id="productInputData" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" placeholder="Scan barcode or type product name/code (Auto-adds to list)..." autocomplete="off" />
+                                <ul id="productDropdown" class="list-group absolute w-full shadow-xl rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 mt-1" style="z-index: 1050; max-height: 280px; overflow-y: auto; display: none;"></ul>
                             </div>
-                            <button type="button" class="btn text-white fw-bold px-3 py-2 d-inline-flex align-items-center gap-2 text-nowrap" onclick="openPurchaseCameraScanner()" style="background-color: #0d9488; border-radius: 10px; height: 46px;">
-                                <i class="fa-solid fa-camera fa-lg"></i> ক্যামেরা স্ক্যান
+                            <button type="button" class="inline-flex items-center gap-1.5 px-4 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 flex-shrink-0 cursor-pointer" onclick="openPurchaseCameraScanner()">
+                                <i class="fa-solid fa-camera text-xs"></i>
+                                <span>Scan Camera</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Cart Item Table -->
-                    <div class="table-container">
-                        <table class="responsive-table">
-                            <thead class="table-header">
-                                <tr class="header-row">
-                                    <th class="header-cell">Product Name</th>
-                                    <th class="header-cell">Barcodes</th>
-                                    <th class="header-cell text-center" style="width: 140px;">Qty</th>
-                                    <th class="header-cell" style="width: 140px;">Cost Price (৳)</th>
-                                    <th class="header-cell text-end" style="width: 130px;">Sub Total</th>
-                                    <th class="header-cell text-center" style="width: 60px;">Action</th>
+                    <div class="table-container rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden mb-3 bg-white dark:bg-slate-900 shadow-sm">
+                        <table class="responsive-table w-full text-left border-collapse text-xs">
+                            <thead class="bg-[#15803d] text-white text-xs font-semibold uppercase tracking-wider">
+                                <tr>
+                                    <th class="p-2.5">Product Name</th>
+                                    <th class="p-2.5">Barcodes</th>
+                                    <th class="p-2.5 text-center" style="width: 130px;">Qty</th>
+                                    <th class="p-2.5 text-end" style="width: 130px;">Cost Price (৳)</th>
+                                    <th class="p-2.5 text-end" style="width: 130px;">Sub Total</th>
+                                    <th class="p-2.5 text-center" style="width: 60px;">Action</th>
                                 </tr>
                             </thead>
-                            <tbody class="table-body" id="orderTableBody">
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="orderTableBody">
                                 <!-- Dynamic Items -->
                             </tbody>
                         </table>
@@ -337,72 +325,78 @@
                     <!-- Bottom Summary & Payment Details Card -->
                     <div class="row g-3">
                         <div class="col-lg-6">
-                            <div class="purchase-card h-100 mb-0">
-                                <div class="purchase-card-title">
-                                    <i class="fa-solid fa-credit-card text-success"></i> Payment Method & Details
-                                </div>
+                            <div class="purchase-clean-card rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 p-4 h-100">
+                                <h5 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-3 text-left">
+                                    <i class="fa-solid fa-credit-card text-emerald-600 dark:text-emerald-400"></i>
+                                    <span>Payment Method & Details</span>
+                                </h5>
                                 <div class="row g-2">
                                     <div class="col-md-6">
-                                        <label class="form-label small text-muted mb-1">Payment Method</label>
-                                        <select class="form-select bg-white" id="paymentMethod" style="border-radius: 8px;">
-                                            <option value="" selected>Select Method</option>
-                                            <option value="Cash">Cash</option>
-                                            <option value="Bkash">Bkash</option>
-                                            <option value="Nagad">Nagad</option>
-                                            <option value="Bank">Bank</option>
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Payment Method</label>
+                                        <select class="form-select modern-select-dropdown w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-semibold focus:border-emerald-600 focus:outline-none transition-all" id="paymentMethod" style="cursor: pointer;">
+                                            <option value="" selected class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">Select Method</option>
+                                            <option value="Cash" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">Cash</option>
+                                            <option value="Bkash" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">Bkash</option>
+                                            <option value="Nagad" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">Nagad</option>
+                                            <option value="Bank" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">Bank</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label small text-muted mb-1">Paid Amount (৳)</label>
-                                        <input type="number" step="any" class="form-control bg-white fw-bold" id="paidAmount" value="0" style="border-radius: 8px;" />
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Paid Amount (৳)</label>
+                                        <input type="number" step="any" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-bold" id="paidAmount" value="0" />
                                     </div>
                                     <div class="col-12">
-                                        <input type="text" id="paymentDetails" class="form-control mt-1" style="display: none; border-radius: 8px;" placeholder="Enter transaction details..." />
+                                        <input type="text" id="paymentDetails" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs mt-1" style="display: none;" placeholder="Enter transaction details..." />
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-lg-6">
-                            <div class="summary-box">
-                                <div class="summary-row">
-                                    <span class="text-muted fw-semibold">Total Quantity:</span>
-                                    <span class="fw-bold text-dark fs-6" id="totalQuantity">0.00</span>
-                                </div>
-                                <div class="summary-row">
-                                    <span class="text-muted fw-semibold">Grand Subtotal:</span>
-                                    <span class="fw-bold text-dark fs-6">৳ <span id="totalSubTotal">0.00</span></span>
-                                    <input type="hidden" id="grandSubtotal" value="0.00" />
-                                </div>
-                                <div class="summary-row" style="display: none;">
-                                    <label style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; margin: 0;">
-                                        <input type="checkbox" id="useReturnCreditCheckbox" onchange="syncReturnCreditCheckbox(this.checked)" style="width: 18px; height: 18px; accent-color: #0d9488; cursor: pointer;">
-                                        <span class="fw-bold small" style="color: #0d9488;">Return Credit Adj</span>
-                                    </label>
-                                    <input type="number" step="0.01" min="0" class="form-control form-control-sm text-end fw-bold" id="returnAdjustmentAmount" value="0.00" disabled style="width: 110px; color: #0d9488;" oninput="calculateDuePayment()" />
-                                </div>
-                                <div class="net-payable-badge">
-                                    <span class="fw-bold">Net Payable (প্রকৃত দেনা):</span>
-                                    <span class="fw-bold fs-5" style="color: #2dd4bf;">৳ <span id="netPayableDisplay">0.00</span></span>
-                                    <input type="hidden" id="netPayableAmount" value="0.00" />
-                                </div>
-                                <div class="summary-row">
-                                    <span class="text-muted fw-semibold">Due Amount:</span>
-                                    <span class="fw-bold text-danger fs-6">৳ <input type="text" id="dueAmount" value="0.00" readonly class="border-0 bg-transparent text-danger fw-bold text-end" style="width: 90px;" /></span>
-                                </div>
-                                <div class="summary-row border-0 pt-2">
-                                    <span class="text-muted fw-semibold">Payment Status:</span>
-                                    <span id="paymentStatusDisplay" class="partial-payment-status">Unpaid</span>
-                                </div>
-
-                                <div class="mt-3">
-                                    <button type="submit" class="btn-submit-purchase">
-                                        <i class="fa-solid fa-circle-check fs-5 me-1"></i> Submit Purchase Order
-                                    </button>
+                            <div class="purchase-clean-card rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 p-4">
+                                <div class="space-y-2 text-xs">
+                                    <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                                        <span class="text-slate-500 dark:text-slate-400 font-semibold">Total Quantity:</span>
+                                        <span class="font-bold text-slate-800 dark:text-white text-sm" id="totalQuantity">0.00</span>
+                                    </div>
+                                    <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                                        <span class="text-slate-500 dark:text-slate-400 font-semibold">Grand Subtotal:</span>
+                                        <span class="font-bold text-slate-800 dark:text-white text-sm">৳ <span id="totalSubTotal">0.00</span></span>
+                                        <input type="hidden" id="grandSubtotal" value="0.00" />
+                                    </div>
+                                    <div class="flex justify-between items-center py-1" style="display: none;">
+                                        <label class="inline-flex items-center gap-2 cursor-pointer mb-0">
+                                            <input type="checkbox" id="useReturnCreditCheckbox" onchange="syncReturnCreditCheckbox(this.checked)" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer">
+                                            <span class="font-bold text-xs text-emerald-700 dark:text-emerald-400">Return Credit Adj</span>
+                                        </label>
+                                        <input type="number" step="0.01" min="0" class="form-control w-28 h-8 text-end font-bold rounded-lg text-xs" id="returnAdjustmentAmount" value="0.00" disabled oninput="calculateDuePayment()" />
+                                    </div>
+                                    <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-800 text-white dark:bg-slate-950 my-2">
+                                        <span class="font-bold text-xs">Net Payable:</span>
+                                        <span class="font-bold text-base text-emerald-400">৳ <span id="netPayableDisplay">0.00</span></span>
+                                        <input type="hidden" id="netPayableAmount" value="0.00" />
+                                    </div>
+                                    <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                                        <span class="text-slate-500 dark:text-slate-400 font-semibold">Due Amount:</span>
+                                        <span class="font-bold text-rose-600 dark:text-rose-400 text-sm">৳ <input type="text" id="dueAmount" value="0.00" readonly class="border-0 bg-transparent text-rose-600 dark:text-rose-400 font-bold text-end" style="width: 90px;" /></span>
+                                    </div>
+                                    <div class="flex justify-between items-center py-1">
+                                        <span class="text-slate-500 dark:text-slate-400 font-semibold">Payment Status:</span>
+                                        <span id="paymentStatusDisplay" class="partial-payment-status">Unpaid</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Fixed Sticky Bottom Modal Footer with Left-Right Padding p-4 and Red Cancel Button -->
+                <div class="purchase-modal-footer bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between gap-3 flex-shrink-0" style="position: sticky; bottom: 0; z-index: 20;">
+                    <button type="button" class="px-5 h-[38px] rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all shadow-sm border-0 cursor-pointer" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="flex-grow sm:flex-grow-0 sm:min-w-[240px] h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl shadow transition-all duration-150 flex items-center justify-center gap-2 border-0 cursor-pointer">
+                        <i class="fa-solid fa-circle-check text-sm"></i>
+                        <span>Submit Purchase Order</span>
+                    </button>
                 </div>
             </form>
         </div>
@@ -415,32 +409,49 @@
         <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
             <div class="modal-header bg-dark text-white border-0 py-3">
                 <h5 class="modal-title fs-6 fw-bold">
-                    <i class="fa-solid fa-barcode text-success me-2"></i> প্রোডাক্ট বারকোড স্ক্যানার (Purchase)
+                    <i class="fa-solid fa-barcode text-success me-2"></i> Product Barcode Scanner (Purchase)
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" onclick="stopPurchaseCameraScanner()"></button>
             </div>
             <div class="modal-body p-3 text-center bg-light">
                 <div id="purchaseCameraScannerStatus" class="alert alert-info py-2 small mb-3">
-                    <i class="fa-solid fa-circle-notch fa-spin me-1"></i> ক্যামেরা শুরু হচ্ছে... বারকোড ক্যামেরার সামনে আনুন।
+                    <i class="fa-solid fa-circle-notch fa-spin me-1"></i> Starting camera... Hold barcode in front of camera.
                 </div>
 
                 <div id="purchaseReader" style="width: 100%; min-height: 250px; background: #000; border-radius: 12px; overflow: hidden; margin: 0 auto;"></div>
 
                 <div class="d-flex justify-content-between align-items-center mt-3 px-1">
-                    <span id="purchaseLastScannedText" class="badge bg-dark text-wrap p-2" style="font-size: 13px;">স্ক্যান কৃত: -</span>
+                    <span id="purchaseLastScannedText" class="badge bg-dark text-wrap p-2" style="font-size: 13px;">Scanned: -</span>
                     <button type="button" class="btn btn-outline-dark btn-sm rounded-pill" onclick="switchPurchaseCamera()">
-                        <i class="fa-solid fa-camera-rotate me-1"></i> ক্যামেরা সুইচ
+                        <i class="fa-solid fa-camera-rotate me-1"></i> Switch Camera
                     </button>
                 </div>
             </div>
             <div class="modal-footer bg-light border-0 py-2">
-                <button type="button" class="btn btn-secondary btn-sm w-100 rounded-pill" data-bs-dismiss="modal" onclick="stopPurchaseCameraScanner()">বন্ধ করুন (Close)</button>
+                <button type="button" class="btn btn-secondary btn-sm w-100 rounded-pill" data-bs-dismiss="modal" onclick="stopPurchaseCameraScanner()">Close</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    window.createPurchaseDatepicker = null;
+
+    function initCreateDatePicker() {
+        const dateInput = document.getElementById("PurchaseDate");
+        if (dateInput && typeof flatpickr !== "undefined") {
+            if (window.createPurchaseDatepicker) {
+                window.createPurchaseDatepicker.destroy();
+            }
+            window.createPurchaseDatepicker = flatpickr(dateInput, {
+                dateFormat: "d-m-Y",
+                allowInput: true,
+                clickOpens: true,
+                disableMobile: true
+            });
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         const paidAmountInput = document.getElementById("paidAmount");
         const dueAmountInput = document.getElementById("dueAmount");
@@ -522,6 +533,23 @@
 
         paidAmountInput.addEventListener("input", calculateDuePayment);
         calculateDuePayment();
+
+        // Initialize today's date formatted as DD-MM-YYYY
+        const dateInput = document.getElementById('PurchaseDate');
+        if (dateInput && !dateInput.value) {
+            const now = new Date();
+            const d = String(now.getDate()).padStart(2, '0');
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const y = now.getFullYear();
+            dateInput.value = `${d}-${m}-${y}`;
+        }
+        initCreateDatePicker();
+
+        if (typeof $ !== "undefined") {
+            $('#exampleModal').on('shown.bs.modal', function () {
+                initCreateDatePicker();
+            });
+        }
     });
 </script>
 
@@ -579,7 +607,7 @@
             const creditVal = parseFloat(s.return_credit_balance || 0);
             const creditLabel = creditVal > 0 ? `<span class="badge bg-teal ms-1" style="background:#0d9488;">🎁 ৳${creditVal.toFixed(2)}</span>` : '';
             const payable = parseFloat(s.purchase_payable_amount || 0);
-            const payableLabel = payable > 0 ? `<span class="badge bg-danger ms-1">দেয়: ৳${payable.toFixed(2)}</span>` : '';
+            const payableLabel = payable > 0 ? `<span class="badge bg-danger ms-1">Due: ৳${payable.toFixed(2)}</span>` : '';
 
             return `
                 <div class="dropdown-item px-3 py-2 border-bottom supplier-select-item"
@@ -630,7 +658,7 @@
         }
 
         if (s.credit > 0) {
-            creditBadge.innerHTML = `<i class="fa-solid fa-gift me-1" style="color: #0d9488;"></i> ফেরত ব্যালেন্স আছে: <strong>৳ ${s.credit.toFixed(2)}</strong>`;
+            creditBadge.innerHTML = `<i class="fa-solid fa-gift me-1" style="color: #0d9488;"></i> Return Credit Available: <strong>৳ ${s.credit.toFixed(2)}</strong>`;
             creditNotice.classList.remove("d-none");
             returnAdjInput.setAttribute("max", s.credit);
         } else {
@@ -702,430 +730,293 @@
     }
 
     function initPurchaseHtml5QrCode() {
-        const statusEl = document.getElementById("purchaseCameraScannerStatus");
+        const statusEl = document.getElementById('purchaseCameraScannerStatus');
         if (statusEl) {
             statusEl.className = "alert alert-info py-2 small mb-3";
-            statusEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-1"></i> ক্যামেরা শুরু হচ্ছে... বারকোড ক্যামেরার সামনে আনুন।';
+            statusEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-1"></i> Starting camera... Hold barcode in front of camera.';
         }
 
-        if (!purchaseHtml5QrCode) {
-            purchaseHtml5QrCode = new Html5Qrcode("purchaseReader");
-        }
-
+        purchaseHtml5QrCode = new Html5Qrcode("purchaseReader");
         const config = {
             fps: 15,
-            qrbox: {
-                width: 260,
-                height: 160
-            },
-            aspectRatio: 1.333334
+            qrbox: { width: 280, height: 160 },
+            aspectRatio: 1.777778
         };
 
-        purchaseHtml5QrCode.start({
-                facingMode: purchaseFacingMode
-            },
+        purchaseHtml5QrCode.start(
+            { facingMode: purchaseFacingMode },
             config,
-            onPurchaseBarcodeDetectedSuccess,
-            onPurchaseBarcodeDetectedError
-        ).then(() => {
-            if (statusEl) {
-                statusEl.className = "alert alert-success py-2 small mb-3";
-                statusEl.innerHTML = '<i class="fa-solid fa-video me-1"></i> ক্যামেরা সক্রিয়! বারকোড স্ক্যান করলে সরাসরি পারচেজ টেবিলে যোগ হবে।';
-            }
-        }).catch(err => {
-            console.error("Purchase Camera start error:", err);
+            (decodedText, decodedResult) => {
+                onPurchaseBarcodeSuccess(decodedText);
+            },
+            (errorMessage) => {}
+        ).catch((err) => {
+            console.error("Purchase Camera Start Error:", err);
             if (statusEl) {
                 statusEl.className = "alert alert-danger py-2 small mb-3";
-                statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-1"></i> ক্যামেরা চালু করা যায়নি! ব্রাউজারের ক্যামেরা পারমিশন এলাউ করুন।';
+                statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-1"></i> Camera permission denied or device not found.';
             }
         });
     }
 
-    function onPurchaseBarcodeDetectedSuccess(decodedText) {
-        if (!decodedText || decodedText === lastPurchaseScannedCode) return;
+    function onPurchaseBarcodeSuccess(code) {
+        code = code.trim();
+        if (!code) return;
 
-        lastPurchaseScannedCode = decodedText;
-        const lastTextEl = document.getElementById("purchaseLastScannedText");
-        if (lastTextEl) lastTextEl.innerText = `স্ক্যান কৃত: ${decodedText}`;
+        if (code === lastPurchaseScannedCode) return;
+        lastPurchaseScannedCode = code;
 
-        if (navigator.vibrate) navigator.vibrate(100);
-        playScanBeepSound();
-
-        const codeClean = decodedText.trim().toLowerCase();
-        const matched = allProducts.find(p => isExactCodeMatch(p, codeClean));
-
-        if (matched) {
-            addProductToOrder(matched);
-            successToast(`স্ক্যান করা হয়েছে: ${matched.product_name}`);
-        } else {
-            errorToast(`প্রোডাক্ট পাওয়া যায়নি: ${decodedText}`);
+        const lastScannedBadge = document.getElementById('purchaseLastScannedText');
+        if (lastScannedBadge) {
+            lastScannedBadge.textContent = "Scanned: " + code;
+            lastScannedBadge.className = "badge bg-success text-wrap p-2";
         }
 
-        clearTimeout(purchaseScanTimer);
-        purchaseScanTimer = setTimeout(() => {
+        const input = document.getElementById("productInputData");
+        if (input) {
+            input.value = code;
+            input.dispatchEvent(new Event('input'));
+        }
+
+        stopPurchaseCameraScanner();
+        const modalEl = bootstrap.Modal.getInstance(document.getElementById('purchaseCameraScanModal'));
+        if (modalEl) modalEl.hide();
+
+        setTimeout(() => {
             lastPurchaseScannedCode = "";
-        }, 1200);
+        }, 2000);
     }
 
-    function onPurchaseBarcodeDetectedError(msg) {}
-
     function switchPurchaseCamera() {
-        purchaseFacingMode = (purchaseFacingMode === "environment") ? "user" : "environment";
+        purchaseFacingMode = purchaseFacingMode === "environment" ? "user" : "environment";
         startPurchaseCameraScanner();
     }
 
     function stopPurchaseCameraScanner() {
-        if (purchaseHtml5QrCode && purchaseHtml5QrCode.isScanning) {
+        if (purchaseHtml5QrCode) {
             purchaseHtml5QrCode.stop().then(() => {
                 purchaseHtml5QrCode.clear();
-            }).catch(() => {});
+            }).catch((err) => {
+                console.error("Failed to stop purchase scanner:", err);
+            });
         }
     }
 
-    function playScanBeepSound() {
-        try {
-            const ctx = new(window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = "sine";
-            osc.frequency.setValueAtTime(880, ctx.currentTime);
-            gain.gain.setValueAtTime(0.2, ctx.currentTime);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.12);
-        } catch (e) {}
-    }
-</script>
+    /* ========================================================
+       Product Autocomplete, Barcode Scanning & Cart Logic
+       ======================================================== */
+    let productDetails = {};
+    let UpdatebarcodeLists = {};
+    let debounceTimer;
 
-<script>
-    function formatProductCode(productCode) {
-        if (!productCode) return '';
+    const productInput = document.getElementById("productInputData");
+    const productDropdown = document.getElementById("productDropdown");
+
+    if (productInput) {
+        productInput.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                const code = this.value.trim();
+                if (code) {
+                    processBarcodeOrSearchDirect(code);
+                }
+            }
+        });
+
+        productInput.addEventListener("input", function () {
+            clearTimeout(debounceTimer);
+            const query = this.value.trim();
+
+            if (!query) {
+                if (productDropdown) {
+                    productDropdown.style.display = "none";
+                    productDropdown.innerHTML = "";
+                }
+                return;
+            }
+
+            debounceTimer = setTimeout(async () => {
+                try {
+                    const res = await axios.post("/api/product-search-by-name", { query: query }, HeaderToken());
+                    if (!productDropdown) return;
+                    productDropdown.innerHTML = "";
+
+                    if (res.data.status === "success" && res.data.data.length > 0) {
+                        const exactBarcodeMatch = res.data.data.find(p => p.product_code && p.product_code.toLowerCase() === query.toLowerCase());
+
+                        if (exactBarcodeMatch && res.data.data.length === 1) {
+                            addProductToTable(exactBarcodeMatch, exactBarcodeMatch.product_code);
+                            productInput.value = "";
+                            productDropdown.style.display = "none";
+                            productDropdown.innerHTML = "";
+                            return;
+                        }
+
+                        productDropdown.style.display = "block";
+                        res.data.data.forEach(product => {
+                            const li = document.createElement("li");
+                            li.className = "list-group-item d-flex justify-content-between align-items-center";
+                            li.style.cursor = "pointer";
+                            li.innerHTML = `
+                                <div>
+                                    <span class="fw-bold">${product.name}</span>
+                                    <span class="badge bg-secondary ms-2">${product.product_code || ''}</span>
+                                </div>
+                                <span class="badge bg-success">৳${product.cost_price || 0}</span>
+                            `;
+                            li.addEventListener("click", () => {
+                                addProductToTable(product);
+                                productInput.value = "";
+                                productDropdown.style.display = "none";
+                                productDropdown.innerHTML = "";
+                            });
+                            productDropdown.appendChild(li);
+                        });
+                    } else {
+                        productDropdown.style.display = "none";
+                    }
+                } catch (error) {
+                    console.error("Product Search Error:", error);
+                    if (productDropdown) productDropdown.style.display = "none";
+                }
+            }, 250);
+        });
+
+        // Hide dropdown on outside click
+        document.addEventListener("click", function(e) {
+            if (productDropdown && productInput && !productInput.contains(e.target) && !productDropdown.contains(e.target)) {
+                productDropdown.style.display = "none";
+            }
+        });
+    }
+
+    async function processBarcodeOrSearchDirect(query) {
         try {
-            if (Array.isArray(JSON.parse(productCode))) {
-                return JSON.parse(productCode).join(', ');
+            const res = await axios.post("/api/product-search-by-name", { query: query }, HeaderToken());
+            if (res.data.status === "success" && res.data.data.length > 0) {
+                const found = res.data.data[0];
+                addProductToTable(found, query);
+                if (productInput) {
+                    productInput.value = "";
+                }
+                if (productDropdown) {
+                    productDropdown.style.display = "none";
+                    productDropdown.innerHTML = "";
+                }
+            } else {
+                errorToast("No product found matching: " + query);
             }
         } catch (e) {
-            return productCode;
-        }
-        return productCode;
-    }
-</script>
-
-<script>
-    const paymentMethodSelect = document.getElementById('paymentMethod');
-    const paymentDetailsInput = document.getElementById('paymentDetails');
-
-    paymentMethodSelect.addEventListener('change', function() {
-        const selectedMethod = this.value;
-
-        if (['Bkash', 'Nagad', 'Bank'].includes(selectedMethod)) {
-            paymentDetailsInput.style.display = 'block';
-            paymentDetailsInput.placeholder = `Enter ${selectedMethod} transaction details`;
-        } else {
-            paymentDetailsInput.style.display = 'none';
-            paymentDetailsInput.value = '';
-        }
-    });
-
-    let allProducts = [];
-
-    async function ProductDataShow() {
-        try {
-            let res = await axios.get("/api/product-list", HeaderToken());
-            allProducts = res.data.ProductData || [];
-        } catch (error) {
-            console.error("Error occurred while fetching products:", error);
+            console.error("Direct barcode search error:", e);
         }
     }
 
-    ProductDataShow();
-
-    // Check if query matches exact code/barcode or exact name
-    function isExactCodeMatch(product, query) {
-        if (!product || !query) return false;
-        const q = query.trim().toLowerCase();
-        if (!q) return false;
-
-        if (product.product_code) {
-            let strCode = product.product_code.toString().toLowerCase();
-            try {
-                let parsed = JSON.parse(product.product_code);
-                if (Array.isArray(parsed)) {
-                    if (parsed.some(c => c.toString().trim().toLowerCase() === q)) return true;
-                } else if (parsed.toString().trim().toLowerCase() === q) {
-                    return true;
-                }
-            } catch (e) {
-                if (strCode.trim() === q) return true;
-            }
-            if (strCode.trim() === q) return true;
-        }
-
-        if (product.product_name && product.product_name.trim().toLowerCase() === q) return true;
-
-        return false;
-    }
-
-    // Auto-Add product when code is typed/scanned into input
-    document.getElementById('productInputData').addEventListener('input', function() {
-        const searchValue = this.value.trim().toLowerCase();
-        const productDropdown = document.getElementById('productDropdown');
-
-        if (!searchValue) {
-            productDropdown.innerHTML = '';
-            return;
-        }
-
-        // 1. Check for EXACT barcode/code match
-        const exactMatch = allProducts.find(product => isExactCodeMatch(product, searchValue));
-        if (exactMatch) {
-            addProductToOrder(exactMatch);
-            this.value = '';
-            productDropdown.innerHTML = '';
-            playScanBeepSound();
-            successToast(`স্ক্যান করা হয়েছে: ${exactMatch.product_name}`);
-            return;
-        }
-
-        // 2. Filter dropdown
-        const filteredProducts = allProducts.filter(product => {
-            const nameMatch = product.product_name && product.product_name.toLowerCase().includes(searchValue);
-            const codeMatch = product.product_code && product.product_code.toString().toLowerCase().includes(searchValue);
-            return nameMatch || codeMatch;
-        });
-
-        productDropdown.innerHTML = '';
-
-        if (filteredProducts.length === 0) {
-            productDropdown.innerHTML = '<li class="list-group-item text-muted text-center small py-2">কোনো প্রোডাক্ট পাওয়া যায়নি</li>';
-            return;
-        }
-
-        filteredProducts.forEach(product => {
-            const productItem = document.createElement('li');
-            productItem.classList.add('list-group-item', 'list-group-item-action', 'd-flex', 'justify-content-between', 'align-items-center', 'py-2', 'px-3');
-
-            const formattedCode = formatProductCode(product.product_code);
-            const doorBadge = product.door_side ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 ms-1" style="font-size: 10px;"><i class="fa-solid fa-door-open me-1"></i>${product.door_side}</span>` : '';
-            productItem.innerHTML = `
-                <div>
-                    <strong class="text-dark">${product.product_name}</strong> ${doorBadge}
-                    <div class="small text-muted">স্টক: ${product.quantity || 0} | কেনা মূল্য: ৳${parseFloat(product.cost_price || 0).toFixed(2)}</div>
-                </div>
-                <span class="badge bg-light text-dark border font-monospace">${formattedCode}</span>
-            `;
-
-            productItem.addEventListener('click', function() {
-                addProductToOrder(product);
-                productDropdown.innerHTML = '';
-                document.getElementById('productInputData').value = '';
-                document.getElementById('productInputData').focus();
-            });
-
-            productDropdown.appendChild(productItem);
-        });
-    });
-
-    // Enter Keypress Handler for Barcode Guns
-    document.getElementById('productInputData').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const searchValue = this.value.trim().toLowerCase();
-            if (!searchValue) return;
-
-            const exactMatch = allProducts.find(product => isExactCodeMatch(product, searchValue));
-            const matched = exactMatch || allProducts.find(product => {
-                const nameMatch = product.product_name && product.product_name.toLowerCase().includes(searchValue);
-                const codeMatch = product.product_code && product.product_code.toString().toLowerCase().includes(searchValue);
-                const doorMatch = product.door_side && product.door_side.toLowerCase().includes(searchValue);
-                return nameMatch || codeMatch || doorMatch;
-            });
-
-            if (matched) {
-                addProductToOrder(matched);
-                this.value = '';
-                document.getElementById('productDropdown').innerHTML = '';
-                playScanBeepSound();
-                successToast(`কার্টে যোগ হয়েছে: ${matched.product_name}`);
-            } else {
-                errorToast(`প্রোডাক্ট কোড বা নাম পাওয়া যায়নি: ${this.value}`);
-            }
-        }
-    });
-
-    function addProductToOrder(product) {
-        const orderTableBody = document.getElementById('orderTableBody');
-
-        // Check if product is already in table
-        const existingRows = orderTableBody.querySelectorAll('tr.body-row');
-        let existingRow = null;
-
-        existingRows.forEach(row => {
-            const pIdCell = row.cells[1] || row.querySelector('.product-id-val');
-            if (pIdCell && pIdCell.innerText.trim() == product.id) {
-                existingRow = row;
-            }
-        });
+    function addProductToTable(product, specificBarcode = null) {
+        const tableBody = document.getElementById("orderTableBody");
+        const existingRow = document.querySelector(`#orderTableBody tr[data-product-id="${product.id}"]`);
 
         if (existingRow) {
-            // Increment quantity
-            const qtyInput = existingRow.querySelector('.quantity');
-            let currentQty = parseInt(qtyInput.value) || 0;
-            qtyInput.value = currentQty + 1;
+            const qtyInput = existingRow.querySelector(".quantity");
+            qtyInput.value = parseInt(qtyInput.value) + 1;
 
-            // Highlight row with green flash animation
-            existingRow.style.transition = 'background-color 0.3s ease';
-            existingRow.style.backgroundColor = '#dcfce7';
-            setTimeout(() => {
-                existingRow.style.backgroundColor = '';
-            }, 600);
+            if (specificBarcode) {
+                appendBarcodeToRow(existingRow, product.id, specificBarcode);
+            }
 
-            // Update subtotal
-            updateRowSubtotal.call(qtyInput);
+            updateRowSubtotal(existingRow);
+            updateTotals();
             return;
         }
 
-        // Insert new row
-        const costPrice = parseFloat(product.cost_price || 0);
-        const newRow = orderTableBody.insertRow();
-        newRow.className = 'body-row align-middle';
+        const initialBarcode = specificBarcode || product.product_code || '';
+        UpdatebarcodeLists[product.id] = initialBarcode ? [initialBarcode] : [];
 
-        const rowDoorBadge = product.door_side ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 ms-1" style="font-size: 10px;"><i class="fa-solid fa-door-open me-1"></i>${product.door_side}</span>` : '';
+        const row = document.createElement("tr");
+        row.setAttribute("data-product-id", product.id);
+        row.className = "hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors";
 
-        newRow.innerHTML = `
-            <td class="body-cell py-3 px-3">
-                <div class="fw-bold text-dark fs-6">${product.product_name} ${rowDoorBadge}</div>
-                <div class="small text-muted">ID: #${product.id}</div>
+        row.innerHTML = `
+            <td class="p-2.5 font-bold text-slate-800 dark:text-slate-100">
+                <span class="product-id-val d-none">${product.id}</span>
+                <span>${product.name}</span>
+                <div class="text-[11px] text-slate-400 font-normal">ID: ${product.product_id || product.id}</div>
             </td>
-            <td style="display: none;" class="product-id-val">${product.id}</td>
-            <td class="body-cell py-3 px-2">
-                <div class="mb-1">
-                    <input type="text" id="UpdateProductCode" class="form-control form-control-sm bg-light text-dark fw-bold font-monospace" value="${formatProductCode(product.product_code)}" placeholder="Barcodes" readonly style="font-size: 12px;" />
-                </div>
-                <div class="input-group input-group-sm">
-                    <input class="enter_barcode form-control" id="ProductBarCodeInput" type="text" placeholder="Add Barcode" style="font-size: 12px;" />
-                    <button type="button" class="btn btn-outline-teal btn-sm" onclick="ADDProductBarCode(this)" style="background:#0d9488; color:#fff; font-size:11px;">+ Add</button>
-                </div>
-            </td>
-            <td class="body-cell py-3 px-2 text-center" style="width: 140px;">
-                <div class="d-inline-flex align-items-center justify-content-center border rounded-3 p-1 bg-white shadow-sm" style="white-space: nowrap;">
-                    <button type="button" class="btn btn-sm btn-light border-0 fw-bold px-2 py-0" onclick="changeRowQty(this, -1)" style="font-size: 16px; width: 28px; height: 28px; line-height: 1; border-radius: 6px; color: #475569;">-</button>
-                    <input type="number" value="1" min="1" class="form-control form-control-sm text-center border-0 fw-bold quantity px-1" style="width: 45px; height: 28px; font-size: 14px; background: transparent; box-shadow: none;" />
-                    <button type="button" class="btn btn-sm btn-light border-0 fw-bold px-2 py-0" onclick="changeRowQty(this, 1)" style="font-size: 16px; width: 28px; height: 28px; line-height: 1; border-radius: 6px; color: #475569;">+</button>
+            <td class="p-2.5">
+                <div class="d-flex align-items-center gap-1">
+                    <input type="text" id="UpdateProductCode" class="form-control form-control-sm" style="font-size: 11px; width: 140px;" value="${initialBarcode}" readonly />
+                    <button type="button" class="btn btn-sm btn-outline-secondary px-1.5 py-0.5" onclick="promptAddBarcode(this, ${product.id})" title="Add Barcode">
+                        <i class="fa-solid fa-plus text-[10px]"></i>
+                    </button>
                 </div>
             </td>
-            <td class="body-cell py-3 px-2" style="width: 140px;">
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-light">৳</span>
-                    <input type="number" step="any" value="${costPrice ? costPrice : ''}" id="EnterCostPrice" class="form-control cost-price fw-bold" placeholder="Cost" />
-                </div>
+            <td class="p-2.5 text-center">
+                <input type="number" class="form-control form-control-sm quantity text-center font-bold" min="1" value="1" style="width: 70px; margin: 0 auto;" oninput="updateRowSubtotal(this.closest('tr')); updateTotals();" />
             </td>
-            <td class="subtotal body-cell py-3 px-3 text-end fw-bold text-success fs-6" style="width: 130px;">
-                ৳ ${(1 * costPrice).toFixed(2)}
+            <td class="p-2.5 text-end">
+                <input type="number" step="any" class="form-control form-control-sm cost-price text-end font-bold" value="${product.cost_price || 0}" style="width: 90px; margin-left: auto;" oninput="updateRowSubtotal(this.closest('tr')); updateTotals();" />
             </td>
-            <td class="body-cell py-3 px-2 text-center" style="width: 60px;">
-                <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" onclick="removeRow(this)" title="Remove item">
-                    <i class="fa-solid fa-trash-can fs-6"></i>
+            <td class="p-2.5 text-end font-bold text-slate-800 dark:text-white subtotal">৳ ${(product.cost_price || 0).toFixed(2)}</td>
+            <td class="p-2.5 text-center">
+                <button type="button" class="btn btn-sm btn-outline-danger p-1 rounded-lg" onclick="removeProductRow(this)" title="Remove">
+                    <i class="fa-solid fa-trash text-xs"></i>
                 </button>
             </td>
         `;
 
-        newRow.querySelector('.quantity').addEventListener('input', updateRowSubtotal);
-        newRow.querySelector('.cost-price').addEventListener('input', updateRowSubtotal);
-
+        tableBody.appendChild(row);
         updateTotals();
     }
 
-    function changeRowQty(btn, delta) {
-        const row = btn.closest('tr');
-        const qtyInput = row.querySelector('.quantity');
-        let val = (parseInt(qtyInput.value) || 0) + delta;
-        if (val < 1) val = 1;
-        qtyInput.value = val;
-        updateRowSubtotal.call(qtyInput);
+    function appendBarcodeToRow(row, productId, barcode) {
+        if (!UpdatebarcodeLists[productId]) UpdatebarcodeLists[productId] = [];
+        if (!UpdatebarcodeLists[productId].includes(barcode)) {
+            UpdatebarcodeLists[productId].push(barcode);
+            const input = row.querySelector("#UpdateProductCode");
+            if (input) input.value = UpdatebarcodeLists[productId].join(', ');
+        }
     }
 
-    function updateRowSubtotal() {
-        const row = this.closest('tr');
-        const quantity = parseFloat(row.querySelector('.quantity').value) || 0;
-        const costPrice = parseFloat(row.querySelector('.cost-price').value) || 0;
-        const subtotal = quantity * costPrice;
+    function promptAddBarcode(btn, productId) {
+        const barcode = prompt("Enter additional barcode for this product:");
+        if (barcode && barcode.trim()) {
+            const row = btn.closest("tr");
+            appendBarcodeToRow(row, productId, barcode.trim());
+        }
+    }
 
-        row.querySelector('.subtotal').innerText = '৳ ' + subtotal.toFixed(2);
+    function updateRowSubtotal(row) {
+        const qty = parseInt(row.querySelector(".quantity").value) || 0;
+        const price = parseFloat(row.querySelector(".cost-price").value) || 0;
+        const subtotal = qty * price;
+        row.querySelector(".subtotal").innerText = `৳ ${subtotal.toFixed(2)}`;
+    }
+
+    function removeProductRow(btn) {
+        const row = btn.closest("tr");
+        const productId = row.getAttribute("data-product-id");
+        delete UpdatebarcodeLists[productId];
+        row.remove();
         updateTotals();
     }
 
     function updateTotals() {
-        let totalQuantity = 0;
-        let totalSubTotal = 0;
+        let totalQty = 0;
+        let totalSub = 0;
 
-        const rows = document.querySelectorAll('#orderTableBody tr');
-        rows.forEach(row => {
-            const quantity = parseFloat(row.querySelector('.quantity').value) || 0;
-            const costPrice = parseFloat(row.querySelector('.cost-price').value) || 0;
-            const subtotal = quantity * costPrice;
-
-            totalQuantity += quantity;
-            totalSubTotal += subtotal;
-
-            row.querySelector('.subtotal').innerText = '৳ ' + subtotal.toFixed(2);
+        document.querySelectorAll("#orderTableBody tr").forEach(row => {
+            const qty = parseInt(row.querySelector(".quantity").value) || 0;
+            const price = parseFloat(row.querySelector(".cost-price").value) || 0;
+            totalQty += qty;
+            totalSub += qty * price;
         });
 
-        document.getElementById('totalQuantity').innerText = totalQuantity.toFixed(2);
-        document.getElementById('totalSubTotal').innerText = totalSubTotal.toFixed(2);
+        document.getElementById("totalQuantity").innerText = totalQty;
+        document.getElementById("totalSubTotal").innerText = totalSub.toFixed(2);
+        document.getElementById("grandSubtotal").value = totalSub.toFixed(2);
 
-        const grandSubtotal = totalSubTotal;
-        document.getElementById('grandSubtotal').value = grandSubtotal.toFixed(2);
-
-        if (typeof window.calculateDuePayment === 'function') {
-            window.calculateDuePayment();
+        if (typeof calculateDuePayment === "function") {
+            calculateDuePayment();
         }
-    }
-
-    function removeRow(button) {
-        const row = button.closest('tr');
-        if (row && row.parentElement) {
-            row.parentElement.removeChild(row);
-            updateTotals();
-        }
-    }
-
-    let UpdatebarcodeLists = {};
-
-    function ADDProductBarCode(button) {
-        const row = button.closest('tr');
-        const productId = row.querySelector('.product-id-val').innerText.trim();
-        const barcodeInput = row.querySelector('#ProductBarCodeInput');
-        const UpdateProductCode = row.querySelector('#UpdateProductCode');
-
-        const barcode = barcodeInput.value.trim();
-
-        if (!barcode) {
-            alert("Please enter a barcode!");
-            return;
-        }
-
-        if (!UpdatebarcodeLists[productId]) {
-            UpdatebarcodeLists[productId] = [];
-        }
-
-        const existingBarcodes = UpdateProductCode.value.split(', ').filter(code => code.trim());
-        UpdatebarcodeLists[productId] = Array.from(new Set([...UpdatebarcodeLists[productId], ...existingBarcodes]));
-
-        if (UpdatebarcodeLists[productId].includes(barcode)) {
-            alert('This barcode is already added!');
-            return;
-        }
-
-        UpdatebarcodeLists[productId].push(barcode);
-        UpdateProductCode.value = UpdatebarcodeLists[productId].join(', ');
-        barcodeInput.value = '';
-    }
-
-    const today = new Date().toISOString().split('T')[0];
-    if (document.getElementById('PurchaseDate')) {
-        document.getElementById('PurchaseDate').value = today;
     }
 
     async function PurchaseDataSave(event) {

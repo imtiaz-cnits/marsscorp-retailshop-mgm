@@ -1,124 +1,261 @@
 <style>
     #exampleModal {
         z-index: 1060 !important;
+        background: rgba(0, 0, 0, 0.65) !important;
     }
     #exampleModal .modal-dialog {
-        max-width: 40%;
-        height: auto;
+        background: transparent !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        text-align: left !important;
+        max-width: 650px !important;
+        width: 650px !important;
+        max-height: 90vh !important;
+        height: auto !important;
+        margin: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 
-    @media screen and (max-width: 992px) {
+    @media screen and (max-width: 768px) {
         #exampleModal .modal-dialog {
-            max-width: 90%;
-            height: auto;
+            max-width: 95% !important;
+            width: 95% !important;
+            margin: auto !important;
         }
+    }
+
+    #exampleModal .modal-content,
+    #exampleModal .modal-dialog .modal-content {
+        border-radius: 16px !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4) !important;
+        background: #ffffff !important;
+        text-align: left !important;
+        max-height: 90vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        position: relative !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .modal-content,
+    body[light-mode="dark"] #exampleModal .modal-dialog .modal-content {
+        background-color: #0f172a !important;
+        border: 1px solid #1e293b !important;
+    }
+
+    body[light-mode="dark"] #exampleModal .modal-footer-sticky {
+        background-color: #0f172a !important;
+        border-top-color: #1e293b !important;
+    }
+
+    .form-label-title {
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        margin-bottom: 6px !important;
+        display: block !important;
+        line-height: 1.3 !important;
+        text-align: left !important;
+    }
+    body[light-mode="dark"] .form-label-title {
+        color: #cbd5e1 !important;
+    }
+
+    #exampleModal input[type="text"],
+    #exampleModal input[type="email"],
+    #exampleModal input[type="number"],
+    #exampleModal .form-select,
+    #exampleModal select {
+        width: 100% !important;
+        height: 42px !important;
+        font-size: 13.5px !important;
+        color: #334155 !important;
+        padding: 8px 14px !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        outline: none !important;
+        background: #ffffff !important;
+        transition: border-color 0.2s, box-shadow 0.2s !important;
+        text-align: left !important;
+    }
+    #exampleModal input:focus,
+    #exampleModal .form-select:focus,
+    #exampleModal select:focus {
+        border-color: #15803d !important;
+        box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.2) !important;
+    }
+    #exampleModal .modal-dialog .close-btn,
+    #exampleModal .close-btn {
+        position: static !important;
+        top: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        left: auto !important;
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        min-height: 28px !important;
+        border-radius: 50% !important;
+        background-color: #dc2626 !important;
+        color: #ffffff !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border: none !important;
+        cursor: pointer !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1 !important;
+        transition: all 0.15s ease !important;
+    }
+
+    body[light-mode="dark"] #exampleModal input[type="text"],
+    body[light-mode="dark"] #exampleModal input[type="email"],
+    body[light-mode="dark"] #exampleModal input[type="number"],
+    body[light-mode="dark"] #exampleModal .form-select,
+    body[light-mode="dark"] #exampleModal select {
+        background-color: #1e293b !important;
+        color: #f1f5f9 !important;
+        border-color: #334155 !important;
     }
 </style>
 
 <!-- Action Button Edit Modal Start -->
 <section class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <button type="button" class="close-btn close" data-bs-dismiss="modal" aria-label="Close">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <h2 class="heading">Supplier Update</h2>
-            <div id="popup-modal">
-                <form onsubmit="return Update(event)">
-                    <input class="d-none" id="updateID">
+            <!-- Sticky Green Header with White Text & Red Close Icon -->
+            <div style="background-color: #15803d; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; position: sticky; top: 0; z-index: 10; border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                <h2 style="font-size: 18px; font-weight: 700; color: #ffffff; margin: 0; padding: 0; line-height: 1.2;">Update Supplier</h2>
+                <button type="button" class="close-btn close" data-bs-dismiss="modal" aria-label="Close" style="position: static !important; width: 28px; height: 28px; min-width: 28px; min-height: 28px; border-radius: 50%; background-color: #dc2626; color: #ffffff; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: all 0.15s ease; margin: 0; padding: 0;" title="Close">
+                    <i class="fa-solid fa-xmark" style="color: #ffffff; font-size: 14px;"></i>
+                </button>
+            </div>
 
+            <!-- Form Wrapper -->
+            <form onsubmit="return Update(event)" id="supplierUpdateForm" style="display: flex; flex-direction: column; flex: 1 1 auto; overflow: hidden; margin: 0;">
+                <input class="d-none" id="updateID">
+
+                <!-- Scrollable Body Content -->
+                <div id="popup-modal" style="padding: 20px 24px; overflow-y: auto; flex: 1 1 auto; max-height: calc(90vh - 130px); text-align: left;">
                     <div class="row">
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-6 mb-2">
+                            <label for="UpdatesupplierName" class="form-label-title">Supplier Name <span style="color: #ef4444;">*</span></label>
                             <div class="form-row">
-                                <input type="text" placeholder="Enter Supplier Name *" id="UpdatesupplierName" required />
+                                <input type="text" placeholder="Enter Supplier Name" id="UpdatesupplierName" required />
                             </div>
                         </div>
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-6 mb-2">
+                            <label for="UpdatesupplierMobile" class="form-label-title">Supplier Mobile <span style="color: #ef4444;">*</span></label>
                             <div class="form-row">
-                                <input type="text" placeholder="Enter Supplier Mobile *" id="UpdatesupplierMobile" required />
+                                <input type="text" placeholder="Enter Supplier Mobile" id="UpdatesupplierMobile" required />
                             </div>
                         </div>
 
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-6 mb-2">
+                            <label for="UpdatesupplierCompany" class="form-label-title">Supplier Company</label>
                             <div class="form-row">
                                 <input type="text" placeholder="Enter Supplier Company" id="UpdatesupplierCompany" />
                             </div>
                         </div>
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-6 mb-2">
+                            <label for="UpdatesupplierAddress" class="form-label-title">Supplier Address</label>
                             <div class="form-row">
                                 <input type="text" placeholder="Enter Supplier Address" id="UpdatesupplierAddress" />
                             </div>
                         </div>
 
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-6 mb-2">
+                            <label for="UpdatesupplierEmail" class="form-label-title">Supplier Email</label>
                             <div class="form-row">
                                 <input type="email" placeholder="Enter Supplier Email" id="UpdatesupplierEmail" />
                             </div>
                         </div>
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-6 mb-2">
+                            <label for="UpdatePurchasePayableAmount" class="form-label-title">Purchase Payable Amount</label>
                             <div class="form-row">
                                 <input type="number" step="any" placeholder="Enter Purchase Payable Amount" id="UpdatePurchasePayableAmount" />
                             </div>
                         </div>
 
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-6 mb-2">
+                            <label for="UpdateSelectStatus" class="form-label-title">Status <span style="color: #ef4444;">*</span></label>
                             <div class="form-row">
-                                <select class="form-select input-style" id="UpdateSelectStatus">
+                                <select class="form-select input-style" id="UpdateSelectStatus" style="cursor: pointer !important;">
                                     <option value="Active">Active</option>
                                     <option value="InActive">Inactive</option>
                                 </select>
                             </div>
                         </div>
 
-                        <!-- Upload Photo moved to bottom -->
-                        <div class="col-lg-12">
-                            <div class="mb-3">
-                                <div class="upload-profile">
-                                    <div class="item">
-                                        <div class="img-box">
-                                            <svg width="32" height="32" viewBox="0 0 50 50" fill="red"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                xmlns:xlink="http://www.w3.org/1999/xlink">
-                                                <rect width="50" height="50" fill="url(#pattern0_1204_6)"
-                                                    fill-opacity="0.5" />
-                                                <defs>
-                                                    <pattern id="pattern0_1204_6"
-                                                        patternContentUnits="objectBoundingBox" width="1"
-                                                        height="1">
-                                                        <use xlink:href="#image0_1204_6" transform="scale(0.005)" />
-                                                    </pattern>
-                                                    <image id="image0_1204_6" width="200" height="200"
-                                                        xlink:href="data:image/png;base64,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" />
-                                                </defs>
-                                            </svg>
-                                        </div>
+                        <!-- Upload Photo -->
+                        <div class="col-lg-12 mb-1">
+                            <label class="form-label-title">Supplier Image</label>
+                            <div class="upload-profile">
+                                <div class="item" style="display: flex; align-items: center; gap: 14px;">
+                                    <div class="img-box" id="updateSupplierImgBox" style="width: 80px; height: 70px; min-width: 80px; border-radius: 8px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1.5px dashed #cbd5e1;">
+                                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                            <polyline points="21 15 16 10 5 21"></polyline>
+                                        </svg>
+                                    </div>
 
-                                        <div class="profile-wrapper">
-                                            <label class="custom-file-input-wrapper">
-                                                <input type="file" class="custom-file-input"
-                                                    aria-label="Upload Photo" id="UpdatesupplierImage" />
-                                            </label>
-                                            <p>PNG, JPEG or GIF (up to 1 MB)</p>
-                                        </div>
+                                    <div class="profile-wrapper" style="flex: 1;">
+                                        <label class="custom-file-input-wrapper" style="cursor: pointer;">
+                                            <input type="file" class="custom-file-input"
+                                                aria-label="Upload Photo" id="UpdatesupplierImage" accept="image/*" style="cursor: pointer;" />
+                                        </label>
+                                        <p style="margin: 4px 0 0 0; font-size: 11px; color: #94a3b8;">PNG, JPEG or GIF (up to 1 MB)</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="actions mt-3">
-                            <button type="submit" class="btn-save">Submit</button>
-                        </div>
                     </div>
-                </form>
-            </div>
+                </div>
+
+                <!-- Sticky Bottom Footer with Submit Button -->
+                <div style="padding: 12px 24px 16px; background: #ffffff; border-top: 1px solid #f1f5f9; flex-shrink: 0; position: sticky; bottom: 0; z-index: 10;" class="modal-footer-sticky">
+                    <button type="submit" class="btn-save" style="width: 100% !important; height: 42px !important; background-color: #15803d !important; color: #ffffff !important; border-radius: 8px !important; font-weight: 600 !important; font-size: 15px !important; border: none !important; cursor: pointer !important; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s ease;">Submit</button>
+                </div>
+            </form>
         </div>
     </div>
 </section>
 <!-- Action Button Edit Modal End -->
 
 <script>
+    const defaultUpdateSupplierSvg = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+        <polyline points="21 15 16 10 5 21"></polyline>
+    </svg>`;
+
     $(document).ready(function() {
         $('#exampleModal').appendTo("body");
+
+        $('#UpdatesupplierImage').on('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#updateSupplierImgBox').html(`<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;" />`);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        $('#exampleModal').on('hidden.bs.modal', function () {
+            $('#updateSupplierImgBox').html(defaultUpdateSupplierSvg);
+            $('#UpdatesupplierImage').val('');
+        });
 
         $('#exampleModal').on('show.bs.modal', function (event) {
             const button = event.relatedTarget;
@@ -149,6 +286,13 @@
                 document.getElementById('UpdatePurchasePayableAmount').value = data.purchase_payable_amount || 0;
                 if (document.getElementById('UpdateSelectStatus')) {
                     document.getElementById('UpdateSelectStatus').value = data.status || 'Active';
+                }
+
+                if (data.img_url) {
+                    let imgPath = data.img_url.startsWith('http') ? data.img_url : '/' + data.img_url.replace(/^\/+/, '');
+                    $('#updateSupplierImgBox').html(`<img src="${imgPath}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;" />`);
+                } else {
+                    $('#updateSupplierImgBox').html(defaultUpdateSupplierSvg);
                 }
             }
         } catch (e) {

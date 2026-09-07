@@ -1,11 +1,125 @@
+<style>
+    /* Dark mode styles for Category Update Modal */
+    body[light-mode="dark"] #categoryUpdateModal .modal-content,
+    html[light-mode="dark"] #categoryUpdateModal .modal-content,
+    body[data-layout-mode="dark"] #categoryUpdateModal .modal-content,
+    html.dark #categoryUpdateModal .modal-content,
+    body.dark #categoryUpdateModal .modal-content,
+    body.dark-mode #categoryUpdateModal .modal-content {
+        background-color: #0f172a !important;
+        border: 1px solid #1e293b !important;
+    }
+
+    body[light-mode="dark"] #categoryUpdateModal .modal-body,
+    html[light-mode="dark"] #categoryUpdateModal .modal-body,
+    body[data-layout-mode="dark"] #categoryUpdateModal .modal-body,
+    html.dark #categoryUpdateModal .modal-body,
+    body.dark #categoryUpdateModal .modal-body,
+    body.dark-mode #categoryUpdateModal .modal-body {
+        background-color: #0f172a !important;
+    }
+
+    body[light-mode="dark"] #categoryUpdateModal .card,
+    html[light-mode="dark"] #categoryUpdateModal .card,
+    body[data-layout-mode="dark"] #categoryUpdateModal .card,
+    html.dark #categoryUpdateModal .card,
+    body.dark #categoryUpdateModal .card,
+    body.dark-mode #categoryUpdateModal .card {
+        background-color: #1e293b !important;
+        border: 1px solid #334155 !important;
+    }
+
+    body[light-mode="dark"] #categoryUpdateModal label,
+    html[light-mode="dark"] #categoryUpdateModal label,
+    body[data-layout-mode="dark"] #categoryUpdateModal label,
+    html.dark #categoryUpdateModal label,
+    body.dark #categoryUpdateModal label,
+    body.dark-mode #categoryUpdateModal label {
+        color: #f1f5f9 !important;
+    }
+
+    body[light-mode="dark"] #categoryUpdateModal .form-control,
+    body[light-mode="dark"] #categoryUpdateModal .form-select,
+    html[light-mode="dark"] #categoryUpdateModal .form-control,
+    html[light-mode="dark"] #categoryUpdateModal .form-select,
+    body[data-layout-mode="dark"] #categoryUpdateModal .form-control,
+    body[data-layout-mode="dark"] #categoryUpdateModal .form-select,
+    html.dark #categoryUpdateModal .form-control,
+    html.dark #categoryUpdateModal .form-select,
+    body.dark #categoryUpdateModal .form-control,
+    body.dark #categoryUpdateModal .form-select,
+    body.dark-mode #categoryUpdateModal .form-control,
+    body.dark-mode #categoryUpdateModal .form-select {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] #categoryUpdateModal .form-control:focus,
+    body[light-mode="dark"] #categoryUpdateModal .form-select:focus,
+    html[light-mode="dark"] #categoryUpdateModal .form-control:focus,
+    html[light-mode="dark"] #categoryUpdateModal .form-select:focus,
+    body[data-layout-mode="dark"] #categoryUpdateModal .form-control:focus,
+    body[data-layout-mode="dark"] #categoryUpdateModal .form-select:focus,
+    html.dark #categoryUpdateModal .form-control:focus,
+    html.dark #categoryUpdateModal .form-select:focus,
+    body.dark #categoryUpdateModal .form-control:focus,
+    body.dark #categoryUpdateModal .form-select:focus,
+    body.dark-mode #categoryUpdateModal .form-control:focus,
+    body.dark-mode #categoryUpdateModal .form-select:focus {
+        background-color: #0f172a !important;
+        border-color: #10b981 !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25) !important;
+    }
+
+    body[light-mode="dark"] #categoryUpdateModal .form-control::placeholder,
+    html[light-mode="dark"] #categoryUpdateModal .form-control::placeholder,
+    body[data-layout-mode="dark"] #categoryUpdateModal .form-control::placeholder,
+    html.dark #categoryUpdateModal .form-control::placeholder,
+    body.dark #categoryUpdateModal .form-control::placeholder,
+    body.dark-mode #categoryUpdateModal .form-control::placeholder {
+        color: #94a3b8 !important;
+    }
+
+    body[light-mode="dark"] #categoryUpdateModal .form-select option,
+    html[light-mode="dark"] #categoryUpdateModal .form-select option,
+    body[data-layout-mode="dark"] #categoryUpdateModal .form-select option,
+    html.dark #categoryUpdateModal .form-select option,
+    body.dark #categoryUpdateModal .form-select option,
+    body.dark-mode #categoryUpdateModal .form-select option {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] #categoryUpdateModal .text-muted,
+    html[light-mode="dark"] #categoryUpdateModal .text-muted,
+    body[data-layout-mode="dark"] #categoryUpdateModal .text-muted,
+    html.dark #categoryUpdateModal .text-muted,
+    body.dark #categoryUpdateModal .text-muted,
+    body.dark-mode #categoryUpdateModal .text-muted {
+        color: #94a3b8 !important;
+    }
+
+    body[light-mode="dark"] #categoryUpdateModal #updateCategoryShowImage,
+    html[light-mode="dark"] #categoryUpdateModal #updateCategoryShowImage,
+    body[data-layout-mode="dark"] #categoryUpdateModal #updateCategoryShowImage,
+    html.dark #categoryUpdateModal #updateCategoryShowImage,
+    body.dark #categoryUpdateModal #updateCategoryShowImage,
+    body.dark-mode #categoryUpdateModal #updateCategoryShowImage {
+        background: #0f172a !important;
+        border-color: #15803d !important;
+    }
+</style>
+
 <!-- Update Category Modal Start -->
 <div class="modal fade" id="categoryUpdateModal" tabindex="-1" aria-labelledby="categoryUpdateModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
             <div class="modal-header text-white px-4 py-3" style="background: linear-gradient(135deg, #15803d 0%, #166534 100%);">
-                <h5 class="modal-title fw-bold d-flex align-items-center gap-2 m-0" id="categoryUpdateModalLabel">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                    <span>Update Category (ক্যাটাগরি তথ্য আপডেট)</span>
+                <h5 class="modal-title fw-bold d-flex align-items-center gap-2 m-0 text-white" id="categoryUpdateModalLabel" style="color: #ffffff !important;">
+                    <i class="fa-solid fa-pen-to-square text-white" style="color: #ffffff !important;"></i>
+                    <span class="text-white" style="color: #ffffff !important;">Update Category</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -31,22 +145,22 @@
                     <!-- Category Form Fields -->
                     <div class="card border-0 shadow-sm rounded-3 p-3 bg-white">
                         <div class="mb-3">
-                            <label for="updateCategoryName" class="form-label fw-bold small text-dark">Category Name (ক্যাটাগরি নাম) <span class="text-danger">*</span></label>
+                            <label for="updateCategoryName" class="form-label fw-bold small text-dark">Category Name <span class="text-danger">*</span></label>
                             <input type="text" id="updateCategoryName" class="form-control" placeholder="Enter category name..." required style="height: 42px; border-radius: 8px;" />
                         </div>
 
                         <div class="mb-0">
-                            <label for="updateCategoryStatus" class="form-label fw-bold small text-dark">Status (স্ট্যাটাস) <span class="text-danger">*</span></label>
-                            <select id="updateCategoryStatus" class="form-select" required style="height: 42px; border-radius: 8px;">
-                                <option value="Active">Active (সক্রিয়)</option>
-                                <option value="InActive">Inactive (নিষ্ক্রিয়)</option>
+                            <label for="updateCategoryStatus" class="form-label fw-bold small text-dark">Status <span class="text-danger">*</span></label>
+                            <select id="updateCategoryStatus" class="form-select unified-ui-border" required style="height: 42px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13.5px; border: 1.5px solid #cbd5e1;">
+                                <option value="Active">Active</option>
+                                <option value="InActive">Inactive</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Actions -->
                     <div class="d-flex align-items-center justify-content-end gap-2 mt-4">
-                        <button type="button" class="btn btn-secondary px-4 py-2 fw-semibold" data-bs-dismiss="modal" style="border-radius: 8px;">Cancel</button>
+                        <button type="button" class="btn px-4 py-2 fw-semibold text-white" data-bs-dismiss="modal" style="background-color: #dc2626 !important; color: #ffffff !important; border-radius: 8px; border: none !important;">Cancel</button>
                         <button type="submit" class="btn btn-success px-4 py-2 fw-bold" style="background-color: #15803d; border-radius: 8px; border: none;">
                             <i class="fa-solid fa-check me-1"></i> Save Changes
                         </button>
