@@ -1,5 +1,5 @@
 ﻿@extends('layouts.dashboard-sidenav')
-@section('title', 'কম স্টক ও স্টক-আউট প্রোডাক্ট তালিকা')
+@section('title', 'Low Stock & Stock-Out Report - MARSS CORPORATION')
 @section('content')
 
     <!-- Hero Main Content Start -->
@@ -8,7 +8,7 @@
             <!-- Table Start -->
             <div class="bredcam">
                 <div class="bredcam-title">
-                    <h1 class="text-danger fw-bold"><i class="fa-solid fa-triangle-exclamation me-2"></i> কম স্টক ও স্টক-আউট প্রোডাক্ট তালিকা (Low Stock Report)</h1>
+                    <h1 class="text-danger fw-bold"><i class="fa-solid fa-triangle-exclamation me-2"></i> Low Stock & Stock-Out Report</h1>
                 </div>
             </div>
             <div class="data-table">
@@ -17,28 +17,28 @@
                         <div class="date-wrapper mb-3 d-flex align-items-center gap-3">
                             <div class="item mb-0">
                                 <div class="form-row">
-                                    <label for="startDate" class="fw-bold mb-1">শুরুর তারিখ</label>
+                                    <label for="startDate" class="fw-bold mb-1">Start Date</label>
                                     <input type="date" id="startDate" class="form-control" name="dateInput">
                                 </div>
                             </div>
                             <div class="item mb-0">
                                 <div class="form-row">
-                                    <label for="endDate" class="fw-bold mb-1">শেষের তারিখ</label>
+                                    <label for="endDate" class="fw-bold mb-1">End Date</label>
                                     <input type="date" id="endDate" class="form-control" name="dateInput">
                                 </div>
                             </div>
                             <div class="align-self-end">
                                 <button class="btn btn-success fw-bold px-4" style="height: 38px;" onclick="fetchInvoiceReport()">
-                                    <i class="fa-solid fa-magnifying-glass me-1"></i> ফিল্টার করুন
+                                    <i class="fa-solid fa-magnifying-glass me-1"></i> Filter
                                 </button>
                             </div>
                         </div>
 
                         <div class="button-wrapper mb-3 d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center gap-2">
-                                <input type="text" id="searchInput" class="form-control fw-semibold" style="max-width: 300px;" placeholder="প্রোডাক্ট বা বারকোড খুঁজুন..." />
+                                <input type="text" id="searchInput" class="form-control fw-semibold" style="max-width: 300px;" placeholder="Search product or barcode..." />
                                 <div class="entries-page d-flex align-items-center gap-2">
-                                    <label for="entries" class="mb-0 fw-bold">দেখান:</label>
+                                    <label for="entries" class="mb-0 fw-bold">Show:</label>
                                     <select id="entries" class="form-select form-select-sm" style="width: auto">
                                         <option value="50">50</option>
                                         <option value="100">100</option>
@@ -53,21 +53,21 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th style="width: 5%;">#</th>
-                                        <th style="width: 8%;">ছবি</th>
-                                        <th>প্রোডাক্টের নাম</th>
-                                        <th>বারকোড / কোড</th>
-                                        <th>ক্যাটাগরি</th>
-                                        <th class="text-center">স্টক কোয়ান্টিটি</th>
-                                        <th class="text-end">ক্রয় মূল্য (৳)</th>
-                                        <th class="text-end">বিক্রয় মূল্য (৳)</th>
-                                        <th class="text-center">স্ট্যাটাস</th>
-                                        <th class="text-center">অ্যাকশন</th>
+                                        <th style="width: 8%;">Image</th>
+                                        <th>Product Name</th>
+                                        <th>Barcode / Code</th>
+                                        <th>Category</th>
+                                        <th class="text-center">Stock Quantity</th>
+                                        <th class="text-end">Cost Price (৳)</th>
+                                        <th class="text-end">Selling Price (৳)</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tableList"></tbody>
                                 <tfoot class="table-light fw-bold">
                                     <tr>
-                                        <td colspan="5" class="text-end">মোট কম স্টক প্রোডাক্ট কোয়ান্টিটি:</td>
+                                        <td colspan="5" class="text-end">Total Low Stock Product Quantity:</td>
                                         <td id="totalQuantity" class="text-center text-danger fs-6">0</td>
                                         <td id="totalCostPrice" class="text-end">0</td>
                                         <td id="totalSellingPrice" class="text-end">0</td>
@@ -141,17 +141,17 @@
             ProductData = ProductData.filter(item => parseFloat(item.quantity || 0) <= 10);
 
             if (ProductData.length === 0) {
-                tableList.append('<tr><td colspan="10" class="text-center text-success py-4 fw-bold"><i class="fa-solid fa-circle-check fs-4 me-2"></i>সকল প্রোডাক্টের পর্যাপ্ত স্টক রয়েছে! (১০ এর নিচে কোনো স্টক নেই)</td></tr>');
+                tableList.append('<tr><td colspan="10" class="text-center text-success py-4 fw-bold"><i class="fa-solid fa-circle-check fs-4 me-2"></i>All products have sufficient stock! (No stock below 10)</td></tr>');
             }
 
             ProductData.forEach(function(item, index) {
                 const img_url = item.img_url ? item.img_url : "{{ asset('backend/assets/img/product-img.svg') }}";
                 const qtyNum = parseFloat(item.quantity) || 0;
-                const unitName = item.unit ? (item.unit.unit_name || item.unit.name) : 'টি';
+                const unitName = item.unit ? (item.unit.unit_name || item.unit.name) : 'pcs';
                 const categoryName = item.category ? item.category.category_name : 'N/A';
 
                 let stockStatusClass = qtyNum <= 0 ? "out-of-stock" : "low-stock";
-                let stockStatusText = qtyNum <= 0 ? `আউট অব স্টক (${qtyNum})` : `কম স্টক (${qtyNum} ${unitName})`;
+                let stockStatusText = qtyNum <= 0 ? `Out of Stock (${qtyNum})` : `Low Stock (${qtyNum} ${unitName})`;
 
                 totalCostPrice += parseFloat(item.cost_price) || 0;
                 totalSellingPrice += parseFloat(item.sell_price) || 0;
@@ -171,8 +171,8 @@
                         <td class="text-end fw-semibold text-success">৳ ${parseFloat(item.sell_price || 0).toFixed(2)}</td>
                         <td class="text-center"><span class="badge ${stockStatusClass}">${stockStatusText}</span></td>
                         <td class="text-center">
-                            <a href="/admin-dashboard-Purchase" class="btn btn-sm btn-outline-success fw-bold px-2 py-1" title="স্টক পারচেজ করুন">
-                                <i class="fa-solid fa-cart-plus me-1"></i> পারচেজ
+                            <a href="/admin-dashboard-Purchase" class="btn btn-sm btn-outline-success fw-bold px-2 py-1" title="Purchase Stock">
+                                <i class="fa-solid fa-cart-plus me-1"></i> Purchase
                             </a>
                         </td>
                     </tr>

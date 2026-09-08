@@ -126,7 +126,7 @@
 
                   <div class="button-item">
 
-                    <div class="icon-buttons">
+                    {{-- <div class="icon-buttons">
                       <button id="copyBtn">
                         <svg
                           width="32"
@@ -291,7 +291,7 @@
                           />
                         </svg>
                       </button>
-                    </div>
+                    </div> --}}
                   </div>
                 </div>
 

@@ -1,5 +1,13 @@
-﻿@extends('layouts.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title', 'Purchase Product Return Page')
+
+@section('topbar_back_button')
+  <a href="javascript:void(0)" onclick="if(window.history.length > 1 && document.referrer && document.referrer !== window.location.href){ window.history.back(); } else { window.location.href = '{{ url('/purchase-return-list') }}'; }" class="topbar-back-btn" title="Back">
+    <i class="fa-solid fa-arrow-left"></i>
+    <span>Back</span>
+  </a>
+@endsection
+
 @section('content')
 
     <!-- Hero Main Content Start -->
@@ -143,7 +151,7 @@
                         Damaged or used goods will not be accepted for return.
                     </p>
                     <p>
-                        Developed By CodeNext IT - www.codenextit.com (+08801788428280)
+                        Developed By <a href="https://codenextit.com" target="_blank" style="color:inherit;">CodeNext IT</a> - <a href="https://codenextit.com" target="_blank" style="color:inherit;">www.codenextit.com</a> (+08801788428280)
                     </p>
                 </div>
             </div>

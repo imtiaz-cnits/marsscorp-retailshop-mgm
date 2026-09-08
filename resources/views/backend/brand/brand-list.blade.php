@@ -29,7 +29,7 @@
                             </button>
 
                             <!-- Action Buttons (38px x 38px, Unified Border matching Searchbar, Dropdowns, Table) -->
-                            <div class="flex items-center gap-1.5">
+                            {{-- <div class="flex items-center gap-1.5">
                                 <button id="copyBtn" type="button" title="Copy Table" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
                                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -67,7 +67,7 @@
                                         <line x1="15" y1="13" x2="9" y2="17"></line>
                                     </svg>
                                 </button>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
 
@@ -785,8 +785,8 @@
         mobileCardList.empty();
 
         if (pageItems.length === 0) {
-            tableList.html('<tr><td colspan="5" class="text-center text-rose-500 font-bold p-8 dark:text-rose-400">❌ কোনো ব্র্যান্ড পাওয়া যায়নি।</td></tr>');
-            mobileCardList.html('<div class="p-6 text-center text-rose-500 dark:text-rose-400 font-bold bg-white dark:bg-slate-800 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm">❌ কোনো ব্র্যান্ড পাওয়া যায়নি।</div>');
+            tableList.html('<tr><td colspan="5" class="text-center text-rose-500 font-bold p-8 dark:text-rose-400">❌ No brands found.</td></tr>');
+            mobileCardList.html('<div class="p-6 text-center text-rose-500 dark:text-rose-400 font-bold bg-white dark:bg-slate-800 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm">❌ No brands found.</div>');
         } else {
             pageItems.forEach(function(item, idx) {
                 let realIndex = startIndex + idx;

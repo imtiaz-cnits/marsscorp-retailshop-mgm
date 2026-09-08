@@ -6,7 +6,7 @@
                 <i class="fa-solid fa-triangle-exclamation" style="font-size: 48px;"></i>
             </div>
             <h5 class="fw-bold text-dark mb-1">Are you sure?</h5>
-            <p class="text-muted small mb-4">আপনি কি নিশ্চিতভাবে এই ব্র্যান্ডটি ডিলিট করতে চান? এই একশন ফিরিয়ে নেওয়া যাবে না।</p>
+            <p class="text-muted small mb-4">Are you sure you want to delete this brand? This action cannot be undone.</p>
             <input type="hidden" id="deleteBrandID" />
             <div class="d-flex align-items-center justify-content-center gap-2">
                 <button type="button" class="btn btn-secondary px-4 py-2 fw-semibold" data-bs-dismiss="modal" style="border-radius: 8px;">Cancel</button>

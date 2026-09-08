@@ -68,23 +68,23 @@
       
 <script>
    document.addEventListener("DOMContentLoaded", () => {
-        // আজকের তারিখ বের করা
+        // Get today date
         const today = new Date();
         const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0'); // মাস 0 থেকে শুরু হয়, তাই 1 যোগ করা হয়েছে
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed, add 1
         const dd = String(today.getDate()).padStart(2, '0');
 
-        // আজকের তারিখ (Format: YYYY-MM-DD)
+        // Today date (Format: YYYY-MM-DD)
         const todayDate = `${yyyy}-${mm}-${dd}`;
         
-        // চলতি মাসের ১ তারিখ (Format: YYYY-MM-01)
+        // First day of current month (Format: YYYY-MM-01)
         const firstDayOfMonth = `${yyyy}-${mm}-01`;
 
-        // ইনপুট ফিল্ডে ভ্যালু সেট করা
-        document.getElementById("startDate").value = firstDayOfMonth; // Start Date হবে মাসের ১ তারিখ
-        document.getElementById("endDate").value = todayDate;         // End Date হবে আজকের তারিখ
+        // Set value in input field
+        document.getElementById("startDate").value = firstDayOfMonth; // Start Date is 1st of month
+        document.getElementById("endDate").value = todayDate;         // End Date is today
 
-        // পেজ লোড হওয়ার সাথে সাথে চলতি মাসের রিপোর্ট ফেচ করা
+        // Fetch current month report on page load
         fetchBestSellingReport();
     });
 
@@ -114,18 +114,18 @@
 
             if(typeof hideLoader === "function") hideLoader();
 
-            // --- ডিবাগিং এবং এরর হ্যান্ডলিং অংশ যুক্ত করা হলো ---
-            console.log("API Response:", res.data); // এটি কনসোলে আসল এরর দেখাবে
+            // --- Debugging and error handling ---
+            console.log("API Response:", res.data); // Logs actual error in console
 
             if (res.data.status === 'fail' || res.data.status === 'error') {
                 alert("Backend Error: " + res.data.message);
-                return; // কোড এখানেই থেমে যাবে, নিচে গিয়ে ক্র্যাশ করবে না
+                return; // Stop execution safely
             }
 
             let tableList = $("#printTable tbody");
             tableList.empty();
 
-            // ডাটা না থাকলে এম্পটি অ্যারে ধরে নিবে
+            // Default to empty array if no data
             let sellingData = res.data.BestSellingData || [];
 
             let grandTotalQuantity = 0;

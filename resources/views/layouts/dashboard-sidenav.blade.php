@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>@yield('title') - মার্স কর্পোরেশন (MARSS CORPORATION)</title>
+  <title>@yield('title') - MARSS CORPORATION</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <!-- App favicon -->
@@ -101,15 +101,45 @@
     }
 
     .vertical-menu .sidebar-link,
-    .vertical-menu .sidebar-drilldown-trigger {
+    .vertical-menu .sidebar-drilldown-trigger,
+    .vertical-menu button.sidebar-drilldown-trigger {
       padding: 7.5px 8px !important;
       gap: 8px !important;
+      border-top: 0 !important;
+      border-right: 0 !important;
+      border-bottom: 0 !important;
+      border-left: 3px solid transparent !important;
+      box-sizing: border-box !important;
+    }
+
+    .vertical-menu .sidebar-drilldown-trigger > div {
+      gap: 8px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+    }
+
+    .vertical-menu .sidebar-link > i,
+    .vertical-menu .sidebar-drilldown-trigger > div > i {
+      width: 24px !important;
+      min-width: 24px !important;
+      max-width: 24px !important;
+      text-align: center !important;
     }
 
     .vertical-menu .sidebar-submenu-panel a,
     .vertical-menu .sidebar-submenu-panel .sidebar-back-btn {
       padding: 7.5px 8px !important;
       gap: 8px !important;
+      border-left: 3px solid transparent !important;
+      box-sizing: border-box !important;
+    }
+
+    .vertical-menu .sidebar-submenu-panel a i {
+      width: 20px !important;
+      min-width: 20px !important;
+      max-width: 20px !important;
+      text-align: center !important;
     }
 
     .vertical-menu .navbar-brand-box {
@@ -189,6 +219,54 @@
 
     body[light-mode="dark"] #page-topbar .vertical-menu-btn:hover {
       background: #334155 !important;
+    }
+
+    /* Dynamic Topbar Back Button */
+    #page-topbar .topbar-back-btn {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 6px !important;
+      height: 30px !important;
+      padding: 0 12px !important;
+      margin-left: 8px !important;
+      border-radius: 8px !important;
+      background: #f0fdf4 !important;
+      border: 1px solid #bbf7d0 !important;
+      color: #047857 !important;
+      font-size: 12.5px !important;
+      font-weight: 600 !important;
+      text-decoration: none !important;
+      box-shadow: 0 2px 4px rgba(4, 120, 87, 0.08) !important;
+      transition: all 0.22s ease-in-out !important;
+      white-space: nowrap !important;
+      cursor: pointer !important;
+    }
+    #page-topbar .topbar-back-btn i {
+      font-size: 11px !important;
+      color: #047857 !important;
+    }
+    #page-topbar .topbar-back-btn:hover {
+      background: #dcfce7 !important;
+      border-color: #86efac !important;
+      color: #065f46 !important;
+      transform: scale(1.03) !important;
+      box-shadow: 0 3px 8px rgba(4, 120, 87, 0.15) !important;
+    }
+    #page-topbar .topbar-back-btn:hover i {
+      color: #065f46 !important;
+    }
+    body[light-mode="dark"] #page-topbar .topbar-back-btn {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      color: #34d399 !important;
+    }
+    body[light-mode="dark"] #page-topbar .topbar-back-btn i {
+      color: #34d399 !important;
+    }
+    body[light-mode="dark"] #page-topbar .topbar-back-btn:hover {
+      background: #334155 !important;
+      color: #6ee7b7 !important;
     }
 
     .navbar-top-logo {
@@ -288,7 +366,10 @@
     .vertical-menu button.sidebar-drilldown-trigger {
       background: transparent !important;
       background-color: transparent !important;
-      border: 0 !important;
+      border-top: 0 !important;
+      border-right: 0 !important;
+      border-bottom: 0 !important;
+      border-left: 3px solid transparent !important;
       outline: none !important;
       box-shadow: none !important;
       -webkit-appearance: none !important;
@@ -331,6 +412,7 @@
       background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
       color: #ffffff !important;
       font-weight: 600 !important;
+      border-left: 3px solid #34d399 !important;
       border-radius: 9px !important;
       box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35) !important;
     }
@@ -1287,9 +1369,10 @@
           <i class="fa-solid fa-bars-staggered"></i>
         </button>
 
-        <a href="{{ url('/admin-dashboard-home') }}" class="navbar-top-logo-link d-flex d-lg-none align-items-center ms-2 text-decoration-none py-1">
-          <img src="{{ asset('backend/assets/img/marss-corporation-icon2.svg') }}" alt="মার্স কর্পোরেশন (MARSS CORPORATION)" class="navbar-top-logo" style="height: 38px; max-width: 170px; object-fit: contain;" />
-        </a>
+        {{-- Dynamic Back Button: Only shown when child page defines @section('topbar_back_button') --}}
+        @hasSection('topbar_back_button')
+          @yield('topbar_back_button')
+        @endif
 
         <!-- navbar searchbar -->
         {{-- <div class="search-bar-box d-flex align-items-center">
@@ -1308,13 +1391,13 @@
 
       <div class="d-flex align-items-center gap-2">
         <button type="button" class="pos-theme-toggle-btn" aria-label="Toggle Light/Dark Mode"
-            onclick="toggle_light_mode()" title="লাইট/ডার্ক থিম পরিবর্তন">
+            onclick="toggle_light_mode()" title="Toggle Light/Dark Theme">
             <i class="fa-regular fa-moon icon-moon"></i>
             <i class="fa-regular fa-sun icon-sun"></i>
         </button>
 
         <div class="fullscreen d-flex align-items-center">
-          <button type="button" class="js-toggle-fullscreen-btn pos-fullscreen-btn" aria-label="Enter fullscreen mode" title="ফুলস্ক্রিন মোড">
+          <button type="button" class="js-toggle-fullscreen-btn pos-fullscreen-btn" aria-label="Enter fullscreen mode" title="Fullscreen Mode">
             <svg class="icon-fullscreen-enter" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
             </svg>
@@ -1327,7 +1410,7 @@
         <div class="dropdown d-inline-block position-relative">
           <button type="button" class="pos-noti-btn position-relative"
             id="page-header-notifications-dropdown-v" data-bs-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false" title="কম স্টক নোটিফিকেশন">
+            aria-expanded="false" title="Low Stock Notifications">
             <i class="fa-regular fa-bell"></i>
             <span id="noti-count-badge" class="badge rounded-pill bg-danger" style="display: none;">0</span>
           </button>
@@ -1339,24 +1422,24 @@
                   <i class="fa-solid fa-bell"></i>
                 </div>
                 <div>
-                  <h6 class="noti-title">স্টক নোটিফিকেশন</h6>
-                  <p class="noti-subtitle">স্টক ১০ এর কম থাকা পণ্যসমূহ</p>
+                  <h6 class="noti-title">Stock Notifications</h6>
+                  <p class="noti-subtitle">Products with stock below 10</p>
                 </div>
               </div>
               <a href="/admin-dashboard-stock-out" class="noti-view-all-btn">
-                <span>সব দেখুন</span> <i class="fa-solid fa-arrow-right" style="font-size: 8.5px;"></i>
+                <span>View All</span> <i class="fa-solid fa-arrow-right" style="font-size: 8.5px;"></i>
               </a>
             </div>
             <div id="notification-items-list">
               <!-- Dynamic Low Stock Product Notifications Populated via JS -->
               <div class="text-center py-4 px-3">
                 <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
-                <span class="small text-muted">নোটিফিকেশন লোড হচ্ছে...</span>
+                <span class="small text-muted">Loading notifications...</span>
               </div>
             </div>
             <div class="stock-noti-footer">
               <a href="/admin-dashboard-stock-out">
-                <i class="fa-solid fa-boxes-stacked"></i> কম স্টক প্রোডাক্টের সম্পূর্ণ তালিকা দেখুন <i class="fa-solid fa-arrow-right" style="font-size: 9px;"></i>
+                <i class="fa-solid fa-boxes-stacked"></i> View complete low stock product list <i class="fa-solid fa-arrow-right" style="font-size: 9px;"></i>
               </a>
             </div>
           </div>
@@ -1569,15 +1652,15 @@
       } elseif (request()->is('admin-dashboard-supplier*') || request()->is('supplier-due-page*') || request()->is('supplier-due-collection-page*')) {
           $activeParent = 'supplier';
       } elseif (request()->is('admin-dashboard-Purchase*')) {
-          $activeParent = 'purchase';
+          $activeParent = null;
       } elseif (request()->is('admin-dashboard-customer*') || request()->is('admin-dashboard-customer-due-list*') || request()->is('customer-due-collection-page*')) {
           $activeParent = 'customer';
       } elseif (request()->is('admin-dashboard-expence*')) {
           $activeParent = 'expense';
       } elseif (request()->is('admin-dashboard-return-list*')) {
-          $activeParent = 'sales-return';
+          $activeParent = null;
       } elseif (request()->is('admin-dashboard-opening-balance*')) {
-          $activeParent = 'opening-balance';
+          $activeParent = null;
       } elseif (request()->is('admin-dashboard-*-report*') || request()->is('admin-dashboard-stock-out*') || request()->is('admin-dashboard-daily-*') || request()->is('admin-dashboard-personal-*') || request()->is('admin-dashboard-income-*') || request()->is('admin-dashboard-sales-report*')) {
           $activeParent = 'report';
       } elseif (request()->is('admin-dashboard-user-role*')) {
@@ -1594,7 +1677,7 @@
           
           <!-- 1. Dashboard -->
           <li class="sidebar-item relative group">
-            <a href="{{ url('admin-dashboard') }}" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ request()->is('admin-dashboard') ? 'active-gradient' : '' }}">
+            <a href="{{ url('admin-dashboard') }}" class="sidebar-link w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ request()->is('admin-dashboard') ? 'active-gradient' : '' }}">
               <i class="fa-solid fa-gauge text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
               <span class="sidebar-label text-[13.5px] font-medium tracking-wide">Dashboard</span>
             </a>
@@ -1605,7 +1688,7 @@
 
           <!-- 2. POS -->
           <li class="sidebar-item relative group" data-perm="pos">
-            <a href="{{ url('admin-dashboard-pos') }}" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ request()->is('admin-dashboard-pos') ? 'active-gradient' : '' }}">
+            <a href="{{ url('admin-dashboard-pos') }}" class="sidebar-link w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ request()->is('admin-dashboard-pos') ? 'active-gradient' : '' }}">
               <i class="fa-solid fa-cash-register text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
               <span class="sidebar-label text-[13.5px] font-medium tracking-wide">POS</span>
             </a>
@@ -1616,7 +1699,7 @@
 
           <!-- 3. Invoice List -->
           <li class="sidebar-item relative group" data-perm="pos">
-            <a href="{{ url('admin-dashboard-invoice') }}" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ request()->is('admin-dashboard-invoice') ? 'active-gradient' : '' }}">
+            <a href="{{ url('admin-dashboard-invoice') }}" class="sidebar-link w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ request()->is('admin-dashboard-invoice') ? 'active-gradient' : '' }}">
               <i class="fa-solid fa-file-invoice-dollar text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
               <span class="sidebar-label text-[13.5px] font-medium tracking-wide">Invoice List</span>
             </a>
@@ -1627,8 +1710,8 @@
 
           <!-- 4. Product (Has Submenu) -->
           <li class="sidebar-item has-submenu relative group" data-menu-id="product" data-perm="product">
-            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent border-0 outline-none transition-all duration-200 text-start {{ $activeParent === 'product' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-product">
-              <div class="flex items-center gap-3 min-w-0">
+            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent outline-none transition-all duration-200 text-start {{ $activeParent === 'product' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-product">
+              <div class="flex items-center gap-2 min-w-0">
                 <i class="fa-solid fa-boxes-stacked text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
                 <span class="sidebar-label text-[13.5px] font-medium tracking-wide truncate">Product</span>
               </div>
@@ -1650,15 +1733,15 @@
                 <li><a href="{{ url('admin-dashboard-brand') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-brand') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-tag text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Brand List</span></a></li>
                 <li><a href="{{ url('admin-dashboard-category') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-category') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-layer-group text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Category List</span></a></li>
                 <li><a href="{{ url('admin-dashboard-barcode-genarate') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-barcode-genarate') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-barcode text-[10px] text-emerald-300/80 w-4 text-center"></i><span>BarCode Print</span></a></li>
-                <li><a href="{{ url('admin-dashboard-stock-out') }}" class="sidebar-flyout-link text-red-300 hover:text-red-100 hover:bg-red-500/20 font-semibold"><i class="fa-solid fa-triangle-exclamation text-[10px] text-red-400 w-4 text-center"></i><span>কম স্টক প্রোডাক্ট</span></a></li>
+                <li><a href="{{ url('admin-dashboard-stock-out') }}" class="sidebar-flyout-link text-red-300 hover:text-red-100 hover:bg-red-500/20 font-semibold"><i class="fa-solid fa-triangle-exclamation text-[10px] text-red-400 w-4 text-center"></i><span>Low Stock Products</span></a></li>
               </ul>
             </div>
           </li>
 
           <!-- 5. Supplier (Has Submenu) -->
           <li class="sidebar-item has-submenu relative group" data-menu-id="supplier" data-perm="purchase">
-            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent border-0 outline-none transition-all duration-200 text-start {{ $activeParent === 'supplier' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-supplier">
-              <div class="flex items-center gap-3 min-w-0">
+            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent outline-none transition-all duration-200 text-start {{ $activeParent === 'supplier' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-supplier">
+              <div class="flex items-center gap-2 min-w-0">
                 <i class="fa-solid fa-truck text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
                 <span class="sidebar-label text-[13.5px] font-medium tracking-wide truncate">Supplier</span>
               </div>
@@ -1683,36 +1766,19 @@
             </div>
           </li>
 
-          <!-- 6. Purchase (Has Submenu) -->
-          <li class="sidebar-item has-submenu relative group" data-menu-id="purchase" data-perm="purchase">
-            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent border-0 outline-none transition-all duration-200 text-start {{ $activeParent === 'purchase' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-purchase">
-              <div class="flex items-center gap-3 min-w-0">
-                <i class="fa-solid fa-cart-shopping text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
-                <span class="sidebar-label text-[13.5px] font-medium tracking-wide truncate">Purchase</span>
-              </div>
-              <span class="sidebar-arrow shrink-0 w-5 h-5 rounded-md bg-white/10 flex items-center justify-center text-white/70 group-hover:text-white group-hover:bg-white/20 transition-all">
-                <i class="fa-solid fa-chevron-right text-[9px]"></i>
-              </span>
-            </button>
-            <!-- Collapsed Flyout Popover -->
-            <div class="sidebar-flyout">
-              <div class="sidebar-flyout-header flex items-center justify-between px-3 py-2 border-b border-emerald-500/25 mb-1.5">
-                <span class="text-[11px] font-bold tracking-wider text-emerald-300 uppercase flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span>
-                  Purchase
-                </span>
-                <span class="text-[9.5px] font-semibold text-emerald-200/80 bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-400/30">Menu</span>
-              </div>
-              <ul class="py-0.5 px-1 space-y-0.5">
-                <li><a href="{{ url('admin-dashboard-Purchase') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-Purchase') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-cart-flatbed text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Purchase List</span></a></li>
-              </ul>
-            </div>
+          <!-- 6. Purchase (Single Link) -->
+          <li class="sidebar-item relative group" data-perm="purchase">
+            <a href="{{ url('admin-dashboard-Purchase') }}" class="sidebar-link w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ request()->is('admin-dashboard-Purchase*') ? 'active-gradient' : '' }}">
+              <i class="fa-solid fa-cart-shopping text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
+              <span class="sidebar-label text-[13.5px] font-medium tracking-wide">Purchase</span>
+            </a>
+            <div class="sidebar-mini-tooltip">Purchase</div>
           </li>
 
           <!-- 7. Customer (Has Submenu) -->
           <li class="sidebar-item has-submenu relative group" data-menu-id="customer" data-perm="customer">
-            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent border-0 outline-none transition-all duration-200 text-start {{ $activeParent === 'customer' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-customer">
-              <div class="flex items-center gap-3 min-w-0">
+            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent outline-none transition-all duration-200 text-start {{ $activeParent === 'customer' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-customer">
+              <div class="flex items-center gap-2 min-w-0">
                 <i class="fa-solid fa-users text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
                 <span class="sidebar-label text-[13.5px] font-medium tracking-wide truncate">Customer</span>
               </div>
@@ -1739,8 +1805,8 @@
 
           <!-- 8. Expense (Has Submenu) -->
           <li class="sidebar-item has-submenu relative group" data-menu-id="expense" data-perm="expense">
-            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent border-0 outline-none transition-all duration-200 text-start {{ $activeParent === 'expense' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-expense">
-              <div class="flex items-center gap-3 min-w-0">
+            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent outline-none transition-all duration-200 text-start {{ $activeParent === 'expense' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-expense">
+              <div class="flex items-center gap-2 min-w-0">
                 <i class="fa-solid fa-wallet text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
                 <span class="sidebar-label text-[13.5px] font-medium tracking-wide truncate">Expense</span>
               </div>
@@ -1764,62 +1830,28 @@
             </div>
           </li>
 
-          <!-- 9. Sales Return (Has Submenu) -->
-          <li class="sidebar-item has-submenu relative group" data-menu-id="sales-return" data-perm="pos">
-            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent border-0 outline-none transition-all duration-200 text-start {{ $activeParent === 'sales-return' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-sales-return">
-              <div class="flex items-center gap-3 min-w-0">
-                <i class="fa-solid fa-arrow-rotate-left text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
-                <span class="sidebar-label text-[13.5px] font-medium tracking-wide truncate">Sales Return</span>
-              </div>
-              <span class="sidebar-arrow shrink-0 w-5 h-5 rounded-md bg-white/10 flex items-center justify-center text-white/70 group-hover:text-white group-hover:bg-white/20 transition-all">
-                <i class="fa-solid fa-chevron-right text-[9px]"></i>
-              </span>
-            </button>
-            <!-- Collapsed Flyout Popover -->
-            <div class="sidebar-flyout">
-              <div class="sidebar-flyout-header flex items-center justify-between px-3 py-2 border-b border-emerald-500/25 mb-1.5">
-                <span class="text-[11px] font-bold tracking-wider text-emerald-300 uppercase flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span>
-                  Sales Return
-                </span>
-                <span class="text-[9.5px] font-semibold text-emerald-200/80 bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-400/30">Menu</span>
-              </div>
-              <ul class="py-0.5 px-1 space-y-0.5">
-                <li><a href="{{ url('admin-dashboard-return-list') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-return-list') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-box-archive text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Return List</span></a></li>
-              </ul>
-            </div>
+          <!-- 9. Sales Return (Single Link) -->
+          <li class="sidebar-item relative group" data-perm="pos">
+            <a href="{{ url('admin-dashboard-return-list') }}" class="sidebar-link w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ request()->is('admin-dashboard-return-list*') ? 'active-gradient' : '' }}">
+              <i class="fa-solid fa-arrow-rotate-left text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
+              <span class="sidebar-label text-[13.5px] font-medium tracking-wide">Sales Return</span>
+            </a>
+            <div class="sidebar-mini-tooltip">Sales Return</div>
           </li>
 
-          <!-- 10. Opening Balance (Has Submenu) -->
-          <li class="sidebar-item has-submenu relative group" data-menu-id="opening-balance" data-perm="expense">
-            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent border-0 outline-none transition-all duration-200 text-start {{ $activeParent === 'opening-balance' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-opening-balance">
-              <div class="flex items-center gap-3 min-w-0">
-                <i class="fa-solid fa-scale-balanced text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
-                <span class="sidebar-label text-[13.5px] font-medium tracking-wide truncate">Opening Balance</span>
-              </div>
-              <span class="sidebar-arrow shrink-0 w-5 h-5 rounded-md bg-white/10 flex items-center justify-center text-white/70 group-hover:text-white group-hover:bg-white/20 transition-all">
-                <i class="fa-solid fa-chevron-right text-[9px]"></i>
-              </span>
-            </button>
-            <!-- Collapsed Flyout Popover -->
-            <div class="sidebar-flyout">
-              <div class="sidebar-flyout-header flex items-center justify-between px-3 py-2 border-b border-emerald-500/25 mb-1.5">
-                <span class="text-[11px] font-bold tracking-wider text-emerald-300 uppercase flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span>
-                  Opening Balance
-                </span>
-                <span class="text-[9.5px] font-semibold text-emerald-200/80 bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-400/30">Menu</span>
-              </div>
-              <ul class="py-0.5 px-1 space-y-0.5">
-                <li><a href="{{ url('admin-dashboard-opening-balance') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-opening-balance') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-wallet text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Opening Balance List</span></a></li>
-              </ul>
-            </div>
+          <!-- 10. Opening Balance (Single Link) -->
+          <li class="sidebar-item relative group" data-perm="expense">
+            <a href="{{ url('admin-dashboard-opening-balance') }}" class="sidebar-link w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ request()->is('admin-dashboard-opening-balance*') ? 'active-gradient' : '' }}">
+              <i class="fa-solid fa-scale-balanced text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
+              <span class="sidebar-label text-[13.5px] font-medium tracking-wide">Opening Balance</span>
+            </a>
+            <div class="sidebar-mini-tooltip">Opening Balance</div>
           </li>
 
           <!-- 11. Report (Has Submenu) -->
           <li class="sidebar-item has-submenu relative group" data-menu-id="report" data-perm="report">
-            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent border-0 outline-none transition-all duration-200 text-start {{ $activeParent === 'report' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-report">
-              <div class="flex items-center gap-3 min-w-0">
+            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent outline-none transition-all duration-200 text-start {{ $activeParent === 'report' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-report">
+              <div class="flex items-center gap-2 min-w-0">
                 <i class="fa-solid fa-chart-pie text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
                 <span class="sidebar-label text-[13.5px] font-medium tracking-wide truncate">Report</span>
               </div>
@@ -1837,22 +1869,22 @@
                 <span class="text-[9.5px] font-semibold text-emerald-200/80 bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-400/30">Menu</span>
               </div>
               <ul class="py-0.5 px-1 space-y-0.5">
-                <li><a href="{{ url('admin-dashboard-daily-ledger-report') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-daily-ledger-report') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-book text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Daily Ledger Report (লেজার)</span></a></li>
-                <li><a href="{{ url('admin-dashboard-sales-report') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-sales-report') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-chart-column text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Sales Report</span></a></li>
-                <li><a href="{{ url('admin-dashboard-income-expense-report') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-income-expense-report') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-scale-unbalanced-flip text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Income & Expense Report</span></a></li>
-                <li><a href="{{ url('admin-dashboard-daily-receipt-payment-report') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-daily-receipt-payment-report') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-receipt text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Daily Receipt & Payment</span></a></li>
-                <li><a href="{{ url('admin-dashboard-personal-transaction-report') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-personal-transaction-report') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-user-check text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Personal Transaction</span></a></li>
-                <li><a href="{{ url('admin-dashboard-stock-out') }}" class="sidebar-flyout-link text-red-300 hover:text-red-100 hover:bg-red-500/20 font-semibold"><i class="fa-solid fa-triangle-exclamation text-[10px] text-red-400 w-4 text-center"></i><span>Low Stock Report (কম স্টক)</span></a></li>
+                <li><a href="{{ url('admin-dashboard-daily-ledger-report') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-daily-ledger-report') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-book-bookmark text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Daily Income &amp; Expense Ledger</span></a></li>
+                <li><a href="{{ url('admin-dashboard-sales-report') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-sales-report') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-chart-line text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Sales Report</span></a></li>
+                <li><a href="{{ url('admin-dashboard-income-expense-report') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-income-expense-report') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-chart-column text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Income &amp; Expense Report</span></a></li>
+                <li><a href="{{ url('admin-dashboard-daily-receipt-payment-report') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-daily-receipt-payment-report') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-file-waveform text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Daily Receipt &amp; Payment</span></a></li>
+                <li><a href="{{ url('admin-dashboard-personal-transaction-report') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-personal-transaction-report') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-user-tag text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Personal Transaction Report</span></a></li>
+                <li><a href="{{ url('admin-dashboard-stock-out') }}" class="sidebar-flyout-link text-red-300 hover:text-red-100 hover:bg-red-500/20 font-semibold"><i class="fa-solid fa-triangle-exclamation text-[10px] text-red-400 w-4 text-center"></i><span>Low Stock Report</span></a></li>
               </ul>
             </div>
           </li>
 
-          <!-- 12. Role & User (Has Submenu) -->
+          <!-- 12. Settings (Has Submenu) -->
           <li class="sidebar-item has-submenu relative group" data-menu-id="user-role" data-perm="user">
-            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent border-0 outline-none transition-all duration-200 text-start {{ $activeParent === 'user-role' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-user-role">
-              <div class="flex items-center gap-3 min-w-0">
-                <i class="fa-solid fa-user-shield text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
-                <span class="sidebar-label text-[13.5px] font-medium tracking-wide truncate">Role & User</span>
+            <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent outline-none transition-all duration-200 text-start {{ $activeParent === 'user-role' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-user-role">
+              <div class="flex items-center gap-2 min-w-0">
+                <i class="fa-solid fa-gear text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
+                <span class="sidebar-label text-[13.5px] font-medium tracking-wide truncate">Settings</span>
               </div>
               <span class="sidebar-arrow shrink-0 w-5 h-5 rounded-md bg-white/10 flex items-center justify-center text-white/70 group-hover:text-white group-hover:bg-white/20 transition-all">
                 <i class="fa-solid fa-chevron-right text-[9px]"></i>
@@ -1863,12 +1895,12 @@
               <div class="sidebar-flyout-header flex items-center justify-between px-3 py-2 border-b border-emerald-500/25 mb-1.5">
                 <span class="text-[11px] font-bold tracking-wider text-emerald-300 uppercase flex items-center gap-1.5">
                   <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span>
-                  Role & User
+                  Settings
                 </span>
                 <span class="text-[9.5px] font-semibold text-emerald-200/80 bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-400/30">Menu</span>
               </div>
               <ul class="py-0.5 px-1 space-y-0.5">
-                <li><a href="{{ url('admin-dashboard-user-role') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-user-role') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-user-gear text-[10px] text-emerald-300/80 w-4 text-center"></i><span>User List & Roles</span></a></li>
+                <li><a href="{{ url('admin-dashboard-user-role') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-user-role') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-user-gear text-[10px] text-emerald-300/80 w-4 text-center"></i><span>User List &amp; Roles</span></a></li>
               </ul>
             </div>
           </li>
@@ -1927,10 +1959,10 @@
           <li class="relative group">
             <a href="{{ url('admin-dashboard-stock-out') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-red-200 hover:text-white hover:bg-red-600/30 font-bold transition-all duration-150 {{ request()->is('admin-dashboard-stock-out') ? 'bg-red-600 text-white' : '' }}">
               <i class="fa-solid fa-triangle-exclamation text-xs text-red-300 w-4 text-center"></i>
-              <span>কম স্টক প্রোডাক্ট তালিকা</span>
+              <span>Low Stock Products</span>
             </a>
             <div class="sidebar-mini-tooltip">
-              কম স্টক প্রোডাক্ট
+              Low Stock Products
             </div>
           </li>
         </ul>
@@ -2140,7 +2172,7 @@
           <li class="relative group">
             <a href="{{ url('admin-dashboard-daily-ledger-report') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->is('admin-dashboard-daily-ledger-report') ? 'active-submenu-link' : '' }}">
               <i class="fa-solid fa-book-bookmark text-xs text-emerald-300/80 w-4 text-center"></i>
-              <span>Daily Income & Expense Ledger (আয়-ব্যয়)</span>
+              <span>Daily Income & Expense Ledger</span>
             </a>
             <div class="sidebar-mini-tooltip">
               Daily Ledger Report
@@ -2185,7 +2217,7 @@
           <li class="relative group">
             <a href="{{ url('admin-dashboard-stock-out') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-red-200 hover:text-white hover:bg-red-600/30 font-bold transition-all duration-150 {{ request()->is('admin-dashboard-stock-out') ? 'bg-red-600 text-white' : '' }}">
               <i class="fa-solid fa-triangle-exclamation text-xs text-red-300 w-4 text-center"></i>
-              <span>Low Stock Report (কম স্টক)</span>
+              <span>Low Stock Report</span>
             </a>
             <div class="sidebar-mini-tooltip">
               Low Stock Report
@@ -2194,12 +2226,12 @@
         </ul>
       </div>
 
-      <!-- Panel 10: Role & User Submenu Panel -->
+      <!-- Panel 10: Settings Submenu Panel -->
       <div id="submenu-panel-user-role" class="sidebar-submenu-panel sidebar-panel-scroll absolute inset-0 w-full h-full overflow-y-auto overflow-x-hidden transition-transform duration-300 ease-in-out py-2 px-3 {{ $activeParent === 'user-role' ? 'translate-x-0 pointer-events-auto' : 'translate-x-full pointer-events-none' }}" data-parent-id="user-role" data-perm="user">
         <div class="sidebar-back-wrapper relative group mb-2">
           <button type="button" class="sidebar-back-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-emerald-100 bg-white/10 hover:bg-white/20 border border-white/15 font-semibold text-sm transition-all duration-200 shadow-sm" data-target="main">
             <i class="fa-solid fa-chevron-left text-xs text-emerald-300"></i>
-            <span class="truncate">Role & User</span>
+            <span class="truncate">Settings</span>
           </button>
           <div class="sidebar-mini-tooltip">
             Main Menu
@@ -2209,7 +2241,7 @@
           <li class="relative group">
             <a href="{{ url('admin-dashboard-user-role') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->is('admin-dashboard-user-role') ? 'active-submenu-link' : '' }}">
               <i class="fa-solid fa-user-gear text-xs text-emerald-300/80 w-4 text-center"></i>
-              <span>User List & Roles (ইউজার ও পারমিশন)</span>
+              <span>User List & Roles</span>
             </a>
             <div class="sidebar-mini-tooltip">
               User List & Roles
@@ -2688,8 +2720,8 @@
                                 <div class="rounded-circle bg-success-subtle text-success d-inline-flex p-3 mb-2">
                                     <i class="fa-solid fa-circle-check fs-3"></i>
                                 </div>
-                                <h6 class="fw-bold text-success mb-1">সকল প্রোডাক্টের পর্যাপ্ত স্টক রয়েছে!</h6>
-                                <p class="small text-muted mb-0">কোনো প্রোডাক্টের স্টক ১০ এর নিচে নেই</p>
+                                <h6 class="fw-bold text-success mb-1">All products have sufficient stock!</h6>
+                                <p class="small text-muted mb-0">No products with stock below 10</p>
                             </div>
                         `;
             } else {
@@ -2709,7 +2741,7 @@
                   }
                 }
                 const isOutOfStock = (Number(p.quantity) <= 0);
-                const unitText = p.unit_name ? p.unit_name : 'টি';
+                const unitText = p.unit_name ? p.unit_name : 'pcs';
 
                 html += `
                   <a href="/admin-dashboard-stock-out" class="stock-noti-item">
@@ -2720,7 +2752,7 @@
                       <div class="item-row-top">
                         <span class="item-name" title="${p.product_name}">${p.product_name}</span>
                         <span class="item-badge ${isOutOfStock ? 'item-badge-danger' : 'item-badge-warning'}">
-                          ${isOutOfStock ? 'স্টক শেষ!' : 'কম স্টক!'}
+                          ${isOutOfStock ? 'Out of Stock!' : 'Low Stock!'}
                         </span>
                       </div>
                       <div class="item-row-bottom">
@@ -2728,7 +2760,7 @@
                           <i class="fa-solid fa-barcode text-muted"></i> ${codeDisplay}
                         </span>
                         <span class="item-stock" style="color: ${isOutOfStock ? '#dc2626' : '#ea580c'};">
-                          স্টক: <strong>${p.quantity}</strong> ${unitText}
+                          Stock: <strong>${p.quantity}</strong> ${unitText}
                         </span>
                       </div>
                     </div>

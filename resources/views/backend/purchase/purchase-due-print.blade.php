@@ -203,7 +203,7 @@ async function FillUpUpdateForm(id) {
     try {
         if (!id) return errorToast("Invalid Purchase ID");
 
-        // ID সেভ
+        // Save ID
         const updateID = document.getElementById('updateID');
         if (updateID) updateID.value = id;
 
@@ -215,7 +215,7 @@ async function FillUpUpdateForm(id) {
         if (res.data.status === "success") {
             const d = res.data;
 
-            // null-safe এলিমেন্ট সেট
+            // Null-safe element set
             const setText = (id, value) => {
                 const el = document.getElementById(id);
                 if (el) el.textContent = value || 'N/A';
@@ -384,18 +384,18 @@ async function SavePaymentInfo(event) {
         if (res.data.status === "success") {
             successToast("Payment added successfully!");
 
-            // Due & Paid আপডেট করো (রিলোড ছাড়াই)
+            // Update Due & Paid without reload
             $('#paidAmountData').text(`৳ ${res.data.new_paid?.toFixed(2) || (parseFloat($('#paidAmountData').text().replace('৳', '')) + paidAmount).toFixed(2)}`);
             $('#ShowTotalDue').text(`৳ ${res.data.new_due?.toFixed(2) || (currentDue - paidAmount).toFixed(2)}`);
 
-            // Due 0 হলে ডিজেবল
+            // Disable if Due is 0
             if (res.data.new_due <= 0) {
                 $('#UpdatePaidAmount, input[name="payment"], #transactionInput').prop('disabled', true);
                 $('#submitPaymentBtn').prop('disabled', true).text('Fully Paid');
             }
 
             closeModal(document.getElementById('editModal'));
-            refreshPurchaseList(); // লিস্ট রিফ্রেশ
+            refreshPurchaseList(); // Refresh list
 
         } else {
             errorToast(res.data.message || "Failed");

@@ -5,13 +5,13 @@
             <div class="row mb-4 align-items-center">
                 <div class="col-md-6">
                     <h4 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
-                        <i class="fa-solid fa-user-shield text-success fs-3"></i> ইউজার রোল ও পারমিশন ম্যানেজমেন্ট
+                        <i class="fa-solid fa-user-shield text-success fs-3"></i> User Role & Permission Management
                     </h4>
-                    <p class="text-muted small mb-0">সিস্টেম ইউজারদের জন্য মডিউল ভিত্তিক অন/অফ টগল পারমিশন কনফিগার করুন</p>
+                    <p class="text-muted small mb-0">Configure module-based ON/OFF toggle permissions for system users</p>
                 </div>
                 <div class="col-md-6 text-md-end mt-3 mt-md-0">
                     <button class="btn btn-success px-4 py-2 rounded-3 shadow-sm fw-bold align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#createUserModal" onclick="resetCreateForm()">
-                        <i class="fa-solid fa-user-plus me-1"></i> নতুন ইউজার যুক্ত করুন
+                        <i class="fa-solid fa-user-plus me-1"></i> Add New User
                     </button>
                 </div>
             </div>
@@ -22,7 +22,7 @@
                     <div class="card border-0 shadow-sm rounded-4 h-100" style="background: linear-gradient(135deg, #064e3b 0%, #047857 100%); color: white;">
                         <div class="card-body p-3 d-flex align-items-center justify-content-between">
                             <div>
-                                <span class="text-white-50 small fw-bold text-uppercase">মোট সিস্টেম ইউজার</span>
+                                <span class="text-white-50 small fw-bold text-uppercase">Total System Users</span>
                                 <h2 class="fw-bold text-white mb-0 mt-1" id="totalUserCount">0</h2>
                             </div>
                             <div class="rounded-circle p-3 text-white fs-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; background: rgba(255,255,255,0.2);">
@@ -36,7 +36,7 @@
                     <div class="card border-0 shadow-sm rounded-4 h-100" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: white;">
                         <div class="card-body p-3 d-flex align-items-center justify-content-between">
                             <div>
-                                <span class="text-white-50 small fw-bold text-uppercase">অ্যাডমিন / সুপার অ্যাডমিন</span>
+                                <span class="text-white-50 small fw-bold text-uppercase">Admin / Super Admin</span>
                                 <h2 class="fw-bold text-white mb-0 mt-1" id="adminCount">0</h2>
                             </div>
                             <div class="rounded-circle p-3 text-white fs-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; background: rgba(255,255,255,0.2);">
@@ -50,7 +50,7 @@
                     <div class="card border-0 shadow-sm rounded-4 h-100" style="background: linear-gradient(135deg, #7c2d12 0%, #ea580c 100%); color: white;">
                         <div class="card-body p-3 d-flex align-items-center justify-content-between">
                             <div>
-                                <span class="text-white-50 small fw-bold text-uppercase">ক্যাশিয়ার / পস অপারেটর</span>
+                                <span class="text-white-50 small fw-bold text-uppercase">Cashier / POS Operator</span>
                                 <h2 class="fw-bold text-white mb-0 mt-1" id="cashierCount">0</h2>
                             </div>
                             <div class="rounded-circle p-3 text-white fs-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; background: rgba(255,255,255,0.2);">
@@ -64,7 +64,7 @@
                     <div class="card border-0 shadow-sm rounded-4 h-100" style="background: linear-gradient(135deg, #581c87 0%, #9333ea 100%); color: white;">
                         <div class="card-body p-3 d-flex align-items-center justify-content-between">
                             <div>
-                                <span class="text-white-50 small fw-bold text-uppercase">এক্যাউন্টেন্ট / ম্যানেজার</span>
+                                <span class="text-white-50 small fw-bold text-uppercase">Accountant / Manager</span>
                                 <h2 class="fw-bold text-white mb-0 mt-1" id="managerCount">0</h2>
                             </div>
                             <div class="rounded-circle p-3 text-white fs-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; background: rgba(255,255,255,0.2);">
@@ -79,12 +79,12 @@
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
-                        <i class="fa-solid fa-user-group text-success"></i> সিস্টেম ইউজার ও পারমিশন তালিকা
+                        <i class="fa-solid fa-user-group text-success"></i> System Users & Permissions List
                     </h5>
                     <div class="d-flex align-items-center gap-2">
                         <div class="input-group" style="width: 280px;">
                             <span class="input-group-text bg-light border-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
-                            <input type="text" id="userSearchInput" class="form-control bg-light border-0" placeholder="ইউজার খুঁজুন...">
+                            <input type="text" id="userSearchInput" class="form-control bg-light border-0" placeholder="Search user...">
                         </div>
                     </div>
                 </div>
@@ -93,19 +93,19 @@
                         <table class="table table-hover align-middle mb-0" id="userTable">
                             <thead class="bg-light text-muted small text-uppercase">
                                 <tr>
-                                    <th class="ps-4">ইউজার তথ্য</th>
-                                    <th>মোবাইল নম্বর</th>
-                                    <th>রোল (Role)</th>
-                                    <th>সক্রিয় টগল পারমিশন (Permissions)</th>
-                                    <th>স্ট্যাটাস (Status)</th>
-                                    <th class="text-end pe-4">অ্যাকশন</th>
+                                    <th class="ps-4">User Info</th>
+                                    <th>Mobile Number</th>
+                                    <th>Role</th>
+                                    <th>Active Module Permissions</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-4">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="userTableBody">
                                 <tr>
                                     <td colspan="6" class="text-center py-5">
                                         <div class="spinner-border text-success spinner-border-sm me-2" role="status"></div>
-                                        <span class="text-muted">ইউজার তালিকা লোড হচ্ছে...</span>
+                                        <span class="text-muted">Loading user list...</span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -118,7 +118,7 @@
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-header bg-white py-3 border-0">
                     <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
-                        <i class="fa-solid fa-sliders text-primary"></i> মডিউল পারমিশন টগল গাইডলাইন (Live Module Access)
+                        <i class="fa-solid fa-sliders text-primary"></i> Module Permission Guidelines (Live Module Access)
                     </h5>
                 </div>
                 <div class="card-body">
@@ -128,7 +128,7 @@
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <span class="badge bg-danger text-white px-2 py-1"><i class="fa-solid fa-crown me-1"></i> Admin / Super Admin</span>
                                 </div>
-                                <p class="small text-muted mb-0">সব মডিউল টগল অন 🟢 (POS, Product, Purchase, Customer, Expense, Reports & Users)।</p>
+                                <p class="small text-muted mb-0">All module toggles ON 🟢 (POS, Product, Purchase, Customer, Expense, Reports & Users).</p>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -136,7 +136,7 @@
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <span class="badge bg-primary text-white px-2 py-1"><i class="fa-solid fa-user-gear me-1"></i> Store Manager</span>
                                 </div>
-                                <p class="small text-muted mb-0">পস, প্রোডাক্ট, পারচেজ, কাস্টমার, সাপ্লায়ার ও রিপোর্ট টগল অন 🟢। ইউজার ফাইল অফ 🔴।</p>
+                                <p class="small text-muted mb-0">POS, Product, Purchase, Customer, Supplier & Reports ON 🟢. User management OFF 🔴.</p>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -144,7 +144,7 @@
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <span class="badge bg-success text-white px-2 py-1"><i class="fa-solid fa-cash-register me-1"></i> Cashier / POS</span>
                                 </div>
-                                <p class="small text-muted mb-0">শুধুমাত্র পস বিলিং (POS) ও সেলস রিটার্ন টগল অন 🟢। ব্যাকঅফিস মডিউল অফ 🔴।</p>
+                                <p class="small text-muted mb-0">POS Billing & Sales Return ON 🟢. Backoffice modules OFF 🔴.</p>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -152,7 +152,7 @@
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <span class="badge bg-purple text-white px-2 py-1" style="background-color: #8b5cf6;"><i class="fa-solid fa-calculator me-1"></i> Accountant</span>
                                 </div>
-                                <p class="small text-muted mb-0">কাস্টমার/সাপ্লায়ার ডিউ, ডেইলি ইনকাম-এক্সপেন্স লেজার ও রিপোর্ট টগল অন 🟢।</p>
+                                <p class="small text-muted mb-0">Customer/Supplier Due, Daily Ledger & Reports ON 🟢.</p>
                             </div>
                         </div>
                     </div>
@@ -168,7 +168,7 @@
         <div class="modal-content border-0 shadow rounded-4">
             <div class="modal-header border-0 bg-success text-white rounded-top-4">
                 <h5 class="modal-title fw-bold">
-                    <i class="fa-solid fa-user-plus me-2"></i> নতুন ইউজার তৈরি ও পারমিশন টগল
+                    <i class="fa-solid fa-user-plus me-2"></i> Create New User & Permissions
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" id="createUserModalCloseBtn"></button>
             </div>
@@ -176,27 +176,27 @@
                 <div class="modal-body p-4">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small text-dark">ইউজারের নাম <span class="text-danger">*</span></label>
-                            <input type="text" id="new_name" class="form-control rounded-3" placeholder="ইউজারের নাম লিখুন" required>
+                            <label class="form-label fw-bold small text-dark">User Name <span class="text-danger">*</span></label>
+                            <input type="text" id="new_name" class="form-control rounded-3" placeholder="Enter user name" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small text-dark">মোবাইল নম্বর <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold small text-dark">Mobile Number <span class="text-danger">*</span></label>
                             <input type="text" id="new_mobile" class="form-control rounded-3" placeholder="017XXXXXXXX" required>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small text-dark">ইমেইল এড্রেস (ঐচ্ছিক)</label>
+                            <label class="form-label fw-bold small text-dark">Email Address (Optional)</label>
                             <input type="email" id="new_email" class="form-control rounded-3" placeholder="user@domain.com">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small text-dark">পাসওয়ার্ড <span class="text-danger">*</span></label>
-                            <input type="password" id="new_password" class="form-control rounded-3" placeholder="নূন্যতম ৪ অক্ষর" required>
+                            <label class="form-label fw-bold small text-dark">Password <span class="text-danger">*</span></label>
+                            <input type="password" id="new_password" class="form-control rounded-3" placeholder="Minimum 4 characters" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small text-dark">সিস্টেম রোল (Role) <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold small text-dark">System Role <span class="text-danger">*</span></label>
                             <select id="new_role" class="form-select rounded-3" onchange="applyRolePresets('new', this.value)" required>
                                 <option value="admin">👑 Admin / Super Admin</option>
                                 <option value="manager">👨‍💼 Store Manager</option>
@@ -206,10 +206,10 @@
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small text-dark">একাউন্ট স্ট্যাটাস <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold small text-dark">Account Status <span class="text-danger">*</span></label>
                             <select id="new_status" class="form-select rounded-3" required>
-                                <option value="approved" selected>Approved (সক্রিয়)</option>
-                                <option value="pending">Pending (অপেক্ষমান)</option>
+                                <option value="approved" selected>Approved</option>
+                                <option value="pending">Pending</option>
                             </select>
                         </div>
                     </div>
@@ -217,13 +217,13 @@
                     <!-- Modern Module Toggle Permission Section -->
                     <div class="border rounded-4 p-3 bg-light-subtle">
                         <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
-                            <i class="fa-solid fa-toggle-on text-success"></i> মডিউল এক্সেস পারমিশন টগল (ON / OFF)
+                            <i class="fa-solid fa-toggle-on text-success"></i> Module Access Permissions (ON / OFF)
                         </h6>
                         <div class="row g-3" id="new_permission_toggles">
                             <div class="col-md-6">
                                 <div class="form-check form-switch p-3 border rounded-3 bg-white d-flex align-items-center justify-content-between">
                                     <label class="form-check-label fw-bold text-dark mb-0 cursor-pointer" for="new_perm_pos">
-                                        <i class="fa-solid fa-cash-register text-success me-2"></i> POS Billing & Sales (পস সেলস)
+                                        <i class="fa-solid fa-cash-register text-success me-2"></i> POS Billing & Sales
                                     </label>
                                     <input class="form-check-input fs-4 m-0" type="checkbox" id="new_perm_pos" checked>
                                 </div>
@@ -231,7 +231,7 @@
                             <div class="col-md-6">
                                 <div class="form-check form-switch p-3 border rounded-3 bg-white d-flex align-items-center justify-content-between">
                                     <label class="form-check-label fw-bold text-dark mb-0 cursor-pointer" for="new_perm_product">
-                                        <i class="fa-solid fa-boxes-stacked text-primary me-2"></i> Product & Inventory (প্রোডাক্ট/স্টক)
+                                        <i class="fa-solid fa-boxes-stacked text-primary me-2"></i> Product & Inventory
                                     </label>
                                     <input class="form-check-input fs-4 m-0" type="checkbox" id="new_perm_product">
                                 </div>
@@ -239,7 +239,7 @@
                             <div class="col-md-6">
                                 <div class="form-check form-switch p-3 border rounded-3 bg-white d-flex align-items-center justify-content-between">
                                     <label class="form-check-label fw-bold text-dark mb-0 cursor-pointer" for="new_perm_purchase">
-                                        <i class="fa-solid fa-truck text-warning me-2"></i> Purchase & Supplier (পারচেজ/সাপ্লায়ার)
+                                        <i class="fa-solid fa-truck text-warning me-2"></i> Purchase & Supplier
                                     </label>
                                     <input class="form-check-input fs-4 m-0" type="checkbox" id="new_perm_purchase">
                                 </div>
@@ -247,7 +247,7 @@
                             <div class="col-md-6">
                                 <div class="form-check form-switch p-3 border rounded-3 bg-white d-flex align-items-center justify-content-between">
                                     <label class="form-check-label fw-bold text-dark mb-0 cursor-pointer" for="new_perm_customer">
-                                        <i class="fa-solid fa-users text-info me-2"></i> Customer & Dues (কাস্টমার ও ডিউ)
+                                        <i class="fa-solid fa-users text-info me-2"></i> Customer & Dues
                                     </label>
                                     <input class="form-check-input fs-4 m-0" type="checkbox" id="new_perm_customer">
                                 </div>
@@ -255,7 +255,7 @@
                             <div class="col-md-6">
                                 <div class="form-check form-switch p-3 border rounded-3 bg-white d-flex align-items-center justify-content-between">
                                     <label class="form-check-label fw-bold text-dark mb-0 cursor-pointer" for="new_perm_expense">
-                                        <i class="fa-solid fa-wallet text-danger me-2"></i> Expense & Financial Ledger (আয়-ব্যয়)
+                                        <i class="fa-solid fa-wallet text-danger me-2"></i> Expense & Financial Ledger
                                     </label>
                                     <input class="form-check-input fs-4 m-0" type="checkbox" id="new_perm_expense">
                                 </div>
@@ -263,7 +263,7 @@
                             <div class="col-md-6">
                                 <div class="form-check form-switch p-3 border rounded-3 bg-white d-flex align-items-center justify-content-between">
                                     <label class="form-check-label fw-bold text-dark mb-0 cursor-pointer" for="new_perm_report">
-                                        <i class="fa-solid fa-chart-pie text-secondary me-2"></i> Reports & Analytics (রিপোর্ট)
+                                        <i class="fa-solid fa-chart-pie text-secondary me-2"></i> Reports & Analytics
                                     </label>
                                     <input class="form-check-input fs-4 m-0" type="checkbox" id="new_perm_report">
                                 </div>
@@ -272,9 +272,9 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-3 bg-light rounded-bottom-4">
-                    <button type="button" class="btn btn-light rounded-3 px-4" data-bs-dismiss="modal">বাতিল</button>
+                    <button type="button" class="btn btn-light rounded-3 px-4" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success rounded-3 px-4 fw-bold" id="createUserSaveBtn">
-                        <i class="fa-solid fa-check me-1"></i> ইউজার সেভ করুন
+                        <i class="fa-solid fa-check me-1"></i> Save User
                     </button>
                 </div>
             </form>
@@ -288,7 +288,7 @@
         <div class="modal-content border-0 shadow rounded-4">
             <div class="modal-header border-0 bg-dark text-white rounded-top-4">
                 <h5 class="modal-title fw-bold">
-                    <i class="fa-solid fa-user-gear me-2"></i> ইউজার রোল ও টগল পারমিশন সম্পাদনা
+                    <i class="fa-solid fa-user-gear me-2"></i> Edit User Role & Permissions
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" id="editUserModalCloseBtn"></button>
             </div>
@@ -297,27 +297,27 @@
                 <div class="modal-body p-4">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small text-dark">ইউজারের নাম <span class="text-danger">*</span></label>
-                            <input type="text" id="edit_name" class="form-control rounded-3" placeholder="ইউজারের নাম" required>
+                            <label class="form-label fw-bold small text-dark">User Name <span class="text-danger">*</span></label>
+                            <input type="text" id="edit_name" class="form-control rounded-3" placeholder="User Name" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small text-dark">মোবাইল নম্বর <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold small text-dark">Mobile Number <span class="text-danger">*</span></label>
                             <input type="text" id="edit_mobile" class="form-control rounded-3" placeholder="017XXXXXXXX" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small text-dark">ইমেইল এড্রেস (ঐচ্ছিক)</label>
+                            <label class="form-label fw-bold small text-dark">Email Address (Optional)</label>
                             <input type="email" id="edit_email" class="form-control rounded-3" placeholder="user@domain.com">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small text-dark">নতুন পাসওয়ার্ড (ঐচ্ছিক)</label>
-                            <input type="password" id="edit_password" class="form-control rounded-3" placeholder="পরিবর্তন না করতে চাইলে ফাঁকা রাখুন">
+                            <label class="form-label fw-bold small text-dark">New Password (Optional)</label>
+                            <input type="password" id="edit_password" class="form-control rounded-3" placeholder="Leave blank to keep unchanged">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small text-dark">সিস্টেম রোল (Role) <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold small text-dark">System Role <span class="text-danger">*</span></label>
                             <select id="edit_role" class="form-select rounded-3" onchange="applyRolePresets('edit', this.value)" required>
                                 <option value="admin">👑 Admin / Super Admin</option>
                                 <option value="manager">👨‍💼 Store Manager</option>
@@ -327,10 +327,10 @@
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small text-dark">স্ট্যাটাস (Status) <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold small text-dark">Status <span class="text-danger">*</span></label>
                             <select id="edit_status" class="form-select rounded-3" required>
-                                <option value="approved">Approved (সক্রিয়)</option>
-                                <option value="pending">Pending (অপেক্ষমান)</option>
+                                <option value="approved">Approved</option>
+                                <option value="pending">Pending</option>
                             </select>
                         </div>
                     </div>
@@ -338,7 +338,7 @@
                     <!-- Modern Edit Module Toggle Permission Section -->
                     <div class="border rounded-4 p-3 bg-light-subtle">
                         <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
-                            <i class="fa-solid fa-sliders text-primary"></i> মডিউল এক্সেস পারমিশন টগল (ON / OFF)
+                            <i class="fa-solid fa-sliders text-primary"></i> Module Access Permissions (ON / OFF)
                         </h6>
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -393,9 +393,9 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-3 bg-light rounded-bottom-4">
-                    <button type="button" class="btn btn-light rounded-3 px-4" data-bs-dismiss="modal">বাতিল</button>
+                    <button type="button" class="btn btn-light rounded-3 px-4" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary rounded-3 px-4 fw-bold" id="editUserSaveBtn">
-                        <i class="fa-solid fa-arrows-rotate me-1"></i> আপডেট করুন
+                        <i class="fa-solid fa-arrows-rotate me-1"></i> Update User
                     </button>
                 </div>
             </form>
@@ -480,7 +480,7 @@
             document.getElementById('userTableBody').innerHTML = `
                 <tr>
                     <td colspan="6" class="text-center text-danger py-4">
-                        <i class="fa-solid fa-triangle-exclamation me-1"></i> ইউজার ডাটা লোড করতে ব্যর্থ হয়েছে।
+                        <i class="fa-solid fa-triangle-exclamation me-1"></i> Failed to load user data.
                     </td>
                 </tr>
             `;
@@ -544,7 +544,7 @@
                 <tr>
                     <td colspan="6" class="text-center py-5 text-muted">
                         <i class="fa-solid fa-users-slash fs-2 mb-2 d-block text-secondary"></i>
-                        কোনো ইউজার পাওয়া যায়নি।
+                        No users found.
                     </td>
                 </tr>
             `;
@@ -574,7 +574,7 @@
                     <td>${statusBadge}</td>
                     <td class="text-end pe-4">
                         <button class="btn btn-sm btn-outline-primary rounded-3 me-1 px-3" onclick="openEditModal(${u.id})">
-                            <i class="fa-solid fa-sliders me-1"></i> এডিট
+                            <i class="fa-solid fa-sliders me-1"></i> Edit
                         </button>
                         <button class="btn btn-sm btn-outline-danger rounded-3 px-2" onclick="deleteUser(${u.id}, '${u.name.replace(/'/g, "\\'")}')">
                             <i class="fa-solid fa-trash-can"></i>
@@ -604,7 +604,7 @@
         
         let saveBtn = document.getElementById('createUserSaveBtn');
         saveBtn.disabled = true;
-        saveBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> সেভ হচ্ছে...`;
+        saveBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Saving...`;
 
         let payload = {
             name: document.getElementById('new_name').value,
@@ -619,19 +619,19 @@
         try {
             const res = await axios.post('/create-user-admin', payload);
             if (res.data && res.data.status === 'success') {
-                Swal.fire('সফল!', res.data.message, 'success');
+                Swal.fire('Success!', res.data.message, 'success');
                 document.getElementById('createUserModalCloseBtn').click();
                 resetCreateForm();
                 loadAllUsers();
             } else {
-                Swal.fire('এরর!', res.data.message || 'ইউজার তৈরি করা সম্ভব হয়নি।', 'error');
+                Swal.fire('Error!', res.data.message || 'Could not create user.', 'error');
             }
         } catch (err) {
-            let msg = err.response?.data?.message || 'সমস্যা হয়েছে, তথ্য চেক করে পুনরায় চেষ্টা করুন।';
-            Swal.fire('এরর!', msg, 'error');
+            let msg = err.response?.data?.message || 'Error occurred. Please check info and try again.';
+            Swal.fire('Error!', msg, 'error');
         } finally {
             saveBtn.disabled = false;
-            saveBtn.innerHTML = `<i class="fa-solid fa-check me-1"></i> ইউজার সেভ করুন`;
+            saveBtn.innerHTML = `<i class="fa-solid fa-check me-1"></i> Save User`;
         }
     });
 
@@ -660,7 +660,7 @@
 
         let saveBtn = document.getElementById('editUserSaveBtn');
         saveBtn.disabled = true;
-        saveBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> আপডেট হচ্ছে...`;
+        saveBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Updating...`;
 
         let payload = {
             id: document.getElementById('edit_user_id').value,
@@ -676,44 +676,44 @@
         try {
             const res = await axios.post('/update-user-role-status', payload);
             if (res.data && res.data.status === 'success') {
-                Swal.fire('আপডেট হয়েছে!', res.data.message, 'success');
+                Swal.fire('Updated!', res.data.message, 'success');
                 document.getElementById('editUserModalCloseBtn').click();
                 loadAllUsers();
             } else {
-                Swal.fire('এরর!', res.data.message || 'আপডেট করতে ব্যর্থ হয়েছে।', 'error');
+                Swal.fire('Error!', res.data.message || 'Failed to update.', 'error');
             }
         } catch (err) {
-            let msg = err.response?.data?.message || 'সমস্যা হয়েছে, পুনরায় চেষ্টা করুন।';
-            Swal.fire('এরর!', msg, 'error');
+            let msg = err.response?.data?.message || 'Error occurred. Please try again.';
+            Swal.fire('Error!', msg, 'error');
         } finally {
             saveBtn.disabled = false;
-            saveBtn.innerHTML = `<i class="fa-solid fa-arrows-rotate me-1"></i> আপডেট করুন`;
+            saveBtn.innerHTML = `<i class="fa-solid fa-arrows-rotate me-1"></i> Update User`;
         }
     });
 
     // Delete User
     function deleteUser(id, name) {
         Swal.fire({
-            title: 'আপনি কি নিশ্চিত?',
-            text: `"${name}" ইউজারকে সিস্টেম থেকে মুছে ফেলা হবে!`,
+            title: 'Are you sure?',
+            text: `"${name}" user will be deleted from system!`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'হ্যাঁ, ডিলিট করুন!',
-            cancelButtonText: 'বাতিল'
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
                     const res = await axios.post('/delete-user-admin', { id: id });
                     if (res.data && res.data.status === 'success') {
-                        Swal.fire('ডিলিট হয়েছে!', res.data.message, 'success');
+                        Swal.fire('Deleted!', res.data.message, 'success');
                         loadAllUsers();
                     } else {
-                        Swal.fire('এরর!', res.data.message || 'ডিলিট সম্ভব হয়নি।', 'error');
+                        Swal.fire('Error!', res.data.message || 'Could not delete user.', 'error');
                     }
                 } catch (err) {
-                    Swal.fire('এরর!', err.response?.data?.message || 'সমস্যা হয়েছে।', 'error');
+                    Swal.fire('Error!', err.response?.data?.message || 'Error occurred.', 'error');
                 }
             }
         });

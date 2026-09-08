@@ -7,13 +7,13 @@
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
                 <div>
                     <h1 class="h3 fw-bold text-dark mb-1 d-flex align-items-center gap-2">
-                        <i class="fa-solid fa-arrow-rotate-left text-success"></i> Return Management (পণ্য রিটার্ন ও সমন্বয়)
+                        <i class="fa-solid fa-arrow-rotate-left text-success"></i> Return Management
                     </h1>
-                    <p class="text-muted mb-0 small">মার্স কর্পোরেশন (MARSS CORPORATION) - সেলস (বিক্রি) ও পারচেজ (ক্রয়) রিটার্ন ব্যবস্থাপনা</p>
+                    <p class="text-muted mb-0 small">MARSS CORPORATION - Sales & Purchase Return Management</p>
                 </div>
                 <div class="d-flex align-items-center gap-2 mt-3 mt-md-0">
                     <button id="mainNewReturnBtn" onclick="triggerNewReturnModal()" class="btn btn-success fw-bold rounded-pill px-4 shadow-sm" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none;">
-                        <i class="fa-solid fa-plus me-1"></i> New Sales Return (নতুন রিটার্ন)
+                        <i class="fa-solid fa-plus me-1"></i> New Sales Return
                     </button>
                 </div>
             </div>
@@ -21,10 +21,10 @@
             <!-- Mode Toggle Nav Tabs -->
             <div class="d-flex align-items-center gap-2 mb-4">
                 <button id="tabSalesReturnBtn" onclick="switchReturnTab('sales')" class="btn btn-success fw-bold px-4 py-2 rounded-pill shadow-sm">
-                    <i class="fa-solid fa-cart-shopping me-2"></i> Sales Return (সেলস রিটার্ন)
+                    <i class="fa-solid fa-cart-shopping me-2"></i> Sales Return
                 </button>
                 <button id="tabPurchaseReturnBtn" onclick="switchReturnTab('purchase')" class="btn btn-outline-secondary fw-bold px-4 py-2 rounded-pill">
-                    <i class="fa-solid fa-truck-ramp-box me-2"></i> Purchase Return (পারচেজ রিটার্ন)
+                    <i class="fa-solid fa-truck-ramp-box me-2"></i> Purchase Return
                 </button>
             </div>
 
@@ -34,13 +34,13 @@
                     <h5 id="searchCardTitle" class="fw-bold text-dark mb-2 d-flex align-items-center gap-2">
                         <i class="fa-solid fa-magnifying-glass text-success"></i> Quick Invoice Search & Process Return
                     </h5>
-                    <p id="searchCardDesc" class="text-muted small mb-3">ইনভয়েস নম্বর দিয়ে যেকোনো বিক্রি খুঁজুন এবং পণ্য রিটার্ন প্রসেস করুন:</p>
+                    <p id="searchCardDesc" class="text-muted small mb-3">Search invoice number to process sales return:</p>
                     
                     <div class="row g-2 align-items-center">
                         <div class="col-md-9">
                             <div class="input-group input-group-lg">
                                 <span class="input-group-text bg-white border-end-0"><i id="searchCardIcon" class="fa-solid fa-receipt text-success fs-5"></i></span>
-                                <input type="text" id="quickInvoiceSearchInput" class="form-control border-start-0 ps-0 fw-bold fs-6" placeholder="ইনভয়েস নম্বর লিখুন (যেমন: #InvID00001)..." onkeydown="if(event.key==='Enter') triggerQuickReturnSearch()" />
+                                <input type="text" id="quickInvoiceSearchInput" class="form-control border-start-0 ps-0 fw-bold fs-6" placeholder="Enter invoice number (e.g. #InvID00001)..." onkeydown="if(event.key==='Enter') triggerQuickReturnSearch()" />
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -56,7 +56,7 @@
             <div class="card border-0 shadow-sm" style="border-radius: 16px;">
                 <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
                     <h5 id="historyTableTitle" class="fw-bold text-dark mb-0 fs-6">
-                        <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Sales Return History (রিটার্নকৃত মালের ইতিহাস)
+                        <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Sales Return History
                     </h5>
                     <span id="returnRecordCountBadge" class="badge bg-success-subtle text-success border px-3 py-1">Loading...</span>
                 </div>
@@ -129,17 +129,17 @@
             
             mainNewBtn.className = 'btn btn-teal text-white fw-bold rounded-pill px-4 shadow-sm';
             mainNewBtn.style.background = 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)';
-            mainNewBtn.innerHTML = `<i class="fa-solid fa-plus me-1"></i> New Purchase Return (নতুন পারচেজ রিটার্ন)`;
+            mainNewBtn.innerHTML = `<i class="fa-solid fa-plus me-1"></i> New Purchase Return`;
 
             searchCardBox.style.background = 'linear-gradient(145deg, #ffffff, #f0fdfa)';
             searchCardBox.style.borderLeft = '5px solid #14b8a6 !important';
             searchTitle.innerHTML = `<i class="fa-solid fa-magnifying-glass text-teal"></i> Quick Purchase Memo Search & Process Return`;
-            searchDesc.innerText = `পারচেজ মেমো নম্বর দিয়ে যেকোনো কেনা খুঁজুন এবং সাপ্লাইয়ারের কাছে রিটার্ন প্রসেস করুন:`;
+            searchDesc.innerText = `Search purchase memo number to process return to supplier:`;
             searchIcon.className = `fa-solid fa-file-invoice text-teal fs-5`;
-            searchInput.placeholder = `পারচেজ মেমো নম্বর লিখুন (যেমন: #PurID00001)...`;
+            searchInput.placeholder = `Enter purchase memo number (e.g. #PurID00001)...`;
             searchSubmitBtn.style.background = 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)';
 
-            historyTitle.innerHTML = `<i class="fa-solid fa-truck-ramp-box text-teal me-2"></i> Purchase Return History (সাপ্লাইয়ারের কাছে ফেরত দেওয়া মালের ইতিহাস)`;
+            historyTitle.innerHTML = `<i class="fa-solid fa-truck-ramp-box text-teal me-2"></i> Purchase Return History`;
             thInvoiceNo.innerText = 'Purchase Memo No';
             thPartyName.innerText = 'Supplier Name';
 
@@ -150,17 +150,17 @@
 
             mainNewBtn.className = 'btn btn-success fw-bold rounded-pill px-4 shadow-sm';
             mainNewBtn.style.background = 'linear-gradient(135deg, #15803d 0%, #16a34a 100%)';
-            mainNewBtn.innerHTML = `<i class="fa-solid fa-plus me-1"></i> New Sales Return (নতুন রিটার্ন)`;
+            mainNewBtn.innerHTML = `<i class="fa-solid fa-plus me-1"></i> New Sales Return`;
 
             searchCardBox.style.background = 'linear-gradient(145deg, #ffffff, #f0fdf4)';
             searchCardBox.style.borderLeft = '5px solid #16a34a !important';
             searchTitle.innerHTML = `<i class="fa-solid fa-magnifying-glass text-success"></i> Quick Invoice Search & Process Return`;
-            searchDesc.innerText = `ইনভয়েস নম্বর দিয়ে যেকোনো বিক্রি খুঁজুন এবং পণ্য রিটার্ন প্রসেস করুন:`;
+            searchDesc.innerText = `Search invoice number to process sales return:`;
             searchIcon.className = `fa-solid fa-receipt text-success fs-5`;
-            searchInput.placeholder = `ইনভয়েস নম্বর লিখুন (যেমন: #InvID00001)...`;
+            searchInput.placeholder = `Enter invoice number (e.g. #InvID00001)...`;
             searchSubmitBtn.style.background = 'linear-gradient(135deg, #15803d 0%, #16a34a 100%)';
 
-            historyTitle.innerHTML = `<i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Sales Return History (রিটার্নকৃত মালের ইতিহাস)`;
+            historyTitle.innerHTML = `<i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Sales Return History`;
             thInvoiceNo.innerText = 'Invoice No';
             thPartyName.innerText = 'Customer Name';
         }

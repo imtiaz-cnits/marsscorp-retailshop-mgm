@@ -1,5 +1,5 @@
 ﻿@extends('layouts.dashboard-sidenav')
-@section('title', 'Admin Dashboard - মার্স কর্পোরেশন (MARSS CORPORATION)')
+@section('title', 'Admin Dashboard - MARSS CORPORATION')
 @section('content')
 
 <!-- ApexCharts CDN -->
@@ -16,7 +16,7 @@
                     <h1 class="h3 fw-bold text-dark mb-1 d-flex align-items-center gap-2">
                         <i class="fa-solid fa-chart-line text-success"></i> Retail Shop Summary
                     </h1>
-                    <p class="text-muted mb-0 small">মার্স কর্পোরেশন (MARSS CORPORATION) - ব্যবসার সার্বিক হিসাব ও রিয়েল-টাইম ওভারভিউ</p>
+                    <p class="text-muted mb-0 small">MARSS CORPORATION - Overall Business Overview & Real-Time Analytics</p>
                 </div>
                 <div class="d-flex align-items-center gap-2 mt-3 mt-md-0">
                     <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fw-bold">
@@ -105,7 +105,7 @@
                             <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
                                 <div>
                                     <h5 class="fw-bold text-dark mb-0 fs-6" id="salesProfitChartTitle">
-                                        <i class="fa-solid fa-chart-area text-success me-2"></i> Sales & Profit Trend (গত ১৫ দিনের বিক্রি ও নিট লাভ)
+                                        <i class="fa-solid fa-chart-area text-success me-2"></i> Sales & Profit Trend (Last 15 Days Sales & Net Profit)
                                     </h5>
                                     <small class="text-muted" id="salesProfitChartSub">Daily sales revenue vs actual net profit</small>
                                 </div>
@@ -288,7 +288,7 @@
                     <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
                         <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
                             <h5 class="fw-bold text-dark mb-0 fs-6">
-                                <i class="fa-solid fa-triangle-exclamation text-danger me-2"></i> Low Stock Alert (কম স্টক)
+                                <i class="fa-solid fa-triangle-exclamation text-danger me-2"></i> Low Stock Alert
                             </h5>
                             <a href="/admin-dashboard-product" class="btn btn-sm btn-outline-danger rounded-pill px-3">View All Stock</a>
                         </div>
@@ -317,7 +317,7 @@
                     <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
                         <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
                             <h5 class="fw-bold text-dark mb-0 fs-6">
-                                <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Recent Sales Invoices (সাম্প্রতিক বিক্রি)
+                                <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Recent Sales Invoices
                             </h5>
                             <a href="/admin-dashboard-invoice" class="btn btn-sm btn-outline-primary rounded-pill px-3">All Invoices</a>
                         </div>
@@ -479,14 +479,14 @@
         const isAdmin = (userRole === 'admin' || userRole === 'super_admin');
 
         let chartSeries = [{
-            name: 'Total Sales (মোট বিক্রি)',
+            name: 'Total Sales',
             data: sales
         }];
         let chartColors = ['#16a34a'];
 
         if (isAdmin) {
             chartSeries.push({
-                name: 'Net Profit (নিট লাভ)',
+                name: 'Net Profit',
                 data: profits
             });
             chartColors.push('#0284c7');

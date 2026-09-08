@@ -379,7 +379,7 @@
     <div class="no-print-wrapper">
         <div>
             <button class="btn btn-success fw-bold px-4 shadow-sm" onclick="printInvoice()" style="background-color: #15803d; border-color: #15803d;">
-                <i class="fa-solid fa-print me-2"></i> Print Bill (মেমো প্রিন্ট)
+                <i class="fa-solid fa-print me-2"></i> Print Bill
             </button>
         </div>
         <div class="d-flex gap-2">

@@ -16,7 +16,7 @@
 
                 <!-- Search Bar inside Modal -->
                 <div class="card border-0 bg-light p-3 mb-3" style="border-radius: 12px;">
-                    <label id="modalSearchLabel" class="form-label fw-bold text-dark small mb-1">Search Invoice Number (ইনভয়েস নাম্বার লিখুন)</label>
+                    <label id="modalSearchLabel" class="form-label fw-bold text-dark small mb-1">Search Invoice Number</label>
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0"><i id="modalSearchIcon" class="fa-solid fa-receipt text-success"></i></span>
                         <input type="text" id="modalInvoiceSearchInput" class="form-control border-start-0 ps-0 fw-bold" placeholder="e.g. #InvID00001 or PUR-0001" onkeydown="if(event.key==='Enter') searchInvoiceInModal()" />
@@ -46,8 +46,8 @@
                 <!-- Return Products Table (Initially Hidden) -->
                 <div id="returnItemsContainer" class="d-none">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-square-check text-success me-1"></i> যে আইটেমগুলো রিটার্ন করবেন সেগুলো সিলেক্ট করুন:</h6>
-                        <span class="badge bg-light text-dark border fw-semibold">টিক দিয়ে সংখ্যা ইনপুট দিন</span>
+                        <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-square-check text-success me-1"></i> Select items to return:</h6>
+                        <span class="badge bg-light text-dark border fw-semibold">Check item and enter quantity</span>
                     </div>
                     <div class="table-responsive">
                         <table class="table align-middle table-bordered mb-0">
@@ -68,7 +68,7 @@
                             </tbody>
                             <tfoot class="bg-light fw-bold">
                                 <tr>
-                                    <td colspan="5" class="text-end text-uppercase">Total Refund Amount (মোট রিফান্ড):</td>
+                                    <td colspan="5" class="text-end text-uppercase">Total Refund Amount:</td>
                                     <td id="totalRefundText" class="text-end pe-3 text-success fs-6">৳ 0.00</td>
                                 </tr>
                             </tfoot>
@@ -77,11 +77,11 @@
 
                     <div class="row g-3 mt-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-muted small">Return Date (রিটার্ন তারিখ)</label>
+                            <label class="form-label fw-bold text-muted small">Return Date</label>
                             <input type="date" id="modalReturnDate" class="form-control fw-semibold" />
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-muted small">Return Reason / Note (কারণ)</label>
+                            <label class="form-label fw-bold text-muted small">Return Reason / Note</label>
                             <input type="text" id="modalReturnNote" class="form-control fw-semibold" placeholder="Optional return note" />
                         </div>
                     </div>
@@ -116,20 +116,20 @@
         const searchIcon = document.getElementById('modalSearchIcon');
 
         if (mode === 'purchase') {
-            headerTitle.innerText = 'Purchase Return Processing (পারচেজ রিটার্ন)';
+            headerTitle.innerText = 'Purchase Return Processing';
             headerIcon.className = 'fa-solid fa-truck-ramp-box';
             headerBox.style.background = 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)';
-            searchLabel.innerText = 'Search Purchase Memo / Invoice (পারচেজ মেমো নম্বর লিখুন)';
+            searchLabel.innerText = 'Search Purchase Memo / Invoice';
             searchIcon.className = 'fa-solid fa-file-invoice text-teal';
             document.getElementById('modalInvoiceSearchInput').placeholder = 'e.g. #PurID00001 or 1';
             document.getElementById('summaryNoLabel').innerText = 'Purchase No:';
             document.getElementById('summaryPartyLabel').innerText = 'Supplier Name:';
             document.getElementById('summaryDateLabel').innerText = 'Purchase Date';
         } else {
-            headerTitle.innerText = 'Sales Return Processing (সেলস রিটার্ন)';
+            headerTitle.innerText = 'Sales Return Processing';
             headerIcon.className = 'fa-solid fa-arrow-rotate-left';
             headerBox.style.background = 'linear-gradient(135deg, #15803d 0%, #16a34a 100%)';
-            searchLabel.innerText = 'Search Invoice Number (ইনভয়েস নাম্বার লিখুন)';
+            searchLabel.innerText = 'Search Invoice Number';
             searchIcon.className = 'fa-solid fa-receipt text-success';
             document.getElementById('modalInvoiceSearchInput').placeholder = 'e.g. #InvID00001 or 1';
             document.getElementById('summaryNoLabel').innerText = 'Invoice / Order No:';

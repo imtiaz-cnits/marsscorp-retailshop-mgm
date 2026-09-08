@@ -40,7 +40,7 @@
                                 <button id="openModalBtns" type="button" class="create-invoice" type="button">
                                     + Create Location
                                 </button>
-                                <div class="icon-buttons">
+                                {{-- <div class="icon-buttons">
                                     <button id="copyBtn">
                                         <svg width="32" height="32" viewBox="0 0 44 44" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -126,7 +126,7 @@
                                                 fill="#192045" />
                                         </svg>
                                     </button>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
 

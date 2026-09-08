@@ -1526,7 +1526,7 @@
         let total = left + right + both;
 
         const badge = document.getElementById('createDoorTotalBadge');
-        if (badge) badge.innerText = `মোট ডোর স্টক: ${total}`;
+        if (badge) badge.innerText = `Total Door Stock: ${total}`;
 
         const qtyInput = document.getElementById('ProductQuantity');
         if (qtyInput) qtyInput.value = total;
@@ -1563,7 +1563,7 @@
         if (hidden) hidden.value = '';
 
         const badge = document.getElementById('createDoorTotalBadge');
-        if (badge) badge.innerText = 'মোট ডোর স্টক: 0';
+        if (badge) badge.innerText = 'Total Door Stock: 0';
 
         $('.door-hand-box-create').removeClass('border-primary border-success border-info shadow');
     }
@@ -1772,7 +1772,7 @@
                 noResultEl = document.createElement('div');
                 noResultEl.className = 'no-results-msg text-center py-2 text-muted';
                 noResultEl.style.fontSize = '12px';
-                noResultEl.textContent = 'কোনো ফলাফল পাওয়া যায়নি';
+                noResultEl.textContent = 'No results found';
                 listEl.appendChild(noResultEl);
             }
         } else if (noResultEl) {
@@ -1853,7 +1853,7 @@
         const text = nameInput ? nameInput.value.trim() : '';
 
         if (!text) {
-            errorToast("অনুগ্রহ করে প্রথমে প্রোডাক্টের নাম লিখুন!");
+            errorToast("Please enter product name first!");
             return;
         }
 
@@ -1861,7 +1861,7 @@
         const originalContent = translateBtn ? translateBtn.innerHTML : '';
         if (translateBtn) {
             translateBtn.disabled = true;
-            translateBtn.innerHTML = `<span>অনুবাদ হচ্ছে...</span>`;
+            translateBtn.innerHTML = `<span>Translating...</span>`;
         }
 
         try {
@@ -1872,16 +1872,16 @@
                 const translatedText = res.data[0].map(item => item[0]).filter(Boolean).join('');
                 if (translatedText) {
                     nameInput.value = translatedText;
-                    successToast("বাংলায় রূপান্তর সফল হয়েছে!");
+                    successToast("Translation successful!");
                 } else {
-                    errorToast("অনুবাদ ব্যর্থ হয়েছে। আবার চেষ্টা করুন।");
+                    errorToast("Translation failed. Please try again.");
                 }
             } else {
-                errorToast("অনুবাদ ব্যর্থ হয়েছে।");
+                errorToast("Translation failed.");
             }
         } catch (err) {
             console.error("Translation error:", err);
-            errorToast("অনুবাদ করতে সমস্যা হয়েছে। ইন্টারনেট সংযোগ পরীক্ষা করুন।");
+            errorToast("Translation error. Please check internet connection.");
         } finally {
             if (translateBtn) {
                 translateBtn.disabled = false;
@@ -2114,28 +2114,28 @@
         <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
             <div class="modal-header text-white py-3" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);">
                 <h5 class="modal-title fw-bold" id="productCreateCameraScanModalLabel">
-                    <i class="fa-solid fa-camera me-2"></i> বারকোড ক্যামেরা স্ক্যানার
+                    <i class="fa-solid fa-camera me-2"></i> Barcode Camera Scanner
                 </h5>
                 <button type="button" class="btn-close btn-close-white" onclick="stopProductCreateCameraScanner()"></button>
             </div>
             <div class="modal-body p-3 text-center">
                 <div id="productCreateCameraScannerStatus" class="alert alert-info py-2 small mb-3" style="border-radius: 10px;">
-                    <i class="fa-solid fa-circle-notch fa-spin me-1"></i> ক্যামেরা শুরু হচ্ছে... বারকোড ক্যামেরার সামনে রাখুন।
+                    <i class="fa-solid fa-circle-notch fa-spin me-1"></i> Starting camera... Hold barcode in front of camera.
                 </div>
 
                 <!-- Reader Viewport -->
                 <div id="product-create-reader" style="width: 100%; min-height: 270px; background: #000; border-radius: 14px; overflow: hidden;" class="shadow-sm"></div>
 
                 <div class="d-flex align-items-center justify-content-between mt-3 px-1">
-                    <span id="productCreateLastScannedText" class="badge bg-success fs-6 py-2 px-3" style="border-radius: 10px;">স্ক্যান কৃত কোড: -</span>
+                    <span id="productCreateLastScannedText" class="badge bg-success fs-6 py-2 px-3" style="border-radius: 10px;">Scanned Code: -</span>
                     <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="switchProductCreateCamera()">
-                        <i class="fa-solid fa-rotate me-1"></i> ক্যামেরা পাল্টান
+                        <i class="fa-solid fa-rotate me-1"></i> Switch Camera
                     </button>
                 </div>
             </div>
             <div class="modal-footer bg-light py-2 justify-content-between">
-                <small class="text-muted"><i class="fa-solid fa-bolt text-warning me-1"></i> বারকোড স্ক্যান করলেই ইনপুটে বসে যাবে</small>
-                <button type="button" class="btn btn-secondary px-4 fw-bold rounded-pill" onclick="stopProductCreateCameraScanner()">বন্ধ করুন</button>
+                <small class="text-muted"><i class="fa-solid fa-bolt text-warning me-1"></i> Barcode will be entered automatically upon scan</small>
+                <button type="button" class="btn btn-secondary px-4 fw-bold rounded-pill" onclick="stopProductCreateCameraScanner()">Close</button>
             </div>
         </div>
     </div>
@@ -2172,7 +2172,7 @@
         const statusEl = document.getElementById("productCreateCameraScannerStatus");
         if (statusEl) {
             statusEl.className = "alert alert-info py-2 small mb-3";
-            statusEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-1"></i> ক্যামেরা চালু হচ্ছে... বারকোড ক্যামেরার সামনে আনুন।';
+            statusEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-1"></i> Starting camera... Bring barcode in front of camera.';
         }
 
         if (!productCreateHtml5QrCode) {
@@ -2197,13 +2197,13 @@
         ).then(() => {
             if (statusEl) {
                 statusEl.className = "alert alert-success py-2 small mb-3";
-                statusEl.innerHTML = '<i class="fa-solid fa-video me-1"></i> ক্যামেরা সক্রিয়! বারকোড স্ক্যান করলে সরাসরি ইনপুটে যুক্ত হবে।';
+                statusEl.innerHTML = '<i class="fa-solid fa-video me-1"></i> Camera active! Scanned barcode will be added directly.';
             }
         }).catch(err => {
             console.error("Camera start error:", err);
             if (statusEl) {
                 statusEl.className = "alert alert-danger py-2 small mb-3";
-                statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-1"></i> ক্যামেরা চালু করা যায়নি! ব্রাউজারের ক্যামেরা পারমিশন এলাউ (Allow) করুন।';
+                statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-1"></i> Could not access camera! Please allow camera permissions in browser.';
             }
         });
     }
@@ -2213,7 +2213,7 @@
 
         productCreateLastCode = decodedText;
         const lastTextEl = document.getElementById("productCreateLastScannedText");
-        if (lastTextEl) lastTextEl.innerText = `স্ক্যান কৃত: ${decodedText}`;
+        if (lastTextEl) lastTextEl.innerText = `Scanned: ${decodedText}`;
 
         if (navigator.vibrate) navigator.vibrate(100);
 

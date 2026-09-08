@@ -29,8 +29,8 @@
                                     <span>Add Product</span>
                                 </button>
 
-                                <!-- Action Buttons (38px x 38px, Unified Border matching Searchbar, Dropdowns, Table) -->
-                                <div class="flex items-center gap-1.5">
+                                    <!-- Action Buttons (38px x 38px, Unified Border matching Searchbar, Dropdowns, Table) -->
+                                {{-- <div class="flex items-center gap-1.5">
                                     <button id="copyBtn" type="button" title="Copy Table" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
                                         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -68,7 +68,7 @@
                                             <line x1="15" y1="13" x2="9" y2="17"></line>
                                         </svg>
                                     </button>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
 
@@ -213,6 +213,121 @@
 
         </div>
     </div>
+    <!-- Quick View Product Details Modal -->
+    <div id="productQuickViewModal" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered modal-lg my-3" style="max-height: 88vh;">
+            <div class="modal-content bg-white dark:bg-slate-900 border-0 rounded-2xl shadow-2xl overflow-hidden transition-colors flex flex-col" style="max-height: 88vh; border: none !important;">
+                <!-- Modal Header: Sticky top, Green background, White text, Red round close button, Equal px-4 padding -->
+                <div class="modal-header sticky top-0 z-20 px-4 py-3 bg-emerald-700 text-white flex items-center justify-between shadow-sm border-0 flex-shrink-0" style="background-color: #15803d !important; color: #ffffff !important; border: none !important;">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-white/20 text-white flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div>
+                            <h5 class="modal-title text-base sm:text-lg font-bold text-white tracking-tight mb-0.5" id="qvProductName" style="color: #ffffff !important;">Product Details</h5>
+                            <div class="flex items-center gap-1.5 flex-wrap text-xs" id="qvHeaderBadges"></div>
+                        </div>
+                    </div>
+                    <!-- Red Circular Borderless Close Button with White Icon -->
+                    <button type="button" class="qv-close-btn" data-bs-dismiss="modal" aria-label="Close" style="width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; max-width: 32px !important; max-height: 32px !important; border-radius: 50% !important; flex: 0 0 32px !important; padding: 0 !important; margin: 0 !important;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal Body: Scrollable middle section -->
+                <div class="modal-body p-4 space-y-3.5 overflow-y-auto custom-scrollbar flex-1" style="max-height: calc(88vh - 120px);">
+                    <!-- KPI Cards Grid: 4 columns on desktop, 2 columns on mobile -->
+                    <div class="qv-cards-grid grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                        <div class="qv-stat-box p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
+                            <span class="qv-label block text-[10px] font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Stock Status</span>
+                            <div id="qvStockBadgeWrap" class="inline-block"></div>
+                        </div>
+                        <div class="qv-stat-box p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
+                            <span class="qv-label block text-[10px] font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Total Quantity</span>
+                            <span id="qvQuantity" class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100">0</span>
+                        </div>
+                        <div class="qv-stat-box p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
+                            <span class="qv-label block text-[10px] font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Cost Price</span>
+                            <span id="qvCostPrice" class="text-sm sm:text-base font-bold text-slate-700 dark:text-slate-200">৳ 0</span>
+                        </div>
+                        <div class="qv-stat-box p-2.5 rounded-xl bg-emerald-50 dark:bg-slate-800 border border-emerald-200 dark:border-slate-700 text-center">
+                            <span class="qv-label block text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">Selling Price</span>
+                            <span id="qvSellPrice" class="text-sm sm:text-base font-bold text-emerald-700 dark:text-emerald-300">৳ 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Specification Box with Top Margin & Generous Padding -->
+                    <div class="qv-spec-box rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden mt-3">
+                        <div class="qv-spec-header bg-slate-100 dark:bg-slate-800 px-5 sm:px-6 py-3 border-b border-slate-200 dark:border-slate-700 font-bold text-xs text-slate-700 dark:text-slate-200 uppercase tracking-wider flex items-center justify-between flex-wrap gap-2">
+                            <span>Product Specification</span>
+                            <span id="qvTotalCostValue" class="text-emerald-700 dark:text-emerald-400 font-bold">Total Value: ৳ 0</span>
+                        </div>
+                        <div class="divide-y divide-slate-200 dark:divide-slate-700 text-xs">
+                            <div class="qv-spec-row grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-white dark:bg-slate-800/90">
+                                <span class="font-semibold text-slate-500 dark:text-slate-400">Barcode(s):</span>
+                                <div id="qvBarcodes" class="col-span-2 flex flex-wrap gap-1 font-mono"></div>
+                            </div>
+                            <div class="qv-spec-row-alt grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50">
+                                <span class="font-semibold text-slate-500 dark:text-slate-400">Category:</span>
+                                <span id="qvCategory" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                            </div>
+                            <div class="qv-spec-row grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-white dark:bg-slate-800/90">
+                                <span class="font-semibold text-slate-500 dark:text-slate-400">Brand:</span>
+                                <span id="qvBrand" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                            </div>
+                            <div class="qv-spec-row-alt grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50">
+                                <span class="font-semibold text-slate-500 dark:text-slate-400">Unit:</span>
+                                <span id="qvUnit" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                            </div>
+                            <div class="qv-spec-row grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-white dark:bg-slate-800/90">
+                                <span class="font-semibold text-slate-500 dark:text-slate-400">Door Side:</span>
+                                <span id="qvDoorSide" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                            </div>
+                            <div id="qvDescWrap" class="qv-spec-row-alt grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50" style="display: none;">
+                                <span class="font-semibold text-slate-500 dark:text-slate-400">Description:</span>
+                                <span id="qvDescription" class="col-span-2 text-slate-700 dark:text-slate-300"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Multi-variant Table with Top Margin -->
+                    <div id="qvVariantsSection" style="display: none;" class="space-y-2 mt-3.5">
+                        <h6 class="font-bold text-xs uppercase tracking-wider text-slate-600 dark:text-slate-400 flex items-center gap-1.5 mb-0 px-1">
+                            <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"></path><path d="M2 20h20"></path></svg>
+                            <span>Door Side / Handedness Breakdown</span>
+                        </h6>
+                        <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-700">
+                                    <tr>
+                                        <th class="px-4 py-2.5">Door Side</th>
+                                        <th class="px-4 py-2.5">Barcode</th>
+                                        <th class="px-4 py-2.5 text-center">Stock</th>
+                                        <th class="px-4 py-2.5 text-end">Cost Price</th>
+                                        <th class="px-4 py-2.5 text-end">Selling Price</th>
+                                        <th class="px-4 py-2.5 text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="qvVariantsTableBody" class="divide-y divide-slate-200 dark:divide-slate-700"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer: Sticky bottom, Cancel button 38px height, Reduced px-4 padding, Red background, White text -->
+                <div class="modal-footer sticky bottom-0 z-20 px-4 py-2.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex justify-end flex-shrink-0">
+                    <button type="button" class="px-4 h-[38px] min-h-[38px] max-h-[38px] rounded-xl bg-red-600 hover:bg-red-700 active:scale-[0.98] text-white text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center border-0" data-bs-dismiss="modal" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; background-color: #dc2626 !important; color: #ffffff !important; border: none !important;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Hero Main Content End -->
 
     <style>
@@ -274,12 +389,243 @@
             background-color: #10b981 !important;
             color: #ffffff !important;
             box-shadow: 0 1px 2px rgba(16, 185, 129, 0.2);
+            font-size: 10px !important;
+            padding: 2px 7px !important;
         }
 
         .badge.out-of-stock {
             background-color: #ef4444 !important;
             color: #ffffff !important;
             box-shadow: 0 1px 2px rgba(239, 68, 68, 0.2);
+            font-size: 10px !important;
+            padding: 2px 7px !important;
+        }
+
+        /* 4 KPI cards grid: 2 columns on mobile, 4 columns on tablet/desktop */
+        .qv-cards-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+        @media (min-width: 576px) {
+            .qv-cards-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+            }
+        }
+
+        /* Quick View Modal Circular Close Button (Strict 32px Circle) */
+        #productQuickViewModal .qv-close-btn,
+        .qv-close-btn {
+            width: 32px !important;
+            height: 32px !important;
+            min-width: 32px !important;
+            min-height: 32px !important;
+            max-width: 32px !important;
+            max-height: 32px !important;
+            flex: 0 0 32px !important;
+            border-radius: 50% !important;
+            box-sizing: border-box !important;
+            background-color: #dc2626 !important;
+            color: #ffffff !important;
+            border: none !important;
+            outline: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            align-self: center !important;
+            flex-shrink: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            line-height: 1 !important;
+            cursor: pointer !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+            transition: all 0.15s ease-in-out !important;
+        }
+        #productQuickViewModal .qv-close-btn:hover,
+        .qv-close-btn:hover {
+            background-color: #b91c1c !important;
+        }
+        #productQuickViewModal .qv-close-btn svg,
+        .qv-close-btn svg {
+            width: 14px !important;
+            height: 14px !important;
+            min-width: 14px !important;
+            min-height: 14px !important;
+            max-width: 14px !important;
+            max-height: 14px !important;
+            stroke: #ffffff !important;
+            display: block !important;
+            margin: auto !important;
+        }
+
+        /* Modal Table Heading & Rows Generous Left/Right Padding */
+        #productQuickViewModal .qv-spec-header {
+            padding: 12px 20px !important;
+        }
+        #productQuickViewModal .qv-spec-row,
+        #productQuickViewModal .qv-spec-row-alt {
+            padding: 10px 20px !important;
+        }
+        #productQuickViewModal #qvVariantsSection table th,
+        #productQuickViewModal #qvVariantsSection table td {
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+        }
+
+        /* Quick View Action Button - Distinct Sky Blue Eye Icon, Exact Same Border & Bg as Edit/Delete Buttons, Never turns white on hover */
+        .quick-view-btn {
+            background-color: #f0f9ff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #0284c7 !important;
+            transition: all 0.15s ease-in-out !important;
+        }
+        .quick-view-btn svg {
+            stroke: #0284c7 !important;
+            color: #0284c7 !important;
+            transition: stroke 0.15s ease-in-out !important;
+        }
+        .quick-view-btn:hover {
+            background-color: #e0f2fe !important;
+            border-color: #0284c7 !important;
+            color: #0284c7 !important;
+        }
+        .quick-view-btn:hover svg {
+            stroke: #0284c7 !important;
+            color: #0284c7 !important;
+        }
+
+        /* Quick View Action Button in Dark Mode - Exact Same Border (#334155) & Background (#1e293b) as other action buttons */
+        body[light-mode="dark"] .quick-view-btn,
+        body[data-layout-mode="dark"] .quick-view-btn,
+        html.dark .quick-view-btn,
+        body.dark .quick-view-btn,
+        body[light-mode="dark"] #printTable td .quick-view-btn,
+        body[data-layout-mode="dark"] #printTable td .quick-view-btn,
+        html.dark #printTable td .quick-view-btn,
+        body[light-mode="dark"] #tableList td .quick-view-btn,
+        body[data-layout-mode="dark"] #tableList td .quick-view-btn,
+        html.dark #tableList td .quick-view-btn,
+        body[light-mode="dark"] .product-mobile-card .quick-view-btn,
+        body[data-layout-mode="dark"] .product-mobile-card .quick-view-btn,
+        html.dark .product-mobile-card .quick-view-btn {
+            background-color: #1e293b !important;
+            border: 1px solid #334155 !important;
+            border-color: #334155 !important;
+            color: #38bdf8 !important;
+        }
+        body[light-mode="dark"] .quick-view-btn svg,
+        body[data-layout-mode="dark"] .quick-view-btn svg,
+        html.dark .quick-view-btn svg,
+        body.dark .quick-view-btn svg,
+        body[light-mode="dark"] #printTable td .quick-view-btn svg,
+        body[data-layout-mode="dark"] #printTable td .quick-view-btn svg,
+        html.dark #printTable td .quick-view-btn svg,
+        body[light-mode="dark"] #tableList td .quick-view-btn svg,
+        body[data-layout-mode="dark"] #tableList td .quick-view-btn svg,
+        html.dark #tableList td .quick-view-btn svg,
+        body[light-mode="dark"] .product-mobile-card .quick-view-btn svg,
+        body[data-layout-mode="dark"] .product-mobile-card .quick-view-btn svg,
+        html.dark .product-mobile-card .quick-view-btn svg {
+            stroke: #38bdf8 !important;
+            color: #38bdf8 !important;
+        }
+        body[light-mode="dark"] .quick-view-btn:hover,
+        body[data-layout-mode="dark"] .quick-view-btn:hover,
+        html.dark .quick-view-btn:hover,
+        body.dark .quick-view-btn:hover,
+        body[light-mode="dark"] #printTable td .quick-view-btn:hover,
+        body[data-layout-mode="dark"] #printTable td .quick-view-btn:hover,
+        html.dark #printTable td .quick-view-btn:hover,
+        body[light-mode="dark"] #tableList td .quick-view-btn:hover,
+        body[data-layout-mode="dark"] #tableList td .quick-view-btn:hover,
+        html.dark #tableList td .quick-view-btn:hover,
+        body[light-mode="dark"] .product-mobile-card .quick-view-btn:hover,
+        body[data-layout-mode="dark"] .product-mobile-card .quick-view-btn:hover,
+        html.dark .product-mobile-card .quick-view-btn:hover {
+            background-color: #0c4a6e !important;
+            border-color: #0284c7 !important;
+            color: #38bdf8 !important;
+        }
+        body[light-mode="dark"] .quick-view-btn:hover svg,
+        body[data-layout-mode="dark"] .quick-view-btn:hover svg,
+        html.dark .quick-view-btn:hover svg,
+        body.dark .quick-view-btn:hover svg,
+        body[light-mode="dark"] #printTable td .quick-view-btn:hover svg,
+        body[data-layout-mode="dark"] #printTable td .quick-view-btn:hover svg,
+        html.dark #printTable td .quick-view-btn:hover svg,
+        body[light-mode="dark"] #tableList td .quick-view-btn:hover svg,
+        body[data-layout-mode="dark"] #tableList td .quick-view-btn:hover svg,
+        html.dark #tableList td .quick-view-btn:hover svg,
+        body[light-mode="dark"] .product-mobile-card .quick-view-btn:hover svg,
+        body[data-layout-mode="dark"] .product-mobile-card .quick-view-btn:hover svg,
+        html.dark .product-mobile-card .quick-view-btn:hover svg {
+            stroke: #38bdf8 !important;
+            color: #38bdf8 !important;
+        }
+
+        /* Quick View Modal Outer Border Removal & Darkmode Fixes */
+        #productQuickViewModal .modal-content {
+            border: none !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+        }
+
+        body[light-mode="dark"] #productQuickViewModal .modal-content,
+        html.dark #productQuickViewModal .modal-content,
+        body.dark #productQuickViewModal .modal-content {
+            background-color: #0f172a !important;
+            border: none !important;
+            border-color: transparent !important;
+            color: #f8fafc !important;
+        }
+
+        body[light-mode="dark"] #productQuickViewModal .qv-stat-box,
+        html.dark #productQuickViewModal .qv-stat-box,
+        body.dark #productQuickViewModal .qv-stat-box {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+
+        body[light-mode="dark"] #productQuickViewModal .qv-stat-box *,
+        html.dark #productQuickViewModal .qv-stat-box *,
+        body.dark #productQuickViewModal .qv-stat-box * {
+            color: #f8fafc !important;
+        }
+
+        body[light-mode="dark"] #productQuickViewModal .qv-stat-box .qv-label,
+        html.dark #productQuickViewModal .qv-stat-box .qv-label,
+        body.dark #productQuickViewModal .qv-stat-box .qv-label {
+            color: #94a3b8 !important;
+        }
+
+        body[light-mode="dark"] #productQuickViewModal .qv-spec-box,
+        html.dark #productQuickViewModal .qv-spec-box,
+        body.dark #productQuickViewModal .qv-spec-box {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+        }
+
+        body[light-mode="dark"] #productQuickViewModal .qv-spec-header,
+        html.dark #productQuickViewModal .qv-spec-header,
+        body.dark #productQuickViewModal .qv-spec-header {
+            background-color: #0f172a !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+
+        body[light-mode="dark"] #productQuickViewModal .qv-spec-row,
+        html.dark #productQuickViewModal .qv-spec-row,
+        body.dark #productQuickViewModal .qv-spec-row {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+
+        body[light-mode="dark"] #productQuickViewModal .qv-spec-row-alt,
+        html.dark #productQuickViewModal .qv-spec-row-alt,
+        body.dark #productQuickViewModal .qv-spec-row-alt {
+            background-color: #0f172a !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
         }
 
         /* + Add Product Button Fix: strict 38px height & keep white text on hover */
@@ -493,6 +839,15 @@
         body[light-mode="dark"] #tableList td .edit-link,
         body[data-layout-mode="dark"] #tableList td .edit-link,
         html.dark #tableList td .edit-link,
+        body[light-mode="dark"] #printTable td .quick-view-btn,
+        body[data-layout-mode="dark"] #printTable td .quick-view-btn,
+        html.dark #printTable td .quick-view-btn,
+        body[light-mode="dark"] #tableList td .quick-view-btn,
+        body[data-layout-mode="dark"] #tableList td .quick-view-btn,
+        html.dark #tableList td .quick-view-btn,
+        body[light-mode="dark"] .product-mobile-card .quick-view-btn,
+        body[data-layout-mode="dark"] .product-mobile-card .quick-view-btn,
+        html.dark .product-mobile-card .quick-view-btn,
         body[light-mode="dark"] #printTable td .custom-delete-modal-btn,
         body[data-layout-mode="dark"] #printTable td .custom-delete-modal-btn,
         html.dark #printTable td .custom-delete-modal-btn,
@@ -570,6 +925,15 @@
         body[light-mode="dark"] #tableList td .edit-link,
         body[data-layout-mode="dark"] #tableList td .edit-link,
         html.dark #tableList td .edit-link,
+        body[light-mode="dark"] #printTable td .quick-view-btn,
+        body[data-layout-mode="dark"] #printTable td .quick-view-btn,
+        html.dark #printTable td .quick-view-btn,
+        body[light-mode="dark"] #tableList td .quick-view-btn,
+        body[data-layout-mode="dark"] #tableList td .quick-view-btn,
+        html.dark #tableList td .quick-view-btn,
+        body[light-mode="dark"] .product-mobile-card .quick-view-btn,
+        body[data-layout-mode="dark"] .product-mobile-card .quick-view-btn,
+        html.dark .product-mobile-card .quick-view-btn,
         body[light-mode="dark"] #printTable td .custom-delete-modal-btn,
         body[data-layout-mode="dark"] #printTable td .custom-delete-modal-btn,
         html.dark #printTable td .custom-delete-modal-btn,
@@ -589,6 +953,7 @@
         body[data-layout-mode="dark"] .product-mobile-card .custom-delete-modal-btn,
         html.dark .product-mobile-card .custom-delete-modal-btn {
             background-color: #1e293b !important;
+            border-color: #334155 !important;
         }
 
         body[light-mode="dark"] #printTable td .edit-link:hover,
@@ -1179,8 +1544,8 @@
             mobileCardList.empty();
 
             if (pageItems.length === 0) {
-                tableList.html('<tr><td colspan="10" class="text-center text-rose-500 p-8 font-semibold"><svg class="w-6 h-6 mx-auto mb-2 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>কোনো পণ্য পাওয়া যায়নি।</td></tr>');
-                mobileCardList.html('<div class="p-6 text-center text-rose-500 font-semibold bg-white dark:bg-slate-800 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm">কোনো পণ্য পাওয়া যায়নি।</div>');
+                tableList.html('<tr><td colspan="10" class="text-center text-rose-500 p-8 font-semibold"><svg class="w-6 h-6 mx-auto mb-2 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>No products found.</td></tr>');
+                mobileCardList.html('<div class="p-6 text-center text-rose-500 font-semibold bg-white dark:bg-slate-800 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm">No products found.</div>');
             } else {
                 pageItems.forEach(function(group, idx) {
                     let realIndex = startIndex + idx;
@@ -1242,6 +1607,12 @@
                     if (isMultiVariant) {
                         actionHtml = `
                             <div class="flex items-center justify-center gap-1.5">
+                                <button type="button" onclick="openQuickViewModal('${item.id}')" class="quick-view-btn w-[30px] h-[30px] rounded-lg border flex items-center justify-center transition-all duration-150 shadow-sm" title="Quick View Details">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
                                 <button type="button" class="w-[30px] h-[30px] rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-800 flex items-center justify-center transition-all duration-150 toggle-variant-btn shadow-sm" data-target="variant-row-${realIndex}" title="Show / Hide Handedness Variants (${group.items.length} items)">
                                     <svg class="w-3.5 h-3.5 chevron-icon transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                         <polyline points="6 9 12 15 18 9"></polyline>
@@ -1258,6 +1629,12 @@
                     } else {
                         actionHtml = `
                             <div id="action_btn_wrap" class="flex items-center justify-center gap-1.5">
+                                <button type="button" onclick="openQuickViewModal('${item.id}')" class="quick-view-btn w-[30px] h-[30px] rounded-lg border flex items-center justify-center transition-all duration-150 shadow-sm" title="Quick View Product">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
                                 <a data-id="${item.id}" href="#" class="link edit-link w-[30px] h-[30px] rounded-lg bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white border border-emerald-200/80 hover:border-emerald-600 dark:bg-emerald-950/40 dark:border-slate-800 dark:text-emerald-400 dark:hover:bg-emerald-600 dark:hover:text-white flex items-center justify-center transition-all duration-150 shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit Product">
                                     <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M12 20h9"></path>
@@ -1345,6 +1722,12 @@
                                 </td>
                                 <td class="px-3 py-2 text-center">
                                     <div class="flex items-center justify-center gap-1">
+                                        <button type="button" onclick="openQuickViewModal('${subItem.id}')" class="quick-view-btn w-[26px] h-[26px] rounded-md border flex items-center justify-center transition-all" title="Quick View">
+                                            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                <circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                        </button>
                                         <a data-id="${subItem.id}" href="#" class="link edit-link w-[26px] h-[26px] rounded-md bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white border border-emerald-200 dark:bg-emerald-950/40 dark:border-slate-800 dark:text-emerald-400 dark:hover:bg-emerald-600 dark:hover:text-white flex items-center justify-center transition-all" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit this variant">
                                             <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M12 20h9"></path>
@@ -1369,21 +1752,21 @@
                                     <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-100 dark:border-slate-800">
                                         <h6 class="font-bold text-slate-800 dark:text-slate-100 text-xs sm:text-sm flex items-center gap-2 mb-0">
                                             <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"></path><path d="M2 20h20"></path><path d="M14 12v.01"></path></svg>
-                                            <span><strong>${item.product_name}</strong> - ডোর সাইড ও স্টক ভ্যারিয়েন্ট বিস্তারিত (${group.items.length} Handedness Items)</span>
+                                            <span><strong>${item.product_name}</strong> - Handedness & Stock Variant Details (${group.items.length} Handedness Items)</span>
                                         </h6>
-                                        <span class="badge bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-slate-800 font-semibold text-xs px-2.5 py-1">মোট স্টক: ${group.totalQuantity} ${unitName}</span>
+                                        <span class="badge bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-slate-800 font-semibold text-xs px-2.5 py-1">Total Stock: ${group.totalQuantity} ${unitName}</span>
                                     </div>
                                     <div class="overflow-x-auto rounded-lg border border-slate-200/70 dark:border-slate-800">
                                         <table class="w-full text-left border-collapse text-xs">
                                             <thead class="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-semibold border-b border-slate-200/70 dark:border-slate-800">
                                                 <tr>
-                                                    <th class="px-3 py-2 text-start w-[150px]">ডোর সাইড (Handedness)</th>
-                                                    <th class="px-3 py-2 text-start">বারকোড (Barcode)</th>
-                                                    <th class="px-3 py-2 text-center w-[110px]">স্টক পরিমাণ</th>
-                                                    <th class="px-3 py-2 text-end w-[110px]">ক্রয়মূল্য</th>
-                                                    <th class="px-3 py-2 text-end w-[110px]">মোট ক্রয়</th>
-                                                    <th class="px-3 py-2 text-end w-[110px]">বিক্রয়মূল্য</th>
-                                                    <th class="px-3 py-2 text-center w-[90px]">স্ট্যাটাস</th>
+                                                    <th class="px-3 py-2 text-start w-[150px]">Door Side / Handedness</th>
+                                                    <th class="px-3 py-2 text-start">Barcode</th>
+                                                    <th class="px-3 py-2 text-center w-[110px]">Stock Qty</th>
+                                                    <th class="px-3 py-2 text-end w-[110px]">Cost Price</th>
+                                                    <th class="px-3 py-2 text-end w-[110px]">Total Cost</th>
+                                                    <th class="px-3 py-2 text-end w-[110px]">Selling Price</th>
+                                                    <th class="px-3 py-2 text-center w-[90px]">Status</th>
                                                     <th class="px-3 py-2 text-center w-[80px]">Action</th>
                                                 </tr>
                                             </thead>
@@ -1404,7 +1787,7 @@
                         mobileVariantsHtml = `
                         <div class="border-t border-slate-100 dark:border-slate-800 pt-2.5 mt-2.5">
                             <button type="button" class="btn-outline-success w-full font-semibold flex items-center justify-between px-3 py-2 rounded-xl text-xs bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-slate-800 toggle-variant-btn" data-target="mobile-variant-card-${realIndex}">
-                                <span><i class="fa-solid fa-layer-group me-1.5"></i> ভ্যারিয়েন্ট স্টক তালিকা (${group.items.length} টি)</span>
+                                <span><i class="fa-solid fa-layer-group me-1.5"></i> Variant Stock List (${group.items.length} items)</span>
                                 <svg class="w-3.5 h-3.5 chevron-icon transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                             </button>
                             <div id="mobile-variant-card-${realIndex}" class="mt-2.5 space-y-2" style="display: none;">
@@ -1428,8 +1811,8 @@
                                         </div>
                                         <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">${subCodes}</div>
                                         <div class="flex justify-between text-xs font-bold text-slate-800 dark:text-slate-100">
-                                            <span>স্টক: ${subItem.quantity} ${unitName}</span>
-                                            <span>ক্রয়: ৳ ${formatBdCurrency(subItem.cost_price)}</span>
+                                            <span>Stock: ${subItem.quantity} ${unitName}</span>
+                                            <span>Cost: ৳ ${formatBdCurrency(subItem.cost_price)}</span>
                                         </div>
                                     </div>
                                     `;
@@ -1461,7 +1844,7 @@
                             <div class="overflow-hidden">
                                 <h6 class="font-bold text-slate-800 dark:text-slate-100 mb-0.5 truncate text-sm leading-snug">${item.product_name} ${unitName ? `<span class="text-slate-400 font-normal text-xs">(${unitName})</span>` : ''}</h6>
                                 <div class="flex items-center gap-1 flex-wrap">
-                                    <span class="text-slate-400 text-[11px]">কোড:</span>
+                                    <span class="text-slate-400 text-[11px]">Code:</span>
                                     ${allBarcodesHtml}
                                 </div>
                             </div>
@@ -1469,15 +1852,15 @@
 
                         <div class="grid grid-cols-3 gap-2 bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-xl my-2 text-center items-center border border-slate-100 dark:border-slate-800">
                             <div class="border-r border-slate-300 dark:border-slate-800">
-                                <span class="text-slate-400 block text-[9px] font-bold uppercase tracking-wider">মোট পরিমাণ</span>
+                                <span class="text-slate-400 block text-[9px] font-bold uppercase tracking-wider">Total Quantity</span>
                                 <span class="font-bold text-slate-800 dark:text-slate-100 text-xs">${group.totalQuantity} ${unitName}</span>
                             </div>
                             <div class="border-r border-slate-300 dark:border-slate-800">
-                                <span class="text-slate-400 block text-[9px] font-bold uppercase tracking-wider">ক্রয়মূল্য</span>
+                                <span class="text-slate-400 block text-[9px] font-bold uppercase tracking-wider">Cost Price</span>
                                 <span class="font-bold text-rose-600 dark:text-rose-400 text-xs">৳ ${costDisplay}</span>
                             </div>
                             <div>
-                                <span class="text-slate-400 block text-[9px] font-bold uppercase tracking-wider">বিক্রয়মূল্য</span>
+                                <span class="text-slate-400 block text-[9px] font-bold uppercase tracking-wider">Selling Price</span>
                                 <span class="font-bold text-emerald-600 dark:text-emerald-400 text-xs">৳ ${sellDisplay}</span>
                             </div>
                         </div>
@@ -1491,9 +1874,15 @@
 
                         <div class="flex items-center justify-between pt-2.5 mt-1 border-t border-slate-100 dark:border-slate-800">
                             <div class="text-slate-500 dark:text-slate-400 text-xs">
-                                মোট ক্রয়: <span class="font-bold text-slate-800 dark:text-slate-100">৳ ${formatBdCurrency(group.totalCostQuantityPrice)}</span>
+                                Total Cost: <span class="font-bold text-slate-800 dark:text-slate-100">৳ ${formatBdCurrency(group.totalCostQuantityPrice)}</span>
                             </div>
                             <div class="flex items-center gap-2">
+                                <button type="button" onclick="openQuickViewModal('${item.id}')" class="quick-view-btn w-[32px] h-[32px] rounded-xl border flex items-center justify-center transition-all shadow-sm" title="Quick View">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
                                 <a data-id="${item.id}" href="#" class="edit-link w-[32px] h-[32px] rounded-xl bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white border border-emerald-200 dark:bg-emerald-950/40 dark:border-slate-800 dark:text-emerald-400 flex items-center justify-center transition-all shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit">
                                     <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                                 </a>
@@ -1679,6 +2068,121 @@
                 return '<span class="text-slate-400 text-xs">N/A</span>';
             } catch (e) {
                 return `<span class="barcode-badge inline-flex items-center px-2 py-0.5 rounded-md font-mono text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-slate-800 dark:text-emerald-300 dark:border-slate-800 mr-1 mb-1">${productCode || 'N/A'}</span>`;
+            }
+        }
+
+        function openQuickViewModal(productId) {
+            if (!window.allProductsList) return;
+            let item = window.allProductsList.find(p => String(p.id) === String(productId));
+            if (!item) return;
+
+            let catId = item.category_id || (item.category ? item.category.id : 0);
+            let brandId = item.brand_id || (item.brand ? item.brand.id : 0);
+            let pName = (item.product_name || "").trim().toLowerCase();
+            
+            let groupItems = window.allProductsList.filter(p => {
+                let c = p.category_id || (p.category ? p.category.id : 0);
+                let b = p.brand_id || (p.brand ? p.brand.id : 0);
+                let n = (p.product_name || "").trim().toLowerCase();
+                return c === catId && b === brandId && n === pName;
+            });
+
+            let categoryName = item.category ? item.category.category_name : 'N/A';
+            let brandName = item.brand ? item.brand.name : 'N/A';
+            let unitName = item.unit ? item.unit.unit_name : '';
+
+            let totalQty = groupItems.reduce((acc, curr) => acc + (parseInt(curr.quantity) || 0), 0);
+            let totalCostVal = groupItems.reduce((acc, curr) => acc + ((parseFloat(curr.cost_price) || 0) * (parseInt(curr.quantity) || 0)), 0);
+
+            $("#qvProductName").html(`${item.product_name} ${unitName ? `<span class="text-white/80 font-normal text-sm">(${unitName})</span>` : ''}`);
+            let headerBadges = `<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white border border-white/30">${categoryName}</span>`;
+            if (brandName !== 'N/A') {
+                headerBadges += `<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white border border-white/30">${brandName}</span>`;
+            }
+            $("#qvHeaderBadges").html(headerBadges);
+
+            let isAvailable = totalQty > 0;
+            let stockBadgeHtml = `<span class="badge ${isAvailable ? 'available' : 'out-of-stock'}">${isAvailable ? 'Available' : 'Out of Stock'}</span>`;
+            $("#qvStockBadgeWrap").html(stockBadgeHtml);
+
+            $("#qvQuantity").text(`${totalQty} ${unitName}`);
+            
+            let minCost = Math.min(...groupItems.map(i => parseFloat(i.cost_price) || 0));
+            let maxCost = Math.max(...groupItems.map(i => parseFloat(i.cost_price) || 0));
+            let minSell = Math.min(...groupItems.map(i => parseFloat(i.sell_price) || 0));
+            let maxSell = Math.max(...groupItems.map(i => parseFloat(i.sell_price) || 0));
+
+            let costStr = minCost === maxCost ? `৳ ${formatBdCurrency(minCost)}` : `৳ ${formatBdCurrency(minCost)} - ৳ ${formatBdCurrency(maxCost)}`;
+            let sellStr = minSell === maxSell ? `৳ ${formatBdCurrency(minSell)}` : `৳ ${formatBdCurrency(minSell)} - ৳ ${formatBdCurrency(maxSell)}`;
+
+            $("#qvCostPrice").text(costStr);
+            $("#qvSellPrice").text(sellStr);
+            $("#qvTotalCostValue").text(`Total Value: ৳ ${formatBdCurrency(totalCostVal)}`);
+
+            let combinedCodes = [];
+            groupItems.forEach(sub => {
+                try {
+                    let parsed = typeof sub.product_code === 'string' ? JSON.parse(sub.product_code) : sub.product_code;
+                    if (Array.isArray(parsed)) combinedCodes.push(...parsed);
+                    else if (parsed) combinedCodes.push(parsed);
+                } catch (e) {
+                    if (sub.product_code) combinedCodes.push(sub.product_code);
+                }
+            });
+            combinedCodes = [...new Set(combinedCodes.filter(Boolean))];
+            let barcodeHtml = combinedCodes.length > 0 ? 
+                combinedCodes.map(c => `<span class="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-slate-800 dark:text-emerald-300 dark:border-slate-800 mr-1 mb-1">${c}</span>`).join('') :
+                '<span class="text-slate-400">N/A</span>';
+            $("#qvBarcodes").html(barcodeHtml);
+
+            $("#qvCategory").text(categoryName);
+            $("#qvBrand").text(brandName);
+            $("#qvUnit").text(unitName || 'N/A');
+
+            let doorSideStr = item.door_side || 'Standard';
+            if (groupItems.length > 1) {
+                let sides = groupItems.map(g => g.door_side).filter(Boolean);
+                if (sides.length > 0) doorSideStr = sides.join(', ');
+            }
+            $("#qvDoorSide").text(doorSideStr);
+
+            if (item.description) {
+                $("#qvDescription").text(item.description);
+                $("#qvDescWrap").css('display', 'grid');
+            } else {
+                $("#qvDescWrap").hide();
+            }
+
+            if (groupItems.length > 1) {
+                let vHtml = groupItems.map(v => {
+                    let vSide = v.door_side || 'Standard';
+                    let vIcon = vSide.toLowerCase().includes('left') ? '👈' : (vSide.toLowerCase().includes('right') ? '👉' : (vSide.toLowerCase().includes('both') ? '↔️' : '🚪'));
+                    let vCodes = formatProductCode(v.product_code);
+                    let vAvailable = parseInt(v.quantity) > 0;
+                    return `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                        <td class="p-2.5 font-semibold text-slate-800 dark:text-slate-200">${vIcon} ${vSide}</td>
+                        <td class="p-2.5">${vCodes}</td>
+                        <td class="p-2.5 text-center font-bold text-slate-800 dark:text-slate-100">${v.quantity} ${unitName}</td>
+                        <td class="p-2.5 text-end text-slate-600 dark:text-slate-300">৳ ${formatBdCurrency(v.cost_price)}</td>
+                        <td class="p-2.5 text-end text-emerald-600 dark:text-emerald-400 font-semibold">৳ ${formatBdCurrency(v.sell_price)}</td>
+                        <td class="p-2.5 text-center">
+                            <span class="badge ${vAvailable ? 'available' : 'out-of-stock'}">${vAvailable ? 'Available' : 'Out of Stock'}</span>
+                        </td>
+                    </tr>`;
+                }).join('');
+                $("#qvVariantsTableBody").html(vHtml);
+                $("#qvVariantsSection").show();
+            } else {
+                $("#qvVariantsSection").hide();
+            }
+
+            let modalEl = document.getElementById('productQuickViewModal');
+            if (window.bootstrap && window.bootstrap.Modal) {
+                let modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                modalInstance.show();
+            } else if (typeof $(modalEl).modal === 'function') {
+                $(modalEl).modal('show');
             }
         }
     </script>

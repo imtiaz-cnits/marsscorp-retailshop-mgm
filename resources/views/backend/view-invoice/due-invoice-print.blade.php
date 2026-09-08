@@ -322,7 +322,7 @@
     <!-- Control Buttons -->
     <div class="no-print-wrapper">
         <button class="btn btn-success fw-bold px-4 shadow-sm" onclick="window.print()" style="background-color: #15803d; border-color: #15803d;">
-            <i class="fa-solid fa-print me-2"></i> Print Bill (মেমো প্রিন্ট)
+            <i class="fa-solid fa-print me-2"></i> Print Bill
         </button>
         <div class="d-flex gap-2">
             <a href="{{ url('admin-dashboard-invoice') }}" class="btn btn-secondary fw-bold shadow-sm">

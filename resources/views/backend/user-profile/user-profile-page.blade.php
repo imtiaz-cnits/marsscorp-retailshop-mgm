@@ -1,9 +1,9 @@
 @extends('layouts.dashboard-sidenav')
-@section('title','Admin Profile - মার্স কর্পোরেশন (MARSS CORPORATION)')
+@section('title','Admin Profile - MARSS CORPORATION')
 @section('content')
 
 <div class="main-content">
-    <div class="page-content">
+    <div class="page-content" style="padding-top: 92px !important; padding-bottom: 20px !important;">
         <div class="container-fluid px-0">
 
             <!-- Profile Page Header -->
@@ -12,11 +12,11 @@
                     <h1 class="h3 fw-bold text-dark mb-1 d-flex align-items-center gap-2">
                         <i class="fa-solid fa-user-gear text-success"></i> Account Profile & Settings
                     </h1>
-                    <p class="text-muted mb-0 small">মার্স কর্পোরেশন (MARSS CORPORATION) - অ্যাডমিন প্রোফাইল ও নিরাপত্তা সেটিংস</p>
+                    <p class="text-muted mb-0 small">MARSS CORPORATION - Admin Profile & Security Settings</p>
                 </div>
                 <div>
-                    <a href="/admin-dashboard" class="btn btn-outline-success fw-bold rounded-pill px-4 shadow-sm">
-                        <i class="fa-solid fa-arrow-left me-1"></i> Dashboard
+                    <a href="/admin-dashboard" class="btn btn-outline-success fw-bold rounded-pill px-3 shadow-sm d-inline-flex align-items-center justify-content-center" style="height: 30px !important; min-height: 30px !important; max-height: 30px !important; font-size: 12px; line-height: 1; padding-top: 0 !important; padding-bottom: 0 !important;">
+                        <i class="fa-solid fa-arrow-left me-1.5" style="font-size: 11px;"></i> Dashboard
                     </a>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                                 </div>
                                 <div>
                                     <small class="text-muted d-block font-size-11 text-uppercase fw-semibold">Store Location</small>
-                                    <span class="fw-bold text-dark">মার্স কর্পোরেশন (MARSS CORPORATION)</span>
+                                    <span class="fw-bold text-dark">MARSS CORPORATION</span>
                                 </div>
                             </div>
                         </div>
@@ -87,13 +87,13 @@
                         <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px;">
                             <div class="card-header bg-white py-3 border-0">
                                 <h5 class="fw-bold text-dark mb-0 fs-6">
-                                    <i class="fa-solid fa-id-card text-success me-2"></i> Personal Information (ব্যক্তিগত তথ্য)
+                                    <i class="fa-solid fa-id-card text-success me-2"></i> Personal Information
                                 </h5>
                             </div>
                             <div class="card-body p-4 pt-0">
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label fw-bold text-muted small">Full Name (পূর্ণ নাম) *</label>
+                                        <label class="form-label fw-bold text-muted small">Full Name *</label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-user text-muted"></i></span>
                                             <input type="text" id="userProfileFullName" class="form-control border-start-0 ps-0 fw-semibold" placeholder="Enter full name" required />
@@ -101,7 +101,7 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label class="form-label fw-bold text-muted small">Phone Number (মোবাইল নম্বর) *</label>
+                                        <label class="form-label fw-bold text-muted small">Phone Number *</label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-phone text-muted"></i></span>
                                             <input type="text" id="userMobileNumber" class="form-control border-start-0 ps-0 fw-semibold" placeholder="Enter phone number" required />
@@ -109,7 +109,7 @@
                                     </div>
 
                                     <div class="col-12">
-                                        <label class="form-label fw-bold text-muted small">Email Address (ইমেইল)</label>
+                                        <label class="form-label fw-bold text-muted small">Email Address</label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-envelope text-muted"></i></span>
                                             <input type="email" id="userEmail" class="form-control border-start-0 ps-0 fw-semibold bg-light" placeholder="Email address" disabled />
@@ -124,13 +124,13 @@
                         <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px;">
                             <div class="card-header bg-white py-3 border-0">
                                 <h5 class="fw-bold text-dark mb-0 fs-6">
-                                    <i class="fa-solid fa-lock text-danger me-2"></i> Security & Password (পাসওয়ার্ড পরিবর্তন)
+                                    <i class="fa-solid fa-lock text-danger me-2"></i> Security & Password
                                 </h5>
                             </div>
                             <div class="card-body p-4 pt-0">
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label fw-bold text-muted small">New Password (নতুন পাসওয়ার্ড)</label>
+                                        <label class="form-label fw-bold text-muted small">New Password</label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-key text-muted"></i></span>
                                             <input type="password" id="newPassword" class="form-control border-start-0 border-end-0 ps-0 fw-semibold" placeholder="Leave blank to keep unchanged" />
@@ -141,7 +141,7 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label class="form-label fw-bold text-muted small">Confirm Password (পাসওয়ার্ড নিশ্চিত করুন)</label>
+                                        <label class="form-label fw-bold text-muted small">Confirm Password</label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-key text-muted"></i></span>
                                             <input type="password" id="confirmPassword" class="form-control border-start-0 border-end-0 ps-0 fw-semibold" placeholder="Confirm new password" />
@@ -156,8 +156,8 @@
 
                         <!-- Submit Button Bar -->
                         <div class="d-flex justify-content-end gap-2">
-                            <button type="reset" class="btn btn-light fw-bold px-4 rounded-pill border">Reset</button>
-                            <button type="submit" class="btn btn-success fw-bold px-5 rounded-pill shadow-sm" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none;">
+                            <button type="reset" class="btn btn-danger fw-bold px-4 rounded-pill shadow-sm d-inline-flex align-items-center justify-content-center" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; background-color: #dc2626 !important; color: #ffffff !important; border: none !important;">Reset</button>
+                            <button type="submit" class="btn btn-success fw-bold px-5 rounded-pill shadow-sm d-inline-flex align-items-center justify-content-center" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none; color: #ffffff !important;">
                                 <i class="fa-solid fa-floppy-disk me-2"></i> Save Profile Changes
                             </button>
                         </div>

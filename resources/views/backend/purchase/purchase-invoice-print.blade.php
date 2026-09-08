@@ -1,5 +1,13 @@
 @extends('layouts.dashboard-sidenav')
 @section('title', 'Invoice Page')
+
+@section('topbar_back_button')
+  <a href="javascript:void(0)" onclick="if(window.history.length > 1 && document.referrer && document.referrer !== window.location.href){ window.history.back(); } else { window.location.href = '{{ url('/purchase-list') }}'; }" class="topbar-back-btn" title="Back">
+    <i class="fa-solid fa-arrow-left"></i>
+    <span>Back</span>
+  </a>
+@endsection
+
 @section('content')
 
 <style>
@@ -366,6 +374,13 @@
             width: 100% !important;
             color: #000000 !important;
         }
+        .company-details h4 {
+            text-align: right !important;
+            color: #000000 !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            margin-bottom: 2px !important;
+        }
         .company-details p {
             text-align: right !important;
             color: #000000 !important;
@@ -470,10 +485,13 @@
 
                 <!-- 3. Right Column: Company Official Information -->
                 <div class="company-details text-left md:text-right">
-                    <p class="font-bold text-slate-800 dark:text-white text-sm mb-1">মার্স কর্পোরেশন (MARSS CORPORATION)</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-1 leading-relaxed">বিভিন্ন প্রকার দেশী বিদেশী কসমেটিক, ষ্টেশনারী, ইমিটেশন, ব্রেসিয়ার, পেন্টি, বেল্ট পাইকারী ও খুচরা বিক্রেতা।</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">ঝালাইপট্টি, পাবনা।</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">মোবাইলঃ <span class="font-semibold text-slate-700 dark:text-slate-300">০১৭৯২-৮৩৩৭৪৭, ০১৭১১-৪৫১৩৩৪</span></p>
+                    <h4 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider mb-1">MARSS CORPORATION</h4>
+                    <p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">Retail &amp; Wholesale Management System</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-0.5 leading-relaxed">All Kinds of Dry &amp; Gel Battery Supplier</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-0.5">Success Super Market, Sadar Police Fari,</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Ataikula Road, Pabna</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-0.5">Mobile: <span class="font-semibold text-slate-700 dark:text-slate-300 font-mono">01975-703216, 01715-842083</span></p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Email: <span class="font-medium text-slate-600 dark:text-slate-400">marsscorporation2018@gmail.com</span></p>
                 </div>
             </div>
 
@@ -527,7 +545,7 @@
             <!-- Footer Message -->
             <div class="footer-message">
                 <p>
-                    Powered by: CodeNext IT - www.codenextit.com
+                    Powered by: <a href="https://codenextit.com" target="_blank" style="color:inherit;">CodeNext IT</a> - <a href="https://codenextit.com" target="_blank" style="color:inherit;">www.codenextit.com</a>
                 </p>
             </div>
         </div>

@@ -592,9 +592,9 @@
                                 <div class="d-flex align-items-center justify-content-between mb-2">
                                     <label class="fw-bold text-success m-0 d-flex align-items-center gap-2" style="font-size: 13px;">
                                         <i class="fa-solid fa-door-open fs-5 text-success"></i>
-                                        <span>Door Handedness & Specific Quantities (ডোর সাইড অনুযায়ী স্টক এন্ট্রি)</span>
+                                        <span>Door Handedness & Specific Quantities</span>
                                     </label>
-                                    <span class="badge bg-success text-white px-2 py-1 small fw-bold" id="updateDoorTotalBadge">মোট ডোর স্টক: 0</span>
+                                    <span class="badge bg-success text-white px-2 py-1 small fw-bold" id="updateDoorTotalBadge">Total Door Stock: 0</span>
                                 </div>
                                 <div class="row g-2 mt-1">
                                     <!-- Left Handed Card & Qty Input -->
@@ -602,7 +602,7 @@
                                         <div class="door-hand-box-update rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center" style="border-radius: 10px; padding: 10px 12px;">
                                             <div class="d-flex align-items-center justify-content-center gap-1.5 mb-2 text-primary fw-bold" style="font-size: 13px;">
                                                 <span class="fs-5">👈</span>
-                                                <span>Left Handed (বাম)</span>
+                                                <span>Left Handed</span>
                                             </div>
                                             <div class="d-flex align-items-center justify-content-center gap-2">
                                                 <label for="updateDoorQtyLeft" class="fw-bold text-secondary m-0" style="font-size: 12px; letter-spacing: 0.5px;">QTY:</label>
@@ -616,7 +616,7 @@
                                         <div class="door-hand-box-update rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center" style="border-radius: 10px; padding: 10px 12px;">
                                             <div class="d-flex align-items-center justify-content-center gap-1.5 mb-2 text-success fw-bold" style="font-size: 13px;">
                                                 <span class="fs-5">👉</span>
-                                                <span>Right Handed (ডান)</span>
+                                                <span>Right Handed</span>
                                             </div>
                                             <div class="d-flex align-items-center justify-content-center gap-2">
                                                 <label for="updateDoorQtyRight" class="fw-bold text-secondary m-0" style="font-size: 12px; letter-spacing: 0.5px;">QTY:</label>
@@ -630,7 +630,7 @@
                                         <div class="door-hand-box-update rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center" style="border-radius: 10px; padding: 10px 12px;">
                                             <div class="d-flex align-items-center justify-content-center gap-1.5 mb-2 text-info fw-bold" style="font-size: 13px;">
                                                 <span class="fs-5">↔️</span>
-                                                <span>Both / Universal (উভয়)</span>
+                                                <span>Both / Universal</span>
                                             </div>
                                             <div class="d-flex align-items-center justify-content-center gap-2">
                                                 <label for="updateDoorQtyBoth" class="fw-bold text-secondary m-0" style="font-size: 12px; letter-spacing: 0.5px;">QTY:</label>
@@ -809,7 +809,7 @@
                 noResultEl = document.createElement('div');
                 noResultEl.className = 'no-results-msg text-center py-2 text-muted';
                 noResultEl.style.fontSize = '12px';
-                noResultEl.textContent = 'কোনো ফলাফল পাওয়া যায়নি';
+                noResultEl.textContent = 'No results found';
                 listEl.appendChild(noResultEl);
             }
         } else if (noResultEl) {
@@ -912,7 +912,7 @@
         let both = parseFloat($('#updateDoorQtyBoth').val()) || 0;
         let total = left + right + both;
 
-        $('#updateDoorTotalBadge').text(`মোট ডোর স্টক: ${total}`);
+        $('#updateDoorTotalBadge').text(`Total Door Stock: ${total}`);
         $('#UpdateProductQuantity').val(total);
 
         // Highlight active cards
@@ -939,7 +939,7 @@
         $('#updateDoorQtyRight').val('');
         $('#updateDoorQtyBoth').val('');
         $('#updateSelectedDoorSide').val('');
-        $('#updateDoorTotalBadge').text('মোট ডোর স্টক: 0');
+        $('#updateDoorTotalBadge').text('Total Door Stock: 0');
         $('#updateDoorHandednessContainer').hide();
         $('.door-hand-box-update').removeClass('border-primary border-success border-info shadow');
     }
@@ -1328,28 +1328,28 @@
         <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
             <div class="modal-header text-white py-3" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);">
                 <h5 class="modal-title fw-bold" id="productUpdateCameraScanModalLabel">
-                    <i class="fa-solid fa-camera me-2"></i> বারকোড ক্যামেরা স্ক্যানার (Edit)
+                    <i class="fa-solid fa-camera me-2"></i> Barcode Camera Scanner (Edit)
                 </h5>
                 <button type="button" class="btn-close btn-close-white" onclick="stopProductUpdateCameraScanner()"></button>
             </div>
             <div class="modal-body p-3 text-center">
                 <div id="productUpdateCameraScannerStatus" class="alert alert-info py-2 small mb-3" style="border-radius: 10px;">
-                    <i class="fa-solid fa-circle-notch fa-spin me-1"></i> ক্যামেরা শুরু হচ্ছে... বারকোড ক্যামেরার সামনে রাখুন।
+                    <i class="fa-solid fa-circle-notch fa-spin me-1"></i> Starting camera... Hold barcode in front of camera.
                 </div>
 
                 <!-- Reader Viewport -->
                 <div id="product-update-reader" style="width: 100%; min-height: 270px; background: #000; border-radius: 14px; overflow: hidden;" class="shadow-sm"></div>
 
                 <div class="d-flex align-items-center justify-content-between mt-3 px-1">
-                    <span id="productUpdateLastScannedText" class="badge bg-success fs-6 py-2 px-3" style="border-radius: 10px;">স্ক্যান কৃত কোড: -</span>
+                    <span id="productUpdateLastScannedText" class="badge bg-success fs-6 py-2 px-3" style="border-radius: 10px;">Scanned Code: -</span>
                     <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="switchProductUpdateCamera()">
-                        <i class="fa-solid fa-rotate me-1"></i> ক্যামেরা পাল্টান
+                        <i class="fa-solid fa-rotate me-1"></i> Switch Camera
                     </button>
                 </div>
             </div>
             <div class="modal-footer bg-light py-2 justify-content-between">
-                <small class="text-muted"><i class="fa-solid fa-bolt text-warning me-1"></i> বারকোড স্ক্যান করলেই ইনপুটে বসে যাবে</small>
-                <button type="button" class="btn btn-secondary px-4 fw-bold rounded-pill" onclick="stopProductUpdateCameraScanner()">বন্ধ করুন</button>
+                <small class="text-muted"><i class="fa-solid fa-bolt text-warning me-1"></i> Barcode will be entered automatically upon scan</small>
+                <button type="button" class="btn btn-secondary px-4 fw-bold rounded-pill" onclick="stopProductUpdateCameraScanner()">Close</button>
             </div>
         </div>
     </div>
@@ -1386,7 +1386,7 @@
         const statusEl = document.getElementById("productUpdateCameraScannerStatus");
         if (statusEl) {
             statusEl.className = "alert alert-info py-2 small mb-3";
-            statusEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-1"></i> ক্যামেরা চালু হচ্ছে... বারকোড ক্যামেরার সামনে আনুন।';
+            statusEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-1"></i> Starting camera... Bring barcode in front of camera.';
         }
 
         if (!productUpdateHtml5QrCode) {
@@ -1411,13 +1411,13 @@
         ).then(() => {
             if (statusEl) {
                 statusEl.className = "alert alert-success py-2 small mb-3";
-                statusEl.innerHTML = '<i class="fa-solid fa-video me-1"></i> ক্যামেরা সক্রিয়! বারকোড স্ক্যান করলে সরাসরি ইনপুটে যুক্ত হবে।';
+                statusEl.innerHTML = '<i class="fa-solid fa-video me-1"></i> Camera active! Scanned barcode will be added directly.';
             }
         }).catch(err => {
             console.error("Camera start error:", err);
             if (statusEl) {
                 statusEl.className = "alert alert-danger py-2 small mb-3";
-                statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-1"></i> ক্যামেরা চালু করা যায়নি! ব্রাউজারের ক্যামেরা পারমিশন এলাউ (Allow) করুন।';
+                statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-1"></i> Could not access camera! Please allow camera permissions in browser.';
             }
         });
     }
@@ -1427,7 +1427,7 @@
 
         productUpdateLastCode = decodedText;
         const lastTextEl = document.getElementById("productUpdateLastScannedText");
-        if (lastTextEl) lastTextEl.innerText = `স্ক্যান কৃত: ${decodedText}`;
+        if (lastTextEl) lastTextEl.innerText = `Scanned: ${decodedText}`;
 
         if (navigator.vibrate) navigator.vibrate(100);
 

@@ -1,5 +1,5 @@
 @extends('layouts.dashboard-sidenav')
-@section('title', 'Daily Income & Expense Ledger Report - মার্স কর্পোরেশন (MARSS CORPORATION)')
+@section('title', 'Daily Income & Expense Ledger Report - MARSS CORPORATION')
 @section('content')
 
 <style>
@@ -30,9 +30,9 @@
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom no-print">
                 <div>
                     <h1 class="h3 fw-bold text-dark mb-1 d-flex align-items-center gap-2">
-                        <i class="fa-solid fa-book-journal-whills text-success"></i> Daily Income & Expense Ledger (দৈনিক আয়-ব্যয় লেজার)
+                        <i class="fa-solid fa-book-journal-whills text-success"></i> Daily Income & Expense Ledger
                     </h1>
-                    <p class="text-muted mb-0 small">মার্স কর্পোরেশন (MARSS CORPORATION) - বিস্তারিত কালানুক্রমিক ক্যাশ খাতা ও লেজার বিবরণী</p>
+                    <p class="text-muted mb-0 small">MARSS CORPORATION - Detailed Chronological Cash Book & Ledger Statement</p>
                 </div>
                 <div class="d-flex align-items-center gap-2 mt-3 mt-md-0">
                     <button onclick="window.print()" class="btn btn-outline-success fw-bold rounded-pill px-4 shadow-sm">
@@ -49,11 +49,11 @@
                 <div class="card-body p-3">
                     <div class="row g-3 align-items-end">
                         <div class="col-md-3">
-                            <label class="form-label fw-bold text-muted small mb-1">Start Date (শুরুর তারিখ)</label>
+                            <label class="form-label fw-bold text-muted small mb-1">Start Date</label>
                             <input type="date" id="startDate" class="form-control fw-semibold" />
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label fw-bold text-muted small mb-1">End Date (শেষের তারিখ)</label>
+                            <label class="form-label fw-bold text-muted small mb-1">End Date</label>
                             <input type="date" id="endDate" class="form-control fw-semibold" />
                         </div>
                         <div class="col-md-4">
@@ -78,10 +78,10 @@
 
                 <!-- Print Header (Visible only during printing) -->
                 <div class="d-none d-print-block text-center mb-4 border-bottom pb-3">
-                    <h2 class="fw-bold mb-1" style="color: #15803d;">মার্স কর্পোরেশন (MARSS CORPORATION)</h2>
-                    <p class="mb-0 fs-6 text-muted">প্রোপাইটর: মো: আনিসুর রহমান | খুচরা ও পাইকারী বিক্রেতা</p>
-                    <h4 class="fw-bold text-dark mt-2 text-decoration-underline">দৈনিক আয়-ব্যয় লেজার রিপোর্ট</h4>
-                    <p class="mb-0 text-muted small">সময়কাল: <span id="printDateRange"></span></p>
+                    <h2 class="fw-bold mb-1" style="color: #15803d;">MARSS CORPORATION</h2>
+                    <p class="mb-0 fs-6 text-muted">Proprietor: Md. Anisur Rahman | Retailer & Wholesaler</p>
+                    <h4 class="fw-bold text-dark mt-2 text-decoration-underline">Daily Income & Expense Ledger Report</h4>
+                    <p class="mb-0 text-muted small">Period: <span id="printDateRange"></span></p>
                 </div>
 
                 <!-- 4 Financial Summary Cards -->
@@ -89,7 +89,7 @@
                     <!-- Total Inflow -->
                     <div class="col-md-3 col-6">
                         <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 14px; border-left: 4px solid #16a34a !important; background: #f0fdf4;">
-                            <span class="text-muted small fw-bold text-uppercase d-block mb-1">Total Inflow (মোট আয়/জমা)</span>
+                            <span class="text-muted small fw-bold text-uppercase d-block mb-1">Total Inflow</span>
                             <h3 id="summaryInflow" class="fw-bold text-success mb-0">৳ 0.00</h3>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                     <!-- Total Outflow -->
                     <div class="col-md-3 col-6">
                         <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 14px; border-left: 4px solid #ef4444 !important; background: #fef2f2;">
-                            <span class="text-muted small fw-bold text-uppercase d-block mb-1">Total Outflow (মোট খরচ/ব্যয়)</span>
+                            <span class="text-muted small fw-bold text-uppercase d-block mb-1">Total Outflow</span>
                             <h3 id="summaryOutflow" class="fw-bold text-danger mb-0">৳ 0.00</h3>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                     <!-- Net Balance -->
                     <div class="col-md-3 col-6">
                         <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 14px; border-left: 4px solid #0284c7 !important; background: #f0f9ff;">
-                            <span class="text-muted small fw-bold text-uppercase d-block mb-1">Net Cash Balance (অবশিষ্ট ক্যাশ)</span>
+                            <span class="text-muted small fw-bold text-uppercase d-block mb-1">Net Cash Balance</span>
                             <h3 id="summaryNetBalance" class="fw-bold text-primary mb-0">৳ 0.00</h3>
                         </div>
                     </div>
@@ -123,7 +123,7 @@
                 <div class="card border-0 shadow-sm mb-4" style="border-radius: 16px;">
                     <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
                         <h5 class="fw-bold text-dark mb-0 fs-6">
-                            <i class="fa-solid fa-list-check text-success me-2"></i> Transactions Ledger Sheet (ক্যাশ লেজার খাতা)
+                            <i class="fa-solid fa-list-check text-success me-2"></i> Transactions Ledger Sheet
                         </h5>
                         <span id="ledgerPeriodBadge" class="badge bg-light text-dark border fw-bold px-3 py-1">Period: Today</span>
                     </div>
@@ -135,10 +135,10 @@
                                         <th class="ps-4" style="width: 60px;">SL</th>
                                         <th style="width: 170px;">Date & Time</th>
                                         <th style="width: 140px;">Ref / Voucher</th>
-                                        <th>Particulars (বিবরণ)</th>
+                                        <th>Particulars</th>
                                         <th>Party / Category</th>
-                                        <th class="text-end text-success" style="width: 130px;">Cash In (আয়)</th>
-                                        <th class="text-end text-danger" style="width: 130px;">Cash Out (ব্যয়)</th>
+                                        <th class="text-end text-success" style="width: 130px;">Cash In</th>
+                                        <th class="text-end text-danger" style="width: 130px;">Cash Out</th>
                                         <th class="text-end pe-4" style="width: 150px;">Running Cash</th>
                                     </tr>
                                 </thead>
@@ -162,13 +162,13 @@
                 <div class="d-none d-print-block mt-5 pt-4">
                     <div class="row text-center">
                         <div class="col-4">
-                            <div class="border-top border-dark pt-2 fw-semibold">ক্যাশিয়ার এর স্বাক্ষর</div>
+                            <div class="border-top border-dark pt-2 fw-semibold">Cashier Signature</div>
                         </div>
                         <div class="col-4">
-                            <div class="border-top border-dark pt-2 fw-semibold">হিসাবরক্ষক এর স্বাক্ষর</div>
+                            <div class="border-top border-dark pt-2 fw-semibold">Accountant Signature</div>
                         </div>
                         <div class="col-4">
-                            <div class="border-top border-dark pt-2 fw-semibold">মালিক এর স্বাক্ষর</div>
+                            <div class="border-top border-dark pt-2 fw-semibold">Owner Signature</div>
                         </div>
                     </div>
                 </div>

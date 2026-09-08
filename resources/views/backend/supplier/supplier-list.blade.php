@@ -30,7 +30,7 @@
                             </button>
 
                             <!-- Action Buttons (38px x 38px, Unified Border matching Searchbar, Dropdowns, Table) -->
-                            <div class="flex items-center gap-1.5">
+                            {{-- <div class="flex items-center gap-1.5">
                                 <button id="copyBtn" type="button" title="Copy Table" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
                                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -68,7 +68,7 @@
                                         <line x1="15" y1="13" x2="9" y2="17"></line>
                                     </svg>
                                 </button>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
 
@@ -531,8 +531,8 @@
         mobileCardList.empty();
 
         if (pageItems.length === 0) {
-            tableList.html('<tr><td colspan="8" class="text-center text-rose-500 font-bold p-6">❌ কোনো সাপ্লায়ার পাওয়া যায়নি।</td></tr>');
-            mobileCardList.html('<div class="p-6 text-center text-rose-500 font-bold bg-white dark:bg-slate-800 rounded-2xl unified-ui-border shadow-sm">❌ কোনো সাপ্লায়ার পাওয়া যায়নি।</div>');
+            tableList.html('<tr><td colspan="8" class="text-center text-rose-500 font-bold p-6">❌ No suppliers found.</td></tr>');
+            mobileCardList.html('<div class="p-6 text-center text-rose-500 font-bold bg-white dark:bg-slate-800 rounded-2xl unified-ui-border shadow-sm">❌ No suppliers found.</div>');
         } else {
             pageItems.forEach(function (item, idx) {
                 let realIndex = startIndex + idx;
@@ -629,14 +629,14 @@
                         </div>
 
                         <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 my-2 flex items-center justify-between">
-                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">বকেয়া দেয় (Payable):</span>
+                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Payable Due:</span>
                             <span class="font-bold text-sm ${payableAmount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-800 dark:text-slate-100'}">৳ ${formatBdCurrency(payableAmount)}</span>
                         </div>
 
                         <div class="flex items-center justify-between pt-2.5 mt-1 border-t border-slate-100 dark:border-slate-700/60">
                             <a href="/supplier/profile/${item['id']}" class="inline-flex items-center gap-1 px-3 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/50 dark:text-emerald-400 text-xs font-semibold rounded-lg border border-emerald-200 dark:border-emerald-800/40 transition-colors">
                                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                                প্রোফাইল
+                                Profile
                             </a>
                             <div class="flex items-center gap-1.5">
                                 <a data-id="${item['id']}" href="#" class="edit-link w-[30px] h-[30px] rounded-lg bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white border border-emerald-200/80 hover:border-emerald-600 dark:bg-emerald-950/40 dark:border-slate-800 dark:text-emerald-400 dark:hover:bg-emerald-600 dark:hover:text-white flex items-center justify-center transition-all duration-150 shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit">

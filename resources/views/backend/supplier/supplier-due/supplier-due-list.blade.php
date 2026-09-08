@@ -21,7 +21,7 @@
                         </div>
 
                         <!-- Action Buttons (38px x 38px, Unified Border matching Searchbar, Dropdowns, Table) -->
-                        <div class="flex items-center gap-1.5">
+                        {{-- <div class="flex items-center gap-1.5">
                             <button id="copyBtn" type="button" title="Copy Table" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -59,7 +59,7 @@
                                     <line x1="15" y1="13" x2="9" y2="17"></line>
                                 </svg>
                             </button>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <!-- 2. Controls & Filter Row: Desktop (Search big on left, Show Entries on right); Mobile (Row 1 Search, Row 2 Show Entries) -->
@@ -513,8 +513,8 @@
         mobileCardList.empty();
 
         if (pageItems.length === 0) {
-            tableList.html('<tr><td colspan="10" class="text-center text-rose-500 font-bold p-6">❌ কোনো সাপ্লায়ার বকেয়া তথ্য পাওয়া যায়নি।</td></tr>');
-            mobileCardList.html('<div class="p-6 text-center text-rose-500 font-bold bg-white dark:bg-slate-800 rounded-2xl unified-ui-border shadow-sm">❌ কোনো সাপ্লায়ার বকেয়া তথ্য পাওয়া যায়নি।</div>');
+            tableList.html('<tr><td colspan="10" class="text-center text-rose-500 font-bold p-6">❌ No supplier due data found.</td></tr>');
+            mobileCardList.html('<div class="p-6 text-center text-rose-500 font-bold bg-white dark:bg-slate-800 rounded-2xl unified-ui-border shadow-sm">❌ No supplier due data found.</div>');
         } else {
             pageItems.forEach(function (item, idx) {
                 let realIndex = startIndex + idx;
@@ -607,17 +607,17 @@
                         <!-- Financial Grid -->
                         <div class="grid grid-cols-2 gap-2 my-2.5">
                             <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60">
-                                <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block">পূর্বের বকেয়া:</span>
+                                <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block">Previous Due:</span>
                                 <span class="font-bold text-xs text-slate-700 dark:text-slate-300">৳ ${formatBdCurrency(payableAmount)}</span>
                             </div>
                             <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60">
-                                <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block">ইনভয়েস বকেয়া:</span>
+                                <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block">Invoice Due:</span>
                                 <span class="font-bold text-xs text-amber-600 dark:text-amber-400">৳ ${formatBdCurrency(totalDue)}</span>
                             </div>
                         </div>
 
                         <div class="p-2.5 rounded-xl bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200/60 dark:border-rose-900/40 my-2 flex items-center justify-between">
-                            <span class="text-xs font-semibold text-rose-700 dark:text-rose-400">সর্বমোট বকেয়া (Total Due):</span>
+                            <span class="text-xs font-semibold text-rose-700 dark:text-rose-400">Total Due:</span>
                             <span class="font-bold text-sm text-rose-600 dark:text-rose-400">৳ ${formatBdCurrency(grandDue)}</span>
                         </div>
 
@@ -627,7 +627,7 @@
                                     <path d="M12 20h9"></path>
                                     <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                                 </svg>
-                                সংগ্রহ করুন (Collect)
+                                Collect
                             </button>
                         </div>
             });

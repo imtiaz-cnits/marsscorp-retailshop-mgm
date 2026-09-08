@@ -40,7 +40,7 @@
                                 <button id="openModalBtns" type="button" class="create-invoice" type="button">
                                     + Add Opening Balance
                                 </button>
-                                <div class="icon-buttons">
+                                {{-- <div class="icon-buttons">
                                     <button id="copyBtn">
                                         <svg width="32" height="32" viewBox="0 0 44 44" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -126,7 +126,7 @@
                                                 fill="#192045" />
                                         </svg>
                                     </button>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
 
@@ -177,7 +177,7 @@
     try {
         showLoader();
         
-        // ঠিক API URL
+        // Correct API URL
         let res = await axios.get("/api/opening-balance-list", HeaderToken());
         
         hideLoader();
@@ -185,7 +185,7 @@
         let tableList = $("#tableList");
         tableList.empty();
 
-        // এখানে res.data.data (কারণ আমরা 'data' রিটার্ন করেছি)
+        // Use res.data.data
         if (res.data.status === "success" && res.data.data.length > 0) {
             res.data.data.forEach(function(item, index) {
                 let row = `

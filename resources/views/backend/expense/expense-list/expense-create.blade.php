@@ -3,7 +3,7 @@
             <div class="modal-content shadow-lg border-0" style="border-radius: 16px; width: 75%; max-width: 850px; overflow: hidden;">
                 <div class="modal-header text-white py-3 px-4" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);">
                     <h5 class="modal-title fw-bold mb-0 text-white">
-                        <i class="fa-solid fa-file-circle-plus me-2"></i> এক্সপেন্স এন্ট্রি করুন (Create Expense)
+                        <i class="fa-solid fa-file-circle-plus me-2"></i> Create Expense
                     </h5>
                     <a class="close-btn closes text-white text-decoration-none" onclick="closeExpenseModal()" style="cursor: pointer; font-size: 20px;">
                         <i class="fa-solid fa-xmark"></i>
@@ -16,16 +16,16 @@
                         <div class="row g-3 mb-3 bg-white p-3 rounded-3 shadow-sm border">
                             <div class="col-md-6">
                                 <label for="ExpenseDate" class="form-label fw-bold small text-dark mb-1">
-                                    <i class="fa-regular fa-calendar-days text-success me-1"></i> তারিখ (Expense Date) *
+                                    <i class="fa-regular fa-calendar-days text-success me-1"></i> Expense Date *
                                 </label>
                                 <input type="date" class="form-control fw-bold" id="ExpenseDate" required style="height: 44px; border-radius: 8px;" />
                             </div>
                             <div class="col-md-6 d-flex align-items-end gap-2">
                                 <button type="button" class="btn btn-outline-success fw-bold w-100 d-flex align-items-center justify-content-center gap-2 newbrand-open" onclick="openBrandModal()" style="height: 44px; border-radius: 8px;">
-                                    <i class="fa-solid fa-folder-plus"></i> + নতুন টাইপ তৈরি করুন
+                                    <i class="fa-solid fa-folder-plus"></i> + Create New Type
                                 </button>
                                 <button type="button" class="btn btn-outline-primary fw-bold w-100 d-flex align-items-center justify-content-center gap-2" onclick="openStaffQuickModal()" style="height: 44px; border-radius: 8px;">
-                                    <i class="fa-solid fa-user-plus"></i> + নতুন স্টাফ যোগ করুন
+                                    <i class="fa-solid fa-user-plus"></i> + Add New Staff
                                 </button>
                             </div>
                         </div>
@@ -34,23 +34,23 @@
                         <div class="bg-white p-3 rounded-3 shadow-sm border mb-4">
                             <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
                                 <h6 class="fw-bold text-dark mb-0">
-                                    <i class="fa-solid fa-list-check text-success me-2"></i> এক্সপেন্স টাইপ সিলেক্ট করুন এবং পরিমাণ বসান:
+                                    <i class="fa-solid fa-list-check text-success me-2"></i> Select Expense Type and Enter Amount:
                                 </h6>
-                                <small class="text-muted"><i class="fa-solid fa-circle-info text-primary me-1"></i> সেলারি দেওয়ার সময় স্টাফ সিলেক্ট করে দিন</small>
+                                <small class="text-muted"><i class="fa-solid fa-circle-info text-primary me-1"></i> Select staff when paying salary</small>
                             </div>
 
                             <div id="ExpenseTypesContainer" class="d-flex flex-column gap-2" style="max-height: 360px; overflow-y: auto;">
                                 <div class="text-center py-4 text-muted">
-                                    <i class="fa-solid fa-circle-notch fa-spin me-2"></i> এক্সপেন্স টাইপ লোড হচ্ছে...
+                                    <i class="fa-solid fa-circle-notch fa-spin me-2"></i> Loading expense types...
                                 </div>
                             </div>
                         </div>
 
                         <!-- Action Buttons -->
                         <div class="d-flex align-items-center justify-content-end gap-2">
-                            <button type="button" onclick="closeExpenseModal()" class="btn btn-outline-secondary px-4 fw-bold" style="height: 44px; border-radius: 8px;">ক্যান্সেল</button>
+                            <button type="button" onclick="closeExpenseModal()" class="btn btn-outline-secondary px-4 fw-bold" style="height: 44px; border-radius: 8px;">Cancel</button>
                             <button type="submit" class="btn btn-success px-5 fw-extrabold shadow-sm" style="height: 44px; border-radius: 8px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none;">
-                                <i class="fa-solid fa-check-circle me-1"></i> সাবমিট করুন (Submit)
+                                <i class="fa-solid fa-check-circle me-1"></i> Submit
                             </button>
                         </div>
                     </form>
@@ -62,22 +62,22 @@
         <!-- Add New Expense Type Modal Start -->
         <div class="newbrand" id="addBrandModal" style="z-index: 999999;">
             <div class="newbrand-content shadow-lg border-0" style="border-radius: 16px;">
-                <h4 class="fw-bold text-success mb-3"><i class="fa-solid fa-folder-plus me-2"></i> নতুন এক্সপেন্স টাইপ</h4>
+                <h4 class="fw-bold text-success mb-3"><i class="fa-solid fa-folder-plus me-2"></i> New Expense Type</h4>
                 <form onsubmit="saveExpenseType(event)">
                     <div class="form-group mb-3">
-                        <label class="form-label small fw-bold text-secondary">টাইপের নাম (Expense Type Name) *</label>
-                        <input type="text" id="CreateExpenseTypeName" class="form-control" placeholder="যেমন: দোকান ভাড়া, সেলারি, বিদ্যুৎ বিল" required />
+                        <label class="form-label small fw-bold text-secondary">Expense Type Name *</label>
+                        <input type="text" id="CreateExpenseTypeName" class="form-control" placeholder="e.g.: Shop Rent, Salary, Electricity Bill" required />
                     </div>
                     <div class="form-group mb-4">
-                        <label class="form-label small fw-bold text-secondary">স্ট্যাটাস (Status) *</label>
+                        <label class="form-label small fw-bold text-secondary">Status *</label>
                         <select class="form-select" id="ExpenseSelectStatus">
-                            <option value="Active" selected>Active (সক্রিয়)</option>
-                            <option value="InActive">Inactive (নিষ্ক্রিয়)</option>
+                            <option value="Active" selected>Active</option>
+                            <option value="InActive">Inactive</option>
                         </select>
                     </div>
                     <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-secondary px-3 newbrand-close" onclick="closeBrandModal()">ক্যান্সেল</button>
-                        <button type="submit" class="btn btn-success px-4 fw-bold">সেভ করুন</button>
+                        <button type="button" class="btn btn-secondary px-3 newbrand-close" onclick="closeBrandModal()">Cancel</button>
+                        <button type="submit" class="btn btn-success px-4 fw-bold">Save</button>
                     </div>
                 </form>
             </div>
@@ -87,31 +87,31 @@
         <!-- Quick Add New Staff Modal Start -->
         <div class="newbrand" id="addStaffQuickModal" style="z-index: 999999;">
             <div class="newbrand-content shadow-lg border-0" style="border-radius: 16px; width: 90%; max-width: 480px;">
-                <h4 class="fw-bold text-primary mb-3"><i class="fa-solid fa-user-plus me-2"></i> নতুন স্টাফ যুক্ত করুন</h4>
+                <h4 class="fw-bold text-primary mb-3"><i class="fa-solid fa-user-plus me-2"></i> Add New Staff</h4>
                 <form onsubmit="saveQuickStaff(event)">
                     <div class="form-group mb-3">
-                        <label class="form-label small fw-bold text-secondary">স্টাফের পূর্ণ নাম (Staff Name) *</label>
-                        <input type="text" id="QuickStaffName" class="form-control" placeholder="যেমন: মোঃ রফিক আহমেদ" required />
+                        <label class="form-label small fw-bold text-secondary">Staff Full Name *</label>
+                        <input type="text" id="QuickStaffName" class="form-control" placeholder="e.g.: Md. Rafiq Ahmed" required />
                     </div>
                     <div class="form-group mb-3">
-                        <label class="form-label small fw-bold text-secondary">মোবাইল নম্বর (Mobile Number) *</label>
+                        <label class="form-label small fw-bold text-secondary">Mobile Number *</label>
                         <input type="text" id="QuickStaffMobile" class="form-control" placeholder="017XXXXXXXX" required />
                     </div>
                     <div class="form-group mb-3">
-                        <label class="form-label small fw-bold text-secondary">ইমেইল (Email - ঐচ্ছিক)</label>
+                        <label class="form-label small fw-bold text-secondary">Email (Optional)</label>
                         <input type="email" id="QuickStaffEmail" class="form-control" placeholder="staff@anisstore.com" />
                     </div>
                     <div class="form-group mb-4">
-                        <label class="form-label small fw-bold text-secondary">পদবী / রোল (Role) *</label>
+                        <label class="form-label small fw-bold text-secondary">Role *</label>
                         <select class="form-select" id="QuickStaffRole">
-                            <option value="staff" selected>Staff (কর্মচারী)</option>
-                            <option value="cashier">Cashier (ক্যাশিয়ার)</option>
-                            <option value="manager">Manager (ম্যানেজার)</option>
+                            <option value="staff" selected>Staff</option>
+                            <option value="cashier">Cashier</option>
+                            <option value="manager">Manager</option>
                         </select>
                     </div>
                     <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-secondary px-3" onclick="closeStaffQuickModal()">ক্যান্সেল</button>
-                        <button type="submit" class="btn btn-primary px-4 fw-bold">সেভ স্টাফ</button>
+                        <button type="button" class="btn btn-secondary px-3" onclick="closeStaffQuickModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary px-4 fw-bold">Save Staff</button>
                     </div>
                 </form>
             </div>
@@ -156,8 +156,8 @@
         const name = typeName.toLowerCase();
         const keywords = [
             'salary', 'sallery', 'salery', 'salari', 'salry', 'salaries',
-            'বেতন', 'সেলারী', 'সেলারি', 'স্যালারি', 'স্যালারী',
-            'staff', 'স্টাফ', 'payroll', 'wage', 'wages', 'honorarium', 'সম্মানী'
+            'salary', 'payroll', 'wage', 'wages',
+            'staff', 'payroll', 'wage', 'wages', 'honorarium'
         ];
         return keywords.some(k => name.includes(k));
     }
@@ -178,14 +178,14 @@
         rowDiv.innerHTML = `
             <div class="col-md-4">
                 <div class="input-group input-group-sm">
-                    <button class="btn btn-success text-white fw-bold" type="button" onclick="addSalaryRow(${typeId})" title="আরও স্টাফ যোগ করুন">
+                    <button class="btn btn-success text-white fw-bold" type="button" onclick="addSalaryRow(${typeId})" title="Add more staff">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                     <select class="form-select staff-select" id="staff-${typeId}-${rowIndex}">
-                        <option value="">-- স্টাফ নির্বাচন করুন --</option>
+                        <option value="">-- Select Staff --</option>
                         ${staffOptionsHtml}
                     </select>
-                    <button class="btn btn-outline-primary" type="button" onclick="openStaffQuickModal()" title="নতুন স্টাফ যুক্ত করুন">
+                    <button class="btn btn-outline-primary" type="button" onclick="openStaffQuickModal()" title="Add New Staff">
                         <i class="fa-solid fa-user-plus"></i>
                     </button>
                 </div>
@@ -194,10 +194,10 @@
                 <input type="number" step="any" class="form-control form-control-sm amount-input fw-bold text-success" id="amount-${typeId}-${rowIndex}" placeholder="0.00" />
             </div>
             <div class="col-md-4">
-                <input type="text" class="form-control form-control-sm details-input" id="details-${typeId}-${rowIndex}" placeholder="মাসের বেতন / অ্যাডভান্স" />
+                <input type="text" class="form-control form-control-sm details-input" id="details-${typeId}-${rowIndex}" placeholder="Monthly Salary / Advance" />
             </div>
             <div class="col-md-1 text-end">
-                <button type="button" class="btn btn-sm btn-outline-danger remove-salary-row-btn" onclick="removeSalaryRow(${typeId}, ${rowIndex})" title="মুছে ফেলুন">
+                <button type="button" class="btn btn-sm btn-outline-danger remove-salary-row-btn" onclick="removeSalaryRow(${typeId}, ${rowIndex})" title="Remove">
                     <i class="fa-solid fa-trash"></i>
                 </button>
             </div>
@@ -234,7 +234,7 @@
         if (!container) return;
 
         if (globalExpenseTypes.length === 0) {
-            container.innerHTML = `<div class="text-muted py-3 text-center">কোনো এক্সপেন্স টাইপ পাওয়া যায়নি। উপরে "+ নতুন টাইপ তৈরি করুন" এ ক্লিক করুন।</div>`;
+            container.innerHTML = `<div class="text-muted py-3 text-center">No expense types found. Click "+ Create New Type" above.</div>`;
             return;
         }
 
@@ -261,31 +261,31 @@
                                 <div class="row g-2 align-items-center salary-row" id="salary-row-${type.id}-0">
                                     <div class="col-md-4">
                                         <label class="form-label small fw-bold text-secondary mb-1">
-                                            স্টাফ সিলেক্ট করুন <span class="text-danger">*</span>
+                                            Select Staff <span class="text-danger">*</span>
                                         </label>
                                         <div class="input-group input-group-sm">
-                                            <button class="btn btn-success text-white fw-bold" type="button" onclick="addSalaryRow(${type.id})" title="আরও স্টাফ যোগ করুন">
+                                            <button class="btn btn-success text-white fw-bold" type="button" onclick="addSalaryRow(${type.id})" title="Add more staff">
                                                 <i class="fa-solid fa-plus"></i>
                                             </button>
                                             <select class="form-select staff-select" id="staff-${type.id}-0">
-                                                <option value="">-- স্টাফ নির্বাচন করুন --</option>
+                                                <option value="">-- Select Staff --</option>
                                                 ${globalStaffList.map(s => `<option value="${s.id}">${s.name} (${s.mobile || 'Staff'})</option>`).join('')}
                                             </select>
-                                            <button class="btn btn-outline-primary" type="button" onclick="openStaffQuickModal()" title="নতুন স্টাফ যুক্ত করুন">
+                                            <button class="btn btn-outline-primary" type="button" onclick="openStaffQuickModal()" title="Add New Staff">
                                                 <i class="fa-solid fa-user-plus"></i>
                                             </button>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <label class="form-label small fw-bold text-secondary mb-1">টাকার পরিমাণ (Amount ৳) *</label>
+                                        <label class="form-label small fw-bold text-secondary mb-1">Amount (৳) *</label>
                                         <input type="number" step="any" class="form-control form-control-sm amount-input fw-bold text-success" id="amount-${type.id}-0" placeholder="0.00" />
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label small fw-bold text-secondary mb-1">বিবরণ / নোট (Details)</label>
-                                        <input type="text" class="form-control form-control-sm details-input" id="details-${type.id}-0" placeholder="মাসের বেতন / অ্যাডভান্স" />
+                                        <label class="form-label small fw-bold text-secondary mb-1">Details / Note</label>
+                                        <input type="text" class="form-control form-control-sm details-input" id="details-${type.id}-0" placeholder="Monthly Salary / Advance" />
                                     </div>
                                     <div class="col-md-1 text-end pt-3">
-                                        <button type="button" class="btn btn-sm btn-outline-danger remove-salary-row-btn d-none" onclick="removeSalaryRow(${type.id}, 0)" title="মুছে ফেলুন">
+                                        <button type="button" class="btn btn-sm btn-outline-danger remove-salary-row-btn d-none" onclick="removeSalaryRow(${type.id}, 0)" title="Remove">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </div>
@@ -293,19 +293,19 @@
                             </div>
                             <div class="mt-2">
                                 <button type="button" class="btn btn-sm btn-outline-success fw-bold px-3 py-1" onclick="addSalaryRow(${type.id})" style="border-radius: 6px;">
-                                    <i class="fa-solid fa-plus-circle me-1"></i> + আরও স্টাফ যোগ করুন (Add Staff)
+                                    <i class="fa-solid fa-plus-circle me-1"></i> + Add More Staff
                                 </button>
                             </div>
                         </div>
                         ` : `
                         <div class="row g-2">
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold text-secondary mb-1">টাকার পরিমাণ (Amount ৳) *</label>
+                                <label class="form-label small fw-bold text-secondary mb-1">Amount (৳) *</label>
                                 <input type="number" step="any" class="form-control form-control-sm amount-input fw-bold text-success" id="amount-${type.id}" placeholder="0.00" />
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold text-secondary mb-1">বিবরণ / নোট (Details)</label>
-                                <input type="text" class="form-control form-control-sm details-input" id="details-${type.id}" placeholder="খরচের বিবরণ লিখুন..." />
+                                <label class="form-label small fw-bold text-secondary mb-1">Details / Note</label>
+                                <input type="text" class="form-control form-control-sm details-input" id="details-${type.id}" placeholder="Enter expense details..." />
                             </div>
                         </div>
                         `}
@@ -373,7 +373,7 @@
             const role = document.getElementById('QuickStaffRole').value;
 
             if (!name || !mobile) {
-                errorToast("স্টাফের নাম এবং মোবাইল নম্বর আবশ্যক!");
+                errorToast("Staff name and mobile number are required!");
                 return;
             }
 
@@ -388,18 +388,18 @@
             const res = await axios.post('/create-user-admin', formData, HeaderToken());
 
             if (res.data.status === 'success') {
-                successToast(res.data.message || "নতুন স্টাফ যুক্ত করা হয়েছে!");
+                successToast(res.data.message || "New staff added successfully!");
                 document.getElementById('QuickStaffName').value = '';
                 document.getElementById('QuickStaffMobile').value = '';
                 document.getElementById('QuickStaffEmail').value = '';
                 closeStaffQuickModal();
                 await loadExpenseTypesAndStaff();
             } else {
-                errorToast(res.data.message || "স্টাফ তৈরিতে সমস্যা দেখা দিয়েছে");
+                errorToast(res.data.message || "Failed to create staff");
             }
         } catch (e) {
             console.error("Staff save error:", e);
-            errorToast(e.response?.data?.message || "স্টাফ তৈরি করা যায়নি");
+            errorToast(e.response?.data?.message || "Could not create staff");
         }
     }
 
@@ -408,7 +408,7 @@
         try {
             const expenseDate = document.getElementById('ExpenseDate').value;
             if (!expenseDate) {
-                errorToast("তারিখ সিলেক্ট করা আবশ্যক!");
+                errorToast("Date selection is required!");
                 return false;
             }
 
@@ -416,7 +416,7 @@
             const checkboxes = document.querySelectorAll('.type-checkbox:checked');
 
             if (checkboxes.length === 0) {
-                errorToast("অন্তত একটি এক্সপেন্স টাইপ সিলেক্ট করুন!");
+                errorToast("Please select at least one expense type!");
                 return false;
             }
 
@@ -438,13 +438,13 @@
                         const staffId = staffEl ? staffEl.value : null;
 
                         if (!amount || amount <= 0) {
-                            errorToast("সিলেক্ট করা স্টাফের টাকার পরিমাণ প্রদান করুন!");
+                            errorToast("Please enter amount for the selected staff!");
                             isValid = false;
                             return;
                         }
 
                         if (!staffId) {
-                            errorToast("সেলারির ক্ষেত্রে স্টাফ নির্বাচন করা আবশ্যক!");
+                            errorToast("Staff selection is required for salary!");
                             isValid = false;
                             return;
                         }
@@ -465,7 +465,7 @@
                     const details = detailsEl ? detailsEl.value.trim() : '';
 
                     if (!amount || amount <= 0) {
-                        errorToast("সিলেক্ট করা এক্সপেন্সের টাকার পরিমাণ প্রদান করুন!");
+                        errorToast("Please enter amount for the selected expense!");
                         isValid = false;
                         return;
                     }
@@ -495,11 +495,11 @@
                     setTimeout(() => location.reload(), 500);
                 }
             } else {
-                errorToast(res.data.message || "সমস্যা দেখা দিয়েছে");
+                errorToast(res.data.message || "An error occurred");
             }
         } catch (e) {
             console.error("Expense Save error:", e);
-            errorToast("এক্সপেন্স সেভ করতে সমস্যা দেখা দিয়েছে!");
+            errorToast("Failed to save expense!");
         }
     }
 

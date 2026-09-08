@@ -9,7 +9,7 @@
   <!-- App favicon -->
   <link
     rel="shortcut icon"
-    href="{{asset('backend/assets/icons/nexus-pos-logo.svg')}}"
+    href="{{ asset('backend/assets/icons/favicon.svg') }}"
     type="image/x-icon" />
 
   <!-- Google Fonts: Valley Sans & Baloo Da 2 -->

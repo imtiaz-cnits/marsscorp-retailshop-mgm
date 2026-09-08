@@ -28,7 +28,7 @@
             <div class="modal-header border-0 pb-2">
                 <h5 class="modal-title fw-bold text-success d-flex align-items-center gap-2">
                     <i class="fa-solid fa-pen-to-square"></i>
-                    <span>Expense Update (খরচের তথ্য আপডেট)</span>
+                    <span>Expense Update</span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -44,9 +44,9 @@
                             </select>
                         </div>
                         <div class="col-12 mb-2 d-none" id="UpdateStaffContainer">
-                            <label class="form-label small fw-bold text-secondary mb-1">Select Staff (স্টাফ নির্বাচন করুন) <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-bold text-secondary mb-1">Select Staff <span class="text-danger">*</span></label>
                             <select class="form-select" id="UpdateStaffInfoID">
-                                <option value="">-- স্টাফ নির্বাচন করুন --</option>
+                                <option value="">-- Select Staff --</option>
                             </select>
                         </div>
                         <div class="col-12 mb-2">
@@ -111,7 +111,7 @@
             if (staffRes.data.status === 'success' && staffRes.data.StaffData) {
                 updateGlobalStaffList = staffRes.data.StaffData;
                 let staffHtml = updateGlobalStaffList.map(s => `<option value="${s.id}">${s.name} (${s.mobile || 'Staff'})</option>`).join('');
-                $("#UpdateStaffInfoID").html(`<option value="">-- স্টাফ নির্বাচন করুন --</option>` + staffHtml);
+                $("#UpdateStaffInfoID").html(`<option value="">-- Select Staff --</option>` + staffHtml);
             }
         } catch (error) {
             console.error("Error fetching expense types/staff:", error);
@@ -127,8 +127,8 @@
             const nameLower = (selectedType.type_name || '').toLowerCase();
             const keywords = [
                 'salary', 'sallery', 'salery', 'salari', 'salry', 'salaries',
-                'বেতন', 'সেলারী', 'সেলারি', 'স্যালারি', 'স্যালারী',
-                'staff', 'স্টাফ', 'payroll', 'wage', 'wages', 'honorarium', 'সম্মানী'
+                'salary', 'payroll', 'wage', 'wages',
+                'staff', 'payroll', 'wage', 'wages', 'honorarium'
             ];
             const isSalary = keywords.some(k => nameLower.includes(k));
             if (isSalary) {
@@ -171,7 +171,7 @@
             const container = document.getElementById('UpdateStaffContainer');
 
             if (container && !container.classList.contains('d-none') && !staffId) {
-                errorToast("সেলারির ক্ষেত্রে স্টাফ নির্বাচন করা আবশ্যক!");
+                errorToast("Staff selection is required for salary!");
                 return false;
             }
 

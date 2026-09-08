@@ -39,7 +39,7 @@
 
 
 <script>
-    // Opening Balance Save Function (তোমার Location এর মতোই)
+    // Opening Balance Save Function
     async function SaveOpeningBalance(event) {
         event.preventDefault();
 
@@ -57,14 +57,14 @@
             return;
         }
 
-        // FormData তৈরি
+        // Create FormData
         let formData = new FormData();
         formData.append('date', date);
         formData.append('amount', amount);
         formData.append('note', note || '');
 
         try {
-            showLoader(); // যদি লোডার থাকে
+            showLoader(); // Show loader if exists
 
             const res = await axios.post("/api/create-opening-balance", formData, {
                 headers: {
@@ -78,16 +78,16 @@
             if (res.data.status === "success") {
                 successToast(res.data.message || "Opening Balance saved successfully!");
                 
-                // ফর্ম রিসেট
+                // Form reset
                 document.getElementById("openingBalanceForm").reset();
 
-                // মডাল বন্ধ (তোমার Location এর মতো)
+                // Close modal
                 const modal = document.getElementById('myModal');
                 if (modal) {
                     closeModal(modal);
                 }
 
-                // পেজ রিফ্রেশ (তোমার Location এর মতো)
+                // Refresh page
                 setTimeout(() => {
                     location.reload();
                 }, 800);
@@ -107,14 +107,14 @@
         }
     }
 
-    // মডাল বন্ধ করার ফাংশন (তোমার Location এর মতোই)
+    // Close modal function
     function closeModal(modal) {
         if (modal) {
             modal.style.display = 'none';
         }
     }
 
-    // ফর্ম সাবমিট হ্যান্ডলার (তোমার Location এর মতো)
+    // Form submit handler
     document.getElementById('openingBalanceForm')?.addEventListener('submit', function(e) {
         e.preventDefault();
         SaveOpeningBalance(e);

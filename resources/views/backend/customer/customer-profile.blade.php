@@ -1,5 +1,13 @@
 @extends('layouts.dashboard-sidenav')
 @section('title', 'Customer Profile')
+
+@section('topbar_back_button')
+  <a href="javascript:void(0)" onclick="if(window.history.length > 1 && document.referrer && document.referrer !== window.location.href){ window.history.back(); } else { window.location.href = '{{ url('/customer-list') }}'; }" class="topbar-back-btn" title="Back">
+    <i class="fa-solid fa-arrow-left"></i>
+    <span>Back</span>
+  </a>
+@endsection
+
 @section('content')
 
 <style>
@@ -34,7 +42,7 @@
             </div>
             <div class="d-flex gap-2">
                 <button class="btn btn-success fw-bold rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#collectCustomerDueModal">
-                    <i class="fa-solid fa-hand-holding-dollar me-2"></i> Collect Due (বকেয়া আদায়)
+                    <i class="fa-solid fa-hand-holding-dollar me-2"></i> Collect Due
                 </button>
                 <a href="javascript:history.back()" class="btn btn-outline-primary fw-bold px-4 rounded-pill shadow-sm">
                     <i class="fa-solid fa-arrow-left me-2"></i> Back to List
@@ -52,10 +60,10 @@
                             <p class="mb-1 text-muted small"><strong class="text-dark">ID:</strong> <span id="c_id">...</span></p>
                             <p class="mb-1 text-muted small"><strong class="text-dark">Phone:</strong> <span id="c_phone">...</span></p>
                             <p class="mb-1 text-muted small"><strong class="text-dark">Address:</strong> <span id="c_address">...</span></p>
-                            <p class="mb-0 text-muted small"><strong class="text-dark">Opening Due (পূর্বের বকেয়া):</strong> <span id="c_opening_due" class="badge bg-warning text-dark px-2 py-1">৳0.00</span></p>
+                            <p class="mb-0 text-muted small"><strong class="text-dark">Opening Due:</strong> <span id="c_opening_due" class="badge bg-warning text-dark px-2 py-1">৳0.00</span></p>
                         </div>
                         <button class="btn btn-sm btn-success fw-bold w-100 mt-3 rounded-pill shadow-sm py-2" data-bs-toggle="modal" data-bs-target="#collectCustomerDueModal">
-                            <i class="fa-solid fa-hand-holding-dollar me-1"></i> Collect Due (বকেয়া আদায়)
+                            <i class="fa-solid fa-hand-holding-dollar me-1"></i> Collect Due
                         </button>
                     </div>
                 </div>
@@ -224,7 +232,7 @@
         <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
             <div class="modal-header bg-success text-white py-3" style="border-top-left-radius: 16px; border-top-right-radius: 16px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important;">
                 <h5 class="modal-title fw-bold" id="collectCustomerDueModalLabel">
-                    <i class="fa-solid fa-hand-holding-dollar me-2"></i>Collect Customer Due (বকেয়া আদায়)
+                    <i class="fa-solid fa-hand-holding-dollar me-2"></i>Collect Customer Due
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -244,28 +252,28 @@
 
                     <!-- Due Collection Target Selection -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold d-block text-dark">Collection Target (আদায়ের খাত) <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold d-block text-dark">Collection Target <span class="text-danger">*</span></label>
                         <div class="btn-group w-100" role="group" id="collectionTypeGroup">
                             <input type="radio" class="btn-check" name="collection_type" id="ctype_all" value="all" checked onchange="onCollectionTypeChange()">
-                            <label class="btn btn-outline-success fw-bold py-2" for="ctype_all" title="আগের ও ইনভয়েসের উভয় বকেয়া কালেকশন">
-                                <i class="fa-solid fa-layer-group me-1"></i> উভয় বকেয়া
+                            <label class="btn btn-outline-success fw-bold py-2" for="ctype_all" title="Collect both previous and invoice dues">
+                                <i class="fa-solid fa-layer-group me-1"></i> Both Dues
                             </label>
 
                             <input type="radio" class="btn-check" name="collection_type" id="ctype_previous" value="previous" onchange="onCollectionTypeChange()">
-                            <label class="btn btn-outline-primary fw-bold py-2" for="ctype_previous" title="শুধুমাত্র পুরানো বকেয়া কালেকশন">
-                                <i class="fa-solid fa-clock-rotate-left me-1"></i> আগের বকেয়া
+                            <label class="btn btn-outline-primary fw-bold py-2" for="ctype_previous" title="Collect previous due only">
+                                <i class="fa-solid fa-clock-rotate-left me-1"></i> Previous Due
                             </label>
 
                             <input type="radio" class="btn-check" name="collection_type" id="ctype_invoice" value="invoice" onchange="onCollectionTypeChange()">
-                            <label class="btn btn-outline-warning text-dark fw-bold py-2" for="ctype_invoice" title="শুধুমাত্র মেমো/ইনভয়েসের বকেয়া কালেকশন">
-                                <i class="fa-solid fa-file-invoice-dollar me-1"></i> ইনভয়েস বকেয়া
+                            <label class="btn btn-outline-warning text-dark fw-bold py-2" for="ctype_invoice" title="Collect invoice due only">
+                                <i class="fa-solid fa-file-invoice-dollar me-1"></i> Invoice Due
                             </label>
                         </div>
                     </div>
 
                     <!-- Payment Details -->
                     <div class="mb-3">
-                        <label for="modalPaidAmount" class="form-label fw-bold text-dark">Collected Amount (আদায়ের পরিমাণ ৳) <span class="text-danger">*</span></label>
+                        <label for="modalPaidAmount" class="form-label fw-bold text-dark">Collected Amount (৳) <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text bg-white fw-bold">৳</span>
                             <input type="number" step="0.01" class="form-control fw-bold fs-5 text-success" id="modalPaidAmount" placeholder="0.00" required>
@@ -273,7 +281,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="modalDiscountAmount" class="form-label fw-bold text-dark">Discount / Waiver (ছাড় ৳)</label>
+                        <label for="modalDiscountAmount" class="form-label fw-bold text-dark">Discount / Waiver (৳)</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white fw-bold">৳</span>
                             <input type="number" step="0.01" class="form-control" id="modalDiscountAmount" value="0.00">
@@ -284,7 +292,7 @@
                         <div class="col-md-6">
                             <label for="modalPaymentMethod" class="form-label fw-bold text-dark">Payment Method</label>
                             <select class="form-select fw-semibold" id="modalPaymentMethod">
-                                <option value="Cash" selected>Cash (নগদ)</option>
+                                <option value="Cash" selected>Cash</option>
                                 <option value="bKash">bKash</option>
                                 <option value="Nagad">Nagad</option>
                                 <option value="Rocket">Rocket</option>
@@ -334,13 +342,13 @@
 
         if (selectedType === 'previous') {
             targetMax = window.previousDueVal;
-            targetText = `৳ ${targetMax.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (শুধুমাত্র আগের বকেয়া)`;
+            targetText = `৳ ${targetMax.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (Previous Due Only)`;
         } else if (selectedType === 'invoice') {
             targetMax = window.invoiceDueVal;
-            targetText = `৳ ${targetMax.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (শুধুমাত্র ইনভয়েস বকেয়া)`;
+            targetText = `৳ ${targetMax.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (Invoice Due Only)`;
         } else {
             targetMax = window.totalDueVal;
-            targetText = `৳ ${targetMax.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (আগের: ৳${window.previousDueVal.toFixed(2)} | ইনভয়েস: ৳${window.invoiceDueVal.toFixed(2)})`;
+            targetText = `৳ ${targetMax.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (Previous: ৳${window.previousDueVal.toFixed(2)} | Invoice: ৳${window.invoiceDueVal.toFixed(2)})`;
         }
 
         modalTotalDue.innerText = targetText;

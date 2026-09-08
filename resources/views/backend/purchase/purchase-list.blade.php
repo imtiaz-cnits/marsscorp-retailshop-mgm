@@ -33,7 +33,7 @@
                             </button>
 
                             <!-- Action Buttons (38px x 38px, Unified Border matching Searchbar, Dropdowns, Table) -->
-                            <div class="flex items-center gap-1.5">
+                            {{-- <div class="flex items-center gap-1.5">
                                 <button id="copyBtn" type="button" title="Copy Table" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
                                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -71,7 +71,7 @@
                                         <line x1="15" y1="13" x2="9" y2="17"></line>
                                     </svg>
                                 </button>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
 
@@ -634,8 +634,8 @@
         mobileCardList.empty();
 
         if (pageItems.length === 0) {
-            tbody.html('<tr><td colspan="14" class="text-center text-rose-500 p-6 font-bold">❌ কোনো পারচেজ ডাটা পাওয়া যায়নি।</td></tr>');
-            mobileCardList.html('<div class="p-6 text-center text-rose-500 font-bold bg-white dark:bg-slate-800 rounded-2xl unified-ui-border shadow-sm">❌ কোনো পারচেজ ডাটা পাওয়া যায়নি।</div>');
+            tbody.html('<tr><td colspan="14" class="text-center text-rose-500 p-6 font-bold">❌ No purchase data found.</td></tr>');
+            mobileCardList.html('<div class="p-6 text-center text-rose-500 font-bold bg-white dark:bg-slate-800 rounded-2xl unified-ui-border shadow-sm">❌ No purchase data found.</div>');
         } else {
             pageItems.forEach(function (item, idx) {
                 let realIndex = startIndex + idx;
@@ -753,7 +753,7 @@
                         <div class="flex items-center justify-between pt-2.5 mt-1 border-t border-slate-200 dark:border-slate-700">
                             <button onclick="viewInvoice(${item.id})" class="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-950/40 dark:hover:bg-indigo-900/50 dark:text-indigo-400 text-xs font-semibold rounded-lg border border-indigo-200 dark:border-indigo-800/40 transition-colors">
                                 <i class="fa-solid fa-eye text-xs"></i>
-                                <span>ভিউ মেমো</span>
+                                <span>View Memo</span>
                             </button>
                             <div class="flex items-center gap-1.5">
                                 <a data-id="${item.id}" href="#" class="edit-link action-btn-edit w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all duration-150 shadow-sm" data-bs-toggle="modal" data-bs-target="#purchaseUpdateModal" title="Edit Purchase">

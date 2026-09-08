@@ -5,12 +5,12 @@
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
             <div>
                 <h3 class="fw-extrabold text-dark mb-1">
-                    <i class="fa-solid fa-wallet text-success me-2"></i> এক্সপেন্স ও সেলারি ম্যানেজমেন্ট (Expense List)
+                    <i class="fa-solid fa-wallet text-success me-2"></i> Expense & Salary Management
                 </h3>
-                <p class="text-muted small mb-0">প্রতিষ্ঠানের সমস্থ খরচ এবং স্টাফদের বেতনের হিসেব ও রিপোর্ট</p>
+                <p class="text-muted small mb-0">Company expenses and staff salary records & reports</p>
             </div>
             <button type="button" onclick="openExpenseModal()" class="btn btn-success fw-bold px-4 py-2 rounded-pill shadow-sm d-flex align-items-center gap-2 ms-auto" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none;">
-                <i class="fa-solid fa-plus-circle fs-5"></i> + Create Expense (নতুন খরচ)
+                <i class="fa-solid fa-plus-circle fs-5"></i> + Create Expense
             </button>
         </div>
 
@@ -21,9 +21,9 @@
                 <div class="card border-0 shadow-sm rounded-4 h-100 bg-white" style="border-left: 4px solid #dc2626 !important;">
                     <div class="card-body p-3 d-flex align-items-center justify-content-between">
                         <div>
-                            <small class="text-muted fw-bold uppercase d-block" style="font-size: 11px;">সর্বমোট খরচ</small>
+                            <small class="text-muted fw-bold uppercase d-block" style="font-size: 11px;">Total Expenses</small>
                             <h4 class="fw-extrabold text-danger my-1" id="statTotalExpense">৳ 0.00</h4>
-                            <small class="text-secondary d-none d-sm-inline" style="font-size: 11px;"><i class="fa-solid fa-receipt me-1"></i> সমস্থ এন্ট্রি</small>
+                            <small class="text-secondary d-none d-sm-inline" style="font-size: 11px;"><i class="fa-solid fa-receipt me-1"></i> All Entries</small>
                         </div>
                         <div class="rounded-circle bg-danger-subtle text-danger p-2 p-sm-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; font-size: 18px;">
                             <i class="fa-solid fa-calculator"></i>
@@ -37,9 +37,9 @@
                 <div class="card border-0 shadow-sm rounded-4 h-100 bg-white" style="border-left: 4px solid #16a34a !important;">
                     <div class="card-body p-3 d-flex align-items-center justify-content-between">
                         <div>
-                            <small class="text-muted fw-bold uppercase d-block" style="font-size: 11px;">আজকের খরচ</small>
+                            <small class="text-muted fw-bold uppercase d-block" style="font-size: 11px;">Today's Expense</small>
                             <h4 class="fw-extrabold text-success my-1" id="statTodayExpense">৳ 0.00</h4>
-                            <small class="text-secondary d-none d-sm-inline" style="font-size: 11px;"><i class="fa-regular fa-calendar-check me-1"></i> আজকের মোট</small>
+                            <small class="text-secondary d-none d-sm-inline" style="font-size: 11px;"><i class="fa-regular fa-calendar-check me-1"></i> Today's Total</small>
                         </div>
                         <div class="rounded-circle bg-success-subtle text-success p-2 p-sm-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; font-size: 18px;">
                             <i class="fa-solid fa-calendar-day"></i>
@@ -53,9 +53,9 @@
                 <div class="card border-0 shadow-sm rounded-4 h-100 bg-white" style="border-left: 4px solid #0284c7 !important;">
                     <div class="card-body p-3 d-flex align-items-center justify-content-between">
                         <div>
-                            <small class="text-muted fw-bold uppercase d-block" style="font-size: 11px;">এই মাসের খরচ</small>
+                            <small class="text-muted fw-bold uppercase d-block" style="font-size: 11px;">This Month's Expense</small>
                             <h4 class="fw-extrabold text-info my-1" id="statMonthExpense">৳ 0.00</h4>
-                            <small class="text-secondary d-none d-sm-inline" style="font-size: 11px;"><i class="fa-solid fa-chart-line me-1"></i> চলতি মাসের মোট</small>
+                            <small class="text-secondary d-none d-sm-inline" style="font-size: 11px;"><i class="fa-solid fa-chart-line me-1"></i> Current Month Total</small>
                         </div>
                         <div class="rounded-circle bg-info-subtle text-info p-2 p-sm-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; font-size: 18px;">
                             <i class="fa-solid fa-calendar-week"></i>
@@ -69,9 +69,9 @@
                 <div class="card border-0 shadow-sm rounded-4 h-100 bg-white" style="border-left: 4px solid #4f46e5 !important;">
                     <div class="card-body p-3 d-flex align-items-center justify-content-between">
                         <div>
-                            <small class="text-muted fw-bold uppercase d-block" style="font-size: 11px;">স্টাফ মোট বেতন</small>
+                            <small class="text-muted fw-bold uppercase d-block" style="font-size: 11px;">Staff Total Salary</small>
                             <h4 class="fw-extrabold my-1" id="statSalaryExpense" style="color: #4f46e5;">৳ 0.00</h4>
-                            <small class="text-secondary d-none d-sm-inline" style="font-size: 11px;"><i class="fa-solid fa-user-tie me-1"></i> বেতন পরিশোধ</small>
+                            <small class="text-secondary d-none d-sm-inline" style="font-size: 11px;"><i class="fa-solid fa-user-tie me-1"></i> Salary Paid</small>
                         </div>
                         <div class="rounded-circle bg-primary-subtle text-indigo p-2 p-sm-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; font-size: 18px; color: #4f46e5;">
                             <i class="fa-solid fa-hand-holding-dollar"></i>
@@ -85,12 +85,12 @@
         <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
             <div class="card-header bg-white py-3 px-3 px-md-4 d-flex flex-wrap align-items-center justify-content-between gap-2 border-bottom-0">
                 <h5 class="fw-bold mb-0 text-dark">
-                    <i class="fa-solid fa-list-ol text-success me-2"></i> খরচ ও সেলারির তালিকা
+                    <i class="fa-solid fa-list-ol text-success me-2"></i> Expense & Salary List
                 </h5>
 
                 <div class="d-flex align-items-center gap-2 w-100 w-md-auto ms-auto justify-content-between">
                     <div class="position-relative flex-grow-1 flex-md-grow-0">
-                        <input type="text" id="searchInput" class="form-control rounded-pill px-3 px-md-4" placeholder="🔍 টাইপ/বিবরণ/স্টাফ খুঁজুন..." style="min-width: 200px; height: 38px; font-size: 13px;" />
+                        <input type="text" id="searchInput" class="form-control rounded-pill px-3 px-md-4" placeholder="🔍 Search type/details/staff..." style="min-width: 200px; height: 38px; font-size: 13px;" />
                     </div>
                     <select id="entries" class="form-select rounded-pill" style="width: auto; height: 38px; font-size: 13px;">
                         <option value="10">10</option>
@@ -108,18 +108,18 @@
                         <thead class="bg-light text-muted small uppercase">
                             <tr>
                                 <th class="ps-4 py-3" style="width: 60px;">#</th>
-                                <th class="py-3">তারিখ (Date)</th>
-                                <th class="py-3">খাত / টাইপ (Expense Type)</th>
-                                <th class="py-3">স্টাফ নাম (Staff Profile)</th>
-                                <th class="py-3">বিবরণ (Details)</th>
-                                <th class="py-3">পরিমাণ (Amount ৳)</th>
-                                <th class="pe-4 py-3 text-end">অ্যাকশন (Action)</th>
+                                <th class="py-3">Date</th>
+                                <th class="py-3">Expense Type</th>
+                                <th class="py-3">Staff Profile</th>
+                                <th class="py-3">Details</th>
+                                <th class="py-3">Amount (৳)</th>
+                                <th class="pe-4 py-3 text-end">Action</th>
                             </tr>
                         </thead>
                         <tbody id="tableList">
                             <tr>
                                 <td colspan="7" class="text-center py-4 text-muted">
-                                    <i class="fa-solid fa-circle-notch fa-spin me-2"></i> ডাটা লোড হচ্ছে...
+                                    <i class="fa-solid fa-circle-notch fa-spin me-2"></i> Loading data...
                                 </td>
                             </tr>
                         </tbody>
@@ -129,7 +129,7 @@
                 <!-- Mobile Card List View (< 768px) -->
                 <div id="mobileCardList" class="d-block d-md-none p-1">
                     <div class="text-center py-4 text-muted">
-                        <i class="fa-solid fa-circle-notch fa-spin me-2"></i> ডাটা লোড হচ্ছে...
+                        <i class="fa-solid fa-circle-notch fa-spin me-2"></i> Loading data...
                     </div>
                 </div>
             </div>
@@ -200,7 +200,7 @@
             let emptyMsg = `
                 <div class="text-center py-4 text-muted">
                     <i class="fa-solid fa-inbox fs-3 mb-2 d-block opacity-50"></i>
-                    কোনো এক্সপেন্স ডাটা পাওয়া যায়নি।
+                    No expense data found.
                 </div>
             `;
             tableList.append(`<tr><td colspan="7">${emptyMsg}</td></tr>`);
@@ -215,10 +215,10 @@
             const dateFormatted = item.date ? new Date(item.date).toLocaleDateString('en-GB') : '-';
             const amountFormatted = parseFloat(item.expense_amount || 0).toLocaleString('en-IN', {minimumFractionDigits: 2});
             
-            let staffBadge = '<span class="text-muted small">সাধারণ খরচ (General)</span>';
+            let staffBadge = '<span class="text-muted small">General Expense</span>';
             if (item.staff_id && item.staff_name) {
                 staffBadge = `
-                    <a href="/admin-dashboard-staff-profile?id=${item.staff_id}" class="badge bg-primary-subtle text-primary border border-primary text-decoration-none px-3 py-1 rounded-pill" title="স্টাফের প্রোফাইল ও স্যালারি রিপোর্ট দেখুন">
+                    <a href="/admin-dashboard-staff-profile?id=${item.staff_id}" class="badge bg-primary-subtle text-primary border border-primary text-decoration-none px-3 py-1 rounded-pill" title="View staff profile & salary report">
                         <i class="fa-solid fa-user-tie me-1"></i> ${item.staff_name}
                     </a>
                 `;
@@ -237,10 +237,10 @@
                     <td class="fw-extrabold text-danger fs-6">৳ ${amountFormatted}</td>
                     <td class="pe-4 text-end">
                         <div class="d-inline-flex gap-1">
-                            <a href="#" data-id="${item.id}" class="btn btn-sm btn-outline-success rounded-circle edit-link" data-bs-toggle="modal" data-bs-target="#exampleModal" title="এডিট করুন">
+                            <a href="#" data-id="${item.id}" class="btn btn-sm btn-outline-success rounded-circle edit-link" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
-                            <a href="#" data-id="${item.id}" class="btn btn-sm btn-outline-danger rounded-circle custom-delete-modal-btn" data-bs-toggle="modal" data-bs-target="#confirmationModal" title="ডিলিট করুন">
+                            <a href="#" data-id="${item.id}" class="btn btn-sm btn-outline-danger rounded-circle custom-delete-modal-btn" data-bs-toggle="modal" data-bs-target="#confirmationModal" title="Delete">
                                 <i class="fa-solid fa-trash"></i>
                             </a>
                         </div>
@@ -273,20 +273,20 @@
                             </div>
                         </div>
                         <div class="text-secondary small bg-light p-2 rounded-3 mt-1" style="font-size: 12px; border: 1px solid #f1f5f9;">
-                            <i class="fa-solid fa-align-left me-1 text-muted"></i>${item.expense_details || 'কোনো বিবরণ নেই'}
+                            <i class="fa-solid fa-align-left me-1 text-muted"></i>${item.expense_details || 'No details provided'}
                         </div>
                     </div>
 
                     <div class="d-flex align-items-center justify-content-between pt-2 mt-2 border-top">
                         <div>
-                            <span class="text-muted small fw-bold" style="font-size: 11px;">পরিমাণ (Amount):</span>
+                            <span class="text-muted small fw-bold" style="font-size: 11px;">Amount:</span>
                             <div class="fw-extrabold text-danger fs-6">৳ ${amountFormatted}</div>
                         </div>
                         <div class="d-flex align-items-center gap-2">
-                            <a href="#" data-id="${item.id}" class="edit-link btn btn-sm btn-outline-success border-2 rounded-circle d-flex align-items-center justify-content-center p-0" data-bs-toggle="modal" data-bs-target="#exampleModal" title="এডিট করুন" style="width: 36px; height: 36px;">
+                            <a href="#" data-id="${item.id}" class="edit-link btn btn-sm btn-outline-success border-2 rounded-circle d-flex align-items-center justify-content-center p-0" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit" style="width: 36px; height: 36px;">
                                 <i class="fa-solid fa-pen-to-square fs-6"></i>
                             </a>
-                            <a href="#" data-id="${item.id}" class="custom-delete-modal-btn btn btn-sm btn-outline-danger border-2 rounded-circle d-flex align-items-center justify-content-center p-0" data-bs-toggle="modal" data-bs-target="#confirmationModal" title="ডিলিট করুন" style="width: 36px; height: 36px;">
+                            <a href="#" data-id="${item.id}" class="custom-delete-modal-btn btn btn-sm btn-outline-danger border-2 rounded-circle d-flex align-items-center justify-content-center p-0" data-bs-toggle="modal" data-bs-target="#confirmationModal" title="Delete" style="width: 36px; height: 36px;">
                                 <i class="fa-solid fa-trash fs-6"></i>
                             </a>
                         </div>

@@ -113,7 +113,7 @@
                         </div>
 
                         <!-- Right Group: Export Action Buttons (Centered on Mobile, Right-aligned on Desktop) -->
-                        <div class="export-buttons-group flex items-center justify-center sm:justify-end gap-1.5 flex-wrap w-full sm:w-auto sm:ms-auto">
+                        {{-- <div class="export-buttons-group flex items-center justify-center sm:justify-end gap-1.5 flex-wrap w-full sm:w-auto sm:ms-auto">
                             <button id="copyBtn" type="button" title="Copy Table" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -151,7 +151,7 @@
                                     <line x1="15" y1="13" x2="9" y2="17"></line>
                                 </svg>
                             </button>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <!-- 3. Desktop Table (SL header, solid emerald header, single line, 10px padding) -->
@@ -1013,8 +1013,8 @@
         mobileCardList.empty();
 
         if (pageItems.length === 0) {
-            tableList.html('<tr><td colspan="8" class="text-center text-rose-500 dark:text-rose-400 p-8 font-semibold"><div class="flex flex-col items-center justify-center gap-2"><svg class="w-8 h-8 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg><span>কোনো ইনভয়েস পাওয়া যায়নি।</span></div></td></tr>');
-            mobileCardList.html('<div class="p-6 text-center text-rose-500 dark:text-rose-400 font-semibold bg-white dark:bg-slate-800/60 rounded-2xl unified-ui-border shadow-sm">❌ কোনো ইনভয়েস পাওয়া যায়নি।</div>');
+            tableList.html('<tr><td colspan="8" class="text-center text-rose-500 dark:text-rose-400 p-8 font-semibold"><div class="flex flex-col items-center justify-center gap-2"><svg class="w-8 h-8 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg><span>No invoices found.</span></div></td></tr>');
+            mobileCardList.html('<div class="p-6 text-center text-rose-500 dark:text-rose-400 font-semibold bg-white dark:bg-slate-800/60 rounded-2xl unified-ui-border shadow-sm">❌ No invoices found.</div>');
         } else {
             pageItems.forEach(function (item, idx) {
                 let realIndex = startIndex + idx;
@@ -1064,10 +1064,10 @@
                             ` : ''}
                         </td>
                         <td class="p-[10px] text-xs">
-                            <div class="text-slate-700 dark:text-slate-200">মোট: <span class="font-bold text-slate-900 dark:text-white">৳ ${formatBdCurrency(subTotal)}</span></div>
-                            <div class="text-slate-500 dark:text-slate-400">ডিসকাউন্ট: ৳ ${formatBdCurrency(discountAmount)}</div>
-                            <div class="text-emerald-600 dark:text-emerald-400 font-medium">পরিশোধ: <span class="font-bold">৳ ${formatBdCurrency(paidAmount)}</span></div>
-                            ${dueAmount > 0 ? `<div class="text-rose-600 dark:text-rose-400 font-bold">বকেয়া: ৳ ${formatBdCurrency(dueAmount)}</div>` : ''}
+                            <div class="text-slate-700 dark:text-slate-200">Total: <span class="font-bold text-slate-900 dark:text-white">৳ ${formatBdCurrency(subTotal)}</span></div>
+                            <div class="text-slate-500 dark:text-slate-400">Discount: ৳ ${formatBdCurrency(discountAmount)}</div>
+                            <div class="text-emerald-600 dark:text-emerald-400 font-medium">Paid: <span class="font-bold">৳ ${formatBdCurrency(paidAmount)}</span></div>
+                            ${dueAmount > 0 ? `<div class="text-rose-600 dark:text-rose-400 font-bold">Due: ৳ ${formatBdCurrency(dueAmount)}</div>` : ''}
                         </td>
                         <td class="p-[10px] text-xs font-semibold text-slate-600 dark:text-slate-300 whitespace-nowrap"><i class="fa-solid fa-user me-1 text-slate-400"></i>${item['user']?.name ?? 'System'}</td>
                         <td class="p-[10px] text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap"><i class="fa-regular fa-calendar me-1 text-slate-400"></i>${formattedDate}</td>
@@ -1078,16 +1078,16 @@
                         </td>
                         <td class="p-[10px] text-center">
                             <div class="flex items-center justify-center gap-1.5">
-                                <button class="action-btn action-btn-print w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" onclick="viewInvoice(${item.id})" title="Print Invoice (প্রিন্ট ইনভয়েস)">
+                                <button class="action-btn action-btn-print w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" onclick="viewInvoice(${item.id})" title="Print Invoice">
                                     <i class="fa-solid fa-print text-xs"></i>
                                 </button>
-                                <button class="action-btn action-btn-return w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" onclick="viewReturn(${item.id})" title="Sales Return (পণ্য ফেরত)">
+                                <button class="action-btn action-btn-return w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" onclick="viewReturn(${item.id})" title="Sales Return">
                                     <i class="fa-solid fa-rotate-left text-xs"></i>
                                 </button>
-                                <a data-id="${item['id']}" href="#" class="action-btn action-btn-due edit-link w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Due Collection / Payment (বকেয়া সংগ্রহ)">
+                                <a data-id="${item['id']}" href="#" class="action-btn action-btn-due edit-link w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Due Collection / Payment">
                                     <i class="fa-solid fa-hand-holding-dollar text-xs"></i>
                                 </a>
-                                <a data-id="${item['id']}" href="#" class="action-btn action-btn-edit edit-link w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" data-bs-toggle="modal" data-bs-target="#invoiceFullEditModal" title="Edit Invoice (ইনভয়েস এডিট)">
+                                <a data-id="${item['id']}" href="#" class="action-btn action-btn-edit edit-link w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" data-bs-toggle="modal" data-bs-target="#invoiceFullEditModal" title="Edit Invoice">
                                     <i class="fa-solid fa-pen-to-square text-xs"></i>
                                 </a>
                             </div>
@@ -1135,19 +1135,19 @@
                         <!-- 2x2 Grid Side-by-Side (Left-Right) with margin-top -->
                         <div class="mobile-fin-grid">
                             <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700">
-                                <span class="text-slate-500 dark:text-slate-400 text-xs font-semibold">মোট:</span>
+                                <span class="text-slate-500 dark:text-slate-400 text-xs font-semibold">Total:</span>
                                 <span class="font-bold text-slate-800 dark:text-slate-100 text-xs">৳ ${formatBdCurrency(subTotal)}</span>
                             </div>
                             <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700">
-                                <span class="text-slate-500 dark:text-slate-400 text-xs font-semibold">ছাড়:</span>
+                                <span class="text-slate-500 dark:text-slate-400 text-xs font-semibold">Discount:</span>
                                 <span class="font-bold text-slate-600 dark:text-slate-300 text-xs">৳ ${formatBdCurrency(discountAmount)}</span>
                             </div>
                             <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-slate-700">
-                                <span class="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">পরিশোধ:</span>
+                                <span class="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">Paid:</span>
                                 <span class="font-bold text-emerald-600 dark:text-emerald-400 text-xs">৳ ${formatBdCurrency(paidAmount)}</span>
                             </div>
                             <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl ${dueAmount > 0 ? 'bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-slate-700' : 'bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700'}">
-                                <span class="${dueAmount > 0 ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 dark:text-slate-400'} text-xs font-semibold">বকেয়া:</span>
+                                <span class="${dueAmount > 0 ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 dark:text-slate-400'} text-xs font-semibold">Due:</span>
                                 <span class="font-bold ${dueAmount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-500 dark:text-slate-400'} text-xs">৳ ${formatBdCurrency(dueAmount)}</span>
                             </div>
                         </div>
