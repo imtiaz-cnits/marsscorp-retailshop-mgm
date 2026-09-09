@@ -1,184 +1,210 @@
-<style>
-    #editModal .modal-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-</style>
+<!-- Action Button Due Collection Modal Start -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg my-3" style="max-height: 90vh;">
+        <div class="modal-content bg-white dark:bg-slate-900 border-0 rounded-2xl shadow-2xl overflow-hidden transition-colors flex flex-col" style="max-height: 90vh; border: none !important;">
+            
+            <!-- Sticky Top Green Header -->
+            <div class="modal-header sticky top-0 z-20 px-4 sm:px-5 py-3.5 bg-emerald-700 text-white flex items-center justify-between shadow-sm border-0 flex-shrink-0" style="background-color: #15803d !important; color: #ffffff !important; border: none !important;">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-white/20 text-white flex items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                            <line x1="2" y1="10" x2="22" y2="10"></line>
+                        </svg>
+                    </div>
+                    <h5 class="modal-title text-base sm:text-lg font-bold text-white tracking-tight mb-0" id="editModalLabel" style="color: #ffffff !important;">Customer Due Collection</h5>
+                </div>
+                <!-- Circular Red Close Button with White Icon -->
+                <button type="button" class="qv-close-btn" data-bs-dismiss="modal" onclick="closeModal(document.getElementById('editModal'))" aria-label="Close" style="width: 30px !important; height: 30px !important; min-width: 30px !important; min-height: 30px !important; border-radius: 50% !important; background-color: #dc2626 !important; color: #ffffff !important; border: none !important; display: flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; padding: 0 !important; margin: 0 !important;">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
 
-<!-- Action Button Edit Modal Start -->
-<div id="editModal" class="payment-edit modal">
-    <div class="modal-content">
-        <a class="close-btn close">
-            <i class="fa-solid fa-xmark"></i>
-        </a>
-        <h2 class="heading">Customer Due collection</h2>
-        <div class="table-wrapper">
-
-            <form id="paymentForm">
-                <div class="totals">
-                    <div class="subtotal mb-3">
-                        <span>Due collection Date</span>
-                        <input type="date" name="" id="DueCollectionDate">
+            <!-- Scrollable Modal Body -->
+            <div class="modal-body p-4 sm:p-6 overflow-y-auto custom-scrollbar flex-1" style="max-height: calc(90vh - 125px);">
+                
+                <!-- Financial Due Summary Cards Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4">
+                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
+                        <span class="block text-[10px] font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Previous Due</span>
+                        <span id="PreviousDue" class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100">৳ 0</span>
                     </div>
-                    <div class="subtotal">
-                        <span>Previous Due Amount</span>
-                        <span id="PreviousDue">৳ 0</span>
+                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
+                        <span class="block text-[10px] font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Order Due</span>
+                        <span id="OrderDue" class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100">৳ 0</span>
                     </div>
-                    <div class="subtotal">
-                        <span>Order Due Amount</span>
-                        <span id="OrderDue">৳ 0</span>
+                    <div class="p-2.5 rounded-xl bg-rose-50 dark:bg-slate-800 border border-rose-200 dark:border-slate-700 text-center">
+                        <span class="block text-[10px] font-semibold text-rose-600 dark:text-rose-400 uppercase tracking-wider mb-1">Total Due</span>
+                        <span id="TotalDue" class="text-sm sm:text-base font-bold text-rose-600 dark:text-rose-400">৳ 0</span>
                     </div>
-
-                    <div class="total">
-                        <span>Total Due Amount</span>
-                        <span id="TotalDue">৳ 0</span>
-                    </div>
-                    <div class="total" style="display: none;">
-                        <span>Total Due Amount</span>
-                        <span id="MyTotalDueAmount">৳ 0</span>
-                    </div>
-
-                    <div class="subtotal" style="display: none;">
-                        <span>Previous Due Amount</span>
-                        <span id="PreviousDueAmount">৳ 0</span>
-                    </div>
-                    <div class="subtotal">
-                        <span> Enter Pay Amount</span>
-                        <input type="number" id="UpdateDueAmountclear" oninput="calculateDuePayment()"
-                            placeholder="Enter Pay Amount">
-                    </div>
-                    <div class="subtotal">
-                        <span> Enter Discount Amount</span>
-                        <input type="number" value="0" id="UpdateDiscountAmountclear" oninput="calculateDiscountPayment()"
-                            placeholder="Enter Discount Amount">
-                    </div>
-                    <div class="total">
-                        <span>Due Amount</span>
-                        <span id="ShowtotalDuePayable">৳0</span>
-                    </div>
-                    <div class="total">
-                        <span>Status</span>
-                        <span id="ShowpaymentStatusDisplay"></span>
+                    <div class="p-2.5 rounded-xl bg-emerald-50 dark:bg-slate-800 border border-emerald-200 dark:border-slate-700 text-center">
+                        <span class="block text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">Remaining Due</span>
+                        <span id="ShowtotalDuePayable" class="text-sm sm:text-base font-bold text-emerald-700 dark:text-emerald-300">৳ 0</span>
                     </div>
                 </div>
-            </form>
 
-            <div id="payment">
+                <!-- Hidden Reference Elements -->
+                <span id="MyTotalDueAmount" style="display: none;">৳ 0</span>
+                <span id="PreviousDueAmount" style="display: none;">৳ 0</span>
+                <span id="ShowDiscountAmount" style="display: none;">৳ 0</span>
                 <input type="hidden" id="updateID">
+                <input type="hidden" id="selectedPaymentMethod" value="cash">
 
-                <div class="payments">
-                    <div class="heading">
-                        <h2>Payment Method</h2>
-                    </div>
-                    <form action="#">
-                        <input type="radio" name="payment" id="cash" />
-                        <input type="radio" name="payment" id="bkash" />
-                        <input type="radio" name="payment" id="nagad" />
-                        <input type="radio" name="payment" id="rocket" />
-                        <input type="radio" name="payment" id="bank" />
-                        <input type="radio" name="payment" id="mastercard" />
-
-                        <div class="category-wrapper">
-                            <div class="category">
-                                <label for="cash" class="cashMethod" onclick="toggleTransactionInput('cash')">
-                                    <input type="radio" name="payment" id="cash" />
-                                    <div class="imgName">
-                                        <div class="imgContainer cash">
-                                            <img src="{{ asset('backend/assets/img/payment-cash.png') }}"
-                                                alt="" />
-                                        </div>
-                                        <h1>Cash</h1>
-                                    </div>
-                                    <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                </label>
-
-                                <label for="bkash" class="bkashMethod" onclick="toggleTransactionInput('bkash')">
-                                    <div class="imgName">
-                                        <div class="imgContainer bkash">
-                                            <img src="{{ asset('backend/assets/img/payment-bkash.png') }}"
-                                                alt="" />
-                                        </div>
-                                        <h1>bKash</h1>
-                                    </div>
-                                    <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                </label>
-
-                                <label for="nagad" class="nagadMethod">
-                                    <div class="imgName">
-                                        <div class="imgContainer nagad">
-                                            <img src="{{ asset('backend/assets/img/payment-nagad.png') }}"
-                                                alt="" />
-                                        </div>
-                                        <h1>Nagad</h1>
-                                    </div>
-                                    <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                </label>
-                                <input type="hidden" id="selectedPaymentMethod">
-
-                                <label for="rocket" class="rocketMethod">
-                                    <div class="imgName">
-                                        <div class="imgContainer rocket">
-                                            <img src="{{ asset('backend/assets/img/payment-rocket.png') }}"
-                                                alt="" />
-                                        </div>
-                                        <h1>Rocket</h1>
-                                    </div>
-                                    <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                </label>
-
-                                <label for="bank" class="bankMethod">
-                                    <div class="imgName">
-                                        <div class="imgContainer bank">
-                                            <img src="{{ asset('backend/assets/img/payment-bank.png') }}"
-                                                alt="" />
-                                        </div>
-                                        <h1>Bank</h1>
-                                    </div>
-                                    <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                </label>
-
-                                <label for="mastercard" class="mastercardMethod">
-                                    <div class="imgName">
-                                        <div class="imgContainer mastercard">
-                                            <img src="{{ asset('backend/assets/img/payment-card.png') }}"
-                                                alt="" />
-                                        </div>
-                                        <h1>Card</h1>
-                                    </div>
-                                    <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                </label>
+                <!-- Collection Inputs Grid -->
+                <form id="paymentForm" onsubmit="return false;" class="space-y-3.5 mb-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <!-- Date -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider mb-1.5">Collection Date</label>
+                            <div class="unified-ui-border h-[42px] flex items-center px-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20 transition-all">
+                                <input type="date" id="DueCollectionDate" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 p-0 focus:ring-0" style="border: none !important; outline: none !important; box-shadow: none !important;" />
                             </div>
                         </div>
-                    </form>
+                        <!-- Pay Amount -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider mb-1.5">Pay Amount <span class="text-rose-500">*</span></label>
+                            <div class="unified-ui-border h-[42px] flex items-center px-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20 transition-all">
+                                <input type="number" step="any" id="UpdateDueAmountclear" oninput="calculateDuePayment()" placeholder="Enter Pay Amount" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 p-0 focus:ring-0 font-bold" style="border: none !important; outline: none !important; box-shadow: none !important;" />
+                            </div>
+                        </div>
+                        <!-- Discount -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider mb-1.5">Discount Amount</label>
+                            <div class="unified-ui-border h-[42px] flex items-center px-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20 transition-all">
+                                <input type="number" step="any" value="0" id="UpdateDiscountAmountclear" oninput="calculateDuePayment()" placeholder="0.00" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 p-0 focus:ring-0" style="border: none !important; outline: none !important; box-shadow: none !important;" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Status Badge Indicator -->
+                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Payment Status:</span>
+                        <span id="ShowpaymentStatusDisplay" class="badge px-3 py-1 font-bold text-xs bg-amber-500 text-white rounded-full">Pending</span>
+                    </div>
+                </form>
+
+                <!-- Payment Methods Section -->
+                <div class="pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider mb-2.5">Select Payment Method</label>
+                    
+                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 payment-method-grid">
+                        <!-- Cash -->
+                        <label for="cash" class="method-card cashMethod cursor-pointer flex flex-col items-center justify-center p-2.5 rounded-xl unified-ui-border bg-white dark:bg-slate-800 transition-all hover:border-emerald-500 active">
+                            <input type="radio" name="payment" id="cash" checked class="hidden" />
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center mb-1">
+                                <img src="{{ asset('backend/assets/img/payment-cash.png') }}" class="w-7 h-7 object-contain" alt="Cash" onerror="this.src='{{ asset('backend/assets/img/brand-defult-img.svg') }}'" />
+                            </div>
+                            <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Cash</span>
+                        </label>
+
+                        <!-- bKash -->
+                        <label for="bkash" class="method-card bkashMethod cursor-pointer flex flex-col items-center justify-center p-2.5 rounded-xl unified-ui-border bg-white dark:bg-slate-800 transition-all hover:border-emerald-500">
+                            <input type="radio" name="payment" id="bkash" class="hidden" />
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center mb-1">
+                                <img src="{{ asset('backend/assets/img/payment-bkash.png') }}" class="w-7 h-7 object-contain" alt="bKash" onerror="this.src='{{ asset('backend/assets/img/brand-defult-img.svg') }}'" />
+                            </div>
+                            <span class="text-xs font-bold text-slate-700 dark:text-slate-200">bKash</span>
+                        </label>
+
+                        <!-- Nagad -->
+                        <label for="nagad" class="method-card nagadMethod cursor-pointer flex flex-col items-center justify-center p-2.5 rounded-xl unified-ui-border bg-white dark:bg-slate-800 transition-all hover:border-emerald-500">
+                            <input type="radio" name="payment" id="nagad" class="hidden" />
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center mb-1">
+                                <img src="{{ asset('backend/assets/img/payment-nagad.png') }}" class="w-7 h-7 object-contain" alt="Nagad" onerror="this.src='{{ asset('backend/assets/img/brand-defult-img.svg') }}'" />
+                            </div>
+                            <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Nagad</span>
+                        </label>
+
+                        <!-- Rocket -->
+                        <label for="rocket" class="method-card rocketMethod cursor-pointer flex flex-col items-center justify-center p-2.5 rounded-xl unified-ui-border bg-white dark:bg-slate-800 transition-all hover:border-emerald-500">
+                            <input type="radio" name="payment" id="rocket" class="hidden" />
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center mb-1">
+                                <img src="{{ asset('backend/assets/img/payment-rocket.png') }}" class="w-7 h-7 object-contain" alt="Rocket" onerror="this.src='{{ asset('backend/assets/img/brand-defult-img.svg') }}'" />
+                            </div>
+                            <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Rocket</span>
+                        </label>
+
+                        <!-- Bank -->
+                        <label for="bank" class="method-card bankMethod cursor-pointer flex flex-col items-center justify-center p-2.5 rounded-xl unified-ui-border bg-white dark:bg-slate-800 transition-all hover:border-emerald-500">
+                            <input type="radio" name="payment" id="bank" class="hidden" />
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center mb-1">
+                                <img src="{{ asset('backend/assets/img/payment-bank.png') }}" class="w-7 h-7 object-contain" alt="Bank" onerror="this.src='{{ asset('backend/assets/img/brand-defult-img.svg') }}'" />
+                            </div>
+                            <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Bank</span>
+                        </label>
+
+                        <!-- Card -->
+                        <label for="mastercard" class="method-card mastercardMethod cursor-pointer flex flex-col items-center justify-center p-2.5 rounded-xl unified-ui-border bg-white dark:bg-slate-800 transition-all hover:border-emerald-500">
+                            <input type="radio" name="payment" id="mastercard" class="hidden" />
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center mb-1">
+                                <img src="{{ asset('backend/assets/img/payment-card.png') }}" class="w-7 h-7 object-contain" alt="Card" onerror="this.src='{{ asset('backend/assets/img/brand-defult-img.svg') }}'" />
+                            </div>
+                            <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Card</span>
+                        </label>
+                    </div>
+
+                    <!-- Transaction ID Field (Hidden for Cash) -->
+                    <div class="transaction-input-wrap mt-3" style="display: none;">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider mb-1.5">Transaction ID</label>
+                        <div class="unified-ui-border h-[42px] flex items-center px-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20 transition-all">
+                            <input type="text" id="transactionInput" placeholder="Enter Transaction ID" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 p-0 focus:ring-0" style="border: none !important; outline: none !important; box-shadow: none !important;" />
+                        </div>
+                    </div>
                 </div>
-                <div class="transaction">
-                    <input type="text" id="transactionInput" placeholder="Enter Transaction ID" />
-                </div>
-                <div class="submit-btn">
-                    <button type="submit" onclick="SavePaymentInfo(event)" class="submit">SUBMIT</button>
-                </div>
+
             </div>
+
+            <!-- Sticky Bottom Footer with Red Cancel & Green Submit Buttons (Strict 38px height) -->
+            <div class="modal-footer sticky bottom-0 z-20 px-4 sm:px-5 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-end gap-2.5 flex-shrink-0">
+                <button type="button" class="px-4 h-[38px] min-h-[38px] max-h-[38px] rounded-xl text-white text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center cursor-pointer hover:bg-red-700 active:scale-[0.98]" data-bs-dismiss="modal" onclick="closeModal(document.getElementById('editModal'))" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; background-color: #dc2626 !important; color: #ffffff !important; border: none !important;">
+                    Cancel
+                </button>
+                <button type="button" onclick="SavePaymentInfo(event)" class="px-5 h-[38px] min-h-[38px] max-h-[38px] rounded-xl text-white text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center cursor-pointer hover:bg-emerald-600 active:scale-[0.98]" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; background-color: #15803d !important; color: #ffffff !important; border: none !important;">
+                    Submit Collection
+                </button>
+            </div>
+
         </div>
     </div>
 </div>
+<!-- Action Button Due Collection Modal End -->
 
+<style>
+    #editModal .modal-dialog {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    #editModal .modal-content {
+        border: none !important;
+    }
+    body[light-mode="dark"] #editModal .modal-content {
+        background-color: #0f172a !important;
+        border: 1px solid #334155 !important;
+    }
+    .method-card.active {
+        border-color: #16a34a !important;
+        background-color: #f0fdf4 !important;
+        box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.25) !important;
+    }
+    body[light-mode="dark"] .method-card.active {
+        background-color: rgba(22, 163, 74, 0.15) !important;
+        border-color: #22c55e !important;
+    }
+</style>
 
-<!-- Action Button Edit Modal End -->
 <script>
-    // Function to open a modal by setting its display style to 'block'
     function openModal(modal) {
         if (modal) {
-            modal.style.display = 'block';
+            $('#editModal').modal('show');
         }
     }
 
-    // Function to close a modal by setting its display style to 'none'
     function closeModal(modal) {
-        if (modal) {
-            modal.style.display = 'none';
-        }
+        $('#editModal').modal('hide');
     }
 
     async function FillUpUpdateForm(id) {
@@ -198,39 +224,54 @@
                 // Update Previous Due
                 let previousDueElement = document.getElementById('PreviousDue');
                 if (previousDueElement) {
-                    previousDueElement.innerText = `৳ ${data.previous_due}`;
+                    previousDueElement.innerText = `৳ ${data.previous_due || '0.00'}`;
                 }
 
-                // Also update hidden Previous Due Amount (if needed)
                 let previousDueHidden = document.getElementById('PreviousDueAmount');
                 if (previousDueHidden) {
-                    previousDueHidden.innerText = `৳ ${data.previous_due}`;
+                    previousDueHidden.innerText = `৳ ${data.previous_due || '0.00'}`;
                 }
 
                 // Update Order Due
                 let orderDueElement = document.getElementById('OrderDue');
                 if (orderDueElement) {
-                    orderDueElement.innerText = `৳ ${data.order_due}`;
+                    orderDueElement.innerText = `৳ ${data.order_due || '0.00'}`;
                 }
 
                 // Update Total Due
                 let totalDueElement = document.getElementById('TotalDue');
                 if (totalDueElement) {
-                    totalDueElement.innerText = `৳ ${data.total_due}`;
+                    totalDueElement.innerText = `৳ ${data.total_due || '0.00'}`;
                 }
 
-                // Set the default Payable amount to Total Due
+                let myTotalDue = document.getElementById('MyTotalDueAmount');
+                if (myTotalDue) {
+                    myTotalDue.innerText = `৳ ${data.total_due || '0.00'}`;
+                }
+
+                // Set default Payable amount to Total Due
                 let showTotalDuePayable = document.getElementById('ShowtotalDuePayable');
                 if (showTotalDuePayable) {
-                    showTotalDuePayable.innerText = `৳ ${data.total_due}`;
+                    showTotalDuePayable.innerText = `৳ ${data.total_due || '0.00'}`;
                 }
 
-                // Default Payment Status
-                document.getElementById('ShowpaymentStatusDisplay').textContent = "Pending";
+                // Reset inputs
+                document.getElementById('UpdateDueAmountclear').value = '';
+                document.getElementById('UpdateDiscountAmountclear').value = '0';
+                document.getElementById('transactionInput').value = '';
 
-                openModal(document.getElementById('editModal'));
+                // Default Payment Status
+                const paymentStatusDisplay = document.getElementById('ShowpaymentStatusDisplay');
+                paymentStatusDisplay.textContent = "Pending";
+                paymentStatusDisplay.className = "badge px-3 py-1 font-bold text-xs bg-amber-500 text-white rounded-full";
+
+                // Default Payment Method: Cash
+                selectPaymentMethodOption('cash');
+
+                $('#editModal').modal('show');
             } else {
                 console.error("Failed to fetch invoice details:", res.data.message);
+                errorToast(res.data.message || "Failed to fetch customer due details.");
             }
         } catch (e) {
             hideLoader();
@@ -239,370 +280,137 @@
         }
     }
 
+    function calculateDuePayment() {
+        const totalDueText = document.getElementById('TotalDue').innerText || '0';
+        const totalDueAmount = parseFloat(totalDueText.replace(/[^\d.-]/g, '')) || 0;
 
-    // function calculateDuePayment() {
-    //     // Always get the Total Due Amount
-    //     const totalDueAmount = parseFloat(document.getElementById('TotalDue').innerText.replace(/[^\d.-]/g, '')) || 0;
+        const enteredAmount = parseFloat(document.getElementById('UpdateDueAmountclear').value) || 0;
+        const discountAmount = parseFloat(document.getElementById('UpdateDiscountAmountclear').value) || 0;
 
-    //     // Get entered Pay Amount
-    //     const enteredAmount = parseFloat(document.getElementById('UpdateDueAmountclear').value) || 0;
+        const totalPaidWithDiscount = enteredAmount + discountAmount;
+        const newTotalDue = parseFloat((totalDueAmount - totalPaidWithDiscount).toFixed(2));
+        const finalDueAmount = newTotalDue >= 0 ? newTotalDue : 0;
 
-    //     // Get entered Discount Amount
-    //     const discountAmount = parseFloat(document.getElementById('UpdateDiscountAmountclear').value) || 0;
+        document.getElementById('ShowtotalDuePayable').textContent = `৳ ${finalDueAmount.toFixed(2)}`;
 
-    //     // Make sure discount does not exceed total due
-    //     const applicableDiscount = discountAmount <= totalDueAmount ? discountAmount : totalDueAmount;
-
-    //     // New Due Amount = Total Due - Pay Amount - Discount
-    //     const newTotalDue = parseFloat((totalDueAmount - enteredAmount - applicableDiscount).toFixed(2));
-
-    //     // Prevent negative amount
-    //     const finalDueAmount = newTotalDue >= 0 ? newTotalDue : 0;
-
-    //     // Update Due Amount in HTML
-    //     document.getElementById('ShowtotalDuePayable').textContent = `৳${finalDueAmount.toFixed(2)}`;
-
-    //     // Update Payment Status
-    //     const paymentStatusDisplay = document.getElementById('ShowpaymentStatusDisplay');
-    //     paymentStatusDisplay.classList.remove("fully-paid-status", "partial-payment-status", "unpaid-status");
-
-    //     if (finalDueAmount === 0) {
-    //         paymentStatusDisplay.textContent = "Fully Paid";
-    //         paymentStatusDisplay.classList.add("fully-paid-status");
-    //     } else if (finalDueAmount < totalDueAmount) {
-    //         paymentStatusDisplay.textContent = "Partial Paid";
-    //         paymentStatusDisplay.classList.add("partial-payment-status");
-    //     } else {
-    //         paymentStatusDisplay.textContent = "Unpaid";
-    //         paymentStatusDisplay.classList.add("unpaid-status");
-    //     }
-    // }
-
-    // // Discount input also recalculates
-    // document.getElementById('UpdateDiscountAmountclear').addEventListener('input', calculateDuePayment);
-
-
-
-
-    // function toggleTransactionInput(paymentMethod) {
-    //     const transactionInput = document.getElementById('transactionInput');
-    //     const transactionWrapper = document.querySelector('.transaction');
-
-    //     // Show the transaction input field if the selected payment method requires it
-    //     if (paymentMethod === 'cash') {
-    //         transactionInput.style.display = 'none';
-    //     } else {
-    //         transactionInput.style.display = 'block';
-    //     }
-
-    //     // Add the selected payment method to a hidden input or directly to the form data later
-    //     document.getElementById('selectedPaymentMethod').value = paymentMethod;
-    // }
-
-    // const paymentMethods = document.querySelectorAll(".category label");
-    // const transactionInput = document.getElementById("transactionInput");
-
-    // // Add an event listener to all payment methods
-    // paymentMethods.forEach((method) => {
-    //     method.addEventListener("click", () => {
-    //         // Remove 'active' class from all methods
-    //         paymentMethods.forEach((m) => m.classList.remove("active"));
-
-    //         // Add 'active' class to the clicked method
-    //         method.classList.add("active");
-
-    //         // Show or hide the input field based on the selected method
-    //         if (method.classList.contains("cashMethod")) {
-    //             transactionInput.style.display = "none"; // Hide input for cash
-    //         } else {
-    //             transactionInput.style.display = "block"; // Show input for others
-
-    //             // Change the placeholder text based on the selected method
-    //             if (method.classList.contains("bkashMethod")) {
-    //                 transactionInput.placeholder = "Enter BKash Transaction ID";
-    //             } else if (method.classList.contains("nagadMethod")) {
-    //                 transactionInput.placeholder = "Enter Nagad Transaction ID";
-    //             } else if (method.classList.contains("rocketMethod")) {
-    //                 transactionInput.placeholder = "Enter Rocket Transaction ID";
-    //             } else if (method.classList.contains("bankMethod")) {
-    //                 transactionInput.placeholder = "Enter Bank Transaction ID";
-    //             } else if (method.classList.contains("mastercardMethod")) {
-    //                 transactionInput.placeholder = "Enter Card Transaction ID";
-    //             } else {
-    //                 transactionInput.placeholder = "Enter Transaction ID";
-    //             }
-    //         }
-    //     });
-    // });
-
-    // async function SavePaymentInfo(event) {
-    //     event.preventDefault();
-
-    //     try {
-    //         const paidAmount = parseFloat(document.getElementById('UpdateDueAmountclear').value) || 0;
-    //         const DiscountAmount = parseFloat(document.getElementById('UpdateDiscountAmountclear').value) || 0;
-    //         const PreviousDue = parseFloat(document.getElementById('PreviousDue').innerText.replace(/[^\d.-]/g, '')) || 0; // Get the PreviousDue value
-    //         const dueAmount = parseFloat(document.getElementById('ShowtotalDuePayable').innerText.replace(/[^\d.-]/g, '')) || 0;
-    //         const transactionId = document.getElementById('transactionInput').value;
-    //         const CollectionDate = document.getElementById('DueCollectionDate').value;
-    //         const paymentStatus = document.getElementById('ShowpaymentStatusDisplay').innerText;
-    //         const updateID = parseInt(document.getElementById('updateID').value);
-    //         const paymentMethod = document.querySelector('input[name="payment"]:checked')?.id;
-
-    //         if (!paidAmount) return errorToast('Please update the due amount.');
-    //         if (!paymentStatus) return errorToast('Payment status is missing.');
-    //         if (!paymentMethod) return errorToast('Please select a payment method.');
-
-    //         let formData = new FormData();
-    //         formData.append('id', updateID);
-    //         formData.append('paid_amount', paidAmount);
-    //         formData.append('discount_amount', DiscountAmount);
-    //         formData.append('due_amount', dueAmount);
-    //         formData.append('previous_due_amount', PreviousDue);
-    //         formData.append('due_collection_date', CollectionDate);
-    //         formData.append('payment_status', paymentStatus);
-    //         formData.append('transaction_id', transactionId);
-    //         formData.append('payment_method', paymentMethod);
-
-    //         showLoader();
-    //         let res = await axios.post("/api/customer-payment-details-update", formData, {
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data',
-    //                 ...HeaderToken().headers
-    //             }
-    //         });
-    //         hideLoader();
-
-    //         if (res.data.status === "success") {
-    //             successToast(res.data.message);
-    //             closeModal(document.getElementById('editModal'));
-    //             window.location.reload();
-    //         } else {
-    //             errorToast(res.data.message);
-    //         }
-    //     } catch (e) {
-    //         hideLoader();
-    //         console.error(e);
-    //         unauthorized(e.response?.status || 500);
-    //     }
-    // }
-
-
-
-// Function to calculate Due Payment
-// function calculateDuePayment() {
-//     // Always get the Total Due Amount
-//     const totalDueAmount = parseFloat(document.getElementById('TotalDue').innerText.replace(/[^\d.-]/g, '')) || 0;
-
-//     // Get entered Pay Amount
-//     const enteredAmount = parseFloat(document.getElementById('UpdateDueAmountclear').value) || 0;
-
-//     // Get entered Discount Amount
-//     const discountAmount = parseFloat(document.getElementById('UpdateDiscountAmountclear').value) || 0;
-
-//     // New Due Amount = Total Due - Pay Amount (Discount is not deducted from the due)
-//     const newTotalDue = parseFloat((totalDueAmount - enteredAmount).toFixed(2));
-
-//     // Prevent negative amount for the due
-//     const finalDueAmount = newTotalDue >= 0 ? newTotalDue : 0;
-
-//     // Update Due Amount in HTML
-//     document.getElementById('ShowtotalDuePayable').textContent = `৳${finalDueAmount.toFixed(2)}`;
-
-//     // Update Payment Status
-//     const paymentStatusDisplay = document.getElementById('ShowpaymentStatusDisplay');
-//     paymentStatusDisplay.classList.remove("fully-paid-status", "partial-payment-status", "unpaid-status");
-
-//     if (finalDueAmount === 0) {
-//         paymentStatusDisplay.textContent = "Fully Paid";
-//         paymentStatusDisplay.classList.add("fully-paid-status");
-//     } else if (finalDueAmount < totalDueAmount) {
-//         paymentStatusDisplay.textContent = "Partial Paid";
-//         paymentStatusDisplay.classList.add("partial-payment-status");
-//     } else {
-//         paymentStatusDisplay.textContent = "Unpaid";
-//         paymentStatusDisplay.classList.add("unpaid-status");
-//     }
-
-//     // Show Discount Amount in HTML
-//     document.getElementById('ShowDiscountAmount').textContent = `৳${discountAmount.toFixed(2)}`;
-// }
-
-
-function calculateDuePayment() {
-    // Always get the Total Due Amount
-    const totalDueAmount = parseFloat(document.getElementById('TotalDue').innerText.replace(/[^\d.-]/g, '')) || 0;
-
-    // Get entered Pay Amount
-    const enteredAmount = parseFloat(document.getElementById('UpdateDueAmountclear').value) || 0;
-
-    // Get entered Discount Amount
-    const discountAmount = parseFloat(document.getElementById('UpdateDiscountAmountclear').value) || 0;
-
-    // New Due Amount = Total Due - (Pay + Discount)
-    const totalPaidWithDiscount = enteredAmount + discountAmount;
-    const newTotalDue = parseFloat((totalDueAmount - totalPaidWithDiscount).toFixed(2));
-
-    // Prevent negative amount for the due
-    const finalDueAmount = newTotalDue >= 0 ? newTotalDue : 0;
-
-    // Update Due Amount in HTML
-    document.getElementById('ShowtotalDuePayable').textContent = `৳${finalDueAmount.toFixed(2)}`;
-
-    // Update Payment Status
-    const paymentStatusDisplay = document.getElementById('ShowpaymentStatusDisplay');
-    paymentStatusDisplay.classList.remove("fully-paid-status", "partial-payment-status", "unpaid-status");
-
-    if (finalDueAmount === 0) {
-        paymentStatusDisplay.textContent = "Fully Paid";
-        paymentStatusDisplay.classList.add("fully-paid-status");
-    } else if (finalDueAmount < totalDueAmount) {
-        paymentStatusDisplay.textContent = "Partial Paid";
-        paymentStatusDisplay.classList.add("partial-payment-status");
-    } else {
-        paymentStatusDisplay.textContent = "Unpaid";
-        paymentStatusDisplay.classList.add("unpaid-status");
-    }
-
-    // Show Discount Amount in HTML
-    document.getElementById('ShowDiscountAmount').textContent = `৳${discountAmount.toFixed(2)}`;
-}
-
-
-// Discount input also recalculates
-document.getElementById('UpdateDiscountAmountclear').addEventListener('input', calculateDuePayment);
-
-// Function to toggle the transaction input field based on selected payment method
-function toggleTransactionInput(paymentMethod) {
-    const transactionInput = document.getElementById('transactionInput');
-    const transactionWrapper = document.querySelector('.transaction');
-
-    // Show the transaction input field if the selected payment method requires it
-    if (paymentMethod === 'cash') {
-        transactionInput.style.display = 'none';
-    } else {
-        transactionInput.style.display = 'block';
-    }
-
-    // Add the selected payment method to a hidden input or directly to the form data later
-    document.getElementById('selectedPaymentMethod').value = paymentMethod;
-}
-
-// Add event listeners to payment methods
-const paymentMethods = document.querySelectorAll(".category label");
-const transactionInput = document.getElementById("transactionInput");
-
-// Add an event listener to all payment methods
-paymentMethods.forEach((method) => {
-    method.addEventListener("click", () => {
-        // Remove 'active' class from all methods
-        paymentMethods.forEach((m) => m.classList.remove("active"));
-
-        // Add 'active' class to the clicked method
-        method.classList.add("active");
-
-        // Show or hide the input field based on the selected method
-        if (method.classList.contains("cashMethod")) {
-            transactionInput.style.display = "none"; // Hide input for cash
+        const paymentStatusDisplay = document.getElementById('ShowpaymentStatusDisplay');
+        if (finalDueAmount === 0 && enteredAmount > 0) {
+            paymentStatusDisplay.textContent = "Fully Paid";
+            paymentStatusDisplay.className = "badge px-3 py-1 font-bold text-xs bg-emerald-600 text-white rounded-full";
+        } else if (enteredAmount > 0 && finalDueAmount < totalDueAmount) {
+            paymentStatusDisplay.textContent = "Partial Paid";
+            paymentStatusDisplay.className = "badge px-3 py-1 font-bold text-xs bg-blue-600 text-white rounded-full";
         } else {
-            transactionInput.style.display = "block"; // Show input for others
-
-            // Change the placeholder text based on the selected method
-            if (method.classList.contains("bkashMethod")) {
-                transactionInput.placeholder = "Enter BKash Transaction ID";
-            } else if (method.classList.contains("nagadMethod")) {
-                transactionInput.placeholder = "Enter Nagad Transaction ID";
-            } else if (method.classList.contains("rocketMethod")) {
-                transactionInput.placeholder = "Enter Rocket Transaction ID";
-            } else if (method.classList.contains("bankMethod")) {
-                transactionInput.placeholder = "Enter Bank Transaction ID";
-            } else if (method.classList.contains("mastercardMethod")) {
-                transactionInput.placeholder = "Enter Card Transaction ID";
-            } else {
-                transactionInput.placeholder = "Enter Transaction ID";
-            }
+            paymentStatusDisplay.textContent = "Unpaid";
+            paymentStatusDisplay.className = "badge px-3 py-1 font-bold text-xs bg-rose-600 text-white rounded-full";
         }
-    });
-});
 
-// Function to Save Payment Information
-async function SavePaymentInfo(event) {
-    event.preventDefault();
+        const showDiscount = document.getElementById('ShowDiscountAmount');
+        if (showDiscount) {
+            showDiscount.textContent = `৳ ${discountAmount.toFixed(2)}`;
+        }
+    }
 
-    try {
-        const paidAmount = parseFloat(document.getElementById('UpdateDueAmountclear').value) || 0;
-        const DiscountAmount = parseFloat(document.getElementById('UpdateDiscountAmountclear').value) || 0;
-        const PreviousDue = parseFloat(document.getElementById('PreviousDue').innerText.replace(/[^\d.-]/g, '')) || 0; // Get the PreviousDue value
-        const dueAmount = parseFloat(document.getElementById('ShowtotalDuePayable').innerText.replace(/[^\d.-]/g, '')) || 0;
-        const transactionId = document.getElementById('transactionInput').value;
-        const CollectionDate = document.getElementById('DueCollectionDate').value;
-        const paymentStatus = document.getElementById('ShowpaymentStatusDisplay').innerText;
-        const updateID = parseInt(document.getElementById('updateID').value);
-        const paymentMethod = document.querySelector('input[name="payment"]:checked')?.id;
+    function selectPaymentMethodOption(methodId) {
+        $('.method-card').removeClass('active');
+        $(`.${methodId}Method`).addClass('active');
+        $(`#${methodId}`).prop('checked', true);
 
-        if (!paidAmount) return errorToast('Please update the due amount.');
-        if (!paymentStatus) return errorToast('Payment status is missing.');
-        if (!paymentMethod) return errorToast('Please select a payment method.');
+        const transactionWrap = $('.transaction-input-wrap');
+        const transactionInput = $('#transactionInput');
+        $('#selectedPaymentMethod').val(methodId);
 
-        let formData = new FormData();
-        formData.append('id', updateID);
-        formData.append('paid_amount', paidAmount);
-        formData.append('discount_amount', DiscountAmount);
-        formData.append('due_amount', dueAmount);
-        formData.append('previous_due_amount', PreviousDue);
-        formData.append('due_collection_date', CollectionDate);
-        formData.append('payment_status', paymentStatus);
-        formData.append('transaction_id', transactionId);
-        formData.append('payment_method', paymentMethod);
+        if (methodId === 'cash') {
+            transactionWrap.hide();
+        } else {
+            transactionWrap.show();
+            let label = methodId.toUpperCase();
+            transactionInput.attr('placeholder', `Enter ${label} Transaction ID`);
+        }
+    }
 
-        showLoader();
-        let res = await axios.post("/api/customer-payment-details-update", formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                ...HeaderToken().headers
+    function toggleTransactionInput(paymentMethod) {
+        selectPaymentMethodOption(paymentMethod);
+    }
+
+    $(document).ready(function() {
+        $('#editModal').appendTo("body");
+
+        // Set default date to today
+        const today = new Date().toISOString().split('T')[0];
+        const dateInput = document.getElementById('DueCollectionDate');
+        if (dateInput && !dateInput.value) {
+            dateInput.value = today;
+        }
+
+        // Method card click
+        $(document).on('click', '.method-card', function() {
+            const inputId = $(this).find('input[type="radio"]').attr('id');
+            if (inputId) {
+                selectPaymentMethodOption(inputId);
             }
         });
-        hideLoader();
+    });
 
-        if (res.data.status === "success") {
-            successToast(res.data.message);
-            closeModal(document.getElementById('editModal'));
-            window.location.reload();
-        } else {
-            errorToast(res.data.message);
+    async function SavePaymentInfo(event) {
+        if (event) event.preventDefault();
+
+        try {
+            const paidAmount = parseFloat(document.getElementById('UpdateDueAmountclear').value) || 0;
+            const DiscountAmount = parseFloat(document.getElementById('UpdateDiscountAmountclear').value) || 0;
+            const PreviousDue = parseFloat(document.getElementById('PreviousDue').innerText.replace(/[^\d.-]/g, '')) || 0;
+            const dueAmount = parseFloat(document.getElementById('ShowtotalDuePayable').innerText.replace(/[^\d.-]/g, '')) || 0;
+            const transactionId = document.getElementById('transactionInput').value;
+            const CollectionDate = document.getElementById('DueCollectionDate').value;
+            const paymentStatus = document.getElementById('ShowpaymentStatusDisplay').innerText;
+            const updateID = parseInt(document.getElementById('updateID').value);
+            const paymentMethod = document.getElementById('selectedPaymentMethod').value || 'cash';
+
+            if (!paidAmount || paidAmount <= 0) {
+                errorToast('Please enter a valid pay amount.');
+                return;
+            }
+            if (!paymentStatus) {
+                errorToast('Payment status is missing.');
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append('id', updateID);
+            formData.append('paid_amount', paidAmount);
+            formData.append('discount_amount', DiscountAmount);
+            formData.append('due_amount', dueAmount);
+            formData.append('previous_due_amount', PreviousDue);
+            formData.append('due_collection_date', CollectionDate);
+            formData.append('payment_status', paymentStatus);
+            formData.append('transaction_id', transactionId);
+            formData.append('payment_method', paymentMethod);
+
+            showLoader();
+            let res = await axios.post("/api/customer-payment-details-update", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    ...HeaderToken().headers
+                }
+            });
+            hideLoader();
+
+            if (res.data.status === "success") {
+                successToast(res.data.message);
+                $('#editModal').modal('hide');
+                if (typeof getList === 'function') {
+                    currentPage = 1;
+                    await getList();
+                } else {
+                    setTimeout(() => window.location.reload(), 500);
+                }
+            } else {
+                errorToast(res.data.message);
+            }
+        } catch (e) {
+            hideLoader();
+            console.error(e);
+            unauthorized(e.response?.status || 500);
         }
-    } catch (e) {
-        hideLoader();
-        console.error(e);
-        unauthorized(e.response?.status || 500);
     }
-}
-
-
-
-
 </script>
-
-<script>
-    // Set today's date in YYYY-MM-DD format
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('DueCollectionDate').value = today;
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
