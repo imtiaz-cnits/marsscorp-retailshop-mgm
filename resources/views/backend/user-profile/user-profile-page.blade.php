@@ -1,5 +1,13 @@
 @extends('layouts.dashboard-sidenav')
 @section('title','Admin Profile - MARSS CORPORATION')
+
+@section('topbar_back_button')
+  <a href="javascript:void(0)" onclick="if(window.history.length > 1 && document.referrer && document.referrer !== window.location.href){ window.history.back(); } else { window.location.href = '{{ url('/admin-dashboard') }}'; }" class="topbar-back-btn" title="Back">
+    <i class="fa-solid fa-arrow-left"></i>
+    <span>Back</span>
+  </a>
+@endsection
+
 @section('content')
 
 <div class="main-content">
@@ -13,11 +21,6 @@
                         <i class="fa-solid fa-user-gear text-success"></i> Account Profile & Settings
                     </h1>
                     <p class="text-muted mb-0 small">MARSS CORPORATION - Admin Profile & Security Settings</p>
-                </div>
-                <div>
-                    <a href="/admin-dashboard" class="btn btn-outline-success fw-bold rounded-pill px-3 shadow-sm d-inline-flex align-items-center justify-content-center" style="height: 30px !important; min-height: 30px !important; max-height: 30px !important; font-size: 12px; line-height: 1; padding-top: 0 !important; padding-bottom: 0 !important;">
-                        <i class="fa-solid fa-arrow-left me-1.5" style="font-size: 11px;"></i> Dashboard
-                    </a>
                 </div>
             </div>
 

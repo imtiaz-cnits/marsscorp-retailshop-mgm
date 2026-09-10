@@ -1663,7 +1663,7 @@
           $activeParent = null;
       } elseif (request()->is('admin-dashboard-*-report*') || request()->is('admin-dashboard-stock-out*') || request()->is('admin-dashboard-daily-*') || request()->is('admin-dashboard-personal-*') || request()->is('admin-dashboard-income-*') || request()->is('admin-dashboard-sales-report*')) {
           $activeParent = 'report';
-      } elseif (request()->is('admin-dashboard-user-role*')) {
+      } elseif (request()->is('admin-dashboard-user-role*') || request()->is('admin-dashboard-user-profile*')) {
           $activeParent = 'user-role';
       }
     @endphp
@@ -1901,6 +1901,7 @@
               </div>
               <ul class="py-0.5 px-1 space-y-0.5">
                 <li><a href="{{ url('admin-dashboard-user-role') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-user-role') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-user-gear text-[10px] text-emerald-300/80 w-4 text-center"></i><span>User List &amp; Roles</span></a></li>
+                <li><a href="{{ url('admin-dashboard-user-profile') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-user-profile') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-circle-user text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Profile</span></a></li>
               </ul>
             </div>
           </li>
@@ -2245,6 +2246,15 @@
             </a>
             <div class="sidebar-mini-tooltip">
               User List & Roles
+            </div>
+          </li>
+          <li class="relative group">
+            <a href="{{ url('admin-dashboard-user-profile') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->is('admin-dashboard-user-profile') ? 'active-submenu-link' : '' }}">
+              <i class="fa-solid fa-circle-user text-xs text-emerald-300/80 w-4 text-center"></i>
+              <span>Profile</span>
+            </a>
+            <div class="sidebar-mini-tooltip">
+              Profile
             </div>
           </li>
         </ul>

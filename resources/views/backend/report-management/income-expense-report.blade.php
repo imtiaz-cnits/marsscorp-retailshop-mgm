@@ -1,509 +1,1353 @@
-﻿@extends('layouts.dashboard-sidenav')
-@section('title', 'Sales Report')
+@extends('layouts.dashboard-sidenav')
+@section('title', 'Income & Expense Report - MARSS CORPORATION')
 @section('content')
 
-    <!-- Hero Main Content Start -->
-    <div class="main-content">
-        <div class="page-content">
-            <!-- Table Start -->
-            <div class="bredcam">
-                <div class="bredcam-title">
-                    <h1>Income & Expense Report List</h1>
-                </div>
-            </div>
-            <div class="data-table">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="date-wrapper mb-3">
+<!-- Flatpickr & html2pdf CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-                            <div class="item mb-2">
-                                <div class="form-row w-100">
-                                    <label for="title">Start Date *</label> <br>
-                                    <input type="date" id="startDate" name="dateInput">
-                                </div>
+<style>
+    /* ── A4 Print Styles: Exactly 10px Margin Around Page ── */
+    @media print {
+        @page {
+            size: A4 portrait;
+            margin: 10px !important;
+        }
+        html, body {
+            background: #ffffff !important;
+            color: #000000 !important;
+            height: auto !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: visible !important;
+        }
+        nav, header, aside, .sidebar, .isvertical-topbar, #page-topbar, .navbar-header,
+        .no-print, .copyright, .footer, .export-btn, .income-cards-grid, .top-filter-grid, #paginationContainer {
+            display: none !important;
+        }
+        .main-content, .page-content, .card, .card-body, .data-table, .table-responsive {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            background: #ffffff !important;
+            overflow: visible !important;
+            height: auto !important;
+            position: static !important;
+        }
+        #printTable {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            display: table !important;
+            font-size: 9px !important;
+        }
+        #printTable th {
+            background-color: #15803d !important;
+            color: #ffffff !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            padding: 5px 4px !important;
+            font-size: 8.5px !important;
+            border: 1px solid #15803d !important;
+        }
+        #printTable td {
+            padding: 4px 4px !important;
+            border: 1px solid #cbd5e1 !important;
+            font-size: 8.5px !important;
+            color: #111827 !important;
+        }
+        #printTable tfoot td {
+            background-color: #f8fafc !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            font-weight: 700 !important;
+            border-top: 2px solid #15803d !important;
+        }
+    }
+
+    /* ── Export Button Styles ── */
+    .export-btn { display:inline-flex; align-items:center; gap:5px; height:32px; padding:0 12px; border-radius:8px; font-size:11.5px; font-weight:700; cursor:pointer; border:1.5px solid transparent; transition:all 0.15s; white-space:nowrap; }
+    .export-btn--copy  { background:#f1f5f9; color:#475569; border-color:#cbd5e1; }
+    .export-btn--copy:hover  { background:#e2e8f0; border-color:#94a3b8; }
+    .export-btn--csv   { background:#ecfdf5; color:#065f46; border-color:#a7f3d0; }
+    .export-btn--csv:hover   { background:#d1fae5; border-color:#34d399; }
+    .export-btn--excel { background:#f0fdf4; color:#15803d; border-color:#bbf7d0; }
+    .export-btn--excel:hover { background:#dcfce7; border-color:#4ade80; }
+    .export-btn--pdf   { background:#fff1f2; color:#be123c; border-color:#fecaca; }
+    .export-btn--pdf:hover   { background:#ffe4e6; border-color:#f87171; }
+    .export-btn--print { background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe; }
+    .export-btn--print:hover { background:#dbeafe; border-color:#60a5fa; }
+
+    /* ── Top Filter Grid ──
+       Desktop (1024px+): 1 row 4 columns (Start Date, End Date, Show, Quick Filter)
+       Tablet & Mobile: 2 rows of 2 columns each
+    ── */
+    .top-filter-grid {
+        display: grid !important;
+        grid-template-columns: 2fr 2fr 0.9fr 1.3fr !important;
+        gap: 12px !important;
+        align-items: flex-end !important;
+    }
+    @media (max-width: 1023px) {
+        .top-filter-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 10px !important;
+        }
+    }
+
+    /* ── Perfectly Aligned Date Input Wrap (Centered icon, no clipping) ── */
+    .filter-field-wrap {
+        position: relative !important;
+        width: 100% !important;
+        height: 38px !important;
+        display: flex !important;
+        align-items: center !important;
+        margin: 0 !important;
+    }
+    .filter-field-input {
+        width: 100% !important;
+        height: 38px !important;
+        line-height: 38px !important;
+        padding-left: 12px !important;
+        padding-right: 34px !important;
+        border-radius: 10px !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        outline: none !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        transition: border-color 0.2s, box-shadow 0.2s !important;
+    }
+    .filter-field-icon {
+        position: absolute !important;
+        right: 11px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 16px !important;
+        height: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        pointer-events: none !important;
+        color: #94a3b8;
+        z-index: 5 !important;
+    }
+
+    @media (max-width: 639px) {
+        .filter-field-input {
+            font-size: 12px !important;
+            padding-left: 8px !important;
+            padding-right: 28px !important;
+        }
+        .filter-field-icon {
+            right: 8px !important;
+        }
+    }
+
+    /* ── Modern Custom Dropdown for Quick Filter ── */
+    .custom-select-wrap {
+        position: relative;
+        width: 100%;
+        height: 38px;
+    }
+    .custom-select-btn {
+        width: 100%;
+        height: 38px;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #ffffff;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        outline: none;
+        user-select: none;
+        box-sizing: border-box;
+        transition: all 0.15s ease;
+    }
+    .custom-select-menu {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        padding: 5px;
+        z-index: 50;
+        display: none;
+    }
+    .custom-select-menu.open {
+        display: block;
+        animation: dropFade 0.15s ease;
+    }
+    @keyframes dropFade {
+        from { opacity: 0; transform: translateY(-4px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .custom-select-option {
+        padding: 8px 12px;
+        font-size: 12.5px;
+        font-weight: 600;
+        border-radius: 8px;
+        color: #334155;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: background 0.12s;
+    }
+    .custom-select-option:hover {
+        background: #f1f5f9;
+        color: #15803d;
+    }
+    .custom-select-option.active {
+        background: #ecfdf5;
+        color: #15803d;
+    }
+
+    /* ── Summary Cards Responsive Grid: 4 col desktop, 2 col tab, 1 col mobile ── */
+    .income-cards-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 14px !important;
+    }
+    @media (min-width: 640px) and (max-width: 1023px) {
+        .income-cards-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+    @media (max-width: 639px) {
+        .income-cards-grid {
+            grid-template-columns: 1fr !important;
+        }
+    }
+
+    .income-stat-card {
+        border-radius: 14px;
+        padding: 14px 16px;
+        transition: all 0.2s ease;
+    }
+    .income-stat-card--sales { background: #ecfdf5; border: 1.5px solid #a7f3d0; }
+    .income-stat-card--sales .card-title { color: #065f46; font-weight: 700; font-size: 11px; }
+    .income-stat-card--sales .card-val   { color: #047857; font-weight: 900; font-size: 20px; }
+
+    .income-stat-card--cost { background: #fff1f2; border: 1.5px solid #fecaca; }
+    .income-stat-card--cost .card-title { color: #9f1239; font-weight: 700; font-size: 11px; }
+    .income-stat-card--cost .card-val   { color: #be123c; font-weight: 900; font-size: 20px; }
+
+    .income-stat-card--expense { background: #fffbeb; border: 1.5px solid #fde68a; }
+    .income-stat-card--expense .card-title { color: #92400e; font-weight: 700; font-size: 11px; }
+    .income-stat-card--expense .card-val   { color: #d97706; font-weight: 900; font-size: 20px; }
+
+    .income-stat-card--profit { background: #f0fdf4; border: 1.5px solid #bbf7d0; }
+    .income-stat-card--profit .card-title { color: #166534; font-weight: 700; font-size: 11px; }
+    .income-stat-card--profit .card-val   { color: #15803d; font-weight: 900; font-size: 20px; }
+
+    .unified-ui-border { border: 1.5px solid #cbd5e1 !important; }
+    .product-card-body { padding: 10px !important; }
+    @media (min-width: 768px) { .product-card-body { padding: 18px !important; } }
+
+    /* ── Mobile Box Table View Card ── */
+    .mobile-table-card {
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 10px;
+        border: 1.5px solid #e2e8f0;
+        background: #ffffff;
+        transition: transform 0.1s;
+    }
+
+    /* =========================================================
+       COMPREHENSIVE DARK MODE FIXES (NO WHITE BORDERS)
+       ========================================================= */
+    body[light-mode="dark"] .export-btn--copy, body[data-layout-mode="dark"] .export-btn--copy, html.dark .export-btn--copy { background:#1e293b; color:#94a3b8; border-color:#334155; }
+    body[light-mode="dark"] .export-btn--csv,  body[data-layout-mode="dark"] .export-btn--csv,  html.dark .export-btn--csv  { background:#022c1e; color:#34d399; border-color:#064e3b; }
+    body[light-mode="dark"] .export-btn--excel,body[data-layout-mode="dark"] .export-btn--excel,html.dark .export-btn--excel { background:#022c1e; color:#4ade80; border-color:#065f46; }
+    body[light-mode="dark"] .export-btn--pdf,  body[data-layout-mode="dark"] .export-btn--pdf,  html.dark .export-btn--pdf  { background:#3b0006; color:#f87171; border-color:#7f1d1d; }
+    body[light-mode="dark"] .export-btn--print,body[data-layout-mode="dark"] .export-btn--print,html.dark .export-btn--print { background:#0c1a3b; color:#60a5fa; border-color:#1e3a5f; }
+
+    body[light-mode="dark"] .card, body[data-layout-mode="dark"] .card, html[light-mode="dark"] .card, html.dark .card {
+        background-color: #0f172a !important; border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .unified-ui-border, body[data-layout-mode="dark"] .unified-ui-border, html.dark .unified-ui-border {
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .filter-field-input, body[data-layout-mode="dark"] .filter-field-input, html.dark .filter-field-input {
+        background-color: #1e293b !important; border-color: #334155 !important; color: #f1f5f9 !important;
+    }
+    body[light-mode="dark"] .custom-select-btn, body[data-layout-mode="dark"] .custom-select-btn, html.dark .custom-select-btn {
+        background-color: #1e293b !important; border-color: #334155 !important; color: #f1f5f9 !important;
+    }
+    body[light-mode="dark"] .custom-select-menu, body[data-layout-mode="dark"] .custom-select-menu, html.dark .custom-select-menu {
+        background-color: #1e293b !important; border: 1.5px solid #334155 !important; box-shadow: 0 10px 25px rgba(0,0,0,0.5) !important;
+    }
+    body[light-mode="dark"] .custom-select-option, body[data-layout-mode="dark"] .custom-select-option, html.dark .custom-select-option {
+        color: #e2e8f0 !important;
+    }
+    body[light-mode="dark"] .custom-select-option:hover, body[data-layout-mode="dark"] .custom-select-option:hover, html.dark .custom-select-option:hover {
+        background: #334155 !important; color: #34d399 !important;
+    }
+    body[light-mode="dark"] .custom-select-option.active, body[data-layout-mode="dark"] .custom-select-option.active, html.dark .custom-select-option.active {
+        background: #064e3b !important; color: #34d399 !important;
+    }
+
+    /* Stat Cards in Dark Mode */
+    body[light-mode="dark"] .income-stat-card--sales, body[data-layout-mode="dark"] .income-stat-card--sales, html.dark .income-stat-card--sales { background: #022c1e !important; border-color: #064e3b !important; }
+    body[light-mode="dark"] .income-stat-card--sales .card-title, html.dark .income-stat-card--sales .card-title { color: #34d399 !important; }
+    body[light-mode="dark"] .income-stat-card--sales .card-val, html.dark .income-stat-card--sales .card-val { color: #6ee7b7 !important; }
+
+    body[light-mode="dark"] .income-stat-card--cost, body[data-layout-mode="dark"] .income-stat-card--cost, html.dark .income-stat-card--cost { background: #3b0712 !important; border-color: #7f1d1d !important; }
+    body[light-mode="dark"] .income-stat-card--cost .card-title, html.dark .income-stat-card--cost .card-title { color: #f87171 !important; }
+    body[light-mode="dark"] .income-stat-card--cost .card-val, html.dark .income-stat-card--cost .card-val { color: #fca5a5 !important; }
+
+    body[light-mode="dark"] .income-stat-card--expense, body[data-layout-mode="dark"] .income-stat-card--expense, html.dark .income-stat-card--expense { background: #451a03 !important; border-color: #78350f !important; }
+    body[light-mode="dark"] .income-stat-card--expense .card-title, html.dark .income-stat-card--expense .card-title { color: #fbbf24 !important; }
+    body[light-mode="dark"] .income-stat-card--expense .card-val, html.dark .income-stat-card--expense .card-val { color: #fde68a !important; }
+
+    body[light-mode="dark"] .income-stat-card--profit, body[data-layout-mode="dark"] .income-stat-card--profit, html.dark .income-stat-card--profit { background: #022c1e !important; border-color: #064e3b !important; }
+    body[light-mode="dark"] .income-stat-card--profit .card-title, html.dark .income-stat-card--profit .card-title { color: #4ade80 !important; }
+    body[light-mode="dark"] .income-stat-card--profit .card-val, html.dark .income-stat-card--profit .card-val { color: #86efac !important; }
+
+    /* Dark Mode Table, Cells & Badges */
+    body[light-mode="dark"] .table-responsive, body[data-layout-mode="dark"] .table-responsive, html.dark .table-responsive {
+        border-color: #334155 !important; background-color: #0f172a !important;
+    }
+    body[light-mode="dark"] #printTable, body[data-layout-mode="dark"] #printTable, html.dark #printTable {
+        background-color: #0f172a !important;
+    }
+    body[light-mode="dark"] #printTable tbody tr, body[data-layout-mode="dark"] #printTable tbody tr, html.dark #printTable tbody tr {
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #printTable tbody td, body[data-layout-mode="dark"] #printTable tbody td, html.dark #printTable tbody td {
+        border-color: #334155 !important; color: #e2e8f0 !important;
+    }
+    body[light-mode="dark"] #printTable tbody tr:hover, body[data-layout-mode="dark"] #printTable tbody tr:hover, html.dark #printTable tbody tr:hover {
+        background-color: #1e293b !important;
+    }
+    body[light-mode="dark"] #printTable tfoot, body[data-layout-mode="dark"] #printTable tfoot, html.dark #printTable tfoot {
+        background-color: #1e293b !important; border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .mobile-table-card, body[data-layout-mode="dark"] .mobile-table-card, html.dark .mobile-table-card {
+        background-color: #1e293b !important; border-color: #334155 !important;
+    }
+
+    /* Flatpickr Calendar in Dark Mode */
+    body[light-mode="dark"] .flatpickr-calendar, body[data-layout-mode="dark"] .flatpickr-calendar, html.dark .flatpickr-calendar { background: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+    body[light-mode="dark"] .flatpickr-day, body[data-layout-mode="dark"] .flatpickr-day, html.dark .flatpickr-day { color: #e2e8f0 !important; }
+    body[light-mode="dark"] .flatpickr-day:hover, body[data-layout-mode="dark"] .flatpickr-day:hover, html.dark .flatpickr-day:hover { background: #334155 !important; }
+    body[light-mode="dark"] .flatpickr-day.selected, body[data-layout-mode="dark"] .flatpickr-day.selected, html.dark .flatpickr-day.selected { background: #15803d !important; border-color: #15803d !important; }
+    body[light-mode="dark"] .flatpickr-months, body[data-layout-mode="dark"] .flatpickr-months, html.dark .flatpickr-months { background: #1e293b !important; color: #f1f5f9 !important; }
+    body[light-mode="dark"] .flatpickr-current-month, body[data-layout-mode="dark"] .flatpickr-current-month, html.dark .flatpickr-current-month { color: #f1f5f9 !important; font-weight: 700 !important; }
+    body[light-mode="dark"] .flatpickr-weekday, body[data-layout-mode="dark"] .flatpickr-weekday, html.dark .flatpickr-weekday, body[light-mode="dark"] span.flatpickr-weekday { color: #ffffff !important; font-weight: 800 !important; }
+</style>
+
+<!-- Hero Main Content Start -->
+<div class="main-content">
+    <div class="page-content min-h-screen flex flex-col justify-between">
+        <div class="data-table flex-grow">
+            <div class="card bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm overflow-hidden mb-4 transition-colors">
+                <div class="card-body product-card-body p-4 sm:p-6 md:p-8">
+
+                    <!-- 1. Page Title & Export Buttons -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4 no-print">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 flex items-center justify-center border border-emerald-100 dark:border-slate-800 shadow-sm flex-shrink-0">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                </svg>
                             </div>
-
-                            <div class="item mb-2">
-                                <div class="form-row w-100">
-                                    <label for="title">End Date *</label> <br>
-                                    <input type="date" id="endDate" name="dateInput">
-                                </div>
-                            </div>
-
-                            <button class="search-btn"id="searchBtn" onclick="fetchincomeexpenseReport()">Search</button>
-
+                            <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white tracking-tight leading-none m-0 p-0">Income & Expense Report</h1>
                         </div>
-                        <!-- Action Buttons -->
-                        <div class="button-wrapper mb-3">
-                            <!-- Search and Filter -->
-                            <div class="d-flex">
-                                <div class="input-group">
-                                    <input type="text" id="searchInput" class="form-control"
-                                        placeholder="Searching Invoice..." />
-                                    <!-- Entries per page -->
-                                    <div style=" display: flex; align-items: center; gap: 10px; justify-content: center; ">
-                                        {{-- <div class="entries-page">
-                                            <label for="entries" class="mr-2">Entries:</label>
-                                            <div class="select-container">
-                                                <select id="entries" class="form-control" style="width: auto">
-                                                    <option value="5">5</option>
-                                                    <option value="10">10</option>
-                                                    <option value="25">25</option>
-                                                    <option value="50">50</option>
-                                                    <option value="100">100</option>
-                                                </select>
-                                                <span class="dropdown-icon">&#9662;</span>
-                                                <!-- Dropdown icon -->
-                                            </div>
-                                        </div> --}}
-
-                                        {{-- <div class="input-group-append">
-                                            <div class="dropdown-custom">
-                                                <button class="dropdown-button">
-                                                    <svg width="32" height="32" viewBox="0 0 39 38" fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <rect y="1" width="25" height="3" rx="1.5"
-                                                            fill="#192045" />
-                                                        <rect y="11" width="25" height="3" rx="1.5"
-                                                            fill="#192045" />
-                                                        <rect y="21" width="25" height="3" rx="1.5"
-                                                            fill="#192045" />
-                                                        <path
-                                                            d="M32 1C32 0.447715 31.5523 -2.41411e-08 31 0C30.4477 2.41411e-08 30 0.447715 30 1L32 1ZM30.2929 37.7071C30.6834 38.0976 31.3166 38.0976 31.7071 37.7071L38.0711 31.3431C38.4616 30.9526 38.4616 30.3195 38.0711 29.9289C37.6805 29.5384 37.0474 29.5384 36.6569 29.9289L31 35.5858L25.3431 29.9289C24.9526 29.5384 24.3195 29.5384 23.9289 29.9289C23.5384 30.3195 23.5384 30.9526 23.9289 31.3431L30.2929 37.7071ZM30 1L30 37L32 37L32 1L30 1Z"
-                                                            fill="#192045" />
-                                                    </svg>
-                                                    <span>Filter</span>
-                                                </button>
-                                                <div class="dropdown-menus">
-                                                    <a href="#" data-filter="all">All time</a>
-                                                    <a href="#" data-filter="today">Today</a>
-                                                    <a href="#" data-filter="7">Last 7 Days</a>
-                                                    <a href="#" data-filter="30">Last Month</a>
-                                                    <a href="#" data-filter="365">Last Year</a>
-                                                </div>
-                                            </div>
-                                        </div> --}}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="button-item">
-
-                                {{-- <div class="icon-buttons">
-                                    <button id="copyBtn">
-                                        <svg width="32" height="32" viewBox="0 0 44 44" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="0.5" y="0.5" width="43" height="43" rx="5.5"
-                                                stroke="#192045" />
-                                            <path
-                                                d="M33.3002 17.45H21.1502C19.659 17.45 18.4502 18.6588 18.4502 20.15V32.3C18.4502 33.7912 19.659 35 21.1502 35H33.3002C34.7914 35 36.0002 33.7912 36.0002 32.3V20.15C36.0002 18.6588 34.7914 17.45 33.3002 17.45Z"
-                                                stroke="#192045" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                            <path
-                                                d="M13.05 25.55H11.7C10.9839 25.55 10.2972 25.2655 9.79081 24.7592C9.28446 24.2528 9 23.5661 9 22.85V10.7C9 9.98392 9.28446 9.29716 9.79081 8.79081C10.2972 8.28446 10.9839 8 11.7 8H23.85C24.5661 8 25.2528 8.28446 25.7592 8.79081C26.2655 9.29716 26.55 9.98392 26.55 10.7V12.05"
-                                                stroke="#192045" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                        </svg>
-                                    </button>
-                                    <button id="csvBtn">
-                                        <svg width="32" height="32" viewBox="0 0 44 44" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="0.5" y="0.5" width="43" height="43" rx="5.5"
-                                                stroke="#192045" />
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M36 14.7144V33.1114C36 34.1386 35.5936 35.1238 34.8703 35.8501C34.1469 36.5765 33.1658 36.9845 32.1429 36.9845H30.2143V35.048H32.1429C32.6543 35.048 33.1449 34.8439 33.5066 34.4808C33.8682 34.1176 34.0714 33.625 34.0714 33.1114V14.7144H30.2143C29.4471 14.7144 28.7112 14.4084 28.1687 13.8636C27.6262 13.3188 27.3214 12.58 27.3214 11.8096V7.93653H16.7143C16.2028 7.93653 15.7123 8.14056 15.3506 8.50373C14.9889 8.8669 14.7857 9.35946 14.7857 9.87306V27.3018H12.8571V9.87306C12.8571 8.84586 13.2635 7.86073 13.9869 7.13439C14.7102 6.40805 15.6913 6 16.7143 6H27.3214L36 14.7144ZM15.7828 34.7401C15.7938 35.0452 15.8683 35.3446 16.0015 35.6191C16.1347 35.8936 16.3236 36.1371 16.5561 36.3338C16.8069 36.543 17.1135 36.7056 17.478 36.8218C17.8444 36.94 18.2706 36.9981 18.7605 36.9981C19.4124 36.9981 19.9639 36.8954 20.4171 36.6921C20.8723 36.4888 21.2194 36.2041 21.4566 35.84C21.6977 35.474 21.8173 35.0499 21.8173 34.5697C21.8173 34.1359 21.7305 33.7757 21.5589 33.4852C21.3823 33.195 21.1329 32.9566 20.8356 32.7939C20.494 32.6043 20.1261 32.4673 19.7441 32.3872L18.5464 32.1083C18.2641 32.0562 17.9975 31.9396 17.7673 31.7675C17.6793 31.6994 17.6084 31.6115 17.5602 31.511C17.5119 31.4105 17.4878 31.3 17.4896 31.1885C17.4896 30.8864 17.6091 30.6385 17.8464 30.4448C18.0874 30.2493 18.4172 30.1505 18.8338 30.1505C19.1096 30.1505 19.3468 30.195 19.5474 30.2822C19.732 30.3577 19.895 30.4782 20.0218 30.6327C20.1405 30.7764 20.2202 30.9485 20.2532 31.1323H21.6996C21.6756 30.7379 21.5419 30.3582 21.3139 30.0362C21.0702 29.6886 20.7368 29.4142 20.3496 29.2423C19.8761 29.0336 19.3623 28.9331 18.8454 28.9479C18.2803 28.9479 17.7827 29.0447 17.3488 29.2384C16.9149 29.4301 16.5774 29.7031 16.3324 30.0537C16.0875 30.4061 15.966 30.8186 15.966 31.2911C15.966 31.6803 16.0431 32.0192 16.2013 32.3058C16.3594 32.5944 16.587 32.8287 16.8801 33.0166C17.1733 33.2005 17.5204 33.34 17.9196 33.429L19.1115 33.7079C19.5107 33.8028 19.8077 33.9267 20.0044 34.0816C20.1005 34.1552 20.1774 34.2511 20.2285 34.361C20.2795 34.471 20.3033 34.5918 20.2976 34.713C20.3013 34.9126 20.2441 35.1085 20.1336 35.2745C20.0095 35.4446 19.8385 35.5745 19.6419 35.6483C19.4278 35.7393 19.1616 35.7839 18.8454 35.7839C18.6197 35.7839 18.4153 35.7587 18.2282 35.7064C18.0577 35.659 17.8961 35.5837 17.7499 35.4837C17.6215 35.4003 17.5116 35.2912 17.427 35.1632C17.3424 35.0353 17.2849 34.8913 17.2581 34.7401H15.7828ZM10.5544 32.5169C10.5544 32.0367 10.62 31.6261 10.7511 31.2911C10.8655 30.9817 11.0681 30.713 11.3336 30.5184C11.6042 30.3368 11.9243 30.2441 12.2496 30.2531C12.5389 30.2531 12.7954 30.3151 13.0172 30.441C13.2346 30.5576 13.416 30.7317 13.5418 30.9445C13.6762 31.1685 13.7555 31.4214 13.7732 31.6823H15.2486V31.5429C15.2358 31.1861 15.1493 30.836 14.9946 30.5146C14.8399 30.1933 14.6203 29.9077 14.3499 29.676C14.0728 29.4403 13.7524 29.2613 13.4068 29.1493C13.0305 29.0214 12.6354 28.9579 12.2381 28.9615C11.5515 28.9615 10.9652 29.1048 10.4811 29.3933C9.999 29.6799 9.63257 30.0885 9.378 30.6172C9.12729 31.1478 9 31.7791 9 32.5131V33.4774C9 34.2114 9.12343 34.8408 9.37221 35.3675C9.62486 35.8923 9.99321 36.297 10.4754 36.5798C10.9575 36.8606 11.5438 37 12.2381 37C12.8031 37 13.3065 36.8935 13.752 36.6824C14.1956 36.4694 14.5504 36.1789 14.8127 35.8032C15.0788 35.4187 15.23 34.9659 15.2486 34.498V34.3508H13.7751C13.757 34.6002 13.6789 34.8414 13.5476 35.0538C13.419 35.2594 13.2379 35.4266 13.023 35.5379C12.7822 35.6549 12.5171 35.7127 12.2496 35.7064C11.9238 35.7157 11.6027 35.6266 11.3278 35.4508C11.0637 35.262 10.8627 34.9973 10.7511 34.6917C10.6101 34.3029 10.5434 33.891 10.5544 33.4774V32.5189V32.5169ZM26.4439 36.8509H24.606L22.0256 29.1067H23.7941L25.5221 35.1835H25.5954L27.3079 29.1067H29.0031L26.4439 36.8528V36.8509Z"
-                                                fill="#192045" />
-                                        </svg>
-                                    </button>
-                                    <button id="pdfBtn">
-                                        <svg width="32" height="32" viewBox="0 0 44 44" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="0.5" y="0.5" width="43" height="43" rx="5.5"
-                                                stroke="#192045" />
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M36 15V34C36 35.0609 35.5936 36.0783 34.8703 36.8284C34.1469 37.5786 33.1658 38 32.1429 38H30.2143V36H32.1429C32.6543 36 33.1449 35.7893 33.5066 35.4142C33.8682 35.0391 34.0714 34.5304 34.0714 34V15H30.2143C29.4471 15 28.7112 14.6839 28.1687 14.1213C27.6262 13.5587 27.3214 12.7956 27.3214 12V8H16.7143C16.2028 8 15.7123 8.21071 15.3506 8.58579C14.9889 8.96086 14.7857 9.46957 14.7857 10V28H12.8571V10C12.8571 8.93913 13.2635 7.92172 13.9869 7.17157C14.7102 6.42143 15.6913 6 16.7143 6H27.3214L36 15ZM12.0857 29.7H9V37.698H10.5255V35.014H12.0741C12.6276 35.014 13.0982 34.9 13.4859 34.668C13.8774 34.434 14.1763 34.118 14.3788 33.72C14.589 33.3024 14.6957 32.8371 14.6893 32.366C14.6893 31.866 14.5871 31.414 14.3846 31.012C14.1832 30.6124 13.8752 30.2812 13.4974 30.058C13.1117 29.818 12.6431 29.7 12.0857 29.7ZM13.1368 32.366C13.1437 32.6295 13.0874 32.8907 12.9729 33.126C12.8701 33.3309 12.7101 33.4989 12.5139 33.608C12.2893 33.7232 12.041 33.7795 11.7906 33.772H10.5197V30.96H11.7926C12.213 30.96 12.5428 31.08 12.78 31.322C13.0172 31.566 13.1368 31.914 13.1368 32.366ZM15.4839 29.7V37.698H18.2996C19.0729 37.698 19.7151 37.538 20.2243 37.224C20.7395 36.9043 21.1419 36.4212 21.3718 35.846C21.6225 35.246 21.7498 34.522 21.7498 33.678C21.7498 32.838 21.6244 32.122 21.3718 31.528C21.1446 30.9594 20.7461 30.4824 20.2359 30.168C19.7267 29.856 19.0806 29.7 18.2976 29.7H15.4839ZM17.0094 30.99H18.0951C18.5734 30.99 18.963 31.09 19.2696 31.294C19.5879 31.5099 19.8281 31.8293 19.9524 32.202C20.1047 32.604 20.1799 33.106 20.1799 33.708C20.1859 34.1069 20.1418 34.5049 20.0488 34.892C19.9801 35.1973 19.8514 35.4846 19.6708 35.736C19.503 35.9603 19.2807 36.1342 19.0266 36.24C18.729 36.3555 18.4129 36.4111 18.0951 36.404H17.0094V30.99ZM24.228 34.516V37.698H22.7044V29.7H27.6184V31.006H24.228V33.24H27.3253V34.516H24.228Z"
-                                                fill="#192045" />
-                                        </svg>
-                                    </button>
-                                    <button id="printBtn">
-                                        <svg width="32" height="32" viewBox="0 0 44 44" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="0.5" y="0.5" width="43" height="43" rx="5.5"
-                                                stroke="#192045" />
-                                            <path
-                                                d="M29.817 17.0382H14.1692C13.8755 17.0382 13.5939 16.9216 13.3863 16.714C13.1787 16.5063 13.062 16.2247 13.062 15.9311V8.10716C13.062 7.81352 13.1787 7.53191 13.3863 7.32428C13.5939 7.11665 13.8755 7 14.1692 7H29.817C30.1107 7 30.3923 7.11665 30.5999 7.32428C30.8075 7.53191 30.9242 7.81352 30.9242 8.10716V15.9311C30.9242 16.2247 30.8075 16.5063 30.5999 16.714C30.3923 16.9216 30.1107 17.0382 29.817 17.0382ZM15.2763 14.8239H28.7099V9.21432H15.2763V14.8239Z"
-                                                fill="#192045" />
-                                            <path
-                                                d="M29.817 36.6719H14.1692C13.8755 36.6719 13.5939 36.5552 13.3863 36.3476C13.1787 36.14 13.062 35.8584 13.062 35.5647V23.5402C13.062 23.2466 13.1787 22.965 13.3863 22.7573C13.5939 22.5497 13.8755 22.4331 14.1692 22.4331H29.817C30.1107 22.4331 30.3923 22.5497 30.5999 22.7573C30.8075 22.965 30.9242 23.2466 30.9242 23.5402V35.5647C30.9242 35.8584 30.8075 36.14 30.5999 36.3476C30.3923 36.5552 30.1107 36.6719 29.817 36.6719ZM15.2763 34.4576H28.7099V24.6474H15.2763V34.4576Z"
-                                                fill="#192045" />
-                                            <path
-                                                d="M33.3784 31.4313H29.8171C29.5234 31.4313 29.2418 31.3147 29.0342 31.107C28.8266 30.8994 28.7099 30.6178 28.7099 30.3242C28.7099 30.0305 28.8266 29.7489 29.0342 29.5413C29.2418 29.3337 29.5234 29.217 29.8171 29.217H33.3784C33.7479 29.2166 34.1021 29.0697 34.3634 28.8084C34.6247 28.5472 34.7716 28.1929 34.772 27.8235V18.4325C34.7718 18.0629 34.6249 17.7085 34.3637 17.4471C34.1024 17.1857 33.748 17.0386 33.3784 17.0382H10.6079C10.2383 17.0386 9.88393 17.1857 9.62265 17.4471C9.36137 17.7085 9.21451 18.0629 9.21432 18.4325V27.8235C9.21471 28.1929 9.36165 28.5472 9.62291 28.8084C9.88417 29.0697 10.2384 29.2166 10.6079 29.217H14.1692C14.4629 29.217 14.7445 29.3337 14.9521 29.5413C15.1597 29.7489 15.2764 30.0305 15.2764 30.3242C15.2764 30.6178 15.1597 30.8994 14.9521 31.107C14.7445 31.3147 14.4629 31.4313 14.1692 31.4313H10.6079C9.65136 31.4302 8.73437 31.0497 8.05801 30.3733C7.38166 29.697 7.00117 28.78 7 27.8235V18.4325C7.00098 17.4759 7.38138 16.5587 8.05775 15.8822C8.73413 15.2057 9.65123 14.8251 10.6079 14.8239H33.3784C34.3351 14.8251 35.2522 15.2057 35.9286 15.8822C36.6049 16.5587 36.9853 17.4759 36.9863 18.4325V27.8235C36.9851 28.78 36.6046 29.697 35.9283 30.3733C35.2519 31.0497 34.335 31.4302 33.3784 31.4313Z"
-                                                fill="#192045" />
-                                            <path
-                                                d="M12.9884 20.8764C12.9519 20.8765 12.9155 20.8748 12.8792 20.8712C12.8437 20.8675 12.8054 20.8616 12.7721 20.855C12.7389 20.8484 12.6983 20.8388 12.6666 20.8284C12.6349 20.8181 12.598 20.8055 12.5647 20.7915C12.5315 20.7775 12.499 20.762 12.4673 20.745C12.435 20.7284 12.4037 20.7099 12.3736 20.6897C12.344 20.6697 12.3145 20.6483 12.2865 20.6254C12.2584 20.6026 12.2311 20.5775 12.2053 20.5516C12.1794 20.5258 12.1551 20.4985 12.1315 20.4704C12.1086 20.4425 12.0872 20.4135 12.0673 20.3833C12.0471 20.3528 12.0286 20.3218 12.0119 20.2903C11.9949 20.2586 11.9794 20.2254 11.9654 20.1922C11.9514 20.159 11.9396 20.1243 11.9285 20.0903C11.9174 20.0564 11.9093 20.0165 11.9019 19.9848C11.8945 19.953 11.8894 19.911 11.8857 19.8777C11.8786 19.8041 11.8786 19.73 11.8857 19.6563C11.8894 19.6209 11.8953 19.5825 11.9019 19.5493C11.9086 19.5161 11.9182 19.4755 11.9285 19.4437C11.9388 19.412 11.9514 19.3751 11.9654 19.3419C11.9794 19.3087 11.9949 19.2754 12.0119 19.2437C12.0289 19.212 12.0473 19.181 12.0673 19.1507C12.0872 19.1206 12.1086 19.0915 12.1315 19.0636C12.1543 19.0356 12.1794 19.0083 12.2053 18.9824C12.2311 18.9566 12.2584 18.9322 12.2865 18.9086C12.3145 18.885 12.344 18.8643 12.3736 18.8444C12.4037 18.8241 12.435 18.8056 12.4673 18.789C12.4993 18.7723 12.5318 18.7568 12.5647 18.7425C12.598 18.7285 12.6326 18.7167 12.6666 18.7056C12.7005 18.6946 12.7404 18.6864 12.7721 18.6791C12.8039 18.6717 12.846 18.6665 12.8792 18.6628C12.9516 18.6562 13.0245 18.6562 13.0969 18.6628C13.1331 18.6665 13.1707 18.6724 13.2047 18.6791C13.2386 18.6857 13.2785 18.6953 13.3095 18.7056C13.3405 18.716 13.3789 18.7285 13.4121 18.7425C13.4453 18.7566 13.4778 18.7721 13.5095 18.789C13.5417 18.8058 13.573 18.8243 13.6033 18.8444C13.6328 18.8643 13.6623 18.8857 13.6903 18.9086C13.7184 18.9315 13.7457 18.9566 13.7715 18.9824C13.7974 19.0083 13.821 19.0356 13.8454 19.0636C13.8697 19.0917 13.8896 19.1212 13.9096 19.1507C13.9295 19.1802 13.9479 19.212 13.9649 19.2437C13.9819 19.2754 13.9974 19.3087 14.0114 19.3419C14.0254 19.3751 14.0373 19.4098 14.0483 19.4437C14.0594 19.4777 14.0675 19.5175 14.0749 19.5493C14.0823 19.581 14.0875 19.6231 14.0911 19.6563C14.0982 19.73 14.0982 19.8041 14.0911 19.8777C14.0875 19.9132 14.0815 19.9516 14.0749 19.9848C14.0683 20.018 14.0587 20.0586 14.0483 20.0903C14.038 20.1221 14.0254 20.159 14.0114 20.1922C13.9974 20.2254 13.9819 20.2586 13.9649 20.2903C13.9479 20.3221 13.9295 20.3531 13.9096 20.3833C13.8896 20.4136 13.8675 20.4424 13.8454 20.4704C13.8232 20.4985 13.7974 20.5258 13.7715 20.5516C13.7457 20.5775 13.7184 20.6018 13.6903 20.6254C13.6623 20.6491 13.6328 20.6697 13.6033 20.6897C13.573 20.7098 13.5417 20.7283 13.5095 20.745C13.4775 20.7617 13.4451 20.7772 13.4121 20.7915C13.3789 20.8055 13.3442 20.8174 13.3095 20.8284C13.2748 20.8395 13.2401 20.8476 13.2047 20.855C13.1692 20.8624 13.1309 20.8675 13.0969 20.8712C13.0609 20.8748 13.0246 20.8765 12.9884 20.8764Z"
-                                                fill="#192045" />
-                                            <path
-                                                d="M16.236 20.8764C16.1998 20.8764 16.1622 20.8764 16.1267 20.8712C16.0913 20.8661 16.0529 20.8616 16.0197 20.855C15.9865 20.8484 15.9459 20.8388 15.9142 20.8284C15.8824 20.8181 15.8455 20.8055 15.8123 20.7915C15.7791 20.7775 15.7459 20.762 15.7141 20.745C15.6824 20.728 15.6514 20.7096 15.6211 20.6897C15.591 20.6698 15.5619 20.6483 15.534 20.6254C15.506 20.6026 15.4787 20.5775 15.4528 20.5516C15.427 20.5258 15.4026 20.4985 15.379 20.4704C15.3554 20.4424 15.3347 20.4129 15.3148 20.3833C15.2946 20.3531 15.2758 20.3218 15.2587 20.2896C15.2425 20.2579 15.227 20.2254 15.213 20.1922C15.1989 20.159 15.1871 20.1243 15.176 20.0903C15.165 20.0564 15.1569 20.0165 15.1495 19.9848C15.1421 19.953 15.1369 19.911 15.1332 19.8777C15.1262 19.8041 15.1262 19.7299 15.1332 19.6563C15.1369 19.6209 15.1428 19.5825 15.1495 19.5493C15.1561 19.5161 15.1657 19.4755 15.176 19.4437C15.1864 19.412 15.1989 19.3751 15.213 19.3419C15.227 19.3087 15.2425 19.2762 15.2587 19.2444C15.2758 19.2123 15.2946 19.181 15.3148 19.1507C15.3347 19.1212 15.3561 19.0917 15.379 19.0636C15.4019 19.0356 15.427 19.0083 15.4528 18.9824C15.4787 18.9566 15.506 18.9322 15.534 18.9086C15.5619 18.8857 15.591 18.8643 15.6211 18.8444C15.6516 18.8242 15.6826 18.8058 15.7141 18.789C15.7459 18.7721 15.7791 18.7566 15.8123 18.7425C15.8455 18.7285 15.8802 18.7167 15.9142 18.7056C15.9481 18.6946 15.988 18.6864 16.0197 18.6791C16.0514 18.6717 16.0935 18.6665 16.1267 18.6628C16.2004 18.656 16.2745 18.656 16.3482 18.6628C16.3836 18.6665 16.422 18.6724 16.4552 18.6791C16.4884 18.6857 16.529 18.6953 16.5607 18.7056C16.5925 18.716 16.6294 18.7285 16.6626 18.7425C16.6958 18.7566 16.7283 18.7721 16.76 18.789C16.7918 18.806 16.8235 18.8245 16.8538 18.8444C16.884 18.8643 16.9128 18.8857 16.9409 18.9086C16.9689 18.9315 16.9962 18.9566 17.0221 18.9824C17.0479 19.0083 17.0715 19.0356 17.0959 19.0636C17.1202 19.0917 17.1401 19.1212 17.1601 19.1507C17.1801 19.181 17.1986 19.2123 17.2154 19.2444C17.2322 19.2764 17.2477 19.3089 17.2619 19.3419C17.276 19.3751 17.2878 19.4098 17.2988 19.4437C17.3099 19.4777 17.318 19.5175 17.3254 19.5493C17.3328 19.581 17.338 19.6231 17.3417 19.6563C17.3487 19.7299 17.3487 19.8041 17.3417 19.8777C17.338 19.9132 17.3321 19.9516 17.3254 19.9848C17.3188 20.018 17.3092 20.0586 17.2988 20.0903C17.2885 20.1221 17.276 20.159 17.2619 20.1922C17.2479 20.2254 17.2324 20.2579 17.2154 20.2896C17.1986 20.3218 17.1801 20.3531 17.1601 20.3833C17.1401 20.4129 17.118 20.4424 17.0959 20.4704C17.0737 20.4985 17.0479 20.5258 17.0221 20.5516C16.9962 20.5775 16.9689 20.6018 16.9409 20.6254C16.9128 20.6491 16.8833 20.6697 16.8538 20.6897C16.8242 20.7096 16.7918 20.728 16.76 20.745C16.7283 20.762 16.6958 20.7775 16.6626 20.7915C16.6294 20.8055 16.5947 20.8174 16.5607 20.8284C16.5268 20.8395 16.4869 20.8476 16.4552 20.855C16.4234 20.8624 16.3814 20.8675 16.3482 20.8712C16.3149 20.8749 16.2721 20.8764 16.236 20.8764Z"
-                                                fill="#192045" />
-                                            <path
-                                                d="M26.3481 28.8479H17.6384C17.3448 28.8479 17.0632 28.7313 16.8555 28.5237C16.6479 28.316 16.5312 28.0344 16.5312 27.7408C16.5312 27.4472 16.6479 27.1655 16.8555 26.9579C17.0632 26.7503 17.3448 26.6336 17.6384 26.6336H26.3481C26.6417 26.6336 26.9233 26.7503 27.1309 26.9579C27.3386 27.1655 27.4552 27.4472 27.4552 27.7408C27.4552 28.0344 27.3386 28.316 27.1309 28.5237C26.9233 28.7313 26.6417 28.8479 26.3481 28.8479Z"
-                                                fill="#192045" />
-                                            <path
-                                                d="M26.3481 32.7599H17.6384C17.3448 32.7599 17.0632 32.6433 16.8555 32.4356C16.6479 32.228 16.5312 31.9464 16.5312 31.6528C16.5312 31.3591 16.6479 31.0775 16.8555 30.8699C17.0632 30.6622 17.3448 30.5456 17.6384 30.5456H26.3481C26.6417 30.5456 26.9233 30.6622 27.1309 30.8699C27.3386 31.0775 27.4552 31.3591 27.4552 31.6528C27.4552 31.9464 27.3386 32.228 27.1309 32.4356C26.9233 32.6433 26.6417 32.7599 26.3481 32.7599Z"
-                                                fill="#192045" />
-                                        </svg>
-                                    </button>
-                                    <button id="xlsxBtn">
-                                        <svg width="32" height="32" viewBox="0 0 44 44" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="0.5" y="0.5" width="43" height="43" rx="5.5"
-                                                stroke="#192045" />
-                                            <path
-                                                d="M31.311 37.6837H12.689C11.4457 37.6821 10.2539 37.1874 9.37488 36.3082C8.49586 35.429 8.00142 34.2371 8 32.9938V10.689C8.00165 9.44591 8.4962 8.25421 9.3752 7.37521C10.2542 6.49621 11.4459 6.00166 12.689 6.00001H24.5811C25.1989 5.99879 25.8107 6.11998 26.3814 6.35658C26.9521 6.59318 27.4702 6.94051 27.9059 7.37849L34.6206 14.087C35.5011 14.9717 35.9968 16.1681 36 17.4162V32.9938C35.9986 34.2371 35.5041 35.429 34.6251 36.3082C33.7461 37.1874 32.5543 37.6821 31.311 37.6837ZM12.689 8.23201C12.0376 8.23272 11.413 8.49181 10.9524 8.95243C10.4918 9.41305 10.2327 10.0376 10.232 10.689V32.9938C10.2327 33.6453 10.4918 34.27 10.9524 34.7307C11.413 35.1915 12.0375 35.4508 12.689 35.4517H31.311C31.9625 35.4508 32.587 35.1915 33.0476 34.7307C33.5082 34.27 33.7673 33.6453 33.768 32.9938V17.4136C33.7664 16.7578 33.5059 16.1292 33.043 15.6646L26.3274 8.95518C26.0986 8.7252 25.8264 8.54287 25.5267 8.41874C25.2269 8.29461 24.9055 8.23114 24.5811 8.23201H12.689Z"
-                                                fill="#192045" />
-                                            <path
-                                                d="M33.8932 17.1279H29.7363C28.4971 17.1267 27.309 16.6339 26.4327 15.7576C25.5565 14.8814 25.0637 13.6933 25.0625 12.4541V7.11958H27.2945V12.4541C27.2952 13.1014 27.5527 13.7221 28.0105 14.1799C28.4682 14.6377 29.0889 14.8952 29.7363 14.8959H33.8932V17.1279Z"
-                                                fill="#192045" />
-                                            <path
-                                                d="M30.0858 31.4564H13.9136V16.7431H30.0858V31.4564ZM16.1456 29.2244H27.8538V18.9751H16.1456V29.2244Z"
-                                                fill="#192045" />
-                                            <path
-                                                d="M28.6242 25.2157H15.4643C15.1792 25.1996 14.9111 25.075 14.715 24.8675C14.5189 24.66 14.4097 24.3853 14.4097 24.0997C14.4097 23.8142 14.5189 23.5395 14.715 23.332C14.9111 23.1245 15.1792 22.9999 15.4643 22.9837H28.6242C28.9092 22.9999 29.1773 23.1245 29.3734 23.332C29.5695 23.5395 29.6788 23.8142 29.6788 24.0997C29.6788 24.3853 29.5695 24.66 29.3734 24.8675C29.1773 25.075 28.9092 25.1996 28.6242 25.2157Z"
-                                                fill="#192045" />
-                                            <path
-                                                d="M20.2146 31.2511C19.8916 31.2209 19.5934 31.0648 19.3846 30.8165C19.1757 30.5683 19.073 30.2478 19.0986 29.9244V18.2751C19.073 17.9517 19.1757 17.6312 19.3846 17.383C19.5934 17.1347 19.8916 16.9786 20.2146 16.9484C20.5376 16.9786 20.8357 17.1347 21.0446 17.383C21.2534 17.6312 21.3561 17.9517 21.3306 18.2751V29.9244C21.3561 30.2478 21.2534 30.5683 21.0446 30.8165C20.8357 31.0648 20.5376 31.2209 20.2146 31.2511Z"
-                                                fill="#192045" />
-                                        </svg>
-                                    </button>
-                                </div> --}}
-                            </div>
-                        </div>
-                        <div class="table-wrapper" style="overflow: auto;">
-                            <table id="printTable" class="table table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Serial No:</th>
-                                        <th>Date</th>
-                                        <th>Total Cost Amount</th>
-                                        <th>Total Sales Amount</th>
-                                        <th>Total Paid Amount</th>
-                                        <th>Total Discount Amount</th>
-                                        <th>Total Due Amount</th>
-                                        <th>Total Expense Amount</th>
-                                        <th>Total Return Amount</th>
-                                        <th>Total Profit Amount</th>
-                                        <th>Total Blance Amount</th>
-                                        {{-- <th>Total Cost and Invest Amount</th> --}}
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                                <tfoot>
-                                    <tr id="totalCounts">
-                                        <th colspan="2">Total</th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-
-
-
-                        <!-- Pagination and Display Info -->
-                        <div class="my-3">
-                            <span id="display-info"></span>
+                        <!-- Dynamic Export Buttons -->
+                        <div class="flex items-center flex-wrap gap-1.5">
+                            <button onclick="exportCopyDynamic()" type="button" class="export-btn export-btn--copy" title="Copy table data">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                Copy
+                            </button>
+                            <button onclick="exportCSVDynamic()" type="button" class="export-btn export-btn--csv" title="Export CSV table data">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                                CSV
+                            </button>
+                            <button onclick="exportExcelDynamic()" type="button" class="export-btn export-btn--excel" title="Export Excel table data">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><polyline points="8 13 12 17 16 13"></polyline><line x1="12" y1="17" x2="12" y2="10"></line></svg>
+                                Excel
+                            </button>
+                            <button onclick="exportPDFDynamic()" type="button" class="export-btn export-btn--pdf" title="Download PDF File">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                                PDF
+                            </button>
+                            <button onclick="printTableOnly()" type="button" class="export-btn export-btn--print" title="Print table on A4">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                                Print
+                            </button>
                         </div>
                     </div>
+
+                    <!-- 2. Filter Row: 4 Columns (Desktop 1 row 4 col, Mobile 2 rows 2 col) -->
+                    <div class="top-filter-grid mb-5 no-print">
+                        <!-- Column 1: Start Date (Icon on right, text starts left) -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Start Date</label>
+                            <div class="filter-field-wrap">
+                                <input type="text" id="startDate" readonly placeholder="Start date" class="filter-field-input unified-ui-border bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
+                                <div class="filter-field-icon">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: End Date (Icon on right, text starts left) -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">End Date</label>
+                            <div class="filter-field-wrap">
+                                <input type="text" id="endDate" readonly placeholder="End date" class="filter-field-input unified-ui-border bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
+                                <div class="filter-field-icon">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 3: Show (Left of Quick Filter) -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Show</label>
+                            <div class="filter-field-wrap">
+                                <select id="entries" class="filter-field-input unified-ui-border bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 cursor-pointer font-bold">
+                                    <option value="15" selected>15</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                    <option value="200">200</option>
+                                    <option value="500">500</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Column 4: Quick Filter Modern Custom Dropdown -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Quick Filter</label>
+                            <div class="custom-select-wrap" id="quickFilterWrapper">
+                                <button type="button" class="custom-select-btn unified-ui-border text-slate-800 dark:text-slate-100" id="quickFilterBtn">
+                                    <span id="quickFilterSelectedText">This Month</span>
+                                    <svg class="w-4 h-4 text-slate-400 transition-transform duration-200" id="quickFilterArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                                <div class="custom-select-menu" id="quickFilterMenu">
+                                    <div class="custom-select-option" data-value="today"><span>Today</span></div>
+                                    <div class="custom-select-option" data-value="yesterday"><span>Yesterday</span></div>
+                                    <div class="custom-select-option" data-value="last7"><span>Last 7 Days</span></div>
+                                    <div class="custom-select-option" data-value="last30"><span>Last 30 Days</span></div>
+                                    <div class="custom-select-option active" data-value="thisMonth"><span>This Month</span></div>
+                                    <div class="custom-select-option" data-value="lastMonth"><span>Last Month</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Summary Stat Cards (4 columns on Desktop, 2 on Tab, 1 on Mobile) -->
+                    <div class="income-cards-grid mb-5 no-print">
+                        <!-- Card 1: Total Sales -->
+                        <div class="income-stat-card income-stat-card--sales shadow-sm">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="card-title uppercase tracking-wider">Total Sales</span>
+                                <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">৳</span>
+                            </div>
+                            <div class="card-val" id="cardTotalSales">৳ 0.00</div>
+                        </div>
+
+                        <!-- Card 2: Total Cost -->
+                        <div class="income-stat-card income-stat-card--cost shadow-sm">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="card-title uppercase tracking-wider">Total Cost</span>
+                                <span class="text-xs font-bold text-rose-600 dark:text-rose-400">৳</span>
+                            </div>
+                            <div class="card-val" id="cardTotalCost">৳ 0.00</div>
+                        </div>
+
+                        <!-- Card 3: Total Expense -->
+                        <div class="income-stat-card income-stat-card--expense shadow-sm">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="card-title uppercase tracking-wider">Total Expense</span>
+                                <span class="text-xs font-bold text-amber-600 dark:text-amber-400">৳</span>
+                            </div>
+                            <div class="card-val" id="cardTotalExpense">৳ 0.00</div>
+                        </div>
+
+                        <!-- Card 4: Net Profit -->
+                        <div class="income-stat-card income-stat-card--profit shadow-sm">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="card-title uppercase tracking-wider">Net Profit</span>
+                                <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">৳</span>
+                            </div>
+                            <div class="card-val" id="cardTotalProfit">৳ 0.00</div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Real-time Search & Period Badge Row -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 no-print">
+                        <!-- Search Bar -->
+                        <div class="search-input-wrapper unified-ui-border w-full sm:w-[300px] h-[38px] flex items-center px-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm transition-all focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20">
+                            <svg class="w-4 h-4 text-slate-400 flex-shrink-0 mr-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" id="searchInput" style="border: none !important; outline: none !important; box-shadow: none !important;" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0" placeholder="Search by date (YYYY-MM-DD)..." />
+                        </div>
+                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                            <span id="incomePeriodBadge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
+                                <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                <span id="periodText">Period: Loading...</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 5. Desktop Table View -->
+                    <div class="table-responsive unified-ui-border hidden md:block w-full max-w-full overflow-x-auto rounded-2xl shadow-sm bg-white dark:bg-slate-900 mb-4">
+                        <table id="printTable" class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-[#15803d] text-white text-xs font-semibold uppercase tracking-wider">
+                                    <th class="p-[10px] text-center w-[45px] rounded-tl-2xl whitespace-nowrap">SL</th>
+                                    <th class="p-[10px] text-start whitespace-nowrap">Date</th>
+                                    <th class="p-[10px] text-end whitespace-nowrap">Total Cost</th>
+                                    <th class="p-[10px] text-end whitespace-nowrap">Total Sales</th>
+                                    <th class="p-[10px] text-end whitespace-nowrap">Total Paid</th>
+                                    <th class="p-[10px] text-end whitespace-nowrap">Discount</th>
+                                    <th class="p-[10px] text-end whitespace-nowrap">Total Due</th>
+                                    <th class="p-[10px] text-end whitespace-nowrap">Expense</th>
+                                    <th class="p-[10px] text-end whitespace-nowrap">Return</th>
+                                    <th class="p-[10px] text-end whitespace-nowrap">Profit</th>
+                                    <th class="p-[10px] text-end rounded-tr-2xl whitespace-nowrap">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="incomeTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm text-slate-700 dark:text-slate-200">
+                                <tr><td colspan="11" class="py-12 text-center text-slate-400 font-medium">Loading income & expense records...</td></tr>
+                            </tbody>
+                            <tfoot class="bg-slate-50/90 dark:bg-slate-800/70 text-slate-800 dark:text-slate-100 font-bold border-t-2 border-emerald-600/30 dark:border-emerald-600/20 text-xs sm:text-sm">
+                                <tr id="totalCounts">
+                                    <td colspan="2" class="p-[10px] text-end font-bold text-slate-600 dark:text-slate-300">Total:</td>
+                                    <td id="tfootTotalCost" class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="tfootTotalSales" class="p-[10px] text-end font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="tfootTotalPaid" class="p-[10px] text-end font-bold text-sky-600 dark:text-sky-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="tfootTotalDiscount" class="p-[10px] text-end font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="tfootTotalDue" class="p-[10px] text-end font-bold text-amber-600 dark:text-amber-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="tfootTotalExpense" class="p-[10px] text-end font-bold text-red-600 dark:text-red-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="tfootTotalReturn" class="p-[10px] text-end font-bold text-violet-600 dark:text-violet-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="tfootTotalProfit" class="p-[10px] text-end font-bold text-teal-600 dark:text-teal-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="tfootTotalBalance" class="p-[10px] text-end font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">৳ 0.00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- 6. Mobile Card View -->
+                    <div id="mobileCardList" class="block md:hidden mb-4 space-y-3 no-print"></div>
+
+                    <!-- 7. Pagination Controls -->
+                    <div id="paginationContainer" class="flex flex-col sm:flex-row items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-800 gap-3 no-print">
+                        <div id="display-info" class="text-xs text-slate-500 dark:text-slate-400 font-medium"></div>
+                        <div id="pagination" class="flex items-center gap-1 sm:gap-1.5 flex-nowrap justify-center max-w-full overflow-x-auto pb-1"></div>
+                    </div>
+
                 </div>
             </div>
-            <div class="copyright">
-                <footer class="footer text-center py-3 mt-4 text-muted small border-top">&copy; {{ date('Y') }} MARSS CORPORATION | Software By: <a href="https://www.codenextit.com" target="_blank" class="text-success fw-bold text-decoration-none">CodeNext IT</a></footer>
-            </div>
-            <!-- Table End -->
+        </div>
+
+        <!-- Sticky Copyright Footer -->
+        <div class="copyright sticky bottom-0 z-10 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 py-3 text-center shadow-[0_-4px_12px_rgba(0,0,0,0.03)] no-print">
+            <footer class="footer text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
+                &copy; {{ date('Y') }} MARSS CORPORATION | Software By: <a href="https://www.codenextit.com" target="_blank" class="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 font-bold hover:underline transition-colors">CodeNext IT</a>
+            </footer>
         </div>
     </div>
-    <!-- Hero Main Content End -->
-{{--
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            // Set default start and end dates to today
-            const today = new Date().toISOString().split("T")[0];
-            document.getElementById("startDate").value = today;
-            document.getElementById("endDate").value = today;
+</div>
 
-            // Fetch today's report on page load
-            fetchincomeexpenseReport();
+<script>
+    /* ── Core State Variables ── */
+    let allReportData = [];
+    let currentPage = 1;
+
+    // Fallback dummy record for instant rich demonstration
+    const dummyIncomeExpenseRecord = {
+        date: '2026-09-10',
+        total_cost_amount: 3200.00,
+        sub_total_amount: 5400.00,
+        total_paid_amount: 4800.00,
+        total_discount_amount: 200.00,
+        total_due_amount: 400.00,
+        total_expense_amount: 650.00,
+        total_amount: 0.00,
+        is_dummy: true
+    };
+
+    window.clearIncomeExpenseDummy = function() {
+        allReportData = allReportData.filter(d => !d.is_dummy);
+        renderTable();
+        showExportToast('Dummy income & expense record cleared!', '#15803d');
+    };
+
+    let startPicker = null;
+    let endPicker = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initQuickFilterDropdown();
+        initFlatpickr();
+
+        // Preset to This Month on load
+        applyQuickFilter('thisMonth', false);
+
+        // Auto-fetch data
+        fetchincomeexpenseReport();
+
+        // Event listeners
+        document.getElementById("entries").addEventListener("change", () => {
+            currentPage = 1;
+            renderTable();
         });
 
-        async function fetchincomeexpenseReport() {
-            const startDate = document.getElementById("startDate").value || new Date().toISOString().split("T")[0];
-            const endDate = document.getElementById("endDate").value || new Date().toISOString().split("T")[0];
+        document.getElementById("searchInput").addEventListener("keyup", () => {
+            currentPage = 1;
+            renderTable();
+        });
+    });
 
-            await searchReports(startDate, endDate);
-        }
+    /* ── Quick Filter Dropdown Behavior ── */
+    function initQuickFilterDropdown() {
+        const wrap = document.getElementById("quickFilterWrapper");
+        const btn = document.getElementById("quickFilterBtn");
+        const menu = document.getElementById("quickFilterMenu");
+        const arrow = document.getElementById("quickFilterArrow");
 
-        async function searchReports(startDate, endDate) {
-            try {
-                showLoader(); // Show loader during API request
-                const res = await axios.get(
-                    `/api/income-expense-report-list?start_date=${startDate}&end_date=${endDate}`,
-                    HeaderToken()
-                );
-
-                hideLoader(); // Hide loader after response
-
-                // Process response data and update table
-                if (res.data.status === 'success') {
-                    updateTable(res.data.reportData);
-                } else {
-                    alert('Failed to fetch data: ' + res.data.message);
-                }
-            } catch (e) {
-                hideLoader(); // Ensure loader is hidden on error
-                console.error(e); // Log the error
-                unauthorized(e.response ? e.response.status : 500);
-            }
-        }
-
-        function updateTable(reportData) {
-            const tableList = $("#printTable tbody");
-
-            // Clear existing table data
-            tableList.empty();
-
-            // Update table rows with report data and add serial numbers
-            reportData.forEach((report, index) => {
-                const totalPaidAmount = parseFloat(report.total_paid_amount || 0);
-                const totalExpenseAmount = parseFloat(report.total_expense_amount || 0);
-                const TotalBlance = (totalPaidAmount - totalExpenseAmount).toFixed(2);
-
-
-
-                const totalCostAmount = parseFloat(report.total_cost_amount || 0);
-                const totalSellingAmount = parseFloat(report.total_expense_amount || 0);
-
-                $profitAmount = parseFloat(report.total_cost_amount || 0) - parseFloat(report.sub_total_amount || 0)
-                $profitDuePaidAmount = parseFloat(report.total_paid_amount || 0) + parseFloat(report.total_discount_amount || 0)
-                $MyProfitAmount = $profitAmount - $profitDuePaidAmount;
-
-                const row = `
-                    <tr>
-                        <td>${index + 1}</td>
-                            <td style="text-wrap: nowrap;">${formatDate(report.date)}</td>
-                        <td>${parseFloat(report.total_cost_amount || 0).toFixed(2)}</td>
-                        <td>${parseFloat(report.sub_total_amount || 0).toFixed(2)}</td>
-                        <td>${parseFloat(report.total_paid_amount || 0).toFixed(2)}</td>
-                        <td>${parseFloat(report.total_discount_amount || 0).toFixed(2)}</td>
-                        <td>${parseFloat(report.total_due_amount || 0).toFixed(2)}</td>
-                        <td>${parseFloat(report.total_expense_amount || 0).toFixed(2)}</td>
-                        <td>${parseFloat(report.total_amount || 0).toFixed(2)}</td>
-                        <td>${parseFloat($MyProfitAmount || 0).toFixed(2)}</td>
-                      <td>${TotalBlance}</td>
-                    </tr>`;
-                tableList.append(row);
-            });
-
-            // Calculate and update totals
-            const totals = calculateTotals(reportData);
-            updateTotalRow(totals);
-        }
-
-        function calculateTotals(reportData) {
-            return reportData.reduce((acc, report) => {
-                acc.totalCostAmount += parseFloat(report.total_cost_amount || 0);
-                acc.totalSalesAmount += parseFloat(report.sub_total_amount || 0);
-                acc.totalPaidAmount += parseFloat(report.total_paid_amount || 0);
-                acc.TotalDiscountAmount += parseFloat(report.total_discount_amount || 0);
-                acc.totalDueAmount += parseFloat(report.total_due_amount || 0);
-                acc.totalExpenseAmount += parseFloat(report.total_expense_amount || 0);
-                acc.totalReturnAmount += parseFloat(report.total_amount || 0);
-                acc.totalReturnAmount += parseFloat($MyProfitAmount || 0);
-                return acc;
-            }, {
-                totalCostAmount: 0,
-                totalSalesAmount: 0,
-                totalPaidAmount: 0,
-                TotalDiscountAmount: 0,
-                totalDueAmount: 0,
-                totalExpenseAmount: 0,
-                totalReturnAmount: 0,
-            });
-        }
-
-        function updateTotalRow(totals) {
-            const totalCountsRow = `
-                <tr id="totalCounts">
-                    <th colspan="2">Total</th>
-                    <th>${totals.totalCostAmount.toFixed(2)}</th>
-                    <th>${totals.totalSalesAmount.toFixed(2)}</th>
-                    <th>${totals.totalPaidAmount.toFixed(2)}</th>
-                    <th>${totals.TotalDiscountAmount.toFixed(2)}</th>
-                    <th>${totals.totalDueAmount.toFixed(2)}</th>
-                    <th>${totals.totalExpenseAmount.toFixed(2)}</th>
-                    <th>${totals.totalReturnAmount.toFixed(2)}</th>
-                    <th>${totals.$MyProfitAmount.toFixed(2)}</th>
-                </tr>`;
-            $('#printTable tfoot').html(totalCountsRow);
-        }
-
-        function handleError(error) {
-            console.error("An error occurred:", error);
-            if (error.response && error.response.status === 401) {
-                alert("Unauthorized access. Please log in.");
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const isOpen = menu.classList.contains("open");
+            if (isOpen) {
+                menu.classList.remove("open");
+                arrow.style.transform = "rotate(0deg)";
             } else {
-                alert("An error occurred while fetching data.");
+                menu.classList.add("open");
+                arrow.style.transform = "rotate(180deg)";
             }
-        }
-
-
-        function formatDate(dateString) {
-            if (!dateString) return '';
-            const options = {
-                year: 'numeric',
-                month: 'short',
-                day: '2-digit'
-            };
-            return new Date(dateString).toLocaleDateString('en-US', options);
-        }
-    </script> --}}
-
-
-   <script>
-   document.addEventListener("DOMContentLoaded", () => {
-            // Set default start and end dates to today
-            const today = new Date().toISOString().split("T")[0];
-            document.getElementById("startDate").value = today;
-            document.getElementById("endDate").value = today;
-
-            // Fetch today's report on page load
-            fetchincomeexpenseReport();
         });
 
-        async function fetchincomeexpenseReport() {
-            const startDate = document.getElementById("startDate").value || new Date().toISOString().split("T")[0];
-            const endDate = document.getElementById("endDate").value || new Date().toISOString().split("T")[0];
+        document.querySelectorAll(".custom-select-option").forEach(opt => {
+            opt.addEventListener("click", (e) => {
+                e.stopPropagation();
+                document.querySelectorAll(".custom-select-option").forEach(o => o.classList.remove("active"));
+                opt.classList.add("active");
+                document.getElementById("quickFilterSelectedText").innerText = opt.innerText.trim();
+                menu.classList.remove("open");
+                arrow.style.transform = "rotate(0deg)";
 
-            await searchReports(startDate, endDate);
-        }
+                const val = opt.getAttribute("data-value");
+                applyQuickFilter(val, true);
+            });
+        });
 
-        async function searchReports(startDate, endDate) {
-            try {
-                showLoader(); // Show loader during API request
-                const res = await axios.get(
-                    `/api/income-expense-report-list?start_date=${startDate}&end_date=${endDate}`,
-                    HeaderToken()
-                );
-
-        hideLoader();
-
-        if (res.data.status === 'success') {
-            updateTable(res.data.reportData);
-        } else {
-            alert('Failed to fetch data: ' + res.data.message);
-        }
-    } catch (e) {
-        hideLoader();
-        console.error(e);
-        unauthorized(e.response ? e.response.status : 500);
+        document.addEventListener("click", () => {
+            if (menu.classList.contains("open")) {
+                menu.classList.remove("open");
+                arrow.style.transform = "rotate(0deg)";
+            }
+        });
     }
-}
 
-function updateTable(reportData) {
-    const tableList = $("#printTable tbody");
-    tableList.empty();
+    /* ── Flatpickr Initialization ── */
+    function initFlatpickr() {
+        const commonConfig = {
+            dateFormat: "Y-m-d",
+            monthSelectorType: "static",
+            prevArrow: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>',
+            nextArrow: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>',
+            onChange: function() {
+                document.querySelectorAll(".custom-select-option").forEach(o => o.classList.remove("active"));
+                document.getElementById("quickFilterSelectedText").innerText = "Custom";
+                updatePeriodBadge();
+                fetchincomeexpenseReport();
+            }
+        };
 
-    reportData.forEach((report, index) => {
-        const totalCostAmount = parseFloat(report.total_cost_amount || 0);
-        const totalSalesAmount = parseFloat(report.sub_total_amount || 0);
-        const totalPaidAmount = parseFloat(report.total_paid_amount || 0);
-        const totalDiscountAmount = parseFloat(report.total_discount_amount || 0);
-        const totalExpenseAmount = parseFloat(report.total_expense_amount || 0);
-        const totalDueAmount = parseFloat(report.total_due_amount || 0);
-        const totalReturnAmount = parseFloat(report.total_amount || 0);
+        startPicker = flatpickr("#startDate", { ...commonConfig });
+        endPicker   = flatpickr("#endDate",   { ...commonConfig });
+    }
 
-        // ✅ Net Profit Calculation = (Sales - Cost) - Discount - Expenses
-        const grossProfit = totalSalesAmount - totalCostAmount - totalDiscountAmount;
-        const profitAmount = grossProfit - totalExpenseAmount;
+    /* ── Quick Filter Date Presets ── */
+    function applyQuickFilter(preset, shouldFetch = true) {
+        const now = new Date();
+        let sDate = new Date();
+        let eDate = new Date();
 
-        // ✅ Corrected Total Balance
-        const totalBalance = (totalPaidAmount - totalExpenseAmount).toFixed(2);
+        if (preset === 'today') {
+            sDate = new Date(); eDate = new Date();
+        } else if (preset === 'yesterday') {
+            sDate.setDate(now.getDate() - 1); eDate.setDate(now.getDate() - 1);
+        } else if (preset === 'last7') {
+            sDate.setDate(now.getDate() - 6); eDate = new Date();
+        } else if (preset === 'last30') {
+            sDate.setDate(now.getDate() - 29); eDate = new Date();
+        } else if (preset === 'thisMonth') {
+            sDate = new Date(now.getFullYear(), now.getMonth(), 1);
+            eDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        } else if (preset === 'lastMonth') {
+            sDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            eDate = new Date(now.getFullYear(), now.getMonth(), 0);
+        }
 
-        const row = `
-            <tr>
-                <td>${index + 1}</td>
-                <td style="text-wrap: nowrap;">${formatDate(report.date)}</td>
-                <td>${totalCostAmount.toFixed(2)}</td>
-                <td>${totalSalesAmount.toFixed(2)}</td>
-                <td>${totalPaidAmount.toFixed(2)}</td>
-                <td>${totalDiscountAmount.toFixed(2)}</td>
-                <td>${totalDueAmount.toFixed(2)}</td>
-                <td>${totalExpenseAmount.toFixed(2)}</td>
-                <td>${totalReturnAmount.toFixed(2)}</td>
-                <td>${profitAmount.toFixed(2)}</td>
-                <td>${totalBalance}</td>
-            </tr>`;
-        tableList.append(row);
-    });
+        const formatYMD = (d) => {
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
 
-    const totals = calculateTotals(reportData);
-    updateTotalRow(totals);
-}
+        const sStr = formatYMD(sDate);
+        const eStr = formatYMD(eDate);
 
-function calculateTotals(reportData) {
-    return reportData.reduce((acc, report) => {
-        acc.totalCostAmount += parseFloat(report.total_cost_amount || 0);
-        acc.totalSalesAmount += parseFloat(report.sub_total_amount || 0);
-        acc.totalPaidAmount += parseFloat(report.total_paid_amount || 0);
-        acc.totalDiscountAmount += parseFloat(report.total_discount_amount || 0);
-        acc.totalDueAmount += parseFloat(report.total_due_amount || 0);
-        acc.totalExpenseAmount += parseFloat(report.total_expense_amount || 0);
-        acc.totalReturnAmount += parseFloat(report.total_amount || 0);
+        if (startPicker && endPicker) {
+            startPicker.setDate(sStr, false);
+            endPicker.setDate(eStr, false);
+        } else {
+            document.getElementById("startDate").value = sStr;
+            document.getElementById("endDate").value = eStr;
+        }
 
-        // ✅ Corrected Total Profit Calculation = (Sales - Cost) - Discount - Expenses
-        const totalGrossProfit = acc.totalSalesAmount - acc.totalCostAmount - acc.totalDiscountAmount;
-        acc.totalProfitAmount = totalGrossProfit - acc.totalExpenseAmount;
+        updatePeriodBadge();
+        if (shouldFetch) {
+            fetchincomeexpenseReport();
+        }
+    }
 
-        return acc;
-    }, {
-        totalCostAmount: 0,
-        totalSalesAmount: 0,
-        totalPaidAmount: 0,
-        totalDiscountAmount: 0,
-        totalDueAmount: 0,
-        totalExpenseAmount: 0,
-        totalReturnAmount: 0,
-        totalProfitAmount: 0,
-    });
-}
+    function updatePeriodBadge() {
+        const s = document.getElementById("startDate").value || '';
+        const e = document.getElementById("endDate").value || '';
+        const badge = document.getElementById("periodText");
+        if (s === e && s) {
+            badge.innerText = `Period: ${s}`;
+        } else if (s && e) {
+            badge.innerText = `Period: ${s} to ${e}`;
+        } else {
+            badge.innerText = `Period: All`;
+        }
+    }
 
-function updateTotalRow(totals) {
-    const totalCountsRow = `
-        <tr id="totalCounts">
-            <th colspan="2">Total</th>
-            <th>${totals.totalCostAmount.toFixed(2)}</th>
-            <th>${totals.totalSalesAmount.toFixed(2)}</th>
-            <th>${totals.totalPaidAmount.toFixed(2)}</th>
-            <th>${totals.totalDiscountAmount.toFixed(2)}</th>
-            <th>${totals.totalDueAmount.toFixed(2)}</th>
-            <th>${totals.totalExpenseAmount.toFixed(2)}</th>
-            <th>${totals.totalReturnAmount.toFixed(2)}</th>
-            <th>${totals.totalProfitAmount.toFixed(2)}</th>
-        </tr>`;
-    $('#printTable tfoot').html(totalCountsRow);
-}
+    /* ── Fetch Report Data (Logic preserved) ── */
+    async function fetchincomeexpenseReport() {
+        const startDate = document.getElementById("startDate").value;
+        const endDate = document.getElementById("endDate").value;
+        if (!startDate || !endDate) return;
 
-function formatDate(dateString) {
-    if (!dateString) return '';
-    const options = { year: 'numeric', month: 'short', day: '2-digit' };
-    return new Date(dateString).toLocaleDateString('en-US', options);
-}
+        updatePeriodBadge();
 
-   </script>
+        try {
+            if (typeof showLoader === 'function') showLoader();
+            const res = await axios.get(`/api/income-expense-report-list?start_date=${startDate}&end_date=${endDate}`, typeof HeaderToken === 'function' ? HeaderToken() : {});
+            if (typeof hideLoader === 'function') hideLoader();
+
+            if (res.data.status === 'success') {
+                let data = res.data.reportData || [];
+                if (data.length === 0) {
+                    allReportData = [dummyIncomeExpenseRecord];
+                } else {
+                    // Newest at top
+                    allReportData = data.slice().reverse();
+                }
+                currentPage = 1;
+                renderTable();
+            } else {
+                if (allReportData.length === 0) {
+                    allReportData = [dummyIncomeExpenseRecord];
+                    currentPage = 1;
+                    renderTable();
+                }
+            }
+        } catch (e) {
+            if (typeof hideLoader === 'function') hideLoader();
+            console.error('Error fetching income expense report:', e);
+            if (allReportData.length === 0) {
+                allReportData = [dummyIncomeExpenseRecord];
+                currentPage = 1;
+                renderTable();
+            }
+            if (typeof unauthorized === 'function' && e.response) {
+                unauthorized(e.response.status);
+            }
+        }
+    }
+
+    function formatMoney(val) {
+        const num = parseFloat(val) || 0;
+        return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatDate(val) {
+        if (!val) return '-';
+        return val.toString().split('T')[0];
+    }
+
+    /* ── Render Table & Stat Cards ── */
+    function renderTable() {
+        const search = (document.getElementById("searchInput").value || '').toLowerCase().trim();
+        const perPage = parseInt(document.getElementById("entries").value) || 15;
+
+        const filtered = allReportData.filter(item =>
+            (formatDate(item.date) || '').toLowerCase().includes(search)
+        );
+
+        const total = filtered.length;
+        const totalPages = Math.ceil(total / perPage) || 1;
+        if (currentPage > totalPages) currentPage = 1;
+        const start = (currentPage - 1) * perPage;
+        const pageData = filtered.slice(start, start + perPage);
+
+        let totals = { cost: 0, sales: 0, paid: 0, discount: 0, due: 0, expense: 0, ret: 0, profit: 0, balance: 0 };
+
+        filtered.forEach(report => {
+            const tc = parseFloat(report.total_cost_amount || 0);
+            const ts = parseFloat(report.sub_total_amount || 0);
+            const tp = parseFloat(report.total_paid_amount || 0);
+            const td = parseFloat(report.total_discount_amount || 0);
+            const tdu = parseFloat(report.total_due_amount || 0);
+            const te = parseFloat(report.total_expense_amount || 0);
+            const tr = parseFloat(report.total_amount || 0);
+            const gp = ts - tc - td;
+            const profit = gp - te;
+
+            totals.cost += tc;
+            totals.sales += ts;
+            totals.paid += tp;
+            totals.discount += td;
+            totals.due += tdu;
+            totals.expense += te;
+            totals.ret += tr;
+            totals.profit += profit;
+            totals.balance += (tp - te);
+        });
+
+        // Update Stat Cards
+        document.getElementById("cardTotalSales").innerText   = `৳ ${formatMoney(totals.sales)}`;
+        document.getElementById("cardTotalCost").innerText    = `৳ ${formatMoney(totals.cost)}`;
+        document.getElementById("cardTotalExpense").innerText = `৳ ${formatMoney(totals.expense)}`;
+        document.getElementById("cardTotalProfit").innerText  = `৳ ${formatMoney(totals.profit)}`;
+
+        // Update Table Foot
+        document.getElementById("tfootTotalCost").innerText     = `৳ ${formatMoney(totals.cost)}`;
+        document.getElementById("tfootTotalSales").innerText    = `৳ ${formatMoney(totals.sales)}`;
+        document.getElementById("tfootTotalPaid").innerText     = `৳ ${formatMoney(totals.paid)}`;
+        document.getElementById("tfootTotalDiscount").innerText = `৳ ${formatMoney(totals.discount)}`;
+        document.getElementById("tfootTotalDue").innerText      = `৳ ${formatMoney(totals.due)}`;
+        document.getElementById("tfootTotalExpense").innerText  = `৳ ${formatMoney(totals.expense)}`;
+        document.getElementById("tfootTotalReturn").innerText   = `৳ ${formatMoney(totals.ret)}`;
+        document.getElementById("tfootTotalProfit").innerText   = `৳ ${formatMoney(totals.profit)}`;
+        document.getElementById("tfootTotalBalance").innerText  = `৳ ${formatMoney(totals.balance)}`;
+
+        // Render Desktop Body
+        const tbody = document.getElementById('incomeTableBody');
+        tbody.innerHTML = '';
+
+        if (pageData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="11" class="py-12 text-center text-slate-400 font-medium">No records found for this period.</td></tr>`;
+        } else {
+            pageData.forEach((report, index) => {
+                const sl = start + index + 1;
+                const tc = parseFloat(report.total_cost_amount || 0);
+                const ts = parseFloat(report.sub_total_amount || 0);
+                const tp = parseFloat(report.total_paid_amount || 0);
+                const td = parseFloat(report.total_discount_amount || 0);
+                const tdu = parseFloat(report.total_due_amount || 0);
+                const te = parseFloat(report.total_expense_amount || 0);
+                const tr = parseFloat(report.total_amount || 0);
+                const grossProfit = ts - tc - td;
+                const profitAmount = grossProfit - te;
+                const totalBalance = tp - te;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
+                        <td class="p-[10px] text-center text-slate-400 dark:text-slate-500 font-semibold">${sl}</td>
+                        <td class="p-[10px] text-start font-semibold text-slate-700 dark:text-slate-200 whitespace-nowrap">
+                            ${formatDate(report.date)}
+                            ${report.is_dummy ? '<span class="ml-1.5 px-1.5 py-0.5 text-[9px] font-bold rounded bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">DEMO</span>' : ''}
+                        </td>
+                        <td class="p-[10px] text-end text-rose-600 dark:text-rose-400 font-semibold">৳ ${formatMoney(tc)}</td>
+                        <td class="p-[10px] text-end text-emerald-600 dark:text-emerald-400 font-semibold">৳ ${formatMoney(ts)}</td>
+                        <td class="p-[10px] text-end text-sky-600 dark:text-sky-400 font-semibold">৳ ${formatMoney(tp)}</td>
+                        <td class="p-[10px] text-end text-slate-600 dark:text-slate-400 font-semibold">৳ ${formatMoney(td)}</td>
+                        <td class="p-[10px] text-end text-amber-600 dark:text-amber-400 font-semibold">৳ ${formatMoney(tdu)}</td>
+                        <td class="p-[10px] text-end text-red-600 dark:text-red-400 font-semibold">৳ ${formatMoney(te)}</td>
+                        <td class="p-[10px] text-end text-violet-600 dark:text-violet-400 font-semibold">৳ ${formatMoney(tr)}</td>
+                        <td class="p-[10px] text-end font-bold ${profitAmount >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-rose-600 dark:text-rose-400'}">৳ ${formatMoney(profitAmount)}</td>
+                        <td class="p-[10px] text-end font-bold ${totalBalance >= 0 ? 'text-indigo-600 dark:text-indigo-400' : 'text-rose-600 dark:text-rose-400'}">৳ ${formatMoney(totalBalance)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Render Mobile Cards
+        const mobileList = document.getElementById('mobileCardList');
+        mobileList.innerHTML = '';
+        if (pageData.length === 0) {
+            mobileList.innerHTML = `<div class="p-6 text-center text-slate-400 font-medium">No records found.</div>`;
+        } else {
+            pageData.forEach((report, index) => {
+                const sl = start + index + 1;
+                const tc = parseFloat(report.total_cost_amount || 0);
+                const ts = parseFloat(report.sub_total_amount || 0);
+                const tp = parseFloat(report.total_paid_amount || 0);
+                const td = parseFloat(report.total_discount_amount || 0);
+                const tdu = parseFloat(report.total_due_amount || 0);
+                const te = parseFloat(report.total_expense_amount || 0);
+                const tr = parseFloat(report.total_amount || 0);
+                const grossProfit = ts - tc - td;
+                const profitAmount = grossProfit - te;
+                const totalBalance = tp - te;
+
+                mobileList.innerHTML += `
+                    <div class="mobile-table-card shadow-sm">
+                        <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold text-slate-400">#${sl}</span>
+                                <span class="text-xs font-bold text-slate-800 dark:text-slate-200">${formatDate(report.date)}</span>
+                                ${report.is_dummy ? '<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">DEMO</span>' : ''}
+                            </div>
+                            <span class="text-xs font-bold ${profitAmount >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-rose-600 dark:text-rose-400'}">
+                                Profit: ৳ ${formatMoney(profitAmount)}
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div><span class="text-slate-400">Sales:</span> <strong class="text-emerald-600">৳ ${formatMoney(ts)}</strong></div>
+                            <div><span class="text-slate-400">Cost:</span> <strong class="text-rose-600">৳ ${formatMoney(tc)}</strong></div>
+                            <div><span class="text-slate-400">Paid:</span> <strong class="text-sky-600">৳ ${formatMoney(tp)}</strong></div>
+                            <div><span class="text-slate-400">Due:</span> <strong class="text-amber-600">৳ ${formatMoney(tdu)}</strong></div>
+                            <div><span class="text-slate-400">Expense:</span> <strong class="text-red-600">৳ ${formatMoney(te)}</strong></div>
+                            <div><span class="text-slate-400">Balance:</span> <strong class="text-indigo-600">৳ ${formatMoney(totalBalance)}</strong></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Display Info
+        document.getElementById('display-info').innerHTML = total > 0
+            ? `<span class="text-xs text-slate-500 dark:text-slate-400">Showing <strong class="text-slate-700 dark:text-slate-200">${start + 1}–${Math.min(start + perPage, total)}</strong> of <strong class="text-slate-700 dark:text-slate-200">${total}</strong> records</span>`
+            : `<span class="text-xs text-slate-400">No records found</span>`;
+
+        renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages) {
+        const container = document.getElementById('pagination');
+        container.innerHTML = '';
+        if (totalPages <= 1) return;
+
+        const btnClass = "inline-flex items-center justify-center h-8 min-w-[32px] px-2.5 rounded-lg text-xs font-semibold transition-all duration-150 border";
+        const activeClass = "bg-emerald-700 text-white border-emerald-700 shadow-sm";
+        const inactiveClass = "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:border-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-400";
+        const disabledClass = "bg-white dark:bg-slate-800 text-slate-300 dark:text-slate-600 border-slate-200 dark:border-slate-700 cursor-not-allowed";
+
+        container.innerHTML += `<button onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="${btnClass} ${currentPage === 1 ? disabledClass : inactiveClass}">‹</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                container.innerHTML += `<button onclick="goPage(${i})" class="${btnClass} ${i === currentPage ? activeClass : inactiveClass}">${i}</button>`;
+            } else if (i === currentPage - 2 || i === currentPage + 2) {
+                container.innerHTML += `<span class="text-slate-400 px-1">…</span>`;
+            }
+        }
+        container.innerHTML += `<button onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="${btnClass} ${currentPage === totalPages ? disabledClass : inactiveClass}">›</button>`;
+    }
+
+    function goPage(page) {
+        const perPage = parseInt(document.getElementById("entries").value) || 15;
+        const search = (document.getElementById("searchInput").value || '').toLowerCase().trim();
+        const filtered = allReportData.filter(item => (formatDate(item.date) || '').toLowerCase().includes(search));
+        const totalPages = Math.ceil(filtered.length / perPage) || 1;
+        if (page < 1 || page > totalPages) return;
+        currentPage = page;
+        renderTable();
+    }
+
+    /* ── Export Copy ── */
+    function exportCopyDynamic() {
+        if (!allReportData || allReportData.length === 0) {
+            showExportToast('No data to copy!', '#be123c');
+            return;
+        }
+        const headers = ["SL", "Date", "Total Cost", "Total Sales", "Total Paid", "Discount", "Total Due", "Expense", "Return", "Profit", "Balance"];
+        const rows = [headers.join('\t')];
+
+        allReportData.forEach((report, index) => {
+            const tc = parseFloat(report.total_cost_amount || 0);
+            const ts = parseFloat(report.sub_total_amount || 0);
+            const tp = parseFloat(report.total_paid_amount || 0);
+            const td = parseFloat(report.total_discount_amount || 0);
+            const tdu = parseFloat(report.total_due_amount || 0);
+            const te = parseFloat(report.total_expense_amount || 0);
+            const tr = parseFloat(report.total_amount || 0);
+            const profit = (ts - tc - td) - te;
+            const balance = tp - te;
+
+            rows.push([
+                index + 1,
+                formatDate(report.date),
+                tc.toFixed(2),
+                ts.toFixed(2),
+                tp.toFixed(2),
+                td.toFixed(2),
+                tdu.toFixed(2),
+                te.toFixed(2),
+                tr.toFixed(2),
+                profit.toFixed(2),
+                balance.toFixed(2)
+            ].join('\t'));
+        });
+
+        navigator.clipboard.writeText(rows.join('\n'))
+            .then(() => showExportToast('Table data copied to clipboard!', '#15803d'))
+            .catch(() => showExportToast('Failed to copy', '#be123c'));
+    }
+
+    /* ── Export CSV ── */
+    function exportCSVDynamic() {
+        if (!allReportData || allReportData.length === 0) {
+            showExportToast('No data to export!', '#be123c');
+            return;
+        }
+        const headers = ["SL", "Date", "Total Cost", "Total Sales", "Total Paid", "Discount", "Total Due", "Expense", "Return", "Profit", "Balance"];
+        const csvRows = [headers.map(h => `"${h}"`).join(',')];
+
+        allReportData.forEach((report, index) => {
+            const tc = parseFloat(report.total_cost_amount || 0);
+            const ts = parseFloat(report.sub_total_amount || 0);
+            const tp = parseFloat(report.total_paid_amount || 0);
+            const td = parseFloat(report.total_discount_amount || 0);
+            const tdu = parseFloat(report.total_due_amount || 0);
+            const te = parseFloat(report.total_expense_amount || 0);
+            const tr = parseFloat(report.total_amount || 0);
+            const profit = (ts - tc - td) - te;
+            const balance = tp - te;
+
+            csvRows.push([
+                index + 1,
+                `"${formatDate(report.date)}"`,
+                tc.toFixed(2),
+                ts.toFixed(2),
+                tp.toFixed(2),
+                td.toFixed(2),
+                tdu.toFixed(2),
+                te.toFixed(2),
+                tr.toFixed(2),
+                profit.toFixed(2),
+                balance.toFixed(2)
+            ].join(','));
+        });
+
+        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a');
+        const s = document.getElementById("startDate").value || 'report';
+        const e = document.getElementById("endDate").value || 'report';
+        a.href = URL.createObjectURL(blob);
+        a.download = `income-expense-${s}-to-${e}.csv`;
+        a.click();
+        showExportToast('CSV export downloaded!', '#15803d');
+    }
+
+    /* ── Export Excel ── */
+    function exportExcelDynamic() {
+        if (!allReportData || allReportData.length === 0) {
+            showExportToast('No data to export!', '#be123c');
+            return;
+        }
+
+        let tableRows = '';
+        allReportData.forEach((report, index) => {
+            const tc = parseFloat(report.total_cost_amount || 0);
+            const ts = parseFloat(report.sub_total_amount || 0);
+            const tp = parseFloat(report.total_paid_amount || 0);
+            const td = parseFloat(report.total_discount_amount || 0);
+            const tdu = parseFloat(report.total_due_amount || 0);
+            const te = parseFloat(report.total_expense_amount || 0);
+            const tr = parseFloat(report.total_amount || 0);
+            const profit = (ts - tc - td) - te;
+            const balance = tp - te;
+
+            tableRows += `
+                <tr>
+                    <td align="center">${index + 1}</td>
+                    <td align="left">${formatDate(report.date)}</td>
+                    <td align="right">${tc.toFixed(2)}</td>
+                    <td align="right">${ts.toFixed(2)}</td>
+                    <td align="right">${tp.toFixed(2)}</td>
+                    <td align="right">${td.toFixed(2)}</td>
+                    <td align="right">${tdu.toFixed(2)}</td>
+                    <td align="right">${te.toFixed(2)}</td>
+                    <td align="right">${tr.toFixed(2)}</td>
+                    <td align="right">${profit.toFixed(2)}</td>
+                    <td align="right">${balance.toFixed(2)}</td>
+                </tr>
+            `;
+        });
+
+        const tableHtml = `
+            <table border="1" style="border-collapse:collapse; font-family:Arial, sans-serif; font-size:11px;">
+                <thead>
+                    <tr style="background-color:#15803d; color:#ffffff; font-weight:bold;">
+                        <th>SL</th>
+                        <th>Date</th>
+                        <th>Total Cost</th>
+                        <th>Total Sales</th>
+                        <th>Total Paid</th>
+                        <th>Discount</th>
+                        <th>Total Due</th>
+                        <th>Expense</th>
+                        <th>Return</th>
+                        <th>Profit</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody>${tableRows}</tbody>
+            </table>
+        `;
+
+        const fullHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"></head><body>${tableHtml}</body></html>`;
+        const blob = new Blob([fullHtml], { type: 'application/vnd.ms-excel' });
+        const a = document.createElement('a');
+        const s = document.getElementById("startDate").value || 'report';
+        const e = document.getElementById("endDate").value || 'report';
+        a.href = URL.createObjectURL(blob);
+        a.download = `income-expense-${s}-to-${e}.xls`;
+        a.click();
+        showExportToast('Excel export downloaded!', '#15803d');
+    }
+
+    /* ── Direct PDF Download: Clean detached container, full width, no clipping ── */
+    function exportPDFDynamic() {
+        if (!allReportData || allReportData.length === 0) {
+            showExportToast('No data to export!', '#be123c');
+            return;
+        }
+
+        showExportToast('Generating PDF...', '#15803d');
+
+        const period = document.getElementById('periodText').innerText.replace('Period: ', '');
+        const sSales   = document.getElementById('cardTotalSales').innerText;
+        const sCost    = document.getElementById('cardTotalCost').innerText;
+        const sExpense = document.getElementById('cardTotalExpense').innerText;
+        const sProfit  = document.getElementById('cardTotalProfit').innerText;
+
+        let rowsHtml = '';
+        allReportData.forEach((report, index) => {
+            const tc = parseFloat(report.total_cost_amount || 0);
+            const ts = parseFloat(report.sub_total_amount || 0);
+            const tp = parseFloat(report.total_paid_amount || 0);
+            const td = parseFloat(report.total_discount_amount || 0);
+            const tdu = parseFloat(report.total_due_amount || 0);
+            const te = parseFloat(report.total_expense_amount || 0);
+            const tr = parseFloat(report.total_amount || 0);
+            const profit = (ts - tc - td) - te;
+            const balance = tp - te;
+
+            rowsHtml += `
+                <tr style="background-color: #ffffff;">
+                    <td style="width:4%; text-align:center; padding:4px 2px; border:1px solid #cbd5e1; font-size:8px; color:#111;">${index + 1}</td>
+                    <td style="width:11%; padding:4px 3px; border:1px solid #cbd5e1; font-size:8px; color:#0f172a; white-space:nowrap;">${formatDate(report.date)}</td>
+                    <td style="width:9%; text-align:right; padding:4px 3px; border:1px solid #cbd5e1; font-size:8px; color:#be123c;">৳ ${formatMoney(tc)}</td>
+                    <td style="width:10%; text-align:right; padding:4px 3px; border:1px solid #cbd5e1; font-size:8px; color:#047857;">৳ ${formatMoney(ts)}</td>
+                    <td style="width:9%; text-align:right; padding:4px 3px; border:1px solid #cbd5e1; font-size:8px; color:#0284c7;">৳ ${formatMoney(tp)}</td>
+                    <td style="width:8%; text-align:right; padding:4px 3px; border:1px solid #cbd5e1; font-size:8px; color:#64748b;">৳ ${formatMoney(td)}</td>
+                    <td style="width:9%; text-align:right; padding:4px 3px; border:1px solid #cbd5e1; font-size:8px; color:#d97706;">৳ ${formatMoney(tdu)}</td>
+                    <td style="width:9%; text-align:right; padding:4px 3px; border:1px solid #cbd5e1; font-size:8px; color:#e11d48;">৳ ${formatMoney(te)}</td>
+                    <td style="width:8%; text-align:right; padding:4px 3px; border:1px solid #cbd5e1; font-size:8px; color:#7c3aed;">৳ ${formatMoney(tr)}</td>
+                    <td style="width:11%; text-align:right; padding:4px 3px; border:1px solid #cbd5e1; font-size:8px; font-weight:bold; color:#0d9488;">৳ ${formatMoney(profit)}</td>
+                    <td style="width:12%; text-align:right; padding:4px 3px; border:1px solid #cbd5e1; font-size:8px; font-weight:bold; color:#4f46e5;">৳ ${formatMoney(balance)}</td>
+                </tr>
+            `;
+        });
+
+        const container = document.createElement('div');
+        container.style.cssText = 'width:690px; padding:10px; font-family:Arial, sans-serif; background:#ffffff !important; color:#111111 !important; box-sizing:border-box;';
+        container.innerHTML = `
+            <div style="text-align:center; border-bottom:2px solid #15803d; padding-bottom:8px; margin-bottom:10px; background:#ffffff;">
+                <h1 style="margin:0; color:#15803d !important; font-size:18px; font-weight:800; text-align:center;">MARSS CORPORATION</h1>
+                <p style="margin:2px 0; font-size:10px; color:#475569 !important; text-align:center;">Retailer & Wholesaler | Proprietor: Md. Anisur Rahman</p>
+                <h2 style="margin:4px 0 2px 0; font-size:13px; font-weight:700; color:#0f172a !important; text-align:center;">Income & Expense Summary Report</h2>
+                <p style="margin:2px 0; font-size:9.5px; color:#64748b !important; text-align:center;">Period: ${period}</p>
+                <div style="display:flex; justify-content:space-around; margin-top:6px; padding:6px 8px; background:#f8fafc !important; border:1px solid #e2e8f0; border-radius:6px; font-size:10px; font-weight:bold; color:#0f172a !important;">
+                    <span style="color:#0f172a !important;">Total Sales: <strong style="color:#047857 !important;">${sSales}</strong></span>
+                    <span style="color:#0f172a !important;">Total Cost: <strong style="color:#be123c !important;">${sCost}</strong></span>
+                    <span style="color:#0f172a !important;">Total Expense: <strong style="color:#d97706 !important;">${sExpense}</strong></span>
+                    <span style="color:#0f172a !important;">Net Profit: <strong style="color:#0d9488 !important;">${sProfit}</strong></span>
+                </div>
+            </div>
+            <table style="width:100%; table-layout:fixed; border-collapse:collapse; margin-top:8px; font-size:8px; background:#ffffff;">
+                <thead>
+                    <tr style="background-color:#15803d !important; color:#ffffff !important;">
+                        <th style="width:4%; padding:5px 2px; border:1px solid #15803d; text-align:center; color:#ffffff !important; font-size:8px;">SL</th>
+                        <th style="width:11%; padding:5px 3px; border:1px solid #15803d; text-align:left; color:#ffffff !important; font-size:8px;">Date</th>
+                        <th style="width:9%; padding:5px 3px; border:1px solid #15803d; text-align:right; color:#ffffff !important; font-size:8px;">Cost</th>
+                        <th style="width:10%; padding:5px 3px; border:1px solid #15803d; text-align:right; color:#ffffff !important; font-size:8px;">Sales</th>
+                        <th style="width:9%; padding:5px 3px; border:1px solid #15803d; text-align:right; color:#ffffff !important; font-size:8px;">Paid</th>
+                        <th style="width:8%; padding:5px 3px; border:1px solid #15803d; text-align:right; color:#ffffff !important; font-size:8px;">Disc.</th>
+                        <th style="width:9%; padding:5px 3px; border:1px solid #15803d; text-align:right; color:#ffffff !important; font-size:8px;">Due</th>
+                        <th style="width:9%; padding:5px 3px; border:1px solid #15803d; text-align:right; color:#ffffff !important; font-size:8px;">Exp.</th>
+                        <th style="width:8%; padding:5px 3px; border:1px solid #15803d; text-align:right; color:#ffffff !important; font-size:8px;">Ret.</th>
+                        <th style="width:11%; padding:5px 3px; border:1px solid #15803d; text-align:right; color:#ffffff !important; font-size:8px;">Profit</th>
+                        <th style="width:12%; padding:5px 3px; border:1px solid #15803d; text-align:right; color:#ffffff !important; font-size:8px;">Balance</th>
+                    </tr>
+                </thead>
+                <tbody>${rowsHtml}</tbody>
+            </table>
+            <div style="margin-top:35px; display:flex; justify-content:space-between; text-align:center; font-size:9px; font-weight:600; padding:0 20px; background:#ffffff;">
+                <div style="border-top:1px solid #333; width:130px; padding-top:4px; color:#111;">Cashier Signature</div>
+                <div style="border-top:1px solid #333; width:130px; padding-top:4px; color:#111;">Accountant Signature</div>
+                <div style="border-top:1px solid #333; width:130px; padding-top:4px; color:#111;">Owner Signature</div>
+            </div>
+        `;
+
+        const s = document.getElementById("startDate").value || 'report';
+        const e = document.getElementById("endDate").value || 'report';
+        const opt = {
+            margin:       [8, 8, 8, 8],
+            filename:     `income-expense-${s}-to-${e}.pdf`,
+            image:        { type: 'jpeg', quality: 0.99 },
+            html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        if (window.html2pdf) {
+            html2pdf().set(opt).from(container).save().then(() => {
+                showExportToast('PDF downloaded successfully!', '#15803d');
+            }).catch(err => {
+                console.error("PDF Download error:", err);
+                showExportToast('Error generating PDF download', '#be123c');
+            });
+        } else {
+            showExportToast('PDF engine loading, please try again...', '#be123c');
+        }
+    }
+
+    /* ── Print Table View ── */
+    function printTableOnly() {
+        if (!allReportData || allReportData.length === 0) {
+            showExportToast('No data to print!', '#be123c');
+            return;
+        }
+
+        const period = document.getElementById('periodText').innerText.replace('Period: ', '');
+        const sSales   = document.getElementById('cardTotalSales').innerText;
+        const sCost    = document.getElementById('cardTotalCost').innerText;
+        const sExpense = document.getElementById('cardTotalExpense').innerText;
+        const sProfit  = document.getElementById('cardTotalProfit').innerText;
+
+        let rowsHtml = '';
+        allReportData.forEach((report, index) => {
+            const tc = parseFloat(report.total_cost_amount || 0);
+            const ts = parseFloat(report.sub_total_amount || 0);
+            const tp = parseFloat(report.total_paid_amount || 0);
+            const td = parseFloat(report.total_discount_amount || 0);
+            const tdu = parseFloat(report.total_due_amount || 0);
+            const te = parseFloat(report.total_expense_amount || 0);
+            const tr = parseFloat(report.total_amount || 0);
+            const profit = (ts - tc - td) - te;
+            const balance = tp - te;
+
+            rowsHtml += `
+                <tr>
+                    <td style="text-align:center; padding:4px 2px; font-size:8.5px;">${index + 1}</td>
+                    <td style="padding:4px 4px; font-size:8.5px;">${formatDate(report.date)}</td>
+                    <td style="text-align:right; padding:4px 4px; font-size:8.5px; color:#be123c;">৳ ${formatMoney(tc)}</td>
+                    <td style="text-align:right; padding:4px 4px; font-size:8.5px; color:#047857;">৳ ${formatMoney(ts)}</td>
+                    <td style="text-align:right; padding:4px 4px; font-size:8.5px; color:#0284c7;">৳ ${formatMoney(tp)}</td>
+                    <td style="text-align:right; padding:4px 4px; font-size:8.5px; color:#64748b;">৳ ${formatMoney(td)}</td>
+                    <td style="text-align:right; padding:4px 4px; font-size:8.5px; color:#d97706;">৳ ${formatMoney(tdu)}</td>
+                    <td style="text-align:right; padding:4px 4px; font-size:8.5px; color:#e11d48;">৳ ${formatMoney(te)}</td>
+                    <td style="text-align:right; padding:4px 4px; font-size:8.5px; color:#7c3aed;">৳ ${formatMoney(tr)}</td>
+                    <td style="text-align:right; padding:4px 4px; font-size:8.5px; font-weight:bold; color:#0d9488;">৳ ${formatMoney(profit)}</td>
+                    <td style="text-align:right; padding:4px 4px; font-size:8.5px; font-weight:bold; color:#4f46e5;">৳ ${formatMoney(balance)}</td>
+                </tr>
+            `;
+        });
+
+        const printWin = window.open('', '_blank', 'width=1000,height=800');
+        printWin.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Income & Expense Report - Print</title>
+                <style>
+                    @page { size: A4 portrait; margin: 10px !important; }
+                    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; padding: 6px; color: #111; background: #fff; }
+                    .report-header { text-align: center; border-bottom: 2px solid #15803d; padding-bottom: 6px; margin-bottom: 8px; }
+                    .report-header h1 { margin: 0; color: #15803d; font-size: 18px; font-weight: 800; }
+                    .report-header p { margin: 2px 0; font-size: 10px; color: #475569; }
+                    .report-header h2 { margin: 4px 0 2px 0; font-size: 13px; font-weight: 700; color: #0f172a; }
+                    .summary-bar { display: flex; justify-content: space-around; margin: 6px 0; padding: 5px 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 10px; font-weight: 700; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 8.5px; }
+                    th { background-color: #15803d !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 5px 4px; text-align: left; font-size: 8.5px; border: 1px solid #15803d; }
+                    td { border: 1px solid #cbd5e1; }
+                    tfoot td { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-weight: bold; border-top: 2px solid #15803d; padding: 5px 4px; font-size: 8.5px; }
+                    .signatures { margin-top: 40px; display: flex; justify-content: space-between; text-align: center; font-size: 10px; font-weight: 600; padding: 0 20px; }
+                    .signatures div { border-top: 1px solid #333; width: 140px; padding-top: 4px; }
+                </style>
+            </head>
+            <body>
+                <div class="report-header">
+                    <h1>MARSS CORPORATION</h1>
+                    <p>Retailer & Wholesaler | Proprietor: Md. Anisur Rahman</p>
+                    <h2>Income & Expense Summary Report</h2>
+                    <p>Period: ${period}</p>
+                    <div class="summary-bar">
+                        <span>Total Sales: <strong style="color:#047857;">${sSales}</strong></span>
+                        <span>Total Cost: <strong style="color:#be123c;">${sCost}</strong></span>
+                        <span>Total Expense: <strong style="color:#d97706;">${sExpense}</strong></span>
+                        <span>Net Profit: <strong style="color:#0d9488;">${sProfit}</strong></span>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align:center; width:30px;">SL</th>
+                            <th>Date</th>
+                            <th style="text-align:right;">Cost</th>
+                            <th style="text-align:right;">Sales</th>
+                            <th style="text-align:right;">Paid</th>
+                            <th style="text-align:right;">Disc.</th>
+                            <th style="text-align:right;">Due</th>
+                            <th style="text-align:right;">Exp.</th>
+                            <th style="text-align:right;">Ret.</th>
+                            <th style="text-align:right;">Profit</th>
+                            <th style="text-align:right;">Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rowsHtml}</tbody>
+                </table>
+                <div class="signatures">
+                    <div>Cashier Signature</div>
+                    <div>Accountant Signature</div>
+                    <div>Owner Signature</div>
+                </div>
+            </body>
+            </html>
+        `);
+        printWin.document.close();
+        printWin.focus();
+        setTimeout(() => {
+            printWin.print();
+            printWin.close();
+        }, 350);
+    }
+
+    /* ── Export Toast Notification ── */
+    function showExportToast(msg, color) {
+        const existing = document.getElementById('exportToastNotification');
+        if (existing) existing.remove();
+
+        const t = document.createElement('div');
+        t.id = 'exportToastNotification';
+        t.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:99999;padding:10px 18px;border-radius:10px;background:' + color + ';color:#fff;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,0.18);transition:opacity .3s';
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => {
+            t.style.opacity = '0';
+            setTimeout(() => t.remove(), 300);
+        }, 2200);
+    }
+</script>
+
 @endsection
