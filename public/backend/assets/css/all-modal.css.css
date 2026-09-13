@@ -138,8 +138,8 @@ Reset Default CSS End
 }
 
 .financemodal .modal-content .close-btn i {
-  font-size: 20px;
-  color: var(--white);
+  font-size: 30px;
+  color: var(--text-color2);
   cursor: pointer;
   padding: 3px 6px;
   border-radius: 50%;
@@ -3804,13 +3804,13 @@ input::-webkit-inner-spin-button {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
-  z-index: 9999;
-  /* Adjusted to a simpler value */
+  z-index: 9999999 !important;
 }
 
 .newbrand.show {
   opacity: 1;
   visibility: visible;
+  z-index: 9999999 !important;
 }
 
 .newbrand-content {
@@ -3960,13 +3960,13 @@ input::-webkit-inner-spin-button {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
-  z-index: 9992 !important;
+  z-index: 9999999 !important;
 }
 
 .newcategory.show {
   opacity: 1;
   visibility: visible;
-  z-index: 9992 !important;
+  z-index: 9999999 !important;
 }
 
 .newcategory.show .newcategory-content {

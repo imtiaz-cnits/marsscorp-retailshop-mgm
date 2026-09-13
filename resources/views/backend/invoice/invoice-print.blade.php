@@ -28,12 +28,23 @@
 
         .no-print-wrapper {
             max-width: 8in;
-            margin: 0 auto 15px auto;
+            margin: 0 auto 20px auto;
+            padding: 0 4px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
+        }
+
+        .no-print-wrapper .btn {
+            padding: 9px 24px !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
         }
 
         /* Invoice Sheet Paper - A4 / Letter format matching client paper */
@@ -472,19 +483,7 @@
                 </tbody>
             </table>
 
-        </div>
-
-        <!-- Footer Calculations & Signatures -->
-        <div class="bill-footer-section">
-
-            <div class="calc-summary-wrapper">
-                <div class="taka-words-box">
-                    <div class="taka-words-line">
-                        <span class="meta-label">Taka in Words:</span>
-                        <span class="taka-words-val" id="taka_words"></span>
-                    </div>
-                </div>
-
+            <div class="totals-summary-row" style="display: flex; justify-content: flex-end; margin-top: 10px !important;">
                 <div class="totals-table-box">
                     <table class="totals-table">
                         <tr>
@@ -519,13 +518,25 @@
                 </div>
             </div>
 
+        </div>
+
+        <!-- Footer Signatures (Sticky at bottom) -->
+        <div class="bill-footer-section" style="margin-top: auto;">
+            <!-- Taka in Words placed above Received by with space for signature -->
+            <div class="taka-words-box" style="width: 100%; margin-bottom: 50px;">
+                <div class="taka-words-line">
+                    <span class="meta-label">Taka in Words:</span>
+                    <span class="taka-words-val" id="taka_words"></span>
+                </div>
+            </div>
+
             <!-- Signature Lines -->
             <div class="signatures-row">
                 <div class="sig-box">
                     Received by
                 </div>
                 <div class="sig-box">
-                    For Marss Corporation
+                    Authorized Signature
                 </div>
             </div>
 
@@ -548,71 +559,81 @@
             }
         }
 
-        fetchInvoiceDetails();
+        document.addEventListener("DOMContentLoaded", function() {
+            InvoicePrintReceipt();
+        });
 
-        async function fetchInvoiceDetails() {
+        async function InvoicePrintReceipt() {
             try {
-                const response = await axios.get("/api/invoice-print-receipt", HeaderToken());
+                let invoice_id = localStorage.getItem('invoice_id');
+                if (!invoice_id) {
+                    console.error("No invoice ID found in localStorage");
+                    return;
+                }
 
-                if (response.data && !response.data.hasOwnProperty('error')) {
-                    const invoiceData = response.data;
+                let response = await axios.get("/api/invoice-print-receipt", {
+                    ...HeaderToken(),
+                    params: {
+                        id: invoice_id
+                    }
+                });
 
-                    // Load Metadata
-                    document.getElementById('order_no').innerText = invoiceData.order_no || '';
-                    document.getElementById('orderNote').innerText = invoiceData.order_note || '';
-                    document.getElementById('invoice_date').innerText = invoiceData.invoice_date || '';
-                    document.getElementById('delivery_date').innerText = invoiceData.invoice_date || '';
+                if (response.data.status === 'success') {
+                    let invoiceData = response.data.rows;
 
-                    // Customer Information
-                    if (invoiceData.customer) {
-                        document.getElementById('CustomerName').innerText = invoiceData.customer.customer_name || '';
-                        document.getElementById('CustomerAddress').innerText = invoiceData.customer.address || '';
-                        document.getElementById('CustomerMob').innerText = invoiceData.customer.mobile || '';
+                    function setElText(id, val) {
+                        let el = document.getElementById(id);
+                        if (el) el.innerText = val;
                     }
 
-                    // Populate Items Table
-                    const orderDetailsTable = document.getElementById('order_details');
-                    orderDetailsTable.innerHTML = '';
+                    // Set Customer and Invoice Info
+                    setElText('order_no', invoiceData.order_no || 'N/A');
+                    setElText('bill_no', invoiceData.order_no || 'N/A');
+                    setElText('orderNote', invoiceData.order_note || '');
+                    setElText('challan_no', invoiceData.order_note || '');
+                    setElText('CustomerName', invoiceData.customer ? invoiceData.customer.customer_name : 'Walk-in Customer');
+                    setElText('customer_name', invoiceData.customer ? invoiceData.customer.customer_name : 'Walk-in Customer');
+                    setElText('CustomerAddress', invoiceData.customer ? (invoiceData.customer.address_details || invoiceData.customer.address || '') : '');
+                    setElText('customer_address', invoiceData.customer ? (invoiceData.customer.address_details || invoiceData.customer.address || '') : '');
+                    setElText('CustomerMob', invoiceData.customer ? invoiceData.customer.mobile : '');
+                    setElText('customer_mobile', invoiceData.customer ? invoiceData.customer.mobile : '');
 
-                    const items = invoiceData.order_details || [];
-                    items.forEach((detail, index) => {
-                        const row = document.createElement('tr');
-                        const itemTotal = (parseFloat(detail.selling_price) * parseFloat(detail.quantity)).toFixed(2);
-                        const pName = detail.product_name || (detail.product ? detail.product.product_name : '');
-                        const doorSide = detail.door_side || (detail.product ? detail.product.door_side : '');
-                        const doorText = doorSide ? ` [${doorSide}]` : '';
-                        row.innerHTML = `
-                        <td class="sl-col">${index + 1}</td>
-                        <td class="desc-col">${pName}${doorText}</td>
-                        <td class="rate-col">${parseFloat(detail.selling_price).toFixed(2)}</td>
-                        <td class="qty-col">${detail.quantity}</td>
-                        <td class="amount-col">${itemTotal}</td>
-                    `;
-                        orderDetailsTable.appendChild(row);
+                    let invDate = invoiceData.invoice_date || invoiceData.created_at;
+                    let formattedDate = invDate ? new Date(invDate).toLocaleDateString('en-GB') : '';
+                    setElText('invoice_date', formattedDate);
+                    setElText('bill_date', formattedDate);
+                    setElText('delivery_date', formattedDate);
+
+                    // Populate Product Rows
+                    let orderDetailsHtml = '';
+                    let details = invoiceData.details || [];
+                    details.forEach((item, index) => {
+                        let pName = item.product ? item.product.product_name : 'Product';
+                        let unitPrice = parseFloat(item.price) || 0;
+                        let qty = parseFloat(item.quantity) || 0;
+                        let total = parseFloat(item.total) || (unitPrice * qty);
+
+                        orderDetailsHtml += `
+                            <tr>
+                                <td class="sl-col">${index + 1}</td>
+                                <td class="desc-col">${pName}</td>
+                                <td class="rate-col">${unitPrice.toFixed(2)}</td>
+                                <td class="qty-col">${qty}</td>
+                                <td class="amount-col">${total.toFixed(2)}</td>
+                            </tr>
+                        `;
                     });
 
-                    // Pad empty rows to maintain full printed height if needed
-                    const minRows = 10;
-                    for (let i = items.length; i < minRows; i++) {
-                        const emptyRow = document.createElement('tr');
-                        emptyRow.innerHTML = `
-                        <td class="sl-col">&nbsp;</td>
-                        <td class="desc-col">&nbsp;</td>
-                        <td class="rate-col">&nbsp;</td>
-                        <td class="qty-col">&nbsp;</td>
-                        <td class="amount-col">&nbsp;</td>
-                    `;
-                        orderDetailsTable.appendChild(emptyRow);
-                    }
+                    document.getElementById('order_details').innerHTML = orderDetailsHtml;
 
-                    // Financial calculations
-                    const subTotalVal = parseFloat(invoiceData.sub_total) || 0;
-                    const discountVal = parseFloat(invoiceData.discount_amount) || 0;
-                    const netVal = subTotalVal - discountVal;
-                    const paidVal = parseFloat(invoiceData.paid_amount) || 0;
-                    const dueVal = parseFloat(invoiceData.due_amount) || 0;
-                    const prevDueVal = parseFloat(invoiceData.previous_due_amount) || 0;
-                    const totalDueVal = typeof invoiceData.total_due_amount !== 'undefined' ? parseFloat(invoiceData.total_due_amount) : (prevDueVal + dueVal);
+                    // Set Calculations
+                    let subTotalVal = parseFloat(invoiceData.sub_total) || 0;
+                    let discountVal = parseFloat(invoiceData.discount_amount) || 0;
+                    let netVal = subTotalVal - discountVal;
+                    let paidVal = parseFloat(invoiceData.paid_amount) || 0;
+                    let dueVal = parseFloat(invoiceData.due_amount) || 0;
+                    let prevDueVal = parseFloat(invoiceData.customer ? (invoiceData.customer.previous_due_amount || 0) : 0);
+                    let totalDueVal = prevDueVal + dueVal;
 
                     document.getElementById('sub_total').innerText = subTotalVal.toFixed(2);
                     document.getElementById('discount_amount').innerText = discountVal.toFixed(2);
@@ -630,7 +651,7 @@
                     }
 
                     // Convert Net Amount to Taka in words
-                    document.getElementById('taka_words').innerText = numberToWords(Math.round(netVal > 0 ? netVal : subTotalVal));
+                    document.getElementById('taka_words').innerText = numberToWords(netVal > 0 ? netVal : subTotalVal);
 
                     // Auto trigger print window
                     setTimeout(() => {
@@ -638,7 +659,7 @@
                     }, 500);
 
                 } else {
-                    console.error('Error fetching invoice data:', response.data.error);
+                    console.error('Error fetching invoice data:', response.data.message || 'Unknown error');
                 }
             } catch (error) {
                 console.error("There was an error fetching the invoice data:", error);
@@ -650,19 +671,51 @@
         }
 
         function numberToWords(num) {
-            const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
-            const b = ['', '', 'Twenty ', 'Thirty ', 'Forty ', 'Fifty ', 'Sixty ', 'Seventy ', 'Eighty ', 'Ninety '];
+            num = Math.round(Number(num) || 0);
+            if (num === 0) return 'Zero Taka Only';
 
-            if ((num = num.toString()).length > 9) return 'overflow';
-            let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
-            if (!n) return '';
-            let str = '';
-            str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : '';
-            str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : '';
-            str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : '';
-            str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : '';
-            str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
-            return str.trim() ? str.trim() + ' Taka Only' : 'Zero Taka';
+            const single = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            const double = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+            function convertLessThanOneThousand(n) {
+                let str = '';
+                if (n >= 100) {
+                    str += single[Math.floor(n / 100)] + ' Hundred ';
+                    n %= 100;
+                }
+                if (n >= 20) {
+                    str += double[Math.floor(n / 10)] + ' ';
+                    n %= 10;
+                }
+                if (n > 0) {
+                    str += single[n] + ' ';
+                }
+                return str;
+            }
+
+            let crore = Math.floor(num / 10000000);
+            num %= 10000000;
+            let lakh = Math.floor(num / 100000);
+            num %= 100000;
+            let thousand = Math.floor(num / 1000);
+            num %= 1000;
+            let remainder = num;
+
+            let res = '';
+            if (crore > 0) {
+                res += convertLessThanOneThousand(crore) + 'Crore ';
+            }
+            if (lakh > 0) {
+                res += convertLessThanOneThousand(lakh) + 'Lakh ';
+            }
+            if (thousand > 0) {
+                res += convertLessThanOneThousand(thousand) + 'Thousand ';
+            }
+            if (remainder > 0) {
+                res += convertLessThanOneThousand(remainder);
+            }
+
+            return res.trim() ? res.trim() + ' Taka Only' : 'Zero Taka Only';
         }
     </script>
 </body>

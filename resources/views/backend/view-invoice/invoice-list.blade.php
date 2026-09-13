@@ -193,9 +193,143 @@
             </footer>
         </div>
 
+<!-- Quick View Invoice Details Modal -->
+<div id="invoiceQuickViewModal" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered modal-lg my-3" style="max-height: 88vh;">
+        <div class="modal-content bg-white dark:bg-slate-900 border-0 rounded-2xl shadow-2xl overflow-hidden transition-colors flex flex-col" style="max-height: 88vh; border: none !important;">
+            <!-- Modal Header: Sticky top, Green background, White text, Red round close button -->
+            <div class="modal-header sticky top-0 z-20 px-4 py-3 bg-emerald-700 text-white flex items-center justify-between shadow-sm border-0 flex-shrink-0" style="background-color: #15803d !important; color: #ffffff !important; border: none !important;">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-white/20 text-white flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </div>
+                    <div>
+                        <h5 class="modal-title text-base sm:text-lg font-bold text-white tracking-tight mb-0.5" id="qvInvoiceOrderNo" style="color: #ffffff !important;">Invoice Details</h5>
+                        <div class="flex items-center gap-1.5 flex-wrap text-xs" id="qvInvoiceHeaderBadges"></div>
+                    </div>
+                </div>
+                <!-- Red Circular Borderless Close Button with White Icon -->
+                <button type="button" class="qv-close-btn" data-bs-dismiss="modal" aria-label="Close" style="width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; max-width: 32px !important; max-height: 32px !important; border-radius: 50% !important; flex: 0 0 32px !important; padding: 0 !important; margin: 0 !important; background-color: #dc2626 !important; border: none !important; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body: Scrollable middle section -->
+            <div class="modal-body p-4 space-y-3.5 overflow-y-auto custom-scrollbar flex-1" style="max-height: calc(88vh - 120px);">
+                <!-- KPI Cards Grid: 4 columns on desktop, 2 columns on mobile -->
+                <div class="qv-cards-grid grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <div class="qv-stat-box p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
+                        <span class="qv-label block text-[10px] font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Payment Status</span>
+                        <div id="qvInvoiceStatusBadgeWrap" class="inline-block"></div>
+                    </div>
+                    <div class="qv-stat-box p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
+                        <span class="qv-label block text-[10px] font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Total Items</span>
+                        <span id="qvInvoiceTotalItems" class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100">0</span>
+                    </div>
+                    <div class="qv-stat-box p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
+                        <span class="qv-label block text-[10px] font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Total Amount</span>
+                        <span id="qvInvoiceTotalAmount" class="text-sm sm:text-base font-bold text-slate-700 dark:text-slate-200">৳ 0.00</span>
+                    </div>
+                    <div class="qv-stat-box p-2.5 rounded-xl bg-emerald-50 dark:bg-slate-800 border border-emerald-200 dark:border-slate-700 text-center">
+                        <span class="qv-label block text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">Paid / Due</span>
+                        <span id="qvInvoicePaidDue" class="text-sm sm:text-base font-bold text-emerald-700 dark:text-emerald-300">৳ 0.00</span>
+                    </div>
+                </div>
+
+                <!-- Specification Box with Top Margin & Generous Padding -->
+                <div class="qv-spec-box rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden mt-3">
+                    <div class="qv-spec-header bg-slate-100 dark:bg-slate-800 px-5 sm:px-6 py-3 border-b border-slate-200 dark:border-slate-700 font-bold text-xs text-slate-700 dark:text-slate-200 uppercase tracking-wider flex items-center justify-between flex-wrap gap-2">
+                        <span>Invoice Specification</span>
+                        <span id="qvInvoiceTotalValue" class="text-emerald-700 dark:text-emerald-400 font-bold">Total Value: ৳ 0.00</span>
+                    </div>
+                    <div class="divide-y divide-slate-200 dark:divide-slate-700 text-xs">
+                        <div class="qv-spec-row grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-white dark:bg-slate-800/90">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Invoice No:</span>
+                            <span id="qvInvoiceNo" class="col-span-2 font-mono font-bold text-slate-800 dark:text-slate-100"></span>
+                        </div>
+                        <div class="qv-spec-row-alt grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Customer Name:</span>
+                            <span id="qvInvoiceCustomerName" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                        </div>
+                        <div class="qv-spec-row grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-white dark:bg-slate-800/90">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Mobile Number:</span>
+                            <span id="qvInvoiceCustomerMobile" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                        </div>
+                        <div class="qv-spec-row-alt grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Customer ID:</span>
+                            <span id="qvInvoiceCustomerId" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                        </div>
+                        <div class="qv-spec-row grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-white dark:bg-slate-800/90">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Created By:</span>
+                            <span id="qvInvoiceCreatedBy" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                        </div>
+                        <div class="qv-spec-row-alt grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Invoice Date:</span>
+                            <span id="qvInvoiceDate" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                        </div>
+                        <div class="qv-spec-row grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-white dark:bg-slate-800/90">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Sub Total:</span>
+                            <span id="qvInvoiceSubTotal" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                        </div>
+                        <div class="qv-spec-row-alt grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Discount Amount:</span>
+                            <span id="qvInvoiceDiscount" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                        </div>
+                        <div class="qv-spec-row grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-white dark:bg-slate-800/90">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Paid Amount:</span>
+                            <span id="qvInvoicePaid" class="col-span-2 font-bold text-emerald-600 dark:text-emerald-400"></span>
+                        </div>
+                        <div class="qv-spec-row-alt grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Due Amount:</span>
+                            <span id="qvInvoiceDue" class="col-span-2 font-bold text-rose-600 dark:text-rose-400"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Purchased Items Breakdown Section -->
+                <div id="qvInvoiceItemsSection" class="space-y-2 mt-6 pt-1" style="margin-top: 24px !important;">
+                    <h6 class="font-bold text-xs uppercase tracking-wider text-slate-600 dark:text-slate-400 flex items-center gap-1.5 mb-0 px-1">
+                        <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <path d="M16 10a4 4 0 0 1-8 0"></path>
+                        </svg>
+                        <span>Purchased Items & Products Breakdown</span>
+                    </h6>
+                    <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-700">
+                                <tr>
+                                    <th class="px-4 py-2.5 text-center w-[50px]">SL</th>
+                                    <th class="px-4 py-2.5">Product Name</th>
+                                    <th class="px-4 py-2.5 text-center">Qty</th>
+                                    <th class="px-4 py-2.5 text-end">Price</th>
+                                    <th class="px-4 py-2.5 text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="qvInvoiceItemsTableBody" class="divide-y divide-slate-200 dark:divide-slate-700">
+                                <tr>
+                                    <td colspan="5" class="text-center py-3 text-slate-400">Loading items...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer: Sticky bottom, Cancel button 38px height, Red background, White text -->
+            <div class="modal-footer sticky bottom-0 z-20 px-4 py-2.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex justify-end flex-shrink-0">
+                <button type="button" class="px-4 h-[38px] min-h-[38px] max-h-[38px] rounded-xl bg-red-600 hover:bg-red-700 active:scale-[0.98] text-white text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center border-0" data-bs-dismiss="modal" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; background-color: #dc2626 !important; color: #ffffff !important; border: none !important;">Cancel</button>
+            </div>
+        </div>
     </div>
 </div>
-<!-- Hero Main Content End -->
 
 <style>
     /* Full Height & Zoom-Out Sticky Footer Fix */
@@ -443,6 +577,45 @@
     .action-btn-edit { color: #7c3aed; }
     .action-btn-edit:hover { background-color: #ede9fe; border-color: #8b5cf6 !important; }
 
+    /* Quick View Action Button - Distinct Sky Blue Eye Icon, Exact Same Border & Bg as Edit/Delete Buttons */
+    .quick-view-btn {
+        background-color: #f0f9ff !important;
+        border: 1.5px solid #cbd5e1 !important;
+        color: #0284c7 !important;
+        transition: all 0.15s ease-in-out !important;
+    }
+    .quick-view-btn svg {
+        stroke: #0284c7 !important;
+        color: #0284c7 !important;
+        transition: stroke 0.15s ease-in-out !important;
+    }
+    .quick-view-btn:hover {
+        background-color: #e0f2fe !important;
+        border-color: #0284c7 !important;
+        color: #0284c7 !important;
+    }
+    .quick-view-btn:hover svg {
+        stroke: #0284c7 !important;
+        color: #0284c7 !important;
+    }
+
+    /* Quick View Modal Generous Left/Right Padding */
+    #invoiceQuickViewModal .qv-spec-header {
+        padding: 12px 20px !important;
+    }
+    #invoiceQuickViewModal .qv-spec-row,
+    #invoiceQuickViewModal .qv-spec-row-alt {
+        padding: 10px 20px !important;
+    }
+    #invoiceQuickViewModal #qvInvoiceItemsSection {
+        margin-top: 24px !important;
+    }
+    #invoiceQuickViewModal #qvInvoiceItemsSection table th,
+    #invoiceQuickViewModal #qvInvoiceItemsSection table td {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+
     /* Flatpickr Theme & No-Month-Dropdown Enhancements */
     .flatpickr-calendar {
         border-radius: 14px !important;
@@ -635,6 +808,143 @@
     html.dark .action-btn-edit:hover {
         background-color: #7c3aed !important;
         color: #ffffff !important;
+    }
+
+    /* Quick View Action Button in Dark Mode */
+    body[light-mode="dark"] .quick-view-btn,
+    body[data-layout-mode="dark"] .quick-view-btn,
+    html.dark .quick-view-btn,
+    body.dark .quick-view-btn,
+    body[light-mode="dark"] #printTable td .quick-view-btn,
+    body[data-layout-mode="dark"] #printTable td .quick-view-btn,
+    html.dark #printTable td .quick-view-btn,
+    body[light-mode="dark"] .invoice-mobile-card .quick-view-btn,
+    body[data-layout-mode="dark"] .invoice-mobile-card .quick-view-btn,
+    html.dark .invoice-mobile-card .quick-view-btn {
+        background-color: #1e293b !important;
+        border: 1.5px solid #334155 !important;
+        border-color: #334155 !important;
+        color: #38bdf8 !important;
+    }
+    body[light-mode="dark"] .quick-view-btn svg,
+    body[data-layout-mode="dark"] .quick-view-btn svg,
+    html.dark .quick-view-btn svg,
+    body.dark .quick-view-btn svg,
+    body[light-mode="dark"] #printTable td .quick-view-btn svg,
+    body[data-layout-mode="dark"] #printTable td .quick-view-btn svg,
+    html.dark #printTable td .quick-view-btn svg,
+    body[light-mode="dark"] .invoice-mobile-card .quick-view-btn svg,
+    body[data-layout-mode="dark"] .invoice-mobile-card .quick-view-btn svg,
+    html.dark .invoice-mobile-card .quick-view-btn svg {
+        stroke: #38bdf8 !important;
+        color: #38bdf8 !important;
+    }
+    body[light-mode="dark"] .quick-view-btn:hover,
+    body[data-layout-mode="dark"] .quick-view-btn:hover,
+    html.dark .quick-view-btn:hover,
+    body.dark .quick-view-btn:hover,
+    body[light-mode="dark"] #printTable td .quick-view-btn:hover,
+    body[data-layout-mode="dark"] #printTable td .quick-view-btn:hover,
+    html.dark #printTable td .quick-view-btn:hover,
+    body[light-mode="dark"] .invoice-mobile-card .quick-view-btn:hover,
+    body[data-layout-mode="dark"] .invoice-mobile-card .quick-view-btn:hover,
+    html.dark .invoice-mobile-card .quick-view-btn:hover {
+        background-color: #0c4a6e !important;
+        border-color: #0284c7 !important;
+        color: #38bdf8 !important;
+    }
+    body[light-mode="dark"] .quick-view-btn:hover svg,
+    body[data-layout-mode="dark"] .quick-view-btn:hover svg,
+    html.dark .quick-view-btn:hover svg,
+    body.dark .quick-view-btn:hover svg {
+        stroke: #38bdf8 !important;
+        color: #38bdf8 !important;
+    }
+
+    /* Quick View Modal Dark Mode Fixes */
+    #invoiceQuickViewModal .modal-content {
+        border: none !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    }
+    body[light-mode="dark"] #invoiceQuickViewModal .modal-content,
+    html.dark #invoiceQuickViewModal .modal-content,
+    body.dark #invoiceQuickViewModal .modal-content {
+        background-color: #0f172a !important;
+        border: none !important;
+        border-color: transparent !important;
+        color: #f8fafc !important;
+    }
+    body[light-mode="dark"] #invoiceQuickViewModal .qv-stat-box,
+    html.dark #invoiceQuickViewModal .qv-stat-box,
+    body.dark #invoiceQuickViewModal .qv-stat-box {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+    body[light-mode="dark"] #invoiceQuickViewModal .qv-stat-box *,
+    html.dark #invoiceQuickViewModal .qv-stat-box *,
+    body.dark #invoiceQuickViewModal .qv-stat-box * {
+        color: #f8fafc !important;
+    }
+    body[light-mode="dark"] #invoiceQuickViewModal .qv-stat-box .qv-label,
+    html.dark #invoiceQuickViewModal .qv-stat-box .qv-label,
+    body.dark #invoiceQuickViewModal .qv-stat-box .qv-label {
+        color: #94a3b8 !important;
+    }
+    body[light-mode="dark"] #invoiceQuickViewModal .qv-spec-box,
+    html.dark #invoiceQuickViewModal .qv-spec-box,
+    body.dark #invoiceQuickViewModal .qv-spec-box {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #invoiceQuickViewModal .qv-spec-header,
+    html.dark #invoiceQuickViewModal .qv-spec-header,
+    body.dark #invoiceQuickViewModal .qv-spec-header {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+    body[light-mode="dark"] #invoiceQuickViewModal .qv-spec-row,
+    html.dark #invoiceQuickViewModal .qv-spec-row,
+    body.dark #invoiceQuickViewModal .qv-spec-row {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+    body[light-mode="dark"] #invoiceQuickViewModal .qv-spec-row-alt,
+    html.dark #invoiceQuickViewModal .qv-spec-row-alt,
+    body.dark #invoiceQuickViewModal .qv-spec-row-alt {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+    body[light-mode="dark"] #invoiceQuickViewModal #qvInvoiceItemsSection table,
+    html.dark #invoiceQuickViewModal #qvInvoiceItemsSection table {
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #invoiceQuickViewModal #qvInvoiceItemsSection table thead,
+    html.dark #invoiceQuickViewModal #qvInvoiceItemsSection table thead {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        color: #cbd5e1 !important;
+    }
+    body[light-mode="dark"] #invoiceQuickViewModal #qvInvoiceItemsSection table thead th,
+    html.dark #invoiceQuickViewModal #qvInvoiceItemsSection table thead th {
+        border-color: #334155 !important;
+        color: #cbd5e1 !important;
+    }
+    body[light-mode="dark"] #invoiceQuickViewModal #qvInvoiceItemsSection table tbody tr,
+    html.dark #invoiceQuickViewModal #qvInvoiceItemsSection table tbody tr {
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #invoiceQuickViewModal #qvInvoiceItemsSection table tbody tr:hover,
+    html.dark #invoiceQuickViewModal #qvInvoiceItemsSection table tbody tr:hover {
+        background-color: rgba(30, 41, 59, 0.6) !important;
+    }
+    body[light-mode="dark"] #invoiceQuickViewModal .modal-footer,
+    html.dark #invoiceQuickViewModal .modal-footer {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
     }
 
     body[light-mode="dark"] #searchInput,
@@ -1078,6 +1388,12 @@
                         </td>
                         <td class="p-[10px] text-center">
                             <div class="flex items-center justify-center gap-1.5">
+                                <button type="button" class="action-btn quick-view-btn w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" onclick="openInvoiceQuickView('${item.id}')" title="Quick View Invoice">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
                                 <button class="action-btn action-btn-print w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" onclick="viewInvoice(${item.id})" title="Print Invoice">
                                     <i class="fa-solid fa-print text-xs"></i>
                                 </button>
@@ -1157,6 +1473,12 @@
                                 <i class="fa-regular fa-calendar me-1"></i>${formattedDate} <span class="ms-1">(${item['user']?.name ?? 'System'})</span>
                             </div>
                             <div class="flex items-center gap-1.5">
+                                <button type="button" class="action-btn quick-view-btn w-[30px] h-[30px] rounded-lg flex items-center justify-center shadow-sm" onclick="openInvoiceQuickView('${item.id}')" title="Quick View Invoice">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
                                 <button class="action-btn action-btn-print w-[30px] h-[30px] rounded-lg flex items-center justify-center shadow-sm" onclick="viewInvoice(${item.id})" title="Print Invoice">
                                     <i class="fa-solid fa-print text-xs"></i>
                                 </button>
@@ -1266,4 +1588,95 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    async function openInvoiceQuickView(invoiceId) {
+        if (!rawInvoiceData || rawInvoiceData.length === 0) return;
+        let invoice = rawInvoiceData.find(i => String(i.id) === String(invoiceId));
+        if (!invoice) return;
+
+        const paidAmount = parseFloat(invoice.paid_amount || 0);
+        const dueAmount = parseFloat(invoice.due_amount || 0);
+        const subTotal = parseFloat(invoice.sub_total || 0);
+        const discountAmount = parseFloat(invoice.discount_amount || 0);
+
+        let statusBadgeHtml = '';
+        if (dueAmount <= 0) {
+            statusBadgeHtml = '<span class="badge available">Paid</span>';
+        } else if (paidAmount > 0) {
+            statusBadgeHtml = '<span class="badge" style="background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a;">Partial Paid</span>';
+        } else {
+            statusBadgeHtml = '<span class="badge out-of-stock">Unpaid</span>';
+        }
+        $("#qvInvoiceStatusBadgeWrap").html(statusBadgeHtml);
+
+        $("#qvInvoiceOrderNo").html(`Invoice #${invoice.order_no || '-'}`);
+        let custName = invoice.customer ? (invoice.customer.customer_name || 'Walk-in Customer') : 'Walk-in Customer';
+        let dateFormatted = invoice.invoice_date ? new Intl.DateTimeFormat('en-US', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(invoice.invoice_date)) : (invoice.created_at ? new Intl.DateTimeFormat('en-US', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(invoice.created_at)) : 'N/A');
+
+        let badges = `<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white border border-white/30">${custName}</span>`;
+        badges += `<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white border border-white/30"><i class="fa-regular fa-calendar me-1"></i>${dateFormatted}</span>`;
+        $("#qvInvoiceHeaderBadges").html(badges);
+
+        $("#qvInvoiceTotalItems").text('...');
+        $("#qvInvoiceTotalAmount").text(`৳ ${formatBdCurrency(subTotal)}`);
+        $("#qvInvoicePaidDue").text(`৳ ${formatBdCurrency(paidAmount)} / ৳ ${formatBdCurrency(dueAmount)}`);
+
+        $("#qvInvoiceTotalValue").text(`Total Value: ৳ ${formatBdCurrency(subTotal)}`);
+        $("#qvInvoiceNo").text(`#${invoice.order_no || '-'}`);
+        $("#qvInvoiceCustomerName").text(custName);
+        $("#qvInvoiceCustomerMobile").text(invoice.customer?.mobile || 'N/A');
+        $("#qvInvoiceCustomerId").text(invoice.customer?.customer_id ? `ID: ${invoice.customer.customer_id}` : 'N/A');
+        $("#qvInvoiceCreatedBy").text(invoice.user?.name || 'System');
+        $("#qvInvoiceDate").text(dateFormatted);
+        $("#qvInvoiceSubTotal").text(`৳ ${formatBdCurrency(subTotal)}`);
+        $("#qvInvoiceDiscount").text(`৳ ${formatBdCurrency(discountAmount)}`);
+        $("#qvInvoicePaid").text(`৳ ${formatBdCurrency(paidAmount)}`);
+        $("#qvInvoiceDue").text(`৳ ${formatBdCurrency(dueAmount)}`);
+
+        let modalEl = document.getElementById('invoiceQuickViewModal');
+        if (window.bootstrap && window.bootstrap.Modal) {
+            let modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modalInstance.show();
+        } else if (typeof $(modalEl).modal === 'function') {
+            $(modalEl).modal('show');
+        }
+
+        $("#qvInvoiceItemsTableBody").html('<tr><td colspan="5" class="text-center py-4 text-slate-400 dark:text-slate-500"><i class="fa-solid fa-spinner fa-spin me-2 text-emerald-600"></i>Loading purchased items...</td></tr>');
+        try {
+            let res = await axios.post("/api/invoice-payment-details-by-id", { id: String(invoiceId) }, HeaderToken());
+            if (res.data && res.data.status === "success" && res.data.rows) {
+                let order = res.data.rows;
+                let details = order.details || [];
+                let totalQty = details.reduce((acc, d) => acc + (parseInt(d.quantity) || 0), 0);
+                $("#qvInvoiceTotalItems").text(totalQty);
+
+                if (details.length > 0) {
+                    let itemsHtml = details.map((d, index) => {
+                        let pName = d.product?.product_name || `Product #${d.product_id || '-'}`;
+                        let qty = parseInt(d.quantity) || 0;
+                        let price = parseFloat(d.price) || 0;
+                        let total = parseFloat(d.total) || (qty * price);
+                        return `
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                <td class="px-4 py-2.5 text-center font-bold text-slate-500 dark:text-slate-400">${index + 1}</td>
+                                <td class="px-4 py-2.5 font-semibold text-slate-800 dark:text-slate-200">${pName}</td>
+                                <td class="px-4 py-2.5 text-center font-bold text-slate-800 dark:text-slate-100">${qty}</td>
+                                <td class="px-4 py-2.5 text-end text-slate-600 dark:text-slate-300">৳ ${formatBdCurrency(price)}</td>
+                                <td class="px-4 py-2.5 text-end font-semibold text-emerald-600 dark:text-emerald-400">৳ ${formatBdCurrency(total)}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                    $("#qvInvoiceItemsTableBody").html(itemsHtml);
+                } else {
+                    $("#qvInvoiceItemsTableBody").html('<tr><td colspan="5" class="text-center py-4 text-slate-400 dark:text-slate-500">No purchased items recorded for this invoice.</td></tr>');
+                }
+            } else {
+                $("#qvInvoiceItemsTableBody").html('<tr><td colspan="5" class="text-center py-4 text-slate-400 dark:text-slate-500">No items available.</td></tr>');
+            }
+        } catch (err) {
+            console.error("Error fetching invoice items:", err);
+            $("#qvInvoiceItemsTableBody").html('<tr><td colspan="5" class="text-center py-4 text-rose-500">Failed to load invoice items.</td></tr>');
+        }
+    }
+
 </script>
+

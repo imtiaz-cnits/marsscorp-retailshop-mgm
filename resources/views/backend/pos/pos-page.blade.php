@@ -44,6 +44,30 @@
 
 
     <style>
+        /* Door Handedness for Quick Add Product Modal in POS */
+        .door-hand-box {
+            transition: all 0.2s ease;
+        }
+        .door-hand-box:hover {
+            transform: translateY(-2px);
+        }
+        body[light-mode="dark"] #quickAddProductModal .door-handedness-card,
+        html[light-mode="dark"] #quickAddProductModal .door-handedness-card {
+            background: #1e293b !important;
+            border-color: #16a34a !important;
+        }
+        body[light-mode="dark"] #quickAddProductModal .door-hand-box,
+        html[light-mode="dark"] #quickAddProductModal .door-hand-box {
+            background-color: #0f172a !important;
+            border-color: #334155 !important;
+        }
+        body[light-mode="dark"] #quickAddProductModal .door-qty-input,
+        html[light-mode="dark"] #quickAddProductModal .door-qty-input {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #ffffff !important;
+        }
+
         .financemodal .modal-content {
             /* margin: 100px 0px 100px 0px; */
             border-radius: 10px;
@@ -4500,7 +4524,63 @@
                             <div class="col-md-4">
                                 <label for="quickQuantity" class="form-label fw-bold text-dark mb-1" style="font-size: 12px;">Initial Stock (Quantity)</label>
                                 <input type="number" step="any" class="form-control fw-bold text-primary" id="quickQuantity" value="0" style="border-radius: 7px; font-size: 12px; height: 35px;">
-                                <small class="text-muted d-block mt-0.5" style="font-size: 12px;">(Can be sold even if stock is 0)</small>
+                            </div>
+
+                            <!-- Door Handedness Dynamic Selection & Quantity Inputs (Shown only when Door category is selected) -->
+                            <div class="col-12 mt-2" id="quickDoorHandednessContainer" style="display: none; margin-top: 10px;">
+                                <div class="p-2.5 rounded-3 door-handedness-card" style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1.5px dashed #86efac;">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <label class="fw-bold text-success m-0 d-flex align-items-center gap-1.5" style="font-size: 12.5px;">
+                                            <i class="fa-solid fa-door-open fs-6 text-success"></i>
+                                            <span>Door Handedness &amp; Specific Quantities</span>
+                                        </label>
+                                        <span class="badge bg-success text-white px-2.5 py-1 small fw-bold" id="quickDoorTotalBadge" style="border-radius: 20px; font-size: 11px;">Total Door Stock: 0</span>
+                                    </div>
+                                    <div class="row g-2">
+                                        <!-- Left Handed Card & Qty Input -->
+                                        <div class="col-4">
+                                            <div class="door-hand-box rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center p-2" style="border-radius: 8px;">
+                                                <div class="d-flex align-items-center justify-content-center gap-1 mb-1.5 fw-bold" style="font-size: 12px; color: #4f46e5;">
+                                                    <span style="font-size: 14px;">👈</span>
+                                                    <span>Left Handed</span>
+                                                </div>
+                                                <div class="d-flex align-items-center justify-content-center gap-1.5">
+                                                    <label for="quickDoorQtyLeft" class="fw-bold text-secondary m-0" style="font-size: 11px; letter-spacing: 0.5px;">QTY:</label>
+                                                    <input type="number" min="0" step="any" id="quickDoorQtyLeft" class="form-control text-center fw-bold text-dark door-qty-input" placeholder="0" oninput="calculateQuickDoorTotal()" style="font-size: 13px; height: 32px; max-width: 90px; border-radius: 6px; padding: 2px 4px;">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Right Handed Card & Qty Input -->
+                                        <div class="col-4">
+                                            <div class="door-hand-box rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center p-2" style="border-radius: 8px;">
+                                                <div class="d-flex align-items-center justify-content-center gap-1 mb-1.5 fw-bold" style="font-size: 12px; color: #16a34a;">
+                                                    <span style="font-size: 14px;">👉</span>
+                                                    <span>Right Handed</span>
+                                                </div>
+                                                <div class="d-flex align-items-center justify-content-center gap-1.5">
+                                                    <label for="quickDoorQtyRight" class="fw-bold text-secondary m-0" style="font-size: 11px; letter-spacing: 0.5px;">QTY:</label>
+                                                    <input type="number" min="0" step="any" id="quickDoorQtyRight" class="form-control text-center fw-bold text-dark door-qty-input" placeholder="0" oninput="calculateQuickDoorTotal()" style="font-size: 13px; height: 32px; max-width: 90px; border-radius: 6px; padding: 2px 4px;">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Both / Universal Card & Qty Input -->
+                                        <div class="col-4">
+                                            <div class="door-hand-box rounded-3 bg-white border border-2 border-slate-200 shadow-sm text-center p-2" style="border-radius: 8px;">
+                                                <div class="d-flex align-items-center justify-content-center gap-1 mb-1.5 fw-bold" style="font-size: 12px; color: #2563eb;">
+                                                    <span style="font-size: 14px;">↔️</span>
+                                                    <span>Both / Universal</span>
+                                                </div>
+                                                <div class="d-flex align-items-center justify-content-center gap-1.5">
+                                                    <label for="quickDoorQtyBoth" class="fw-bold text-secondary m-0" style="font-size: 11px; letter-spacing: 0.5px;">QTY:</label>
+                                                    <input type="number" min="0" step="any" id="quickDoorQtyBoth" class="form-control text-center fw-bold text-dark door-qty-input" placeholder="0" oninput="calculateQuickDoorTotal()" style="font-size: 13px; height: 32px; max-width: 90px; border-radius: 6px; padding: 2px 4px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="quickSelectedDoorSide" value="">
+                                </div>
                             </div>
                         </div>
 
@@ -4729,6 +4809,17 @@
                 }
             });
 
+            if (dropdownId === 'quickCategoryDropdown') {
+                if (label && label.toLowerCase().includes('door')) {
+                    const doorContainer = document.getElementById('quickDoorHandednessContainer');
+                    if (doorContainer) {
+                        doorContainer.style.display = 'block';
+                    }
+                } else {
+                    resetQuickDoorSide();
+                }
+            }
+
             closeAllCustomDropdowns();
         }
 
@@ -4758,6 +4849,15 @@
                     if (check) check.remove();
                 }
             });
+
+            if (dropdownId === 'quickCategoryDropdown') {
+                if (defaultText && defaultText.toLowerCase().includes('door')) {
+                    const doorContainer = document.getElementById('quickDoorHandednessContainer');
+                    if (doorContainer) doorContainer.style.display = 'block';
+                } else {
+                    resetQuickDoorSide();
+                }
+            }
         }
 
         function filterCustomDropdown(dropdownId, searchVal) {
@@ -4837,6 +4937,59 @@
             }
         });
 
+        function calculateQuickDoorTotal() {
+            let left = parseFloat(document.getElementById('quickDoorQtyLeft')?.value) || 0;
+            let right = parseFloat(document.getElementById('quickDoorQtyRight')?.value) || 0;
+            let both = parseFloat(document.getElementById('quickDoorQtyBoth')?.value) || 0;
+            let total = left + right + both;
+
+            const badge = document.getElementById('quickDoorTotalBadge');
+            if (badge) badge.innerText = `Total Door Stock: ${total}`;
+
+            const qtyInput = document.getElementById('quickQuantity');
+            if (qtyInput) qtyInput.value = total;
+
+            // Highlight active boxes
+            document.getElementById('quickDoorQtyLeft')?.closest('.door-hand-box')?.classList.toggle('border-primary', left > 0);
+            document.getElementById('quickDoorQtyRight')?.closest('.door-hand-box')?.classList.toggle('border-success', right > 0);
+            document.getElementById('quickDoorQtyBoth')?.closest('.door-hand-box')?.classList.toggle('border-info', both > 0);
+
+            const doorSideEl = document.getElementById('quickSelectedDoorSide');
+            if (doorSideEl) {
+                if (left > 0 && right === 0 && both === 0) {
+                    doorSideEl.value = 'Left Handed';
+                } else if (right > 0 && left === 0 && both === 0) {
+                    doorSideEl.value = 'Right Handed';
+                } else if (both > 0 && left === 0 && right === 0) {
+                    doorSideEl.value = 'Both Handed';
+                } else if (total > 0) {
+                    doorSideEl.value = 'Multi Handed';
+                } else {
+                    doorSideEl.value = '';
+                }
+            }
+        }
+
+        function resetQuickDoorSide() {
+            const leftEl = document.getElementById('quickDoorQtyLeft');
+            const rightEl = document.getElementById('quickDoorQtyRight');
+            const bothEl = document.getElementById('quickDoorQtyBoth');
+            const doorSideEl = document.getElementById('quickSelectedDoorSide');
+            const badge = document.getElementById('quickDoorTotalBadge');
+            const container = document.getElementById('quickDoorHandednessContainer');
+
+            if (leftEl) leftEl.value = '';
+            if (rightEl) rightEl.value = '';
+            if (bothEl) bothEl.value = '';
+            if (doorSideEl) doorSideEl.value = '';
+            if (badge) badge.innerText = 'Total Door Stock: 0';
+            if (container) container.style.display = 'none';
+
+            document.querySelectorAll('#quickDoorHandednessContainer .door-hand-box').forEach(b => {
+                b.classList.remove('border-primary', 'border-success', 'border-info', 'shadow');
+            });
+        }
+
         async function openQuickAddProductModal() {
             const modalEl = document.getElementById('quickAddProductModal');
             const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
@@ -4846,6 +4999,8 @@
             document.getElementById('quickCostPrice').value = '0';
             document.getElementById('quickSellPrice').value = '0';
             document.getElementById('quickQuantity').value = '0';
+
+            resetQuickDoorSide();
 
             if (!quickOptionsLoaded) {
                 await loadQuickProductOptions();
@@ -4922,6 +5077,11 @@
             const sellPrice = document.getElementById('quickSellPrice').value || '0';
             const quantity = document.getElementById('quickQuantity').value || '0';
 
+            const leftQty = parseFloat(document.getElementById('quickDoorQtyLeft')?.value) || 0;
+            const rightQty = parseFloat(document.getElementById('quickDoorQtyRight')?.value) || 0;
+            const bothQty = parseFloat(document.getElementById('quickDoorQtyBoth')?.value) || 0;
+            const doorSide = document.getElementById('quickSelectedDoorSide')?.value || '';
+
             if (!name) {
                 return Swal.fire({
                     icon: 'warning',
@@ -4943,6 +5103,13 @@
                 formData.append('sell_price', sellPrice);
                 formData.append('quantity', quantity);
                 formData.append('status', 'Active');
+
+                if (leftQty > 0 || rightQty > 0 || bothQty > 0) {
+                    formData.append('door_qty_left', leftQty);
+                    formData.append('door_qty_right', rightQty);
+                    formData.append('door_qty_both', bothQty);
+                    if (doorSide) formData.append('door_side', doorSide);
+                }
 
                 const res = await axios.post('/api/create-product', formData, {
                     headers: {

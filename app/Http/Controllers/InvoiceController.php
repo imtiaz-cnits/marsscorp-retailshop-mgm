@@ -285,7 +285,7 @@ public function InvoicePaymentDetailsByID(Request $request)
             "id" => 'required|string'
         ]);
 
-        $order = Order::with('customer', 'details', 'payment')
+        $order = Order::with('customer', 'details.product', 'payment')
                       ->where('id', $request->input('id'))
                       ->first();
 

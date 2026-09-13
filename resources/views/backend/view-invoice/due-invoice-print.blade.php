@@ -26,12 +26,23 @@
 
         .no-print-wrapper {
             max-width: 8in;
-            margin: 0 auto 15px auto;
+            margin: 0 auto 20px auto;
+            padding: 0 4px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
+        }
+
+        .no-print-wrapper .btn {
+            padding: 9px 24px !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
         }
 
         .invoice-container {
@@ -404,7 +415,7 @@
             </div>
 
             <!-- Product Table -->
-            <table class="items-table">
+            <table class="items-table" style="margin-bottom: 0px !important;">
                 <thead>
                     <tr>
                         <th style="width: 6%;">Sl.No.</th>
@@ -430,18 +441,8 @@
                 </tbody>
             </table>
 
-        </div>
-
-        <!-- Footer Calculations & Signatures -->
-        <div class="bill-footer-section">
-            <div class="calc-summary-wrapper">
-                <div class="taka-words-box">
-                    <div class="taka-words-line">
-                        <span class="meta-label">Taka in Words:</span>
-                        <span class="taka-words-val" id="taka_words_due"></span>
-                    </div>
-                </div>
-
+            <!-- Calculations Summary Directly Below Main Table with 10px gap -->
+            <div class="totals-summary-row" style="display: flex; justify-content: flex-end; margin-top: 10px !important;">
                 <div class="totals-table-box">
                     <table class="totals-table">
                         <tr>
@@ -478,9 +479,21 @@
                 </div>
             </div>
 
+        </div>
+
+        <!-- Footer Signatures & Color Bar (Sticky at the bottom) -->
+        <div class="bill-footer-section" style="margin-top: auto;">
+            <!-- Taka in Words placed above Received by with space for signature -->
+            <div class="taka-words-box" style="width: 100%; margin-bottom: 50px;">
+                <div class="taka-words-line">
+                    <span class="meta-label">Taka in Words:</span>
+                    <span class="taka-words-val" id="taka_words_due"></span>
+                </div>
+            </div>
+
             <div class="signatures-row">
                 <div class="sig-box">Received by</div>
-                <div class="sig-box">For Marss Corporation</div>
+                <div class="sig-box">Authorized Signature</div>
             </div>
 
             <div class="bottom-color-bar">
@@ -492,28 +505,56 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            let totalVal = Math.round({
-                {
-                    $subTotalVal
-                }
-            });
-            document.getElementById('taka_words_due').innerText = numberToWords(totalVal);
+            let totalVal = parseFloat("{{ $billTotalVal > 0 ? $billTotalVal : $subTotalVal }}") || 0;
+            document.getElementById('taka_words_due').innerText = numberToWords(Math.round(totalVal));
         });
 
         function numberToWords(num) {
-            const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
-            const b = ['', '', 'Twenty ', 'Thirty ', 'Forty ', 'Fifty ', 'Sixty ', 'Seventy ', 'Eighty ', 'Ninety '];
+            num = Math.round(Number(num) || 0);
+            if (num === 0) return 'Zero Taka Only';
 
-            if ((num = num.toString()).length > 9) return 'overflow';
-            let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
-            if (!n) return '';
-            let str = '';
-            str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : '';
-            str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : '';
-            str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : '';
-            str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : '';
-            str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
-            return str.trim() ? str.trim() + ' Taka Only' : 'Zero Taka';
+            const single = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            const double = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+            function convertLessThanOneThousand(n) {
+                let str = '';
+                if (n >= 100) {
+                    str += single[Math.floor(n / 100)] + ' Hundred ';
+                    n %= 100;
+                }
+                if (n >= 20) {
+                    str += double[Math.floor(n / 10)] + ' ';
+                    n %= 10;
+                }
+                if (n > 0) {
+                    str += single[n] + ' ';
+                }
+                return str;
+            }
+
+            let crore = Math.floor(num / 10000000);
+            num %= 10000000;
+            let lakh = Math.floor(num / 100000);
+            num %= 100000;
+            let thousand = Math.floor(num / 1000);
+            num %= 1000;
+            let remainder = num;
+
+            let res = '';
+            if (crore > 0) {
+                res += convertLessThanOneThousand(crore) + 'Crore ';
+            }
+            if (lakh > 0) {
+                res += convertLessThanOneThousand(lakh) + 'Lakh ';
+            }
+            if (thousand > 0) {
+                res += convertLessThanOneThousand(thousand) + 'Thousand ';
+            }
+            if (remainder > 0) {
+                res += convertLessThanOneThousand(remainder);
+            }
+
+            return res.trim() ? res.trim() + ' Taka Only' : 'Zero Taka Only';
         }
     </script>
 </body>

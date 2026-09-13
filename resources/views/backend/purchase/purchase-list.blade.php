@@ -101,36 +101,36 @@
                         </div>
                     </div>
 
-                    <!-- 3. Desktop Table (SL rounded-tl-2xl, Action on far right with rounded-tr-2xl, solid emerald header, single line, 10px padding) -->
-                    <div class="table-responsive unified-ui-border hidden md:block w-full max-w-full overflow-x-auto rounded-2xl shadow-sm bg-white dark:bg-slate-900 mb-4">
-                        <table id="printTable" class="w-full text-left border-collapse min-w-[1200px]">
+                    <!-- 3. Desktop Table (SL rounded-tl-2xl, Action on far right with rounded-tr-2xl, solid emerald header, 2-line header, 3-dot dropdown) -->
+                    <div class="table-responsive unified-ui-border hidden md:block w-full max-w-full overflow-x-auto rounded-2xl shadow-sm bg-white dark:bg-slate-900 mb-4" style="min-height: 250px;">
+                        <table id="printTable" class="w-full text-left border-collapse min-w-full">
                             <thead>
-                                <tr class="bg-[#15803d] text-white text-xs font-semibold uppercase tracking-wider">
-                                    <th class="p-[10px] text-center w-[50px] rounded-tl-2xl whitespace-nowrap bg-[#15803d] text-white">SL</th>
-                                    <th class="p-[10px] text-center whitespace-nowrap bg-[#15803d] text-white">Date</th>
-                                    <th class="p-[10px] text-center whitespace-nowrap bg-[#15803d] text-white">Purchase ID</th>
-                                    <th class="p-[10px] text-start whitespace-nowrap bg-[#15803d] text-white">Barcode</th>
-                                    <th class="p-[10px] text-start whitespace-nowrap bg-[#15803d] text-white">Reference</th>
-                                    <th class="p-[10px] text-start whitespace-nowrap bg-[#15803d] text-white">Supplier ID</th>
-                                    <th class="p-[10px] text-start whitespace-nowrap bg-[#15803d] text-white">Supplier Name</th>
-                                    <th class="p-[10px] text-end whitespace-nowrap bg-[#15803d] text-white">Grand Total</th>
-                                    <th class="p-[10px] text-end whitespace-nowrap bg-[#15803d] text-white">Paid Amount</th>
-                                    <th class="p-[10px] text-end whitespace-nowrap bg-[#15803d] text-white">Due Amount</th>
-                                    <th class="p-[10px] text-end whitespace-nowrap bg-[#15803d] text-white">Return Amount</th>
-                                    <th class="p-[10px] text-start whitespace-nowrap bg-[#15803d] text-white">Payment Method</th>
-                                    <th class="p-[10px] text-center whitespace-nowrap bg-[#15803d] text-white">Status</th>
-                                    <th class="p-[10px] text-center w-[120px] rounded-tr-2xl whitespace-nowrap bg-[#15803d] text-white">Action</th>
+                                <tr class="bg-[#15803d] text-white text-[11px] font-semibold uppercase tracking-wider">
+                                    <th class="p-[8px] text-center w-[40px] rounded-tl-2xl bg-[#15803d] text-white">SL</th>
+                                    <th class="p-[8px] text-center bg-[#15803d] text-white leading-tight">Date</th>
+                                    <th class="p-[8px] text-center bg-[#15803d] text-white leading-tight">Purchase<br>ID</th>
+                                    <th class="p-[8px] text-start bg-[#15803d] text-white leading-tight">Barcode</th>
+                                    <th class="p-[8px] text-start bg-[#15803d] text-white leading-tight">Reference<br>No</th>
+                                    <th class="p-[8px] text-start bg-[#15803d] text-white leading-tight">Supplier<br>ID</th>
+                                    <th class="p-[8px] text-start bg-[#15803d] text-white leading-tight">Supplier<br>Name</th>
+                                    <th class="p-[8px] text-end bg-[#15803d] text-white leading-tight">Grand<br>Total</th>
+                                    <th class="p-[8px] text-end bg-[#15803d] text-white leading-tight">Paid<br>Amount</th>
+                                    <th class="p-[8px] text-end bg-[#15803d] text-white leading-tight">Due<br>Amount</th>
+                                    <th class="p-[8px] text-end bg-[#15803d] text-white leading-tight">Return<br>Amount</th>
+                                    <th class="p-[8px] text-center bg-[#15803d] text-white leading-tight">Payment<br>Method</th>
+                                    <th class="p-[8px] text-center bg-[#15803d] text-white leading-tight">Status</th>
+                                    <th class="p-[8px] text-center w-[50px] rounded-tr-2xl bg-[#15803d] text-white">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="tableList" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm text-slate-700 dark:text-slate-200"></tbody>
+                            <tbody id="tableList" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs text-slate-700 dark:text-slate-200"></tbody>
                             <tfoot>
-                                <tr class="bg-slate-50/80 dark:bg-slate-800/80 font-bold text-sm border-t border-slate-200 dark:border-slate-800">
-                                    <td colspan="7" class="p-[10px] text-end font-bold text-slate-700 dark:text-slate-200">Total:</td>
-                                    <td id="totalGrandTotal" class="p-[10px] text-end font-bold text-slate-800 dark:text-white whitespace-nowrap">৳ 0.00</td>
-                                    <td id="totalPaidAmount" class="p-[10px] text-end font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">৳ 0.00</td>
-                                    <td id="totalDueAmount" class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap">৳ 0.00</td>
-                                    <td id="totalReturnAmount" class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap">৳ 0.00</td>
-                                    <td colspan="3" class="p-[10px]"></td>
+                                <tr class="bg-slate-50/80 dark:bg-slate-800/80 font-bold text-xs border-t border-slate-200 dark:border-slate-800">
+                                    <td colspan="7" class="p-[8px] text-end font-bold text-slate-700 dark:text-slate-200">Total:</td>
+                                    <td id="totalGrandTotal" class="p-[8px] text-end font-bold text-slate-800 dark:text-white whitespace-nowrap">৳ 0.00</td>
+                                    <td id="totalPaidAmount" class="p-[8px] text-end font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="totalDueAmount" class="p-[8px] text-end font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="totalReturnAmount" class="p-[8px] text-end font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td colspan="3" class="p-[8px]"></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -653,46 +653,64 @@
                 // Desktop Row (Action is placed on the FAR RIGHT)
                 let row = `
                     <tr data-row="${realIndex + 1}" class="hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors">
-                        <td class="p-[10px] text-center font-semibold text-slate-500 dark:text-slate-400 text-xs">${realIndex + 1}</td>
-                        <td class="p-[10px] text-center font-medium text-slate-600 dark:text-slate-300 text-xs whitespace-nowrap">${item.date || 'N/A'}</td>
-                        <td class="p-[10px] text-center font-bold text-emerald-700 dark:text-emerald-400 text-xs whitespace-nowrap">${item.purchase_id || 'N/A'}</td>
-                        <td class="p-[10px] text-start">${formatBarcodes(item.barcodes)}</td>
-                        <td class="p-[10px] text-start font-medium text-slate-500 dark:text-slate-400 text-xs">${item.referance_no || '-'}</td>
-                        <td class="p-[10px] text-start whitespace-nowrap">
+                        <td class="p-[8px] text-center font-semibold text-slate-500 dark:text-slate-400 text-xs">${realIndex + 1}</td>
+                        <td class="p-[8px] text-center font-medium text-slate-600 dark:text-slate-300 text-xs whitespace-nowrap">${item.date || 'N/A'}</td>
+                        <td class="p-[8px] text-center font-bold text-emerald-700 dark:text-emerald-400 text-xs whitespace-nowrap">${item.purchase_id || 'N/A'}</td>
+                        <td class="p-[8px] text-start">${formatBarcodes(item.barcodes)}</td>
+                        <td class="p-[8px] text-start font-medium text-slate-500 dark:text-slate-400 text-xs">${item.referance_no || '-'}</td>
+                        <td class="p-[8px] text-start whitespace-nowrap">
                             <a href="/supplier/profile/${item.supplier_db_id || item.supplier_id}" class="inline-flex items-center gap-1 font-semibold text-emerald-700 dark:text-emerald-400 hover:underline text-xs">
                                 <i class="fa-solid fa-truck-field text-[11px]"></i>
                                 <span>${item.supplier_id || 'N/A'}</span>
                             </a>
                         </td>
-                        <td class="p-[10px] text-start font-bold text-slate-800 dark:text-slate-100 text-xs">
+                        <td class="p-[8px] text-start font-bold text-slate-800 dark:text-slate-100 text-xs">
                             <a href="/supplier/profile/${item.supplier_db_id || item.supplier_id}" class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
                                 ${item.supplier || 'N/A'}
                             </a>
                         </td>
-                        <td class="p-[10px] text-end font-bold text-slate-800 dark:text-slate-100 text-xs whitespace-nowrap">৳ ${g.toFixed(2)}</td>
-                        <td class="p-[10px] text-end font-bold text-emerald-600 dark:text-emerald-400 text-xs whitespace-nowrap font-mono">৳ ${p.toFixed(2)}</td>
-                        <td class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400 text-xs whitespace-nowrap font-mono">৳ ${d.toFixed(2)}</td>
-                        <td class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400 text-xs whitespace-nowrap font-mono">৳ ${r.toFixed(2)}</td>
-                        <td class="p-[10px] text-start font-medium text-slate-600 dark:text-slate-300 text-xs whitespace-nowrap">${item.payment_method || 'N/A'}</td>
-                        <td class="p-[10px] text-center whitespace-nowrap">
+                        <td class="p-[8px] text-end font-bold text-slate-800 dark:text-slate-100 text-xs whitespace-nowrap">৳ ${g.toFixed(2)}</td>
+                        <td class="p-[8px] text-end font-bold text-emerald-600 dark:text-emerald-400 text-xs whitespace-nowrap font-mono">৳ ${p.toFixed(2)}</td>
+                        <td class="p-[8px] text-end font-bold text-rose-600 dark:text-rose-400 text-xs whitespace-nowrap font-mono">৳ ${d.toFixed(2)}</td>
+                        <td class="p-[8px] text-end font-bold text-rose-600 dark:text-rose-400 text-xs whitespace-nowrap font-mono">৳ ${r.toFixed(2)}</td>
+                        <td class="p-[8px] text-center font-medium text-slate-600 dark:text-slate-300 text-xs whitespace-nowrap">${item.payment_method || 'N/A'}</td>
+                        <td class="p-[8px] text-center whitespace-nowrap">
                             <span class="px-2 py-0.5 rounded-md text-xs font-bold inline-flex items-center gap-1 ${statusClass}">
                                 ${item.payment_status || 'Unpaid'}
                             </span>
                         </td>
-                        <td class="p-[10px] text-center">
-                            <div class="flex items-center justify-center gap-1">
-                                <a data-id="${item.id}" href="#" class="link edit-link action-btn-edit w-[30px] h-[30px] rounded-lg flex items-center justify-center transition-all duration-150 shadow-sm" data-bs-toggle="modal" data-bs-target="#purchaseUpdateModal" title="Edit Purchase">
-                                    <i class="fa-solid fa-pen-to-square text-xs"></i>
-                                </a>
-                                <button class="action-btn-view w-[30px] h-[30px] rounded-lg flex items-center justify-center transition-all duration-150 shadow-sm" onclick="viewInvoice(${item.id})" title="View Invoice">
-                                    <i class="fa-solid fa-eye text-xs"></i>
+                        <td class="p-[8px] text-center">
+                            <div class="dropdown inline-block">
+                                <button class="w-[28px] h-[28px] rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center shadow-sm transition-all duration-150 mx-auto" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-boundary="viewport">
+                                    <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
                                 </button>
-                                <button class="action-btn-return w-[30px] h-[30px] rounded-lg flex items-center justify-center transition-all duration-150 shadow-sm" onclick="viewPurchaseInvoice(${item.id})" title="Purchase Return">
-                                    <i class="fa-solid fa-rotate-left text-xs"></i>
-                                </button>
-                                <a href="#" data-id="${item.id}" class="link custom-delete-modal-btn action-btn-delete w-[30px] h-[30px] rounded-lg flex items-center justify-center transition-all duration-150 shadow-sm" data-bs-toggle="modal" data-bs-target="#confirmationModal" title="Delete Purchase">
-                                    <i class="fa-solid fa-trash text-xs"></i>
-                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-xl border border-slate-200 dark:border-slate-700 rounded-xl p-1 bg-white dark:bg-slate-800 text-xs" style="min-width: 145px; z-index: 1050;">
+                                    <li>
+                                        <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60 font-medium" href="javascript:void(0)" onclick="viewInvoice(${item.id})">
+                                            <i class="fa-solid fa-eye text-emerald-600 dark:text-emerald-400 w-4 text-center"></i>
+                                            <span>View Memo</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60 font-medium edit-link" href="javascript:void(0)" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#purchaseUpdateModal">
+                                            <i class="fa-solid fa-pen-to-square text-amber-500 w-4 text-center"></i>
+                                            <span>Edit</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60 font-medium" href="javascript:void(0)" onclick="viewPurchaseInvoice(${item.id})">
+                                            <i class="fa-solid fa-rotate-left text-indigo-500 w-4 text-center"></i>
+                                            <span>Return</span>
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider my-1 border-slate-200 dark:border-slate-700"></li>
+                                    <li>
+                                        <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-medium custom-delete-modal-btn" href="javascript:void(0)" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#confirmationModal">
+                                            <i class="fa-solid fa-trash w-4 text-center"></i>
+                                            <span>Delete</span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
                         </td>
                     </tr>`;
