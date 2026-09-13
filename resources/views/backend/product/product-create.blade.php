@@ -235,9 +235,12 @@
         color: #4ade80 !important;
     }
 
-    /* Clean Modern Modal Styling for Add New Brand & Add New Category */
+    /* Clean Modern Modal Styling for Add New Brand, Add New Category & Sub-Category */
     .newbrand,
-    .newcategory {
+    .newcategory,
+    #addBrandModal,
+    #addCategoryModal,
+    #addSubCategoryModal {
         position: fixed !important;
         top: 0 !important;
         left: 0 !important;
@@ -248,17 +251,24 @@
         margin: 0 !important;
         margin-left: 0 !important;
         padding: 0 !important;
-        background: rgba(15, 23, 42, 0.6) !important;
+        background: rgba(15, 23, 42, 0.75) !important;
         display: none;
         justify-content: center !important;
         align-items: center !important;
-        z-index: 999999 !important;
-        backdrop-filter: blur(4px);
+        z-index: 99999999 !important;
+        backdrop-filter: blur(6px) !important;
+        -webkit-backdrop-filter: blur(6px) !important;
     }
 
     .newbrand.show,
-    .newcategory.show {
+    .newcategory.show,
+    #addBrandModal.show,
+    #addCategoryModal.show,
+    #addSubCategoryModal.show {
         display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        z-index: 99999999 !important;
     }
 
     .newbrand-content,
@@ -277,8 +287,9 @@
         max-width: 90vw !important;
         max-height: 90vh !important;
         overflow-y: auto !important;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
         border: 1px solid #f1f5f9;
+        z-index: 100000000 !important;
     }
 
     /* Modal Header */
@@ -655,6 +666,99 @@
         color: #34d399 !important;
     }
 
+    /* Dark Mode for New Brand / New Category / New Sub-Category Modals */
+    body[light-mode="dark"] .newbrand-content,
+    html[light-mode="dark"] .newbrand-content,
+    body[light-mode="dark"] .newcategory-content,
+    html[light-mode="dark"] .newcategory-content,
+    body[data-layout-mode="dark"] .newbrand-content,
+    body[data-layout-mode="dark"] .newcategory-content,
+    html.dark .newbrand-content,
+    html.dark .newcategory-content,
+    body.dark .newbrand-content,
+    body.dark .newcategory-content {
+        background: #0f172a !important;
+        color: #f1f5f9 !important;
+        border: 1px solid #334155 !important;
+    }
+    body[light-mode="dark"] .newmodal-header,
+    html[light-mode="dark"] .newmodal-header,
+    body[data-layout-mode="dark"] .newmodal-header,
+    html.dark .newmodal-header,
+    body.dark .newmodal-header {
+        border-bottom-color: #334155 !important;
+    }
+    body[light-mode="dark"] .newmodal-header h3,
+    html[light-mode="dark"] .newmodal-header h3,
+    body[data-layout-mode="dark"] .newmodal-header h3,
+    html.dark .newmodal-header h3,
+    body.dark .newmodal-header h3 {
+        color: #ffffff !important;
+    }
+    body[light-mode="dark"] .newmodal-close-btn,
+    html[light-mode="dark"] .newmodal-close-btn,
+    body[data-layout-mode="dark"] .newmodal-close-btn,
+    html.dark .newmodal-close-btn,
+    body.dark .newmodal-close-btn {
+        background: #1e293b !important;
+        color: #94a3b8 !important;
+    }
+    body[light-mode="dark"] .newmodal-label,
+    html[light-mode="dark"] .newmodal-label,
+    body[data-layout-mode="dark"] .newmodal-label,
+    html.dark .newmodal-label,
+    body.dark .newmodal-label {
+        color: #e2e8f0 !important;
+    }
+    body[light-mode="dark"] .newmodal-input,
+    html[light-mode="dark"] .newmodal-input,
+    body[light-mode="dark"] .newmodal-select,
+    html[light-mode="dark"] .newmodal-select,
+    body[data-layout-mode="dark"] .newmodal-input,
+    body[data-layout-mode="dark"] .newmodal-select,
+    html.dark .newmodal-input,
+    html.dark .newmodal-select,
+    body.dark .newmodal-input,
+    body.dark .newmodal-select {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+    body[light-mode="dark"] .newmodal-upload-area,
+    html[light-mode="dark"] .newmodal-upload-area,
+    body[data-layout-mode="dark"] .newmodal-upload-area,
+    html.dark .newmodal-upload-area,
+    body.dark .newmodal-upload-area {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .newmodal-img-preview,
+    html[light-mode="dark"] .newmodal-img-preview,
+    body[data-layout-mode="dark"] .newmodal-img-preview,
+    html.dark .newmodal-img-preview,
+    body.dark .newmodal-img-preview {
+        background: #0f172a !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .newmodal-file-btn,
+    html[light-mode="dark"] .newmodal-file-btn,
+    body[data-layout-mode="dark"] .newmodal-file-btn,
+    html.dark .newmodal-file-btn,
+    body.dark .newmodal-file-btn {
+        background: #0f172a !important;
+        border-color: #334155 !important;
+        color: #cbd5e1 !important;
+    }
+    body[light-mode="dark"] .newmodal-btn-cancel,
+    html[light-mode="dark"] .newmodal-btn-cancel,
+    body[data-layout-mode="dark"] .newmodal-btn-cancel,
+    html.dark .newmodal-btn-cancel,
+    body.dark .newmodal-btn-cancel {
+        background: #1e293b !important;
+        border: 1px solid #334155 !important;
+        color: #e2e8f0 !important;
+    }
+
     body[light-mode="dark"] #createProduct .img-box,
     html[light-mode="dark"] #createProduct .img-box {
         background-color: #1e293b !important;
@@ -713,7 +817,7 @@
             <form onsubmit="return ProductDataSave(event)" id="signup">
                 <!-- Select Dropdowns with Add Buttons -->
                 <div class="row g-2.5">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4 col-md-6 col-12">
                         <div class="form-row flex-column align-items-start">
                             <label for="ProductBrand" class="fw-semibold small" style="color: #334155; display: block; margin-bottom: 2px !important; font-size: 13px;">Brand</label>
                             <div class="d-flex align-items-center w-100 gap-2">
@@ -744,7 +848,7 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-6">
+                    <div class="col-lg-4 col-md-6 col-12">
                         <div class="form-row flex-column align-items-start">
                             <label for="ProductCategoryDataID" class="fw-semibold small" style="color: #334155; display: block; margin-bottom: 2px !important; font-size: 13px;">Category <span class="text-danger">*</span></label>
                             <div class="d-flex align-items-center w-100 gap-2">
@@ -770,6 +874,38 @@
                                     </div>
                                 </div>
                                 <button type="button" class="btn-add newcategory-open text-nowrap" style="height: 42px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; font-weight: 600;">
+                                    + Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-12 col-12">
+                        <div class="form-row flex-column align-items-start">
+                            <label for="ProductSubCategoryID" class="fw-semibold small" style="color: #334155; display: block; margin-bottom: 2px !important; font-size: 13px;">Sub-Category</label>
+                            <div class="d-flex align-items-center w-100 gap-2">
+                                <!-- Native select kept hidden for 100% backend & DOM compatibility -->
+                                <select class="d-none" id="ProductSubCategoryID">
+                                    <option value="none" selected>Select Sub-Category</option>
+                                </select>
+
+                                <!-- Custom Searchable Sub-Category Dropdown -->
+                                <div class="custom-searchable-select flex-grow-1" id="createSubCategoryDropdown">
+                                    <div class="select-trigger d-flex align-items-center justify-content-between px-3" onclick="toggleCustomProductDropdown('createSubCategoryDropdown')">
+                                        <span class="selected-text text-truncate" style="font-size: 14px; font-weight: 500; color: #64748b;">Select Sub-Category</span>
+                                        <i class="fa-solid fa-chevron-down ms-1 text-muted" style="font-size: 12px; transition: transform 0.2s;"></i>
+                                    </div>
+                                    <div class="select-menu">
+                                        <div class="search-wrap">
+                                            <i class="fa-solid fa-magnifying-glass position-absolute text-muted" style="top: 50%; transform: translateY(-50%); left: 10px; font-size: 12px;"></i>
+                                            <input type="text" placeholder="Search Sub-Category..." oninput="filterCustomProductDropdown('createSubCategoryDropdown', this.value)">
+                                        </div>
+                                        <div class="select-options-list">
+                                            <!-- Sub-Category options will load here -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-add newsubcategory-open text-nowrap" onclick="openSubCategoryModal()" style="height: 42px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; font-weight: 600;">
                                     + Add
                                 </button>
                             </div>
@@ -1011,6 +1147,50 @@
 </div>
 <!-- Add Product modal to New Category Modal End -->
 
+<!-- Add Product modal to New Sub-Category Modal Start -->
+<div class="newcategory" id="addSubCategoryModal">
+    <div class="newcategory-content">
+        <div class="newmodal-header">
+            <h3>Add New Sub-Category</h3>
+            <button type="button" class="newmodal-close-btn newsubcategory-close" onclick="closeSubCategoryModal()" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <form id="addSubCategoryForm" onsubmit="SubCategorySave(event)">
+            <div class="newmodal-form-group">
+                <label class="newmodal-label" for="SubCategoryParentID">Category <span class="text-danger">*</span></label>
+                <div class="newmodal-select-wrapper">
+                    <select id="SubCategoryParentID" class="newmodal-select" required>
+                        <option value="none" disabled selected>Select Category *</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+            </div>
+
+            <div class="newmodal-form-group">
+                <label class="newmodal-label" for="SubCategoryNameInput">Sub-Category Name <span class="text-danger">*</span></label>
+                <input type="text" id="SubCategoryNameInput" class="newmodal-input" placeholder="Enter sub-category name" required />
+            </div>
+
+            <div class="newmodal-form-group">
+                <label class="newmodal-label" for="SubCategorySelectStatus">Status <span class="text-danger">*</span></label>
+                <div class="newmodal-select-wrapper">
+                    <select id="SubCategorySelectStatus" class="newmodal-select" required>
+                        <option value="Active" selected>Active</option>
+                        <option value="InActive">Inactive</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+            </div>
+
+            <div class="newmodal-actions">
+                <button type="button" class="newmodal-btn-cancel newsubcategory-close" onclick="closeSubCategoryModal()">Cancel</button>
+                <button type="submit" class="newmodal-btn-save">Save Sub-Category</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Add Product modal to New Sub-Category Modal End -->
 
 <script>
     // Save brand function
@@ -1276,6 +1456,7 @@
 
             if (res.data.status === "success") {
                 const categories = res.data.CategoryData || [];
+                window.productCategoriesList = categories;
 
                 let optionsHtml = `<option value="none" selected>Select Category</option>`;
                 optionsHtml += categories
@@ -1335,41 +1516,157 @@
         if (typeof checkDoorCategory === 'function') {
             checkDoorCategory(categoryId);
         }
-        const subCategoryDropdown = document.getElementById("ProductSubCategoryID");
-        if (!subCategoryDropdown) return;
+        await refreshSubCategoryList(null, categoryId);
+    }
 
-        subCategoryDropdown.innerHTML = `<option value="none" selected>Select Sub Category</option>`;
+    function openSubCategoryModal() {
+        const modal = document.getElementById('addSubCategoryModal');
+        if (!modal) return;
 
-        if (categoryId === "none") return;
+        // Populate Category dropdown in Sub-Category modal
+        const parentCatSelect = document.getElementById('SubCategoryParentID');
+        if (parentCatSelect && window.productCategoriesList) {
+            let currentSelectedCat = document.getElementById('ProductCategoryDataID')?.value || 'none';
+            let html = '<option value="none" disabled>Select Category *</option>';
+            window.productCategoriesList.forEach(c => {
+                const isSel = String(c.id) === String(currentSelectedCat);
+                html += `<option value="${c.id}" ${isSel ? 'selected' : ''}>${c.category_name}</option>`;
+            });
+            parentCatSelect.innerHTML = html;
+            if (currentSelectedCat !== 'none') {
+                parentCatSelect.value = String(currentSelectedCat);
+            }
+        }
 
+        const nameInput = document.getElementById('SubCategoryNameInput');
+        if (nameInput) nameInput.value = '';
+
+        modal.classList.add('show');
+        setTimeout(() => {
+            if (nameInput) nameInput.focus();
+        }, 100);
+    }
+
+    function closeSubCategoryModal() {
+        const modal = document.getElementById('addSubCategoryModal');
+        if (modal) modal.classList.remove('show');
+    }
+
+    async function SubCategorySave(event) {
+        event.preventDefault();
         try {
-            const res = await axios.get(`/api/sub-category-list/${categoryId}`, HeaderToken());
+            const categoryId = document.getElementById('SubCategoryParentID').value;
+            const subCategoryName = document.getElementById('SubCategoryNameInput').value.trim();
+            const status = document.getElementById('SubCategorySelectStatus').value;
 
-            if (res.data.status === "success") {
-                const subCategories = res.data.subCategories;
+            if (!categoryId || categoryId === 'none') {
+                errorToast("Please select a category.");
+                return;
+            }
+            if (!subCategoryName) {
+                errorToast("Please enter a sub-category name.");
+                return;
+            }
 
-                if (subCategories.length === 0) {
-                    errorToast("No subcategories found for this category.");
-                    return;
+            const res = await axios.post("/api/sub-create-category", {
+                category_id: categoryId,
+                sub_category_name: subCategoryName,
+                status: status
+            }, HeaderToken());
+
+            if (res.data && res.data.status === "success") {
+                successToast(res.data.message || "Sub-Category Created Successfully!");
+                closeSubCategoryModal();
+                document.getElementById('addSubCategoryForm').reset();
+
+                // If product form's category is different or not selected, set it
+                const currentProdCat = document.getElementById('ProductCategoryDataID')?.value;
+                if (String(currentProdCat) !== String(categoryId)) {
+                    let catItem = window.productCategoriesList ? window.productCategoriesList.find(c => String(c.id) === String(categoryId)) : null;
+                    selectCustomProductDropdownItem('createCategoryDropdown', 'ProductCategoryDataID', categoryId, catItem ? catItem.category_name : 'Selected Category');
                 }
 
-                const optionsHtml = subCategories
-                    .map(subCategory =>
-                        `<option value="${subCategory.id}">${subCategory.sub_category_name}</option>`)
-                    .join('');
-
-                subCategoryDropdown.innerHTML += optionsHtml;
+                // Refresh subcategory list with the newly created category, then select the new subcategory
+                await refreshSubCategoryList(null, categoryId, subCategoryName);
             } else {
-                errorToast("No subcategories found for this category.");
+                errorToast(res.data.message || "Failed to create sub-category.");
             }
-        } catch (error) {
-            console.error("Error fetching subcategories:", error);
-            errorToast("An error occurred while fetching subcategories. Please try again.");
+        } catch (err) {
+            console.error("SubCategory creation error:", err);
+            errorToast("An error occurred while creating sub-category.");
+        }
+    }
+
+    async function refreshSubCategoryList(selectedSubCategoryId = null, filterCategoryId = null, selectByName = null) {
+        try {
+            let currentCatId = filterCategoryId;
+            if (!currentCatId) {
+                currentCatId = document.getElementById('ProductCategoryDataID')?.value;
+            }
+
+            let url = (currentCatId && currentCatId !== 'none') 
+                ? `/api/sub-category-list/${currentCatId}`
+                : `/api/sub-category-list`;
+
+            let res = await axios.get(url, HeaderToken());
+            let subCategories = [];
+            if (res.data && res.data.status === "success") {
+                subCategories = res.data.subCategories || res.data.SubCategoryData || [];
+            }
+
+            const nativeSelect = document.getElementById('ProductSubCategoryID');
+            const customList = document.querySelector('#createSubCategoryDropdown .select-options-list');
+            const triggerText = document.querySelector('#createSubCategoryDropdown .selected-text');
+
+            let nativeHtml = `<option value="none" selected>Select Sub-Category</option>`;
+            let customHtml = `<div class="select-option-item active" data-value="none" data-label="Select Sub-Category" onclick="selectCustomProductDropdownItem('createSubCategoryDropdown', 'ProductSubCategoryID', 'none', 'Select Sub-Category')">
+                <span>Select Sub-Category</span>
+                <i class="fa-solid fa-check small text-success"></i>
+            </div>`;
+
+            let matchedId = selectedSubCategoryId;
+            if (selectByName && !matchedId) {
+                let found = subCategories.find(s => (s.sub_category_name || '').trim().toLowerCase() === selectByName.trim().toLowerCase());
+                if (found) matchedId = found.id;
+            }
+
+            let activeLabel = 'Select Sub-Category';
+            let activeValue = 'none';
+
+            if (subCategories.length > 0) {
+                subCategories.forEach(s => {
+                    let isSelected = matchedId && String(matchedId) === String(s.id);
+                    if (isSelected) {
+                        activeLabel = s.sub_category_name;
+                        activeValue = s.id;
+                    }
+                    nativeHtml += `<option value="${s.id}" ${isSelected ? 'selected' : ''}>${s.sub_category_name}</option>`;
+                    customHtml += `<div class="select-option-item ${isSelected ? 'active' : ''}" data-value="${s.id}" data-label="${s.sub_category_name}" onclick="selectCustomProductDropdownItem('createSubCategoryDropdown', 'ProductSubCategoryID', '${s.id}', '${s.sub_category_name}')">
+                        <span>${s.sub_category_name}</span>
+                        ${isSelected ? '<i class="fa-solid fa-check small text-success"></i>' : ''}
+                    </div>`;
+                });
+            }
+
+            if (nativeSelect) {
+                nativeSelect.innerHTML = nativeHtml;
+                nativeSelect.value = String(activeValue);
+            }
+            if (customList) {
+                customList.innerHTML = customHtml;
+            }
+            if (triggerText) {
+                triggerText.textContent = activeLabel;
+                triggerText.style.color = (activeValue && activeValue !== 'none') ? '#0f172a' : '#64748b';
+            }
+        } catch (err) {
+            console.error("Failed to refresh sub-category list:", err);
         }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         refreshCategoryList();
+        refreshSubCategoryList();
     });
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -1598,9 +1895,10 @@
         const doorCont = document.getElementById('doorHandednessContainer');
         if (doorCont) doorCont.style.display = 'none';
 
-        // Reset Brand & Category custom dropdowns
+        // Reset Brand & Category & Sub-Category custom dropdowns
         resetCustomProductDropdown('createBrandDropdown', 'ProductBrand', 'Select Brand', 'none');
         resetCustomProductDropdown('createCategoryDropdown', 'ProductCategoryDataID', 'Select Category *', 'none');
+        resetCustomProductDropdown('createSubCategoryDropdown', 'ProductSubCategoryID', 'Select Sub-Category', 'none');
 
         // Reset Product Image Preview and File info
         resetProductImagePreview();
@@ -1962,7 +2260,7 @@
                 }
 
                 if (selectedDoorSide) formData.append('door_side', selectedDoorSide);
-                if (ProductSubCategoryID) formData.append('sub_category_id', ProductSubCategoryID);
+                if (ProductSubCategoryID && ProductSubCategoryID !== 'none') formData.append('sub_category_id', ProductSubCategoryID);
                 if (ProductUnit) formData.append('unit_id', ProductUnit);
                 if (ProductImageInput) formData.append('img', ProductImageInput);
 
