@@ -157,6 +157,10 @@
         border-color: #e2e8f0;
     }
 
+    #productDropdown .list-group-item:hover {
+        background-color: #f1f5f9 !important;
+    }
+
     body[light-mode="dark"] #productDropdown,
     html[light-mode="dark"] #productDropdown,
     body[data-layout-mode="dark"] #productDropdown,
@@ -296,6 +300,10 @@
                                 <input type="text" id="productInputData" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" placeholder="Scan barcode or type product name/code (Auto-adds to list)..." autocomplete="off" />
                                 <ul id="productDropdown" class="list-group absolute w-full shadow-xl rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 mt-1" style="z-index: 1050; max-height: 280px; overflow-y: auto; display: none;"></ul>
                             </div>
+                            <button type="button" class="inline-flex items-center gap-1 px-3 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 flex-shrink-0 cursor-pointer" onclick="openProductCreateModal()" title="Add New Product">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                                <span>New</span>
+                            </button>
                             <button type="button" class="inline-flex items-center gap-1.5 px-4 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 flex-shrink-0 cursor-pointer" onclick="openPurchaseCameraScanner()">
                                 <i class="fa-solid fa-camera text-xs"></i>
                                 <span>Scan Camera</span>
@@ -823,6 +831,12 @@
             }
         });
 
+        productInput.addEventListener("focus", function () {
+            if (this.value.trim() && productDropdown && productDropdown.children.length > 0) {
+                productDropdown.style.display = "block";
+            }
+        });
+
         productInput.addEventListener("input", function () {
             clearTimeout(debounceTimer);
             const query = this.value.trim();
@@ -841,11 +855,14 @@
                     if (!productDropdown) return;
                     productDropdown.innerHTML = "";
 
-                    if (res.data.status === "success" && res.data.data.length > 0) {
-                        const exactBarcodeMatch = res.data.data.find(p => p.product_code && p.product_code.toLowerCase() === query.toLowerCase());
+                    if (res.data.status === "success" && res.data.data && res.data.data.length > 0) {
+                        const exactBarcodeMatch = res.data.data.find(p => 
+                            (p.product_code && p.product_code.toLowerCase() === query.toLowerCase()) ||
+                            (Array.isArray(p.all_codes) && p.all_codes.some(c => String(c).toLowerCase() === query.toLowerCase()))
+                        );
 
                         if (exactBarcodeMatch && res.data.data.length === 1) {
-                            addProductToTable(exactBarcodeMatch, exactBarcodeMatch.product_code);
+                            addProductToTable(exactBarcodeMatch, query);
                             productInput.value = "";
                             productDropdown.style.display = "none";
                             productDropdown.innerHTML = "";
@@ -855,14 +872,24 @@
                         productDropdown.style.display = "block";
                         res.data.data.forEach(product => {
                             const li = document.createElement("li");
-                            li.className = "list-group-item d-flex justify-content-between align-items-center";
+                            li.className = "list-group-item d-flex justify-content-between align-items-center py-2 px-3";
                             li.style.cursor = "pointer";
+
+                            const barcodeText = product.display_codes || product.product_code;
+                            const barcodeBadge = barcodeText
+                                ? `<span class="badge bg-secondary text-white ms-2" style="font-size: 11px; font-weight: 500;">${barcodeText}</span>`
+                                : '';
+                            const doorBadge = product.door_side
+                                ? `<span class="badge bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 ms-1" style="font-size: 10px;">${product.door_side}</span>`
+                                : '';
+
                             li.innerHTML = `
-                                <div>
-                                    <span class="fw-bold">${product.name}</span>
-                                    <span class="badge bg-secondary ms-2">${product.product_code || ''}</span>
+                                <div class="d-flex align-items-center flex-wrap">
+                                    <span class="fw-bold text-dark dark:text-light" style="font-size: 13px;">${product.name || product.product_name}</span>
+                                    ${doorBadge}
+                                    ${barcodeBadge}
                                 </div>
-                                <span class="badge bg-success">৳${product.cost_price || 0}</span>
+                                <span class="badge bg-success font-bold" style="font-size: 12px;">৳ ${(parseFloat(product.cost_price) || 0).toFixed(2)}</span>
                             `;
                             li.addEventListener("click", () => {
                                 addProductToTable(product);
@@ -873,7 +900,8 @@
                             productDropdown.appendChild(li);
                         });
                     } else {
-                        productDropdown.style.display = "none";
+                        productDropdown.style.display = "block";
+                        productDropdown.innerHTML = `<li class="list-group-item text-center text-muted py-2 small">No product found for "${query}"</li>`;
                     }
                 } catch (error) {
                     console.error("Product Search Error:", error);
@@ -893,8 +921,12 @@
     async function processBarcodeOrSearchDirect(query) {
         try {
             const res = await axios.post("/api/product-search-by-name", { query: query }, HeaderToken());
-            if (res.data.status === "success" && res.data.data.length > 0) {
-                const found = res.data.data[0];
+            if (res.data.status === "success" && res.data.data && res.data.data.length > 0) {
+                const found = res.data.data.find(p => 
+                    (p.product_code && p.product_code.toLowerCase() === query.toLowerCase()) ||
+                    (Array.isArray(p.all_codes) && p.all_codes.some(c => String(c).toLowerCase() === query.toLowerCase()))
+                ) || res.data.data[0];
+
                 addProductToTable(found, query);
                 if (productInput) {
                     productInput.value = "";
@@ -928,17 +960,27 @@
             return;
         }
 
-        const initialBarcode = specificBarcode || product.product_code || '';
+        let initialBarcode = specificBarcode || '';
+        if (!initialBarcode) {
+            if (Array.isArray(product.all_codes) && product.all_codes.length > 0) {
+                initialBarcode = product.all_codes[0];
+            } else if (product.product_code) {
+                initialBarcode = product.product_code;
+            }
+        }
         UpdatebarcodeLists[product.id] = initialBarcode ? [initialBarcode] : [];
 
         const row = document.createElement("tr");
         row.setAttribute("data-product-id", product.id);
         row.className = "hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors";
 
+        const productName = product.name || product.product_name || 'Product';
+        const costPrice = parseFloat(product.cost_price) || 0;
+
         row.innerHTML = `
             <td class="p-2.5 font-bold text-slate-800 dark:text-slate-100">
                 <span class="product-id-val d-none">${product.id}</span>
-                <span>${product.name}</span>
+                <span>${productName}</span>
                 <div class="text-[11px] text-slate-400 font-normal">ID: ${product.product_id || product.id}</div>
             </td>
             <td class="p-2.5">
@@ -953,9 +995,9 @@
                 <input type="number" class="form-control form-control-sm quantity text-center font-bold" min="1" value="1" style="width: 70px; margin: 0 auto;" oninput="updateRowSubtotal(this.closest('tr')); updateTotals();" />
             </td>
             <td class="p-2.5 text-end">
-                <input type="number" step="any" class="form-control form-control-sm cost-price text-end font-bold" value="${product.cost_price || 0}" style="width: 90px; margin-left: auto;" oninput="updateRowSubtotal(this.closest('tr')); updateTotals();" />
+                <input type="number" step="any" class="form-control form-control-sm cost-price text-end font-bold" value="${costPrice}" style="width: 90px; margin-left: auto;" oninput="updateRowSubtotal(this.closest('tr')); updateTotals();" />
             </td>
-            <td class="p-2.5 text-end font-bold text-slate-800 dark:text-white subtotal">৳ ${(product.cost_price || 0).toFixed(2)}</td>
+            <td class="p-2.5 text-end font-bold text-slate-800 dark:text-white subtotal">৳ ${costPrice.toFixed(2)}</td>
             <td class="p-2.5 text-center">
                 <button type="button" class="btn btn-sm btn-outline-danger p-1 rounded-lg" onclick="removeProductRow(this)" title="Remove">
                     <i class="fa-solid fa-trash text-xs"></i>

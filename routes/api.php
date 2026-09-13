@@ -79,6 +79,7 @@ Route::post("delete-sub-category", [SubCategoryController::class, 'SubCategoryDe
 Route::get('/api/all-products-data-show', [ProductController::class, 'AllProductsDataShow']);
 
 Route::get('/product-search', [ProductController::class, 'ProductIDSearch'])->middleware('auth:sanctum');
+Route::match(['get', 'post'], '/product-search-by-name', [ProductController::class, 'ProductSearchByName'])->middleware('auth:sanctum');
 
 Route::get("/product-list", [ProductController::class, 'ProductList'])->middleware('auth:sanctum');
 Route::post("/create-product", [ProductController::class, 'ProductCreate'])->middleware('auth:sanctum');

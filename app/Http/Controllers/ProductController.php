@@ -35,6 +35,64 @@ class ProductController extends Controller
         }
     }
 
+    public function ProductSearchByName(Request $request)
+    {
+        try {
+            $query = trim($request->input('query', ''));
+            if ($query === '') {
+                return response()->json(['status' => 'success', 'data' => []]);
+            }
+
+            $products = Product::where('product_name', 'LIKE', "%{$query}%")
+                ->orWhere('product_code', 'LIKE', "%{$query}%")
+                ->orWhereJsonContains('product_code', $query)
+                ->orWhere('id', $query)
+                ->limit(25)
+                ->get();
+
+            $formatted = $products->map(function ($p) {
+                $codes = [];
+                if ($p->product_code) {
+                    if (is_array($p->product_code)) {
+                        $codes = $p->product_code;
+                    } else {
+                        $decoded = json_decode($p->product_code, true);
+                        $codes = is_array($decoded) ? $decoded : [$p->product_code];
+                    }
+                }
+                $primaryCode = !empty($codes) ? $codes[0] : '';
+                $displayCodes = implode(', ', $codes);
+
+                $displayName = $p->product_name;
+                if (!empty($p->door_side)) {
+                    $displayName .= " ({$p->door_side})";
+                }
+
+                return [
+                    'id' => $p->id,
+                    'name' => $displayName,
+                    'product_name' => $p->product_name,
+                    'product_code' => $primaryCode,
+                    'display_codes' => $displayCodes,
+                    'all_codes' => $codes,
+                    'cost_price' => floatval($p->cost_price ?? 0),
+                    'sell_price' => floatval($p->sell_price ?? 0),
+                    'quantity' => floatval($p->quantity ?? 0),
+                    'door_side' => $p->door_side,
+                    'img_url' => $p->img_url,
+                ];
+            });
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $formatted
+            ]);
+        } catch (Exception $e) {
+            Log::error('Product Search Error: ' . $e->getMessage());
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
+    }
+
 
 
 

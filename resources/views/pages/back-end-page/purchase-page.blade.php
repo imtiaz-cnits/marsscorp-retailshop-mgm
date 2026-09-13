@@ -4,6 +4,7 @@
     @include('backend.purchase.purchase-list')
     @include('backend.purchase.purchase-create')
     @include('backend.supplier.supplier-create')
+    @include('backend.product.product-create')
     @include('backend.purchase.purchase-due-print')
     @include('backend.purchase.purchase-update')
     @include('backend.purchase.purchase-delete')
