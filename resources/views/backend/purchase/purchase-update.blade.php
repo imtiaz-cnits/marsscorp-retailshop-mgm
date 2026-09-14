@@ -390,7 +390,7 @@
         } catch (e) {
             hideLoader();
             console.error("Error:", e.response);
-            errorToast("Failed to update purchase.");
+            errorToast(e.response?.data?.message || "Failed to update purchase.");
         }
         return false;
     }

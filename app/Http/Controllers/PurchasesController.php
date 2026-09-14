@@ -261,6 +261,29 @@ public function PurchasesList()
                 $img->move(public_path('uploads/purchases-img'), $img_name);
             }
 
+            // Parse and format date to Y-m-d for database storage
+            $formattedDate = null;
+            if ($request->filled('date')) {
+                try {
+                    $formattedDate = Carbon::parse($request->date)->format('Y-m-d');
+                } catch (\Exception $e) {
+                    $formattedDate = now()->format('Y-m-d');
+                }
+            } else {
+                $formattedDate = now()->format('Y-m-d');
+            }
+
+            $formattedDueDate = null;
+            if ($request->filled('purchase_due_collection_date')) {
+                try {
+                    $formattedDueDate = Carbon::parse($request->purchase_due_collection_date)->format('Y-m-d');
+                } catch (\Exception $e) {
+                    $formattedDueDate = $formattedDate;
+                }
+            } else {
+                $formattedDueDate = $formattedDate;
+            }
+
             // Create Purchase record
             $purchaseData = [
                 'purchase_id' => $this->generatePurchasesID(),
@@ -268,7 +291,7 @@ public function PurchasesList()
                 'paid_amount' => $request->paid_amount,
                 'due_amount' => $request->due_amount,
                 'referance_no' => $request->referance_no,
-                'date' => $request->date,
+                'date' => $formattedDate,
                 'grand_subtotal' => $request->grand_subtotal,
                 'attach_document' => $img_url,
                 'supplier_id' => $request->supplier_id,
@@ -349,17 +372,16 @@ public function PurchasesList()
             }
 
             // Check if the purchase is partially or fully paid
-            // if ($request->paid > 0) {
             PurchasePaymentDetails::create([
                 'purchases_id' => $purchase->id,
                 'paid_amount' => $request->paid_amount,
-                'discount_amount' => $request->discount_amount,
-                'purchase_due_collection_date' => $request->purchase_due_collection_date,
+                'discount_amount' => $request->discount_amount ?? 0,
+                'transaction_id' => $request->transaction_id ?? null,
+                'purchase_due_collection_date' => $formattedDueDate,
                 'payment_method' => $request->payment_method,
                 'payment_status' => $request->payment_status,
                 'user_id' => $user_id,
             ]);
-            // }
 
 
             DB::commit();
@@ -610,9 +632,18 @@ public function updatePaymentDetails(Request $request)
                 return response()->json(['status' => 'fail', 'message' => 'Purchase not found']);
             }
 
+            $updateDate = $purchase->date;
+            if ($request->filled('date')) {
+                try {
+                    $updateDate = Carbon::parse($request->date)->format('Y-m-d');
+                } catch (\Exception $e) {
+                    $updateDate = $purchase->date;
+                }
+            }
+
             $purchase->update([
                 'referance_no' => $request->input('referance_no', $purchase->referance_no),
-                'date' => $request->input('date', $purchase->date),
+                'date' => $updateDate,
                 'grand_subtotal' => $request->input('grand_subtotal', $purchase->grand_subtotal),
                 'paid_amount' => $request->input('paid_amount', $purchase->paid_amount),
                 'due_amount' => $request->input('due_amount', $purchase->due_amount),

@@ -1069,6 +1069,35 @@
         }
     }
 
+    function showPurchaseTopToast(msg, isError = false) {
+        if (typeof Toastify === 'function') {
+            Toastify({
+                text: (isError ? "⚠️  " : "✓  ") + msg,
+                gravity: "top",
+                position: "center",
+                duration: 3500,
+                close: true,
+                style: {
+                    background: isError 
+                        ? "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)" 
+                        : "linear-gradient(135deg, #16a34a 0%, #15803d 100%)",
+                    color: "#ffffff",
+                    borderRadius: "10px",
+                    fontWeight: "600",
+                    fontSize: "14px",
+                    padding: "12px 24px",
+                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2)",
+                    zIndex: "99999999",
+                    border: "1px solid rgba(255, 255, 255, 0.2)"
+                }
+            }).showToast();
+        } else if (isError && typeof errorToast === 'function') {
+            errorToast(msg);
+        } else if (!isError && typeof successToast === 'function') {
+            successToast(msg);
+        }
+    }
+
     async function PurchaseDataSave(event) {
         if (event) event.preventDefault();
 
@@ -1084,7 +1113,7 @@
             const ProductCodes = UpdatebarcodeLists[productId] || [];
 
             if (quantity <= 0) {
-                alert("Quantity must be greater than zero!");
+                showPurchaseTopToast("Quantity must be greater than zero!", true);
                 return;
             }
 
@@ -1098,7 +1127,7 @@
         });
 
         if (products.length === 0) {
-            alert("At least one product must be added!");
+            showPurchaseTopToast("At least one product must be added!", true);
             return;
         }
 
@@ -1147,17 +1176,18 @@
             let res = await axios.post("/api/create-purchases", formData, config);
 
             if (res.data['status'] === "success") {
-                successToast(res.data['message']);
+                showPurchaseTopToast(res.data['message'], false);
                 const formEl = document.getElementById("purchaseCreateForm") || document.getElementById("signup");
                 if (formEl) formEl.reset();
                 const modal = document.getElementById('exampleModal');
                 closeModal(modal);
-                location.reload();
+                setTimeout(() => location.reload(), 800);
             } else {
-                errorToast(res.data['message']);
+                showPurchaseTopToast(res.data['message'], true);
             }
         } catch (e) {
             console.error("Purchase Save Error:", e);
+            showPurchaseTopToast(e.response?.data?.message || "Failed to submit purchase order.", true);
             unauthorized(e.response?.status);
         }
     }

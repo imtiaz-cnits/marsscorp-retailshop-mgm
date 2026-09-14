@@ -5,10 +5,14 @@ namespace App\Http\Controllers;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Order;
-use Illuminate\Http\Request;
+use App\Models\OrderDetails;
 use App\Models\OrderPaymentDetails;
+use App\Models\Product;
+use App\Models\Customer;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log; // Include the Log facade
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 
 class InvoiceController extends Controller

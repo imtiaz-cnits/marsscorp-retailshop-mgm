@@ -22,7 +22,7 @@
                             <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white tracking-tight leading-none m-0 p-0">Purchase List</h1>
                         </div>
 
-                        <!-- Right Controls: + Create Purchase Button & Action Buttons with Unified Border -->
+                        <!-- Right Controls: + Create Purchase Button -->
                         <div class="flex items-center flex-wrap gap-2">
                             <button id="openModalBtns" type="button" class="btn-create-purchase inline-flex items-center gap-1.5 px-4 h-[38px] min-h-[38px] max-h-[38px] rounded-xl shadow-sm transition-all duration-150 font-semibold text-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -31,52 +31,11 @@
                                 </svg>
                                 <span>Create Purchase</span>
                             </button>
-
-                            <!-- Action Buttons (38px x 38px, Unified Border matching Searchbar, Dropdowns, Table) -->
-                            {{-- <div class="flex items-center gap-1.5">
-                                <button id="copyBtn" type="button" title="Copy Table" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
-                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                    </svg>
-                                </button>
-                                <button id="csvBtn" type="button" title="Export CSV" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
-                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                        <polyline points="14 2 14 8 20 8"></polyline>
-                                        <line x1="8" y1="13" x2="16" y2="13"></line>
-                                        <line x1="8" y1="17" x2="16" y2="17"></line>
-                                    </svg>
-                                </button>
-                                <button id="pdfBtn" type="button" title="Export PDF" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
-                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                        <polyline points="14 2 14 8 20 8"></polyline>
-                                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                                    </svg>
-                                </button>
-                                <button id="printBtn" type="button" title="Print Table" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
-                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                                        <rect x="6" y="14" width="12" height="8"></rect>
-                                    </svg>
-                                </button>
-                                <button id="xlsxBtn" type="button" title="Export Excel" class="unified-ui-border w-[38px] h-[38px] min-w-[38px] min-h-[38px] flex items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 shadow-sm transition-all duration-150 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
-                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                        <polyline points="14 2 14 8 20 8"></polyline>
-                                        <line x1="9" y1="13" x2="15" y2="17"></line>
-                                        <line x1="15" y1="13" x2="9" y2="17"></line>
-                                    </svg>
-                                </button>
-                            </div> --}}
                         </div>
                     </div>
 
                     <!-- 2. Controls & Filter Row -->
-                    <div class="controls-row-wrapper mb-4 w-full">
+                    <div class="controls-row-wrapper mb-3 w-full">
                         <!-- Search Bar -->
                         <div class="search-input-wrapper unified-ui-border h-[38px] flex items-center bg-white dark:bg-slate-800/90 rounded-xl shadow-sm transition-all focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20">
                             <svg class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0 mr-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -103,34 +62,34 @@
 
                     <!-- 3. Desktop Table (SL rounded-tl-2xl, Action on far right with rounded-tr-2xl, solid emerald header, 2-line header, 3-dot dropdown) -->
                     <div class="table-responsive unified-ui-border hidden md:block w-full max-w-full overflow-x-auto rounded-2xl shadow-sm bg-white dark:bg-slate-900 mb-4" style="min-height: 250px;">
-                        <table id="printTable" class="w-full text-left border-collapse min-w-full">
+                        <table id="printTable" class="w-full text-left border-collapse min-w-full table-auto">
                             <thead>
-                                <tr class="bg-[#15803d] text-white text-[11px] font-semibold uppercase tracking-wider">
-                                    <th class="p-[8px] text-center w-[40px] rounded-tl-2xl bg-[#15803d] text-white">SL</th>
-                                    <th class="p-[8px] text-center bg-[#15803d] text-white leading-tight">Date</th>
-                                    <th class="p-[8px] text-center bg-[#15803d] text-white leading-tight">Purchase<br>ID</th>
-                                    <th class="p-[8px] text-start bg-[#15803d] text-white leading-tight">Barcode</th>
-                                    <th class="p-[8px] text-start bg-[#15803d] text-white leading-tight">Reference<br>No</th>
-                                    <th class="p-[8px] text-start bg-[#15803d] text-white leading-tight">Supplier<br>ID</th>
-                                    <th class="p-[8px] text-start bg-[#15803d] text-white leading-tight">Supplier<br>Name</th>
-                                    <th class="p-[8px] text-end bg-[#15803d] text-white leading-tight">Grand<br>Total</th>
-                                    <th class="p-[8px] text-end bg-[#15803d] text-white leading-tight">Paid<br>Amount</th>
-                                    <th class="p-[8px] text-end bg-[#15803d] text-white leading-tight">Due<br>Amount</th>
-                                    <th class="p-[8px] text-end bg-[#15803d] text-white leading-tight">Return<br>Amount</th>
-                                    <th class="p-[8px] text-center bg-[#15803d] text-white leading-tight">Payment<br>Method</th>
-                                    <th class="p-[8px] text-center bg-[#15803d] text-white leading-tight">Status</th>
-                                    <th class="p-[8px] text-center w-[50px] rounded-tr-2xl bg-[#15803d] text-white">Action</th>
+                                <tr class="bg-[#15803d] text-white text-xs font-semibold uppercase tracking-wider">
+                                    <th class="py-2 px-[5px] text-center w-[34px] rounded-tl-2xl bg-[#15803d] text-white" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">SL</th>
+                                    <th class="py-2 px-[5px] text-center bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Date</th>
+                                    <th class="py-2 px-[5px] text-center bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Purchase<br>ID</th>
+                                    <th class="py-2 px-[5px] text-start bg-[#15803d] text-white leading-tight" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Barcode</th>
+                                    <th class="py-2 px-[5px] text-start bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Reference<br>No</th>
+                                    <th class="py-2 px-[5px] text-start bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Supplier<br>ID</th>
+                                    <th class="py-2 px-[5px] text-start bg-[#15803d] text-white leading-tight" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Supplier<br>Name</th>
+                                    <th class="py-2 px-[5px] text-end bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Grand<br>Total</th>
+                                    <th class="py-2 px-[5px] text-end bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Paid<br>Amount</th>
+                                    <th class="py-2 px-[5px] text-end bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Due<br>Amount</th>
+                                    <th class="py-2 px-[5px] text-end bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Return<br>Amount</th>
+                                    <th class="py-2 px-[5px] text-center bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Payment<br>Method</th>
+                                    <th class="py-2 px-[5px] text-center bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Status</th>
+                                    <th class="py-2 px-[5px] text-center w-[40px] rounded-tr-2xl bg-[#15803d] text-white" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="tableList" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs text-slate-700 dark:text-slate-200"></tbody>
+                            <tbody id="tableList" class="divide-y divide-slate-100 dark:divide-slate-800 text-[11px] lg:text-xs text-slate-700 dark:text-slate-200"></tbody>
                             <tfoot>
                                 <tr class="bg-slate-50/80 dark:bg-slate-800/80 font-bold text-xs border-t border-slate-200 dark:border-slate-800">
-                                    <td colspan="7" class="p-[8px] text-end font-bold text-slate-700 dark:text-slate-200">Total:</td>
-                                    <td id="totalGrandTotal" class="p-[8px] text-end font-bold text-slate-800 dark:text-white whitespace-nowrap">৳ 0.00</td>
-                                    <td id="totalPaidAmount" class="p-[8px] text-end font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">৳ 0.00</td>
-                                    <td id="totalDueAmount" class="p-[8px] text-end font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap">৳ 0.00</td>
-                                    <td id="totalReturnAmount" class="p-[8px] text-end font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap">৳ 0.00</td>
-                                    <td colspan="3" class="p-[8px]"></td>
+                                    <td colspan="7" class="py-2 px-[5px] text-end font-bold text-slate-700 dark:text-slate-200">Total:</td>
+                                    <td id="totalGrandTotal" class="py-2 px-[5px] text-end font-bold text-slate-800 dark:text-white text-xs sm:text-[12.5px] whitespace-nowrap font-mono">৳ 0.00</td>
+                                    <td id="totalPaidAmount" class="py-2 px-[5px] text-end font-bold text-emerald-600 dark:text-emerald-400 text-xs sm:text-[12.5px] whitespace-nowrap font-mono">৳ 0.00</td>
+                                    <td id="totalDueAmount" class="py-2 px-[5px] text-end font-bold text-rose-600 dark:text-rose-400 text-xs sm:text-[12.5px] whitespace-nowrap font-mono">৳ 0.00</td>
+                                    <td id="totalReturnAmount" class="py-2 px-[5px] text-end font-bold text-rose-600 dark:text-rose-400 text-xs sm:text-[12.5px] whitespace-nowrap font-mono">৳ 0.00</td>
+                                    <td colspan="3" class="py-2 px-[5px]"></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -187,6 +146,36 @@
         .purchase-page-content {
             padding: calc(70px + 20px) 20px 20px 20px !important;
         }
+    }
+
+    /* Table headers & cells 5px left-right padding */
+    #printTable thead th,
+    .table-responsive table thead th,
+    .data-table .table-responsive table thead th {
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        line-height: 1.25 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.025em !important;
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+
+    #printTable tbody td,
+    .table-responsive table tbody td,
+    .data-table .table-responsive table tbody td {
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+
+    /* Action Dropdown Menu High Z-Index & Dropup placement */
+    .table-responsive .dropdown-menu {
+        z-index: 99999 !important;
+    }
+    .dropup .dropdown-menu {
+        top: auto !important;
+        bottom: 100% !important;
+        margin-bottom: 4px !important;
     }
 
     /* Create Purchase Button Styling with Solid Hover */
@@ -650,41 +639,43 @@
                     ? 'badge-status-partial-paid bg-amber-50 text-amber-700 border border-amber-200'
                     : 'badge-status-unpaid bg-rose-50 text-rose-700 border border-rose-200';
 
+                const isLastRow = (idx >= pageItems.length - 2 && pageItems.length > 1);
+
                 // Desktop Row (Action is placed on the FAR RIGHT)
                 let row = `
                     <tr data-row="${realIndex + 1}" class="hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors">
-                        <td class="p-[8px] text-center font-semibold text-slate-500 dark:text-slate-400 text-xs">${realIndex + 1}</td>
-                        <td class="p-[8px] text-center font-medium text-slate-600 dark:text-slate-300 text-xs whitespace-nowrap">${item.date || 'N/A'}</td>
-                        <td class="p-[8px] text-center font-bold text-emerald-700 dark:text-emerald-400 text-xs whitespace-nowrap">${item.purchase_id || 'N/A'}</td>
-                        <td class="p-[8px] text-start">${formatBarcodes(item.barcodes)}</td>
-                        <td class="p-[8px] text-start font-medium text-slate-500 dark:text-slate-400 text-xs">${item.referance_no || '-'}</td>
-                        <td class="p-[8px] text-start whitespace-nowrap">
-                            <a href="/supplier/profile/${item.supplier_db_id || item.supplier_id}" class="inline-flex items-center gap-1 font-semibold text-emerald-700 dark:text-emerald-400 hover:underline text-xs">
-                                <i class="fa-solid fa-truck-field text-[11px]"></i>
+                        <td class="py-2 px-[5px] text-center font-semibold text-slate-500 dark:text-slate-400 text-[11px]">${realIndex + 1}</td>
+                        <td class="py-2 px-[5px] text-center font-medium text-slate-600 dark:text-slate-300 text-[11px] lg:text-xs whitespace-nowrap">${item.date || 'N/A'}</td>
+                        <td class="py-2 px-[5px] text-center font-bold text-emerald-700 dark:text-emerald-400 text-[11px] lg:text-xs whitespace-nowrap">${item.purchase_id || 'N/A'}</td>
+                        <td class="py-2 px-[5px] text-start">${formatBarcodes(item.barcodes)}</td>
+                        <td class="py-2 px-[5px] text-start font-medium text-slate-500 dark:text-slate-400 text-[11px] lg:text-xs whitespace-nowrap">${item.referance_no || '-'}</td>
+                        <td class="py-2 px-[5px] text-start whitespace-nowrap">
+                            <a href="/supplier/profile/${item.supplier_db_id || item.supplier_id}" class="inline-flex items-center gap-1 font-semibold text-emerald-700 dark:text-emerald-400 hover:underline text-[11px] lg:text-xs">
+                                <i class="fa-solid fa-truck-field text-[10px]"></i>
                                 <span>${item.supplier_id || 'N/A'}</span>
                             </a>
                         </td>
-                        <td class="p-[8px] text-start font-bold text-slate-800 dark:text-slate-100 text-xs">
+                        <td class="py-2 px-[5px] text-start font-bold text-slate-800 dark:text-slate-100 text-[11px] lg:text-xs max-w-[120px] truncate" title="${item.supplier || ''}">
                             <a href="/supplier/profile/${item.supplier_db_id || item.supplier_id}" class="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
                                 ${item.supplier || 'N/A'}
                             </a>
                         </td>
-                        <td class="p-[8px] text-end font-bold text-slate-800 dark:text-slate-100 text-xs whitespace-nowrap">৳ ${g.toFixed(2)}</td>
-                        <td class="p-[8px] text-end font-bold text-emerald-600 dark:text-emerald-400 text-xs whitespace-nowrap font-mono">৳ ${p.toFixed(2)}</td>
-                        <td class="p-[8px] text-end font-bold text-rose-600 dark:text-rose-400 text-xs whitespace-nowrap font-mono">৳ ${d.toFixed(2)}</td>
-                        <td class="p-[8px] text-end font-bold text-rose-600 dark:text-rose-400 text-xs whitespace-nowrap font-mono">৳ ${r.toFixed(2)}</td>
-                        <td class="p-[8px] text-center font-medium text-slate-600 dark:text-slate-300 text-xs whitespace-nowrap">${item.payment_method || 'N/A'}</td>
-                        <td class="p-[8px] text-center whitespace-nowrap">
-                            <span class="px-2 py-0.5 rounded-md text-xs font-bold inline-flex items-center gap-1 ${statusClass}">
+                        <td class="py-2 px-[5px] text-end font-bold text-slate-800 dark:text-slate-100 text-xs sm:text-[12.5px] whitespace-nowrap font-mono">৳ ${g.toFixed(2)}</td>
+                        <td class="py-2 px-[5px] text-end font-bold text-emerald-600 dark:text-emerald-400 text-xs sm:text-[12.5px] whitespace-nowrap font-mono">৳ ${p.toFixed(2)}</td>
+                        <td class="py-2 px-[5px] text-end font-bold text-rose-600 dark:text-rose-400 text-xs sm:text-[12.5px] whitespace-nowrap font-mono">৳ ${d.toFixed(2)}</td>
+                        <td class="py-2 px-[5px] text-end font-bold text-rose-600 dark:text-rose-400 text-xs sm:text-[12.5px] whitespace-nowrap font-mono">৳ ${r.toFixed(2)}</td>
+                        <td class="py-2 px-[5px] text-center font-medium text-slate-600 dark:text-slate-300 text-[11px] lg:text-xs whitespace-nowrap">${item.payment_method || 'N/A'}</td>
+                        <td class="py-2 px-[5px] text-center whitespace-nowrap">
+                            <span class="px-1.5 py-0.5 rounded-md text-[10.5px] lg:text-xs font-bold inline-flex items-center gap-0.5 ${statusClass}">
                                 ${item.payment_status || 'Unpaid'}
                             </span>
                         </td>
-                        <td class="p-[8px] text-center">
-                            <div class="dropdown inline-block">
-                                <button class="w-[28px] h-[28px] rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center shadow-sm transition-all duration-150 mx-auto" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-boundary="viewport">
+                        <td class="py-2 px-[5px] text-center">
+                            <div class="dropdown ${isLastRow ? 'dropup' : ''} inline-block position-relative">
+                                <button class="w-[26px] h-[26px] rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center shadow-sm transition-all duration-150 mx-auto" type="button" data-bs-toggle="dropdown" data-bs-display="static" data-bs-boundary="viewport" aria-expanded="false">
                                     <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end shadow-xl border border-slate-200 dark:border-slate-700 rounded-xl p-1 bg-white dark:bg-slate-800 text-xs" style="min-width: 145px; z-index: 1050;">
+                                <ul class="dropdown-menu dropdown-menu-end shadow-xl border border-slate-200 dark:border-slate-700 rounded-xl p-1 bg-white dark:bg-slate-800 text-xs" style="min-width: 145px; z-index: 99999;">
                                     <li>
                                         <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60 font-medium" href="javascript:void(0)" onclick="viewInvoice(${item.id})">
                                             <i class="fa-solid fa-eye text-emerald-600 dark:text-emerald-400 w-4 text-center"></i>

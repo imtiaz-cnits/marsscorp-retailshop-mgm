@@ -966,7 +966,7 @@
         } catch (e) {
             hideLoader();
             console.error("Save error:", e);
-            errorToast("Failed to update invoice & product items.");
+            errorToast(e.response?.data?.message || "Failed to update invoice & product items.");
         }
         return false;
     }
