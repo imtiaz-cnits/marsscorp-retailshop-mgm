@@ -1,6 +1,6 @@
     <!-- Hero Main Content Start -->
     <div class="main-content">
-        <div class="page-content min-h-[calc(100vh-70px)] flex flex-col justify-between">
+        <div class="page-content min-h-screen flex flex-col justify-between">
             <div class="data-table flex-grow">
                 <div class="card bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm overflow-hidden mb-4 transition-colors">
                     <div class="card-body product-card-body p-4 sm:p-6 md:p-10">
@@ -469,16 +469,18 @@
                         statusClass = 'badge-unpaid';
                     }
 
+                    let customerRealId = item.customer ? item.customer.id : (item.customer_id || '');
+
                     // Desktop Table Row
                     let row = `
                         <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800">
                             <td class="p-[10px] text-center font-semibold text-slate-400 dark:text-slate-500">${realIndex + 1}</td>
                             <td class="p-[10px] text-start whitespace-nowrap text-slate-600 dark:text-slate-300 font-medium">${formatDate(item.due_collection_date)}</td>
                             <td class="p-[10px] text-start whitespace-nowrap">
-                                <span class="font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400 inline-flex items-center gap-1">
+                                <a href="${customerRealId ? '/customer/profile/' + customerRealId : 'javascript:void(0)'}" class="font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 hover:underline inline-flex items-center gap-1" title="View Customer Profile">
                                     <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                                    ${customerID}
-                                </span>
+                                    <span>${customerID}</span>
+                                </a>
                             </td>
                             <td class="p-[10px] text-start">
                                 <span class="font-bold text-slate-800 dark:text-slate-100 text-sm leading-snug">${customerName}</span>
@@ -498,9 +500,9 @@
                             <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800">
                                 <div class="flex items-center gap-1.5 flex-wrap">
                                     <span class="badge bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold" style="font-size: 10px;">#${realIndex + 1}</span>
-                                    <span class="badge bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-slate-800 font-semibold" style="font-size: 10px;">
+                                    <a href="${customerRealId ? '/customer/profile/' + customerRealId : 'javascript:void(0)'}" class="badge bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-slate-800 font-semibold" style="font-size: 10px;">
                                         <i class="fa-solid fa-user me-1 text-emerald-600"></i>${customerID}
-                                    </span>
+                                    </a>
                                 </div>
                                 <span class="badge ${statusClass}">${paymentStatus}</span>
                             </div>

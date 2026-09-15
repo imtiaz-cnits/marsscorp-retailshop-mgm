@@ -1798,7 +1798,6 @@
               <ul class="py-0.5 px-1 space-y-0.5">
                 <li><a href="{{ url('admin-dashboard-customer') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-customer') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-user-group text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Customer List</span></a></li>
                 <li><a href="{{ url('admin-dashboard-customer-due-list') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-customer-due-list') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-file-invoice text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Customer Due List</span></a></li>
-                <li><a href="{{ url('customer-due-collection-page') }}" class="sidebar-flyout-link {{ request()->is('customer-due-collection-page') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-hand-holding-dollar text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Due Collection List</span></a></li>
               </ul>
             </div>
           </li>
@@ -2063,15 +2062,6 @@
             </a>
             <div class="sidebar-mini-tooltip">
               Customer Due List
-            </div>
-          </li>
-          <li class="relative group">
-            <a href="{{ url('customer-due-collection-page') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->is('customer-due-collection-page') ? 'active-submenu-link' : '' }}">
-              <i class="fa-solid fa-hand-holding-dollar text-xs text-emerald-300/80 w-4 text-center"></i>
-              <span>Due Collection List</span>
-            </a>
-            <div class="sidebar-mini-tooltip">
-              Due Collection List
             </div>
           </li>
         </ul>
