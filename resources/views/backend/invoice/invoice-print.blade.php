@@ -608,7 +608,7 @@
                     let orderDetailsHtml = '';
                     let details = invoiceData.details || [];
                     details.forEach((item, index) => {
-                        let pName = item.product ? item.product.product_name : 'Product';
+                        let pName = item.product_name || 'Product';
                         let unitPrice = parseFloat(item.price) || 0;
                         let qty = parseFloat(item.quantity) || 0;
                         let total = parseFloat(item.total) || (unitPrice * qty);

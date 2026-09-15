@@ -18,78 +18,77 @@ use Illuminate\Support\Facades\Log;
 class InvoiceController extends Controller
 {
 
-    public function InvoicePrintReceipt()
-{
-    try {
-        $latestOrderPaymentDetails = OrderPaymentDetails::with('order.customer', 'order.details.product')
-            ->orderBy('created_at', 'desc')
-            ->first();
+    public function InvoicePrintReceipt(Request $request)
+    {
+        try {
+            $invoiceId = $request->query('id');
 
-        if (!$latestOrderPaymentDetails) {
-            return response()->json(['error' => 'No order payment details found']);
-        }
+            if ($invoiceId) {
+                $order = Order::with('customer', 'details.product', 'user')->find($invoiceId);
+                if (!$order) {
+                    return response()->json(['status' => 'error', 'message' => 'Order not found']);
+                }
+                $latestOrderPaymentDetails = OrderPaymentDetails::where('order_id', $order->id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+            } else {
+                // fallback: latest order
+                $latestOrderPaymentDetails = OrderPaymentDetails::with('order.customer', 'order.details.product')
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+                if (!$latestOrderPaymentDetails) {
+                    return response()->json(['status' => 'error', 'message' => 'No order found']);
+                }
+                $order = Order::with('customer', 'details.product', 'user')->find($latestOrderPaymentDetails->order_id);
+                if (!$order) {
+                    return response()->json(['status' => 'error', 'message' => 'Order not found']);
+                }
+            }
 
-        $orderId = $latestOrderPaymentDetails->order_id;
-        $order   = Order::with('customer', 'details.product', 'user')->find($orderId);
+            $customer = $order->customer;
 
-        if (!$order) {
-            return response()->json(['error' => 'Order not found']);
-        }
+            $previousOrdersDue = Order::where('customer_id', $customer->id)
+                ->where('id', '!=', $order->id)
+                ->sum('due_amount');
 
-        $customer = $order->customer;
+            $actualPreviousDue = ($customer->previous_due_amount ?? 0) + $previousOrdersDue;
 
-        // এই কাস্টমারের এই অর্ডার বাদ দিয়ে বাকি সব অর্ডারের due_amount এর যোগফল
-        $previousOrdersDue = Order::where('customer_id', $customer->id)
-            ->where('id', '!=', $orderId)
-            ->sum('due_amount');
-
-        // কাস্টমার টেবিলের previous_due_amount + আগের অর্ডারগুলোর due = প্রকৃত previous due
-        $actualPreviousDue = ($customer->previous_due_amount ?? 0) + $previousOrdersDue;
-
-        $responseData = [
-            'id'                 => $orderId,
-            'order_no'            => $order->order_no,
-            'invoice_date'        => $order->created_at->format('d-m-Y'),
-            'invoice_time'        => $order->created_at->format('h:i:s A'),
-            'operator_name'       => $order->user->name ?? 'N/A',
-            'payment_status'      => $latestOrderPaymentDetails->payment_status,
-            'total_cost'          => $order->total_cost,
-            'sub_total'           => $order->sub_total,
-            'discount_amount'     => $order->discount_amount,
-            'paid_amount'         => $order->paid_amount,
-            'due_amount'          => $order->due_amount, // এই অর্ডারের বাকি
-            'previous_due_amount' => $actualPreviousDue,  // এখানে নতুন ক্যালকুলেটেড মান
-            'total_due_amount'    => $actualPreviousDue + $order->due_amount, // ঐচ্ছিক: মোট বাকি
-            'order_note'          => $order->order_note,
-            'payment_method'      => $latestOrderPaymentDetails->payment_method,
-            'transaction_id'      => $latestOrderPaymentDetails->transaction_id,
-            'customer'            => [
-                'id'            => $customer->id,
-                'customer_name' => $customer->customer_name,
-                'quantity'      => $order->quantity,
-                'mobile'        => $customer->mobile,
-                'address'       => $customer->address,
-            ],
-            'order_details' => $order->details->map(function ($detail) {
-                $codes = json_decode($detail->product->product_code ?? '[]', true);
-                $code = is_array($codes) ? ($codes[0] ?? 'N/A') : ($detail->product->product_code ?? 'N/A');
+            $details = $order->details->map(function ($detail) {
+                $qty   = (float) ($detail->quantity ?? 0);
+                $price = (float) ($detail->selling_price ?? $detail->price ?? 0);
                 return [
-                    'product_name'   => $detail->product->product_name ?? 'N/A',
-                    'product_code'   => $code,
-                    'imei'           => $detail->product->imei_no ?? 'N/A',
-                    'quantity'       => $detail->quantity,
-                    'selling_price'  => $detail->selling_price,
-                    'price'          => $detail->price
+                    'product_name'  => $detail->product->product_name ?? 'N/A',
+                    'quantity'      => $qty,
+                    'price'         => $price,
+                    'total'         => $price * $qty,
                 ];
-            })->toArray(),
-        ];
+            })->toArray();
 
-        return response()->json($responseData);
+            $rows = [
+                'id'                  => $order->id,
+                'order_no'            => $order->order_no,
+                'invoice_date'        => $order->invoice_date ?? $order->created_at->format('d-m-Y'),
+                'order_note'          => $order->order_note,
+                'sub_total'           => $order->sub_total,
+                'discount_amount'     => $order->discount_amount,
+                'paid_amount'         => $order->paid_amount,
+                'due_amount'          => $order->due_amount,
+                'previous_due_amount' => $actualPreviousDue,
+                'payment_method'      => $latestOrderPaymentDetails ? $latestOrderPaymentDetails->payment_method : '',
+                'customer'            => [
+                    'customer_name'    => $customer->customer_name,
+                    'mobile'           => $customer->mobile,
+                    'address_details'  => $customer->address_details ?? $customer->address ?? '',
+                ],
+                'details'             => $details,
+            ];
 
-    } catch (Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['status' => 'success', 'rows' => $rows]);
+
+        } catch (Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
     }
-}
 
 // public function InvoicePrintReceipt()
 // {

@@ -2904,10 +2904,10 @@
 
     <script>
         function openCustomerModal() {
-            const modal = document.getElementById("createProduct");
-            if (modal) {
-                modal.style.display = "block";
-                document.documentElement.style.overflowY = "hidden";
+            const modalEl = document.getElementById("createCustomerModal");
+            if (modalEl) {
+                const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                modal.show();
             }
         }
 
@@ -4373,6 +4373,7 @@
                         timer: 1500,
                         showConfirmButton: false
                     }).then(() => {
+                        localStorage.setItem('invoice_id', res.data.invoice_id);
                         window.location.href = '/invoice-print';
                     });
                 } else {

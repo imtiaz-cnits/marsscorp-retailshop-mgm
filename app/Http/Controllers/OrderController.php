@@ -261,7 +261,7 @@ class OrderController extends Controller
             ]);
 
             DB::commit();
-            return response()->json(['status' => 'success', 'message' => 'Order created successfully']);
+            return response()->json(['status' => 'success', 'message' => 'Order created successfully', 'invoice_id' => $order->id]);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['status' => 'fail', 'message' => 'Order creation failed: ' . $e->getMessage()]);
