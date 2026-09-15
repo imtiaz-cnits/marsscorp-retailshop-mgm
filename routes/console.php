@@ -7,7 +7,8 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-Artisan::command('invoice:delete {order_no}', function ($orderNo) {
+Artisan::command('invoice:delete {order_no}', function () {
+    $orderNo = $this->argument('order_no');
     \Illuminate\Support\Facades\DB::transaction(function () use ($orderNo) {
         $order = \App\Models\Order::with(['details', 'payment', 'productReturns'])
             ->where('order_no', $orderNo)
