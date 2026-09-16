@@ -199,19 +199,14 @@
     <style>
         /* CSS for low stock and out of stock products */
         .low-stock {
-            background-color: #ffcccc;
-            /* Light red background for low stock */
+            background-color: transparent !important;
         }
 
         .out-of-stock {
-            background-color: #f8d7da;
-            /* Light red background for out-of-stock */
-            color: #721c24;
-            /* Dark red text for out-of-stock */
+            background-color: transparent !important;
         }
 
         .out-of-stock span {
-            color: #721c24;
             font-weight: bold;
         }
 
@@ -1028,34 +1023,143 @@
             color: #4ade80 !important;
         }
 
-        /* select - 2 end  */
-        .card-wrapper .product-price h1 {
+        /* Product Card Brand Tag, Price Hover & Stock Out Styling */
+        #product-card .card-wrapper .product-price {
+            background: transparent !important;
+            background-color: transparent !important;
+            min-height: 24px;
+            width: 100%;
+        }
+
+        #product-card .card-wrapper .product-price.out-of-stock {
+            background: transparent !important;
+            background-color: transparent !important;
+        }
+
+        #product-card .card-wrapper .pos-top-left-area {
+            position: relative;
+            display: flex;
+            align-items: center;
+            min-height: 24px;
+            min-width: 0;
+            flex: 1 1 auto;
+            max-width: calc(100% - 55px);
+            overflow: hidden !important;
+        }
+
+        #product-card .card-wrapper:hover .pos-top-left-area {
+            overflow: visible !important;
+        }
+
+        /* Brand tag is ALWAYS light green (never red) */
+        #product-card .card-wrapper .product-price span.pos-product-brand-tag,
+        #product-card .card-wrapper .product-price .pos-product-brand-tag,
+        #product-card .card-wrapper .pos-top-left-area .pos-product-brand-tag {
+            font-size: 9px !important;
+            font-weight: 600 !important;
+            color: #15803d !important;
+            background: #dcfce7 !important;
+            border: 1px solid #bbf7d0 !important;
+            border-radius: 10px !important;
+            padding: 1px 6px !important;
+            margin: 0 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            display: inline-block !important;
+            line-height: 1.25 !important;
+            max-width: 100% !important;
+            box-shadow: none !important;
+        }
+
+        /* PCS Stock Badge Default Styling */
+        #product-card .card-wrapper .product-price span.pos-stock-badge {
+            flex-shrink: 0 !important;
+            white-space: nowrap !important;
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            padding: 2px 7px !important;
+            border-radius: 12px !important;
+            line-height: 1.2 !important;
+            background: #dcfce7 !important;
+            color: #15803d !important;
+            border: 1px solid #bbf7d0 !important;
+            box-shadow: none !important;
+        }
+
+        /* Stock Out (<=0 pcs): PCS Badge turns RED */
+        #product-card .card-wrapper .product-price span.pos-stock-badge.stock-out-badge,
+        #product-card .card-wrapper.stock-out-card .product-price span.pos-stock-badge {
+            background: #fee2e2 !important;
+            color: #991b1b !important;
+            border: 1px solid #fca5a5 !important;
+        }
+
+        .pos-price-hover-area {
+            display: none !important;
+            flex-direction: column;
+            justify-content: center;
+            white-space: nowrap;
+            overflow: visible !important;
+            line-height: 1.15;
+        }
+
+        .pos-price-hover-area .sell-price-text {
+            font-size: 12px !important;
+            font-weight: 800 !important;
+            color: #16a34a !important;
+            margin: 0 !important;
+            line-height: 1.15 !important;
+        }
+
+        .pos-price-hover-area .cost-price-hidden {
+            font-size: 10px !important;
+            color: #dc2626 !important;
+            margin: 0 !important;
+            line-height: 1.15 !important;
             opacity: 0;
-            visibility: hidden;
-            transition: 0.4s;
-            margin-left: -20px;
+            transition: opacity 0.2s ease;
         }
 
-        #product-card .card-wrapper {
-            overflow: hidden;
+        /* On Hover: Brand tag is completely hidden */
+        #product-card .card-wrapper:hover .product-price span.pos-product-brand-tag,
+        #product-card .card-wrapper:hover .pos-product-brand-tag,
+        #product-card .card-wrapper:hover .pos-top-left-area .pos-product-brand-tag {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
         }
 
-        #product-card .card-wrapper:hover .product-price h1 {
+        #product-card .card-wrapper:hover .pos-price-hover-area {
+            display: flex !important;
+        }
+
+        #product-card .card-wrapper:hover .pos-price-hover-area .cost-price-hidden {
             opacity: 1;
-            visibility: visible;
-            margin-left: 0px;
         }
 
-        /* 1. Hide Cost Price in product list, show on hover */
-        .product-price h1:nth-of-type(2) {
-            opacity: 0;
-            transition: opacity 0.3s;
-            color: red;
-            font-size: 14px;
+        /* Stock Out Entire Card Red Border */
+        #product-card .card-wrapper.stock-out-card {
+            border-color: #ef4444 !important;
         }
 
-        .card-wrapper:hover .product-price h1:nth-of-type(2) {
-            opacity: 1;
+        #product-card .card-wrapper.stock-out-card:hover {
+            border-color: #dc2626 !important;
+        }
+
+        body[light-mode="dark"] #product-card .card-wrapper .product-price span.pos-product-brand-tag {
+            background: rgba(34, 197, 94, 0.15) !important;
+            color: #4ade80 !important;
+            border-color: rgba(34, 197, 94, 0.3) !important;
+        }
+
+        body[light-mode="dark"] #product-card .card-wrapper.stock-out-card {
+            border-color: #ef4444 !important;
         }
 
         /* 2. Highlight cart Cost Price input on hover */
@@ -2796,6 +2900,12 @@
                                         <input type="number" id="paidAmountInput" oninput="calculateDuePayment()" placeholder="0" style="width: 78px; height: 26px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 12px; font-weight: 700; text-align: right; padding: 2px 6px; outline: none;">
                                     </div>
 
+                                    <!-- Delivery Charge -->
+                                    <div class="subtotal d-flex align-items-center justify-content-between py-1 border-bottom border-light">
+                                        <span class="fw-bold" style="font-size: 12px; font-weight: 800 !important; color: #475569; text-transform: uppercase; letter-spacing: 0.4px;">Delivery Charge</span>
+                                        <input type="number" id="deliveryChargeInput" oninput="calculateDuePayment()" placeholder="0" min="0" step="any" style="width: 78px; height: 26px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 12px; font-weight: 700; text-align: right; padding: 2px 6px; outline: none;">
+                                    </div>
+
                                     <!-- Due Amount -->
                                     <div class="total d-flex align-items-center justify-content-between py-1 border-bottom border-light">
                                         <span class="fw-bold" style="font-size: 12px; font-weight: 800 !important; text-transform: uppercase; letter-spacing: 0.4px; color: #dc2626 !important;">Due Amount</span>
@@ -3312,18 +3422,22 @@
                     "{{ asset('backend/assets/img/product-img.svg') }}";
 
                 const isOutOfStock = (product.quantity <= 0);
-                const stockBadgeClass = isOutOfStock ? 'out-of-stock' : '';
                 const doorBadge = product.door_side ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 12px; border-radius: 6px; padding: 2px 6px;"><i class="fa-solid fa-door-open me-1"></i>${product.door_side}</span>` : '';
+                const brandName = product.brand ? (product.brand.name || '') : '';
+                const brandTag = brandName ? `<span class="pos-product-brand-tag" title="${brandName}">${brandName}</span>` : '';
 
                 const productCard = `
             <div class="col-xl-3 col-md-4 col-6 d-flex align-items-stretch">
-                <a href="javascript:void(0)" class="card-wrapper" onclick="addProductToCart(${product.id})">
-                    <div class="product-price ${stockBadgeClass} d-flex align-items-center justify-content-between">
-                       <div class="d-flex flex-column">
-                         <h1 class="fw-bold text-success m-0" style="font-size:13px;">৳ ${product.sell_price}</h1>
-                         <h1 class="cost-price-hidden small text-danger m-0" style="font-size:12px;">Cost: ৳ ${product.cost_price}</h1>
+                <a href="javascript:void(0)" class="card-wrapper ${isOutOfStock ? 'stock-out-card' : ''}" onclick="addProductToCart(${product.id})">
+                    <div class="product-price d-flex gap-2 align-items-center justify-content-between">
+                       <div class="pos-top-left-area">
+                         ${brandTag}
+                         <div class="pos-price-hover-area">
+                           <h1 class="sell-price-text m-0">৳ ${product.sell_price}</h1>
+                           <h1 class="cost-price-hidden m-0">Cost: ৳ ${product.cost_price}</h1>
+                         </div>
                        </div>
-                       <span class="badge ${isOutOfStock ? 'bg-danger-subtle text-danger border-danger' : 'bg-success-subtle text-success border-success'} fw-bold" style="font-size: 12px; border-radius: 12px; padding: 2px 8px;">
+                       <span class="badge pos-stock-badge ${isOutOfStock ? 'stock-out-badge' : ''}" style="font-size: 11px; border-radius: 12px; padding: 2px 7px; flex-shrink: 0;">
                            ${product.quantity} Pcs
                        </span>
                     </div>
@@ -3949,11 +4063,15 @@
         }
 
         function calculateDuePayment() {
-            // Get values dynamically
-            const subTotal = parseFloat(document.getElementById("subTotal").textContent.replace("৳", "").trim()) || 0;
-            const discountInputVal = parseFloat(document.getElementById("discountAmountInput").value) || 0;
+            // Calculate base items total directly from cart
+            const itemsTotal = cartItems.reduce((acc, item) => acc + ((parseFloat(item.sellingPrice) || 0) * (parseFloat(item.quantity) || 0)), 0);
+            const discountInputVal = parseFloat(document.getElementById("discountAmountInput")?.value) || 0;
             const discountType = document.querySelector('input[name="discountType"]:checked')?.value || 'flat';
-            const paidAmount = parseFloat(document.getElementById("paidAmountInput").value) || 0;
+            const paidAmount = parseFloat(document.getElementById("paidAmountInput")?.value) || 0;
+            const deliveryCharge = parseFloat(document.getElementById("deliveryChargeInput")?.value) || 0;
+
+            // Sub-Total is itemsTotal + deliveryCharge
+            const subTotalWithDelivery = itemsTotal + deliveryCharge;
 
             let discountAmount = 0;
             const badge = document.getElementById("discountCalculatedBadge");
@@ -3967,9 +4085,9 @@
                         confirmButtonColor: '#15803d'
                     });
                     document.getElementById("discountAmountInput").value = 100;
-                    discountAmount = subTotal;
+                    discountAmount = subTotalWithDelivery;
                 } else {
-                    discountAmount = (subTotal * discountInputVal) / 100;
+                    discountAmount = (subTotalWithDelivery * discountInputVal) / 100;
                 }
 
                 if (badge) {
@@ -3978,15 +4096,15 @@
                 }
             } else {
                 discountAmount = discountInputVal;
-                if (discountAmount > subTotal && subTotal > 0) {
+                if (discountAmount > subTotalWithDelivery && subTotalWithDelivery > 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Discount Limit',
                         text: 'Discount cannot exceed subtotal!',
                         confirmButtonColor: '#15803d'
                     });
-                    document.getElementById("discountAmountInput").value = subTotal;
-                    discountAmount = subTotal;
+                    document.getElementById("discountAmountInput").value = subTotalWithDelivery;
+                    discountAmount = subTotalWithDelivery;
                 }
 
                 if (badge) {
@@ -3994,10 +4112,12 @@
                 }
             }
 
-            const returnAdjAmount = 0;
-            // Calculate total after applying discount
-            const netPayable = Math.max(0, subTotal - discountAmount);
+            // Net payable after applying discount
+            const netPayable = Math.max(0, subTotalWithDelivery - discountAmount);
             const dueAmount = Math.max(0, netPayable - paidAmount);
+
+            // Update Sub-Total Display (Item total + Delivery charge)
+            document.getElementById("subTotal").textContent = `৳ ${subTotalWithDelivery.toFixed(2)}`;
 
             // Update the Due Amount Display
             document.getElementById("totalDuePayable").textContent = `৳ ${dueAmount.toFixed(2)}`;
@@ -4008,10 +4128,15 @@
                 bigSubTotalDisplay.textContent = `৳ ${netPayable.toFixed(2)}`;
             }
 
-            // Update the Status Display
+            // Sync Mobile & Tablet Total
+            if (document.getElementById("mobileCartTotal")) {
+                document.getElementById("mobileCartTotal").innerText = `৳ ${subTotalWithDelivery.toFixed(2)}`;
+            }
+
+            // Update Payment Status Display
             const paymentStatusDisplay = document.getElementById("paymentStatusDisplay");
-            const effectivePaid = paidAmount + returnAdjAmount;
-            const totalTarget = subTotal - discountAmount;
+            const effectivePaid = paidAmount;
+            const totalTarget = netPayable;
 
             if (effectivePaid >= totalTarget && totalTarget > 0) {
                 paymentStatusDisplay.textContent = "Paid";
@@ -4055,9 +4180,10 @@
             const customerId = document.getElementById('CustomerID')?.value || '1';
             const discount = document.getElementById('discountAmountInput')?.value || '';
             const discountType = document.querySelector('input[name="discountType"]:checked')?.value || 'flat';
+            const delivery = document.getElementById('deliveryChargeInput')?.value || '';
             const paid = document.getElementById('paidAmountInput')?.value || '';
             const note = document.getElementById('orderNote')?.value || '';
-            const subTotalVal = parseFloat(document.getElementById('subTotal')?.textContent.replace('৳', '')) || 0;
+            const itemsTotalVal = cartItems.reduce((acc, item) => acc + ((parseFloat(item.sellingPrice) || 0) * (parseFloat(item.quantity) || 0)), 0);
 
             const holdId = 'HOLD-' + Math.floor(1000 + Math.random() * 9000);
             const now = new Date();
@@ -4077,9 +4203,10 @@
                 cartItems: JSON.parse(JSON.stringify(cartItems)),
                 discount: discount,
                 discount_type: discountType,
+                delivery_charge: delivery,
                 paid: paid,
                 order_note: note,
-                subTotal: subTotalVal,
+                subTotal: itemsTotalVal + (parseFloat(delivery) || 0),
                 total_items: cartItems.reduce((acc, i) => acc + (i.quantity || 1), 0),
                 time: timeStr
             };
@@ -4094,6 +4221,7 @@
             if (document.getElementById('discountAmountInput')) document.getElementById('discountAmountInput').value = '';
             const radioFlat = document.getElementById('discountTypeFlat');
             if (radioFlat) radioFlat.checked = true;
+            if (document.getElementById('deliveryChargeInput')) document.getElementById('deliveryChargeInput').value = '';
             if (document.getElementById('paidAmountInput')) document.getElementById('paidAmountInput').value = '';
             if (document.getElementById('orderNote')) document.getElementById('orderNote').value = '';
 
@@ -4220,6 +4348,7 @@
                 if (radioFlat) radioFlat.checked = true;
             }
             if (document.getElementById('discountAmountInput')) document.getElementById('discountAmountInput').value = item.discount || '';
+            if (document.getElementById('deliveryChargeInput')) document.getElementById('deliveryChargeInput').value = item.delivery_charge || '';
             if (document.getElementById('paidAmountInput')) document.getElementById('paidAmountInput').value = item.paid || '';
             if (document.getElementById('orderNote')) document.getElementById('orderNote').value = item.order_note || '';
 
@@ -4256,8 +4385,9 @@
             }
         }
 
-        // Call function when discount or paid amount changes
+        // Call function when discount, delivery charge, or paid amount changes
         document.getElementById("discountAmountInput").addEventListener("input", calculateDuePayment);
+        document.getElementById("deliveryChargeInput").addEventListener("input", calculateDuePayment);
         document.getElementById("paidAmountInput").addEventListener("input", calculateDuePayment);
 
         // Initialize the values on page load
@@ -4281,14 +4411,16 @@
                 const Invoicedate = document.getElementById('CustomerDate')?.value;
                 let CustomerID = document.getElementById('CustomerID')?.value || '1';
                 const paidAmount = parseFloat(document.getElementById('paidAmountInput')?.value) || 0;
-                const subTotal = parseFloat(document.getElementById('subTotal')?.textContent.replace('৳', '')) || 0;
+                const deliveryCharge = parseFloat(document.getElementById('deliveryChargeInput')?.value) || 0;
+                const itemsTotal = cartItems.reduce((acc, item) => acc + ((parseFloat(item.sellingPrice) || 0) * (parseFloat(item.quantity) || 0)), 0);
+                const subTotalWithDelivery = itemsTotal + deliveryCharge;
                 const discountInputVal = parseFloat(document.getElementById('discountAmountInput')?.value) || 0;
                 const discountType = document.querySelector('input[name="discountType"]:checked')?.value || 'flat';
                 let discountAmount = 0;
                 if (discountType === 'percent') {
-                    discountAmount = (subTotal * Math.min(100, discountInputVal)) / 100;
+                    discountAmount = (subTotalWithDelivery * Math.min(100, discountInputVal)) / 100;
                 } else {
-                    discountAmount = discountInputVal;
+                    discountAmount = Math.min(subTotalWithDelivery, discountInputVal);
                 }
                 const dueAmount = parseFloat(document.getElementById('totalDuePayable')?.textContent.replace('৳', '')) || 0;
 
@@ -4343,7 +4475,8 @@
                 formData.append('mobile', mobile);
                 formData.append('address_details', address);
                 formData.append('customer_id', CustomerID);
-                formData.append('sub_total', subTotal);
+                formData.append('sub_total', itemsTotal);
+                formData.append('delivery_charge', deliveryCharge);
                 formData.append('return_adjustment_amount', returnAdjustmentAmount);
                 formData.append('invoice_date', Invoicedate);
                 formData.append('paid_amount', paidAmount);

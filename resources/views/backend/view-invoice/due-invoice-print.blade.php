@@ -463,6 +463,12 @@
                             <td class="lbl">Paid Amount</td>
                             <td class="val">{{ number_format($paidVal, 2) }}</td>
                         </tr>
+                        @if(($invoice->delivery_charge ?? 0) > 0)
+                        <tr>
+                            <td class="lbl">Delivery Charge</td>
+                            <td class="val">{{ number_format($invoice->delivery_charge, 2) }}</td>
+                        </tr>
+                        @endif
                         <tr>
                             <td class="lbl">Today Due</td>
                             <td class="val">{{ number_format($dueVal, 2) }}</td>

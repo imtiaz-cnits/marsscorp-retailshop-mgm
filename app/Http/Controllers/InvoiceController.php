@@ -71,6 +71,7 @@ class InvoiceController extends Controller
                 'order_note'          => $order->order_note,
                 'sub_total'           => $order->sub_total,
                 'discount_amount'     => $order->discount_amount,
+                'delivery_charge'     => (float) ($order->delivery_charge ?? 0),
                 'paid_amount'         => $order->paid_amount,
                 'due_amount'          => $order->due_amount,
                 'previous_due_amount' => $actualPreviousDue,

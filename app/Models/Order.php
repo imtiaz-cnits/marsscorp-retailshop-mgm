@@ -13,6 +13,7 @@ class Order extends Model
         'sub_total',
         'return_adjustment_amount',
         'discount_amount',
+        'delivery_charge',
         'paid_amount',
         'order_note',
         'due_amount',

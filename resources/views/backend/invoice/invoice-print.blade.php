@@ -502,6 +502,10 @@
                             <td class="lbl">Paid Amount</td>
                             <td class="val" id="paidamount">0.00</td>
                         </tr>
+                        <tr id="deliveryChargeRow">
+                            <td class="lbl">Delivery Charge</td>
+                            <td class="val" id="delivery_charge">0.00</td>
+                        </tr>
                         <tr>
                             <td class="lbl">Today Due</td>
                             <td class="val" id="due_amount">0.00</td>
@@ -629,16 +633,18 @@
                     // Set Calculations
                     let subTotalVal = parseFloat(invoiceData.sub_total) || 0;
                     let discountVal = parseFloat(invoiceData.discount_amount) || 0;
-                    let netVal = subTotalVal - discountVal;
+                    let deliveryChargeVal = parseFloat(invoiceData.delivery_charge) || 0;
+                    let netVal = (subTotalVal - discountVal) + deliveryChargeVal;
                     let paidVal = parseFloat(invoiceData.paid_amount) || 0;
                     let dueVal = parseFloat(invoiceData.due_amount) || 0;
-                    let prevDueVal = parseFloat(invoiceData.customer ? (invoiceData.customer.previous_due_amount || 0) : 0);
+                    let prevDueVal = parseFloat(invoiceData.previous_due_amount !== undefined ? invoiceData.previous_due_amount : (invoiceData.customer ? (invoiceData.customer.previous_due_amount || 0) : 0));
                     let totalDueVal = prevDueVal + dueVal;
 
                     document.getElementById('sub_total').innerText = subTotalVal.toFixed(2);
                     document.getElementById('discount_amount').innerText = discountVal.toFixed(2);
                     document.getElementById('net_amount').innerText = netVal.toFixed(2);
                     document.getElementById('paidamount').innerText = paidVal.toFixed(2);
+                    document.getElementById('delivery_charge').innerText = deliveryChargeVal.toFixed(2);
                     document.getElementById('due_amount').innerText = dueVal.toFixed(2);
                     document.getElementById('previous_due_amount').innerText = prevDueVal.toFixed(2);
                     document.getElementById('total_due_amount').innerText = totalDueVal.toFixed(2);
@@ -648,6 +654,13 @@
                         document.getElementById('discountRow').style.display = 'none';
                     } else {
                         document.getElementById('discountRow').style.display = 'table-row';
+                    }
+
+                    // Dynamic delivery charge row: hide if 0, show if > 0
+                    if (deliveryChargeVal <= 0) {
+                        document.getElementById('deliveryChargeRow').style.display = 'none';
+                    } else {
+                        document.getElementById('deliveryChargeRow').style.display = 'table-row';
                     }
 
                     // Convert Net Amount to Taka in words

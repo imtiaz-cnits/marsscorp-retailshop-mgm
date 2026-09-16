@@ -204,6 +204,7 @@ class OrderController extends Controller
                 'customer_id' => $request->customer_id,
                 'order_no' => $orderNo,
                 'sub_total' => $request->sub_total,
+                'delivery_charge' => (float) ($request->delivery_charge ?? 0),
                 'paid_amount' => $request->paid_amount,
                 'discount_amount' => $request->discount_amount,
                 'due_amount' => $request->due_amount,
