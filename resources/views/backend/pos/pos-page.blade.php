@@ -4517,12 +4517,41 @@
 
             try {
                 // Fetch customer input values
-                const name = document.getElementById('CustomerName')?.value.trim() || 'Walk-in Customer';
-                const mobile = document.getElementById('CustomerMobileNumber')?.value.trim() || '01000000000';
+                const name = document.getElementById('CustomerName')?.value.trim();
+                const mobile = document.getElementById('CustomerMobileNumber')?.value.trim();
                 const address = document.getElementById('CustomerAddress')?.value.trim() || '';
                 const totalPreviousDueAmount = document.getElementById('totalPreviousDueAmount')?.value.trim() || '0';
                 const Invoicedate = document.getElementById('CustomerDate')?.value;
-                let CustomerID = document.getElementById('CustomerID')?.value || '1';
+                const CustomerID = document.getElementById('CustomerID')?.value?.trim();
+
+                // 1. Validate Customer is selected or created (Cannot complete order without customer)
+                if (!CustomerID || CustomerID === '' || CustomerID === '0') {
+                    if (typeof errorToast === 'function') {
+                        errorToast('⚠️ অনুগ্রহ করে কাস্টমার সিলেক্ট অথবা তৈরি করুন!');
+                    } else if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Customer Required',
+                            text: 'অনুগ্রহ করে কাস্টমার সিলেক্ট অথবা তৈরি করুন!',
+                            confirmButtonColor: '#15803d'
+                        });
+                    }
+
+                    // Highlight the customer selector box visually
+                    const dropdownSelected = document.querySelector('.select-box-dropdown .select-dropdown-selected');
+                    if (dropdownSelected) {
+                        dropdownSelected.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        dropdownSelected.style.transition = 'all 0.3s ease';
+                        dropdownSelected.style.border = '2px solid #dc2626';
+                        dropdownSelected.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.35)';
+                        setTimeout(() => {
+                            dropdownSelected.style.border = '';
+                            dropdownSelected.style.boxShadow = '';
+                        }, 3000);
+                    }
+                    return;
+                }
+
                 const paidAmount = parseFloat(document.getElementById('paidAmountInput')?.value) || 0;
                 const deliveryCharge = parseFloat(document.getElementById('deliveryChargeInput')?.value) || 0;
                 const itemsTotal = cartItems.reduce((acc, item) => acc + ((parseFloat(item.sellingPrice) || 0) * (parseFloat(item.quantity) || 0)), 0);

@@ -195,6 +195,13 @@ class OrderController extends Controller
 
     public function OrderCreate(Request $request)
     {
+        if (empty($request->customer_id)) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'কাস্টমার সিলেক্ট অথবা তৈরি করা আবশ্যক!'
+            ], 422);
+        }
+
         DB::beginTransaction();
         try {
             $user_id = Auth::id();
