@@ -746,25 +746,17 @@
 
             let data = res.data['SalesReportData'] || [];
 
-            // If empty, supply clean fallback dummy record so user sees full table
-            if (data.length === 0) {
-                allSalesData = [dummySalesRecord];
-            } else {
-                // New records shown at the top
-                allSalesData = data.slice().reverse();
-            }
+            // New records shown at the top
+            allSalesData = data.slice().reverse();
 
             currentPage = 1;
             renderTable();
         } catch (e) {
             if (typeof hideLoader === 'function') hideLoader();
             console.error('Error fetching sales report:', e);
-            // On error or unauthorized, show fallback dummy data so UI stays intact
-            if (allSalesData.length === 0) {
-                allSalesData = [dummySalesRecord];
-                currentPage = 1;
-                renderTable();
-            }
+            allSalesData = [];
+            currentPage = 1;
+            renderTable();
             if (typeof unauthorized === 'function' && e.response) {
                 unauthorized(e.response.status);
             }

@@ -796,48 +796,6 @@
         renderTable(false);
     }
 
-    // Realistic Demo Transactions
-    function getDemoTransactions() {
-        return [
-            {
-                timestamp: new Date().toISOString(),
-                date: "10 Sep 2026, 02:45 PM",
-                ref_no: "SALE-POS0012",
-                particulars: "নগদ বিক্রি - ইনভয়েস #POS-1002",
-                party_name: "Walk-in Customer",
-                type: "inflow",
-                category: "ক্যাশ সেলস (Sales)",
-                inflow: 4500.00,
-                outflow: 0.00,
-                running_balance: 4500.00
-            },
-            {
-                timestamp: new Date(Date.now() - 3600000).toISOString(),
-                date: "10 Sep 2026, 01:15 PM",
-                ref_no: "EXP-104",
-                particulars: "দোকানের খরচ - বিদ্যুৎ বিল ও নাশতা",
-                party_name: "General Expense",
-                type: "outflow",
-                category: "দোকান খরচ (Expense)",
-                inflow: 0.00,
-                outflow: 1200.00,
-                running_balance: 3300.00
-            },
-            {
-                timestamp: new Date(Date.now() - 7200000).toISOString(),
-                date: "10 Sep 2026, 11:30 AM",
-                ref_no: "CUST-PAY-209",
-                particulars: "কাস্টমার বকেয়া আদায়",
-                party_name: "Al-Amin Traders",
-                type: "inflow",
-                category: "বকেয়া কালেকশন (Due)",
-                inflow: 2500.00,
-                outflow: 0.00,
-                running_balance: 5800.00
-            }
-        ];
-    }
-
     // Main Fetch Function
     async function fetchDailyLedger() {
         const startDate = document.getElementById("startDate").value || formatDateStr(new Date());
@@ -856,20 +814,14 @@
 
             if (res.data && res.data.status === 'success') {
                 let list = res.data.ledgerData || [];
-                currentSummary = res.data.summary || {};
-
-                // If no real transactions exist in database for selected dates, load demo transactions
-                if (list.length === 0) {
-                    list = getDemoTransactions();
-                    currentSummary = {
-                        total_inflow: 7000.00,
-                        total_outflow: 1200.00,
-                        net_balance: 5800.00,
-                        total_count: 3,
-                        start_date: startDate,
-                        end_date: endDate
-                    };
-                }
+                currentSummary = res.data.summary || {
+                    total_inflow: 0,
+                    total_outflow: 0,
+                    net_balance: 0,
+                    total_count: 0,
+                    start_date: startDate,
+                    end_date: endDate
+                };
 
                 // Sort: Newest transactions on top
                 allLedgerData = list.slice().sort((a, b) => {
@@ -879,9 +831,9 @@
                 });
 
                 // Update Summary Cards
-                const inAmt = formatMoney(currentSummary.total_inflow);
-                const outAmt = formatMoney(currentSummary.total_outflow);
-                const netAmt = formatMoney(currentSummary.net_balance);
+                const inAmt = formatMoney(currentSummary.total_inflow || 0);
+                const outAmt = formatMoney(currentSummary.total_outflow || 0);
+                const netAmt = formatMoney(currentSummary.net_balance || 0);
                 const countText = (currentSummary.total_count || 0) + ' Entries';
 
                 document.getElementById('summaryInflow').innerText = '৳ ' + inAmt;
@@ -911,23 +863,28 @@
                 renderTable(false);
 
             } else {
+                allLedgerData = [];
+                currentSummary = { total_inflow: 0, total_outflow: 0, net_balance: 0, total_count: 0, start_date: startDate, end_date: endDate };
                 tbody.innerHTML = `<tr><td colspan="8" class="text-center text-rose-500 font-medium" style="padding: 48px 16px !important;">Failed to load data: ${res.data.message || 'Unknown error'}</td></tr>`;
+                if (mobileBox) mobileBox.innerHTML = `<div class="p-8 text-center text-rose-500 font-medium text-xs">Failed to load data.</div>`;
+                renderPagination(0, currentPerPage, 1);
             }
         } catch (e) {
             if (typeof hideLoader === "function") hideLoader();
             console.error("Ledger Fetch Error:", e);
-            allLedgerData = getDemoTransactions();
-            currentSummary = { total_inflow: 7000, total_outflow: 1200, net_balance: 5800, total_count: 3, start_date: startDate, end_date: endDate };
-            document.getElementById('summaryInflow').innerText = '৳ ' + formatMoney(7000);
-            document.getElementById('summaryOutflow').innerText = '৳ ' + formatMoney(1200);
-            document.getElementById('summaryNetBalance').innerText = '৳ ' + formatMoney(5800);
-            document.getElementById('summaryTxCount').innerText = '3 Entries';
-            document.getElementById('tfootTotalInflow').innerText = '৳ ' + formatMoney(7000);
-            document.getElementById('tfootTotalOutflow').innerText = '৳ ' + formatMoney(1200);
-            document.getElementById('tfootNetBalance').innerText = '৳ ' + formatMoney(5800);
+            allLedgerData = [];
+            currentSummary = { total_inflow: 0, total_outflow: 0, net_balance: 0, total_count: 0, start_date: startDate, end_date: endDate };
+            document.getElementById('summaryInflow').innerText = '৳ ' + formatMoney(0);
+            document.getElementById('summaryOutflow').innerText = '৳ ' + formatMoney(0);
+            document.getElementById('summaryNetBalance').innerText = '৳ ' + formatMoney(0);
+            document.getElementById('summaryTxCount').innerText = '0 Entries';
+            document.getElementById('tfootTotalInflow').innerText = '৳ ' + formatMoney(0);
+            document.getElementById('tfootTotalOutflow').innerText = '৳ ' + formatMoney(0);
+            document.getElementById('tfootNetBalance').innerText = '৳ ' + formatMoney(0);
             currentPage = 1;
             renderTable(false);
         }
+    }
     }
 
     // Render Table (Desktop Table + Mobile Box Cards)

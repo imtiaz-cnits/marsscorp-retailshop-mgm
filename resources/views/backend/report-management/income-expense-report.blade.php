@@ -744,29 +744,21 @@
 
             if (res.data.status === 'success') {
                 let data = res.data.reportData || [];
-                if (data.length === 0) {
-                    allReportData = [dummyIncomeExpenseRecord];
-                } else {
-                    // Newest at top
-                    allReportData = data.slice().reverse();
-                }
+                // Newest at top
+                allReportData = data.slice().reverse();
                 currentPage = 1;
                 renderTable();
             } else {
-                if (allReportData.length === 0) {
-                    allReportData = [dummyIncomeExpenseRecord];
-                    currentPage = 1;
-                    renderTable();
-                }
+                allReportData = [];
+                currentPage = 1;
+                renderTable();
             }
         } catch (e) {
             if (typeof hideLoader === 'function') hideLoader();
             console.error('Error fetching income expense report:', e);
-            if (allReportData.length === 0) {
-                allReportData = [dummyIncomeExpenseRecord];
-                currentPage = 1;
-                renderTable();
-            }
+            allReportData = [];
+            currentPage = 1;
+            renderTable();
             if (typeof unauthorized === 'function' && e.response) {
                 unauthorized(e.response.status);
             }

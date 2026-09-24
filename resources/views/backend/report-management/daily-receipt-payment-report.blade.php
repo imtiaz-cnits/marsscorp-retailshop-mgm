@@ -708,31 +708,7 @@
                             (data.SupplierPayments && data.SupplierPayments.length > 0) ||
                             (data.Expenses && data.Expenses.length > 0);
 
-            // If no records or transactions found, render dummy data for instant preview
-            const hasTransactions = (data.CollectionFromSales && parseFloat(data.CollectionFromSales) > 0) ||
-                                    (data.SupplierPayments && data.SupplierPayments.length > 0) ||
-                                    (data.Expenses && data.Expenses.length > 0);
-
-            if (!hasTransactions && !window.__preventDailyReceiptDummy) {
-                // Fallback Dummy Demo Data so table is never empty/hidden
-                data = {
-                    OpeningBalance: (data && data.OpeningBalance) ? parseFloat(data.OpeningBalance) : 5000.00,
-                    CollectionFromSales: 18500.00,
-                    SupplierPayments: [
-                        { supplier_name: "Demo Wholesale Ltd", total_paid: 4500.00 },
-                        { supplier_name: "Dhaka Trade Link", total_paid: 3200.00 },
-                        { supplier_name: "Meghna Paper House", total_paid: 1800.00 }
-                    ],
-                    Expenses: [
-                        { type_name: "Shop Electricity Bill", total_expense: 1200.00 },
-                        { type_name: "Staff Tiffin & Snacks", total_expense: 450.00 },
-                        { type_name: "Office Stationery", total_expense: 620.00 }
-                    ]
-                };
-                isDummyActive = true;
-            } else {
-                isDummyActive = false;
-            }
+            isDummyActive = false;
 
             rawApiResponse = data;
             buildNormalizedRows();

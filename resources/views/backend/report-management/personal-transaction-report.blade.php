@@ -704,24 +704,7 @@
 
             const hasData = expenseArr.length > 0 || investArr.length > 0;
 
-            if (!hasData && !window.__preventPersonalTransactionDummy) {
-                // Demo Fallback Data
-                expenseArr = [
-                    { date: startDate, type_name: "Office Utility & Internet", expense_amount: 1850.00 },
-                    { date: startDate, type_name: "Staff Conveyance & Refreshment", expense_amount: 650.00 },
-                    { date: startDate, type_name: "Marketing & Promo Print", expense_amount: 2400.00 }
-                ];
-                investArr = [
-                    { date: startDate, name: "Tanvir Ahmed (Partner)", invest_amount: 60000.00 },
-                    { date: startDate, name: "Rahim Chowdhury (Director)", invest_amount: 40000.00 },
-                    { date: startDate, name: "Nafis Iqbal (Investor)", invest_amount: 25000.00 }
-                ];
-                expTotal = 4900.00;
-                invTotal = 125000.00;
-                isDummyActive = true;
-            } else {
-                isDummyActive = false;
-            }
+            isDummyActive = false;
 
             allExpenseData = expenseArr;
             allInvestData = investArr;
@@ -735,27 +718,14 @@
         } catch (e) {
             hideLoader();
             console.error('Error fetching personal transaction report:', e);
-            // If backend throws an error or no data, provide demo rows if not prevented
-            if (!window.__preventPersonalTransactionDummy) {
-                allExpenseData = [
-                    { date: startDate, type_name: "Office Utility & Internet", expense_amount: 1850.00 },
-                    { date: startDate, type_name: "Staff Conveyance & Refreshment", expense_amount: 650.00 },
-                    { date: startDate, type_name: "Marketing & Promo Print", expense_amount: 2400.00 }
-                ];
-                allInvestData = [
-                    { date: startDate, name: "Tanvir Ahmed (Partner)", invest_amount: 60000.00 },
-                    { date: startDate, name: "Rahim Chowdhury (Director)", invest_amount: 40000.00 },
-                    { date: startDate, name: "Nafis Iqbal (Investor)", invest_amount: 25000.00 }
-                ];
-                totalExpAmt = 4900.00;
-                totalInvAmt = 125000.00;
-                isDummyActive = true;
-                buildMergedRows();
-                updateStatCards();
-                applyFilterAndRender();
-            } else {
-                unauthorized(e.response ? e.response.status : 500);
-            }
+            allExpenseData = [];
+            allInvestData = [];
+            totalExpAmt = 0;
+            totalInvAmt = 0;
+            isDummyActive = false;
+            buildMergedRows();
+            updateStatCards();
+            applyFilterAndRender();
         }
     }
 
