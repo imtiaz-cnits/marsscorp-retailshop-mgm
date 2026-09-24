@@ -1000,7 +1000,14 @@
                     <div class="col-lg-12 mt-2">
                         <div class="form-row flex-column align-items-start">
                             <label for="ProductName" class="fw-semibold small" style="color: #334155; display: block; margin-bottom: 2px !important; font-size: 13px;">Product Name <span class="text-danger">*</span></label>
-                            <input type="text" placeholder="Product Name *" id="ProductName" class="form-control" style="width: 100%; height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" />
+                            <input type="text" placeholder="Product Name *" id="ProductName" class="form-control" style="width: 100%; height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px;" oninput="checkDuplicateProductName()" />
+                            <!-- Dynamic Duplicate Alert Box -->
+                            <div id="productNameDuplicateAlert" class="mt-2 w-100 p-2.5 rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-950/40 dark:border-amber-700/50 text-amber-900 dark:text-amber-200 text-xs font-medium" style="display: none; border-radius: 8px;">
+                                <div class="d-flex items-start gap-2">
+                                    <i class="fa-solid fa-triangle-exclamation text-amber-600 dark:text-amber-400 text-sm mt-0.5 flex-shrink-0"></i>
+                                    <div id="productNameDuplicateText"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1902,6 +1909,13 @@
 
         // Reset Product Image Preview and File info
         resetProductImagePreview();
+
+        // Reset Duplicate Alert
+        const dupAlert = document.getElementById('productNameDuplicateAlert');
+        if (dupAlert) dupAlert.style.display = 'none';
+        const pNameInput = document.getElementById('ProductName');
+        if (pNameInput) pNameInput.style.borderColor = '#cbd5e1';
+        isProductDuplicateDetected = false;
     }
 
     // Image Preview and File Info Handler
@@ -2194,6 +2208,65 @@
 {{-- Product Create JS Code Start  --}}
 
 <script>
+    let duplicateCheckTimeout = null;
+    let isProductDuplicateDetected = false;
+
+    async function checkDuplicateProductName() {
+        clearTimeout(duplicateCheckTimeout);
+        duplicateCheckTimeout = setTimeout(async () => {
+            const nameInput = document.getElementById('ProductName');
+            const alertBox = document.getElementById('productNameDuplicateAlert');
+            const alertText = document.getElementById('productNameDuplicateText');
+            if (!nameInput || !alertBox || !alertText) return;
+
+            const pName = nameInput.value.trim();
+            const brandId = document.getElementById('ProductBrand') ? document.getElementById('ProductBrand').value : '';
+            const catId = document.getElementById('ProductCategoryDataID') ? document.getElementById('ProductCategoryDataID').value : '';
+            const doorContainer = document.getElementById('doorHandednessContainer');
+            const isDoor = doorContainer && doorContainer.style.display !== 'none';
+            const doorSide = document.getElementById('selectedDoorSide') ? document.getElementById('selectedDoorSide').value : '';
+
+            if (!pName || pName.length < 2) {
+                alertBox.style.display = 'none';
+                isProductDuplicateDetected = false;
+                nameInput.style.borderColor = '#cbd5e1';
+                return;
+            }
+
+            try {
+                const res = await axios.post('/api/check-duplicate-product', {
+                    product_name: pName,
+                    brand_id: brandId,
+                    category_id: catId,
+                    door_side: isDoor ? doorSide : null
+                }, HeaderToken());
+
+                if (res.data && res.data.exists && res.data.product) {
+                    isProductDuplicateDetected = true;
+                    const existing = res.data.product;
+                    const stockQty = parseInt(existing.quantity) || 0;
+                    const costVal = parseFloat(existing.cost_price) || 0;
+                    alertText.innerHTML = `<strong>সতর্কতা:</strong> এই নামের প্রোডাক্ট ইতিমধ্যে ডাটাবেজে রয়েছে! (বর্তমান স্টক: <strong>${stockQty}</strong>, কস্ট প্রাইস: <strong>৳${costVal}</strong>)। নতুন প্রোডাক্ট না বানিয়ে স্টক বাড়াতে <strong>Purchase (ক্রয়)</strong> অথবা <strong>Edit</strong> করুন।`;
+                    alertBox.style.display = 'block';
+                    nameInput.style.borderColor = '#f59e0b';
+                } else {
+                    isProductDuplicateDetected = false;
+                    alertBox.style.display = 'none';
+                    nameInput.style.borderColor = '#cbd5e1';
+                }
+            } catch (err) {
+                console.error('Duplicate check error:', err);
+            }
+        }, 350);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const brandInput = document.getElementById('ProductBrand');
+        const catInput = document.getElementById('ProductCategoryDataID');
+        if (brandInput) brandInput.addEventListener('change', checkDuplicateProductName);
+        if (catInput) catInput.addEventListener('change', checkDuplicateProductName);
+    });
+
     async function ProductDataSave(event) {
         event.preventDefault();
         try {
@@ -2237,6 +2310,9 @@
                 return false;
             } else if (ProductName.length === 0) {
                 errorToast("Product Name is required!");
+                return false;
+            } else if (isProductDuplicateDetected && !isDoorVisible) {
+                errorToast(`এই ব্র্যান্ড ও ক্যাটাগরিতে "${ProductName}" ইতিমধ্যে ডাটাবেজে রয়েছে! নতুন এন্ট্রি না বানিয়ে Purchase বা Edit করুন।`);
                 return false;
             } else {
                 let formData = new FormData();

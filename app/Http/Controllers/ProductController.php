@@ -215,6 +215,52 @@ class ProductController extends Controller
             if ($rightQty > 0) $doorEntries['Right Handed'] = $rightQty;
             if ($bothQty > 0) $doorEntries['Both Handed'] = $bothQty;
 
+            $productName = trim($request->product_name);
+            $catId = (!empty($request->category_id) && $request->category_id !== 'none') ? $request->category_id : null;
+            $brandId = (!empty($request->brand_id) && $request->brand_id !== 'none') ? $request->brand_id : null;
+
+            // Check if duplicate product already exists
+            if (count($doorEntries) > 1) {
+                foreach (array_keys($doorEntries) as $side) {
+                    $existQ = Product::where('product_name', $productName)->where('door_side', $side);
+                    if ($catId) $existQ->where('category_id', $catId);
+                    if ($brandId) $existQ->where('brand_id', $brandId);
+                    $existing = $existQ->first();
+                    if ($existing) {
+                        return response()->json([
+                            'status' => 'fail',
+                            'message' => "\"{$productName}\" ({$side}) ইতিমধ্যে ডাটাবেজে রয়েছে! স্টক বাড়াতে Purchase বা Edit করুন।"
+                        ]);
+                    }
+                }
+            } else {
+                $checkDoorSide = null;
+                if (count($doorEntries) === 1) {
+                    $checkDoorSide = array_key_first($doorEntries);
+                } else if (!empty($request->door_side) && $request->door_side !== 'none') {
+                    $checkDoorSide = $request->door_side;
+                }
+
+                $existQ = Product::where('product_name', $productName);
+                if ($catId) $existQ->where('category_id', $catId);
+                if ($brandId) $existQ->where('brand_id', $brandId);
+                if ($checkDoorSide) {
+                    $existQ->where('door_side', $checkDoorSide);
+                } else {
+                    $existQ->where(function ($q) {
+                        $q->whereNull('door_side')->orWhere('door_side', '');
+                    });
+                }
+
+                $existing = $existQ->first();
+                if ($existing) {
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => "এই ব্র্যান্ড ও ক্যাটাগরিতে \"{$productName}\" ইতিমধ্যে ডাটাবেজে রয়েছে! নতুন প্রোডাক্ট না বানিয়ে স্টক বাড়াতে Purchase অথবা Edit করুন।"
+                    ]);
+                }
+            }
+
             // If multiple door handedness quantities are entered
             if (count($doorEntries) > 1) {
                 $createdProducts = [];
@@ -271,6 +317,46 @@ class ProductController extends Controller
         } catch (Exception $e) {
             Log::error($e->getMessage()); // Log the error message
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function checkDuplicateProduct(Request $request)
+    {
+        try {
+            $productName = trim($request->input('product_name', ''));
+            $categoryId = $request->input('category_id');
+            if ($categoryId === 'none' || empty($categoryId)) $categoryId = null;
+            $brandId = $request->input('brand_id');
+            if ($brandId === 'none' || empty($brandId)) $brandId = null;
+            $doorSide = $request->input('door_side');
+            if ($doorSide === 'none' || empty($doorSide)) $doorSide = null;
+
+            if (empty($productName)) {
+                return response()->json(['exists' => false]);
+            }
+
+            $query = Product::where('product_name', $productName);
+            if ($categoryId) {
+                $query->where('category_id', $categoryId);
+            }
+            if ($brandId) {
+                $query->where('brand_id', $brandId);
+            }
+            if ($doorSide) {
+                $query->where('door_side', $doorSide);
+            } else {
+                $query->where(function ($q) {
+                    $q->whereNull('door_side')->orWhere('door_side', '');
+                });
+            }
+
+            $existing = $query->first(['id', 'product_name', 'quantity', 'cost_price', 'sell_price']);
+            return response()->json([
+                'exists' => (bool)$existing,
+                'product' => $existing
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['exists' => false, 'error' => $e->getMessage()]);
         }
     }
 

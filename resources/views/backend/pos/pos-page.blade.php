@@ -4540,7 +4540,10 @@
                     // Highlight the customer selector box visually
                     const dropdownSelected = document.querySelector('.select-box-dropdown .select-dropdown-selected');
                     if (dropdownSelected) {
-                        dropdownSelected.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        dropdownSelected.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest'
+                        });
                         dropdownSelected.style.transition = 'all 0.3s ease';
                         dropdownSelected.style.border = '2px solid #dc2626';
                         dropdownSelected.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.35)';

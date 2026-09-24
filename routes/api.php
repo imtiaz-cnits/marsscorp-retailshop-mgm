@@ -83,6 +83,7 @@ Route::match(['get', 'post'], '/product-search-by-name', [ProductController::cla
 
 Route::get("/product-list", [ProductController::class, 'ProductList'])->middleware('auth:sanctum');
 Route::post("/create-product", [ProductController::class, 'ProductCreate'])->middleware('auth:sanctum');
+Route::post("/check-duplicate-product", [ProductController::class, 'checkDuplicateProduct'])->middleware('auth:sanctum');
 Route::post("/product-by-id", [ProductController::class, 'ProductByID'])->middleware('auth:sanctum');
 Route::post("/update-product", [ProductController::class, 'ProductUpdate'])->middleware('auth:sanctum');
 Route::post("/delete-product", [ProductController::class, 'ProductDelete'])->middleware('auth:sanctum');

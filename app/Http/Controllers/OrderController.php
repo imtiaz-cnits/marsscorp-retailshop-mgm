@@ -393,7 +393,4 @@ class OrderController extends Controller
         $newIdNumber = $lastIdNumber + 1;
         return 'CUST-' . str_pad($newIdNumber, 4, '0', STR_PAD_LEFT);
     }
-
-
-
 }

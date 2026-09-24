@@ -5,12 +5,12 @@ function hideLoader() {
     document.getElementById('loader').classList.add('d-none')
 }
 
-function successToast(msg) {
+function successToast(msg, gravity = "top", position = "right") {
     Toastify({
-        gravity: "bottom", // `top` or `bottom`
-        position: "left", // `left`, `center` or `right`
+        gravity: gravity, // `top` or `bottom`
+        position: position, // `left`, `center` or `right`
         text: msg,
-        className: "mb-4 ms-2",
+        className: gravity === "top" ? "mt-3 me-3" : "mb-4 ms-2",
         style: {
             background: "linear-gradient(135deg, #15803d 0%, #16a34a 100%)",
             borderRadius: "8px",
@@ -22,12 +22,12 @@ function successToast(msg) {
     }).showToast();
 }
 
-function errorToast(msg) {
+function errorToast(msg, gravity = "top", position = "right") {
     Toastify({
-        gravity: "bottom", // `top` or `bottom`
-        position: "left", // `left`, `center` or `right`
+        gravity: gravity, // `top` or `bottom`
+        position: position, // `left`, `center` or `right`
         text: msg,
-        className: "mb-4 ms-2",
+        className: gravity === "top" ? "mt-3 me-3" : "mb-4 ms-2",
         style: {
             background: "linear-gradient(135deg, #b91c1c 0%, #dc2626 100%)",
             borderRadius: "8px",
