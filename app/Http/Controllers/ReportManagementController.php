@@ -102,8 +102,11 @@ public function DailyReceiptPaymentReport(Request $request)
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->sum('paid_amount') ?? 0;
 
+            $startDay = $startDate->toDateString();
+            $endDay   = $endDate->toDateString();
+
             $totalExpense = DB::table('expenses')
-                ->whereBetween('created_at', [$startDate, $endDate])
+                ->whereBetween(DB::raw("DATE(COALESCE(NULLIF(expenses.date, ''), expenses.created_at))"), [$startDay, $endDay])
                 ->sum('expense_amount') ?? 0;
 
             // ৩. আজকের Closing Balance (কালকের Opening হবে)
@@ -123,7 +126,7 @@ public function DailyReceiptPaymentReport(Request $request)
 
             $expensesByType = DB::table('expenses')
                 ->join('expense_types', 'expenses.expense_type_id', '=', 'expense_types.id')
-                ->whereBetween('expenses.created_at', [$startDate, $endDate])
+                ->whereBetween(DB::raw("DATE(COALESCE(NULLIF(expenses.date, ''), expenses.created_at))"), [$startDay, $endDay])
                 ->selectRaw('expense_types.type_name, SUM(expenses.expense_amount) as total_expense')
                 ->groupBy('expense_types.id', 'expense_types.type_name')
                 ->get();
@@ -176,6 +179,9 @@ public function DailyReceiptPaymentReport(Request $request)
     // নেট ক্যাশ ফ্লো (Income - Supplier Payment - Expense)
     private function calculateNetFlowFrom($fromDate, $toDate)
     {
+        $fromDay = Carbon::parse($fromDate)->toDateString();
+        $toDay   = Carbon::parse($toDate)->toDateString();
+
         $income = DB::table('order_payment_details')
             ->where('created_at', '>=', $fromDate)
             ->where('created_at', '<', $toDate)
@@ -187,8 +193,8 @@ public function DailyReceiptPaymentReport(Request $request)
             ->sum('paid_amount') ?? 0;
 
         $expense = DB::table('expenses')
-            ->where('created_at', '>=', $fromDate)
-            ->where('created_at', '<', $toDate)
+            ->where(DB::raw("DATE(COALESCE(NULLIF(expenses.date, ''), expenses.created_at))"), '>=', $fromDay)
+            ->where(DB::raw("DATE(COALESCE(NULLIF(expenses.date, ''), expenses.created_at))"), '<', $toDay)
             ->sum('expense_amount') ?? 0;
 
         return $income - $supplierPayment - $expense;
@@ -503,10 +509,16 @@ public function DailyReceiptPaymentReport(Request $request)
                 ->groupBy(DB::raw('DATE(created_at)'))
                 ->get();
 
+            $startDay = Carbon::parse($startDate)->toDateString();
+            $endDay   = Carbon::parse($endDate)->toDateString();
+
             $TotalExpenseAmounts = DB::table('expenses')
-                ->select(DB::raw('DATE(created_at) AS date'), DB::raw('SUM(expense_amount) AS total_expense_amount'))
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->groupBy(DB::raw('DATE(created_at)'))
+                ->select(
+                    DB::raw("DATE(COALESCE(NULLIF(date, ''), created_at)) AS date"),
+                    DB::raw('SUM(expense_amount) AS total_expense_amount')
+                )
+                ->whereBetween(DB::raw("DATE(COALESCE(NULLIF(date, ''), created_at))"), [$startDay, $endDay])
+                ->groupBy(DB::raw("DATE(COALESCE(NULLIF(date, ''), created_at))"))
                 ->get();
 
 
@@ -590,11 +602,14 @@ public function DailyReceiptPaymentReport(Request $request)
             }
 
             // Expense Query - Filter by expense type "Personal" and date range
+            $startDay = Carbon::parse($startDate)->toDateString();
+            $endDay   = Carbon::parse($endDate)->toDateString();
+
             $expenseQuery = Expense::query()
                 ->whereHas('expenseType', function ($query) {
                     $query->where('type_name', 'Personal');
                 })
-                ->whereBetween('date', [$startDate, $endDate]);
+                ->whereBetween(DB::raw("DATE(COALESCE(NULLIF(expenses.date, ''), expenses.created_at))"), [$startDay, $endDay]);
 
             // Fetch the Expense Data with Expense Type
             $ExpenseData = $expenseQuery->with('expenseType')->get();
@@ -719,15 +734,23 @@ public function DailyReceiptPaymentReport(Request $request)
                 });
 
             // 3. Fetch Expenses
+            $startDay = $startDate->toDateString();
+            $endDay   = $endDate->toDateString();
+
             $expenses = Expense::with('expenseType')
-                ->whereBetween('created_at', [$startDate, $endDate])
+                ->whereBetween(DB::raw("DATE(COALESCE(NULLIF(expenses.date, ''), expenses.created_at))"), [$startDay, $endDay])
                 ->get()
                 ->map(function($item) {
-                    $typeName = $item->expenseType ? $item->expenseType->name : 'General Expense';
+                    $typeName = $item->expenseType ? ($item->expenseType->type_name ?? $item->expenseType->name) : 'General Expense';
+                    $txDate = !empty($item->date) ? Carbon::parse($item->date) : Carbon::parse($item->created_at);
+                    if (!empty($item->date) && $item->created_at) {
+                        $time = Carbon::parse($item->created_at);
+                        $txDate = Carbon::parse($item->date)->setTime($time->hour, $time->minute, $time->second);
+                    }
                     return [
-                        'timestamp'     => $item->created_at->toDateTimeString(),
-                        'date'          => $item->created_at->format('d M Y, h:i A'),
-                        'particulars'   => "দোকানের খরচ - " . ($item->expense_name ?? $typeName),
+                        'timestamp'     => $txDate->toDateTimeString(),
+                        'date'          => $txDate->format('d M Y, h:i A'),
+                        'particulars'   => "দোকানের খরচ - " . ($item->expense_details ?: $typeName),
                         'party_name'    => $typeName,
                         'type'          => 'outflow',
                         'category'      => 'দোকান খরচ (Expense)',

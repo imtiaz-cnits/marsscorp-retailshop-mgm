@@ -179,13 +179,17 @@ class ExpenseController extends Controller
                 foreach ($items as $item) {
                     if (empty($item['expense_type_id']) || empty($item['expense_amount'])) continue;
 
+                    $itemDate = !empty($item['date']) ? $item['date'] : date('Y-m-d');
+                    $createdAt = Carbon::parse($itemDate)->setTime(now()->hour, now()->minute, now()->second);
+
                     Expense::create([
                         'expense_type_id' => $item['expense_type_id'],
                         'staff_id'        => !empty($item['staff_id']) ? $item['staff_id'] : null,
                         'expense_amount'  => $item['expense_amount'],
                         'expense_details' => $item['expense_details'] ?? '',
-                        'date'            => !empty($item['date']) ? $item['date'] : date('Y-m-d'),
-                        'user_id'         => $user_id
+                        'date'            => $itemDate,
+                        'user_id'         => $user_id,
+                        'created_at'      => $createdAt
                     ]);
                     $createdCount++;
                 }
@@ -195,6 +199,7 @@ class ExpenseController extends Controller
 
             // Single Expense creation fallback
             $expenseDate = $request->input('date') ?: date('Y-m-d');
+            $createdAt = Carbon::parse($expenseDate)->setTime(now()->hour, now()->minute, now()->second);
 
             Expense::create([
                 'expense_type_id' => $request->input('expense_type_id'),
@@ -202,7 +207,8 @@ class ExpenseController extends Controller
                 'expense_amount'  => $request->input('expense_amount'),
                 'expense_details' => $request->input('expense_details'),
                 'date'            => $expenseDate,
-                'user_id'         => $user_id
+                'user_id'         => $user_id,
+                'created_at'      => $createdAt
             ]);
 
             return response()->json(['status' => 'success', 'message' => "Expense Created Successfully"]);
@@ -265,17 +271,28 @@ class ExpenseController extends Controller
         try {
             $user_id = Auth::id();
 
-            // Find the supplier record to update
+            // Find the expense record to update
             $ExpenseData_Update = Expense::find($request->input('id'));
 
-            // Update the supplier's fields
+            if (!$ExpenseData_Update) {
+                return response()->json(['status' => 'fail', 'message' => 'Expense record not found']);
+            }
+
+            // Update the expense fields
             $ExpenseData_Update->expense_type_id = $request->input('expense_type_id');
             if ($request->has('staff_id')) {
                 $ExpenseData_Update->staff_id = $request->input('staff_id') ?: null;
             }
             $ExpenseData_Update->expense_amount = $request->input('expense_amount');
             $ExpenseData_Update->expense_details = $request->input('expense_details');
-            $ExpenseData_Update->date = $request->input('date');
+            
+            $newDate = $request->input('date');
+            $ExpenseData_Update->date = $newDate;
+            if ($newDate) {
+                $oldTime = $ExpenseData_Update->created_at ? Carbon::parse($ExpenseData_Update->created_at) : Carbon::now();
+                $ExpenseData_Update->created_at = Carbon::parse($newDate)->setTime($oldTime->hour, $oldTime->minute, $oldTime->second);
+            }
+
             // Save the updated Expense data
             $ExpenseData_Update->save();
 

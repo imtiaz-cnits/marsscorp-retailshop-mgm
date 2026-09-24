@@ -1823,8 +1823,8 @@
                 <span class="text-[9.5px] font-semibold text-emerald-200/80 bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-400/30">Menu</span>
               </div>
               <ul class="py-0.5 px-1 space-y-0.5">
-                <li><a href="{{ url('admin-dashboard-expence-type') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-expence-type') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-tags text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Expense Type</span></a></li>
                 <li><a href="{{ url('admin-dashboard-expence-list') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-expence-list') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-receipt text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Expense List</span></a></li>
+                <li><a href="{{ url('admin-dashboard-expence-type') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-expence-type') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-tags text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Expense Type</span></a></li>
               </ul>
             </div>
           </li>
@@ -2080,21 +2080,21 @@
         </div>
         <ul class="space-y-1">
           <li class="relative group">
-            <a href="{{ url('admin-dashboard-expence-type') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->is('admin-dashboard-expence-type') ? 'active-submenu-link' : '' }}">
-              <i class="fa-solid fa-tags text-xs text-emerald-300/80 w-4 text-center"></i>
-              <span>Expense Type</span>
-            </a>
-            <div class="sidebar-mini-tooltip">
-              Expense Type
-            </div>
-          </li>
-          <li class="relative group">
             <a href="{{ url('admin-dashboard-expence-list') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->is('admin-dashboard-expence-list') ? 'active-submenu-link' : '' }}">
               <i class="fa-solid fa-receipt text-xs text-emerald-300/80 w-4 text-center"></i>
               <span>Expense List</span>
             </a>
             <div class="sidebar-mini-tooltip">
               Expense List
+            </div>
+          </li>
+          <li class="relative group">
+            <a href="{{ url('admin-dashboard-expence-type') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->is('admin-dashboard-expence-type') ? 'active-submenu-link' : '' }}">
+              <i class="fa-solid fa-tags text-xs text-emerald-300/80 w-4 text-center"></i>
+              <span>Expense Type</span>
+            </a>
+            <div class="sidebar-mini-tooltip">
+              Expense Type
             </div>
           </li>
         </ul>

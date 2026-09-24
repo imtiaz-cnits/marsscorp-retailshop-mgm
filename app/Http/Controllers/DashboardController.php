@@ -53,9 +53,10 @@ class DashboardController extends Controller
 
             $todayGrossProfit = ((float)($todayDetails->gross_profit ?? 0)) - $todayDiscountGiven;
 
-            $todayExpense = (float) Expense::where(function($q) use ($today) {
-                $q->whereDate('date', $today)->orWhereDate('created_at', $today);
-            })->sum('expense_amount');
+            $todayExpense = (float) Expense::where(
+                DB::raw("DATE(COALESCE(NULLIF(date, ''), created_at))"),
+                $today
+            )->sum('expense_amount');
 
             $todayNetProfit = $todayGrossProfit - $todayExpense;
 
@@ -109,13 +110,10 @@ class DashboardController extends Controller
 
             $monthlyGrossProfit = ((float)($monthlyDetails->gross_profit ?? 0)) - $monthlyDiscountGiven;
 
-            $monthlyExpense = (float) Expense::where(function($q) use ($currentYear, $currentMonth) {
-                $q->where(function($sq) use ($currentYear, $currentMonth) {
-                    $sq->whereYear('date', $currentYear)->whereMonth('date', $currentMonth);
-                })->orWhere(function($sq) use ($currentYear, $currentMonth) {
-                    $sq->whereYear('created_at', $currentYear)->whereMonth('created_at', $currentMonth);
-                });
-            })->sum('expense_amount');
+            $monthlyExpense = (float) Expense::whereRaw(
+                "YEAR(DATE(COALESCE(NULLIF(date, ''), created_at))) = ? AND MONTH(DATE(COALESCE(NULLIF(date, ''), created_at))) = ?",
+                [$currentYear, $currentMonth]
+            )->sum('expense_amount');
 
             $monthlyNetProfit = $monthlyGrossProfit - $monthlyExpense;
 
@@ -203,9 +201,10 @@ class DashboardController extends Controller
 
                 $dayGrossProfit = ((float)($dayDetails->gross_profit ?? 0)) - $dayDiscount;
 
-                $dayExpense = (float) Expense::where(function($q) use ($targetDate) {
-                    $q->whereDate('date', $targetDate)->orWhereDate('created_at', $targetDate);
-                })->sum('expense_amount');
+                $dayExpense = (float) Expense::where(
+                    DB::raw("DATE(COALESCE(NULLIF(date, ''), created_at))"),
+                    $targetDate
+                )->sum('expense_amount');
 
                 $dayNetProfit = $dayGrossProfit - $dayExpense;
 

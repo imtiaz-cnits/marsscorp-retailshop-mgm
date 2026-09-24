@@ -14,7 +14,8 @@ class Expense extends Model
         'expense_amount',
         'expense_details',
         'date',
-        'user_id'
+        'user_id',
+        'created_at'
     ];
 
     public function expenseType()
