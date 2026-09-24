@@ -565,6 +565,18 @@ class ProductController extends Controller
                 ]);
             }
 
+            // Check if product is associated with orders or purchases
+            $hasOrders = DB::table('order_details')->where('product_id', $productID)->exists();
+            $hasPurchases = DB::table('purchase_order_details')->where('product_id', $productID)->exists();
+            $hasReturns = DB::table('purchase_returns')->where('product_id', $productID)->exists();
+
+            if ($hasOrders || $hasPurchases || $hasReturns) {
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'এই প্রোডাক্টটি পূর্বের কাস্টমার ইনভয়েস অথবা পারচেজে ব্যবহৃত হয়েছে, তাই সরাসরি ডিলিট করা যাবে না। স্টক বন্ধ করতে প্রোডাক্টটি Edit করে Quantity 0 করে দিন।'
+                ]);
+            }
+
             // Delete associated image file if it exists
             if ($product->img_url) {
                 $filePath = public_path($product->img_url);
