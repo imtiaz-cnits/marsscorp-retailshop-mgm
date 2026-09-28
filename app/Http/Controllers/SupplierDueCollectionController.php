@@ -317,15 +317,23 @@ public function SupplierPaymentDetailsUpdate(Request $request)
 {
     DB::beginTransaction();
     try {
-        $user_id = Auth::id();
-        $supplier = Supplier::findOrFail($request->input('id'));
+        $user_id = Auth::id() ?? 1;
+        $supplierId = $request->input('supplier_id') ?? $request->input('id');
+        $supplier = Supplier::findOrFail($supplierId);
 
         $inputPaidAmount     = $request->paid_amount ?? 0;
         $inputDiscountAmount = $request->discount_amount ?? 0;
         $paymentMethod       = $request->payment_method ?? null;
-        $rawDate             = $request->due_collection_date ?? $request->collection_date;
-        $dueCollectionDate   = !empty($rawDate) ? Carbon::parse($rawDate)->format('Y-m-d') : date('Y-m-d');
-        $transactionId       = $request->transaction_id ?? null;
+        $rawDate             = $request->input('due_collection_date') ?? $request->input('payment_date') ?? $request->input('collection_date');
+        $dueCollectionDate   = date('Y-m-d');
+        if (!empty($rawDate)) {
+            try {
+                $dueCollectionDate = Carbon::parse(str_replace('/', '-', trim($rawDate)))->format('Y-m-d');
+            } catch (\Exception $e) {
+                $dueCollectionDate = date('Y-m-d');
+            }
+        }
+        $transactionId       = $request->transaction_id ?? $request->note ?? null;
         $collectionType      = $request->collection_type ?? 'all'; // 'all', 'previous', 'purchase'
 
         $totalAvailablePaid     = $inputPaidAmount;

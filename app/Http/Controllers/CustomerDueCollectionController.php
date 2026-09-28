@@ -1234,8 +1234,15 @@ public function CustomerPaymentDetailsUpdate(Request $request)
         $inputPaidAmount     = $request->paid_amount ?? 0;
         $inputDiscountAmount = $request->discount_amount ?? 0;
         $paymentMethod       = $request->payment_method ?? null;
-        $rawDate             = $request->due_collection_date ?? $request->collection_date;
-        $dueCollectionDate   = !empty($rawDate) ? Carbon::parse($rawDate)->format('Y-m-d') : date('Y-m-d');
+        $rawDate             = $request->input('due_collection_date') ?? $request->input('collection_date') ?? $request->input('payment_date');
+        $dueCollectionDate   = date('Y-m-d');
+        if (!empty($rawDate)) {
+            try {
+                $dueCollectionDate = Carbon::parse(str_replace('/', '-', trim($rawDate)))->format('Y-m-d');
+            } catch (\Exception $e) {
+                $dueCollectionDate = date('Y-m-d');
+            }
+        }
         $transactionId       = $request->transaction_id ?? null;
         $collectionType      = $request->collection_type ?? 'all'; // 'all', 'previous', 'invoice'
 

@@ -1426,17 +1426,18 @@
     function initSupplierDueDatePicker() {
         const dateInput = document.getElementById('supplierModalCollectionDate');
         if (dateInput && typeof flatpickr !== "undefined") {
-            if (supplierDuePicker) {
-                try { supplierDuePicker.destroy(); } catch (e) {}
+            if (!supplierDuePicker) {
+                supplierDuePicker = flatpickr(dateInput, {
+                    dateFormat: 'Y-m-d',
+                    altInput: true,
+                    altFormat: 'd-m-Y',
+                    defaultDate: 'today',
+                    allowInput: true,
+                    disableMobile: true,
+                    static: false,
+                    appendTo: document.body
+                });
             }
-            supplierDuePicker = flatpickr(dateInput, {
-                dateFormat: 'd-m-Y',
-                defaultDate: 'today',
-                allowInput: true,
-                disableMobile: true,
-                static: false,
-                appendTo: document.body
-            });
         }
     }
 
@@ -1837,7 +1838,18 @@
         const collectionType = document.querySelector('input[name="supplier_collection_type"]:checked')?.value || 'all';
         const paidAmount     = parseFloat(document.getElementById('supplierModalPaidAmount').value) || 0;
         const paymentMethod  = document.getElementById('supplierModalPaymentMethod').value;
-        const collectionDate = document.getElementById('supplierModalCollectionDate').value;
+        let collectionDate   = document.getElementById('supplierModalCollectionDate').value;
+        if (supplierDuePicker && supplierDuePicker.selectedDates && supplierDuePicker.selectedDates.length > 0) {
+            collectionDate = supplierDuePicker.formatDate(supplierDuePicker.selectedDates[0], 'Y-m-d');
+        } else if (collectionDate && (collectionDate.includes('-') || collectionDate.includes('/'))) {
+            const parts = collectionDate.split(/[-/]/);
+            if (parts.length === 3 && parts[0].length === 2 && parts[2].length === 4) {
+                collectionDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+            }
+        }
+        if (!collectionDate) {
+            collectionDate = new Date().toISOString().slice(0, 10);
+        }
         const note           = document.getElementById('supplierModalNote').value;
 
         if (paidAmount <= 0) {
@@ -1849,12 +1861,15 @@
             if (typeof showLoader === 'function') showLoader();
 
             const payload = {
-                supplier_id:    window.supplierDbId,
-                collection_type: collectionType,
-                paid_amount:    paidAmount,
-                payment_method: paymentMethod,
-                payment_date:   collectionDate,
-                note:           note
+                id:                  window.supplierDbId,
+                supplier_id:         window.supplierDbId,
+                collection_type:     collectionType,
+                paid_amount:         paidAmount,
+                payment_method:      paymentMethod,
+                due_collection_date: collectionDate,
+                payment_date:        collectionDate,
+                note:                note,
+                transaction_id:      note
             };
 
             const res = await axios.post('/supplier-payment-details-update', payload, HeaderToken());

@@ -1436,17 +1436,18 @@
     function initCustomerDueDatePicker() {
         const dateInput = document.getElementById('modalCollectionDate');
         if (dateInput && typeof flatpickr !== "undefined") {
-            if (customerDuePicker) {
-                try { customerDuePicker.destroy(); } catch (e) {}
+            if (!customerDuePicker) {
+                customerDuePicker = flatpickr(dateInput, {
+                    dateFormat: 'Y-m-d',
+                    altInput: true,
+                    altFormat: 'd-m-Y',
+                    defaultDate: 'today',
+                    allowInput: true,
+                    disableMobile: true,
+                    static: false,
+                    appendTo: document.body
+                });
             }
-            customerDuePicker = flatpickr(dateInput, {
-                dateFormat: 'd-m-Y',
-                defaultDate: 'today',
-                allowInput: true,
-                disableMobile: true,
-                static: false,
-                appendTo: document.body
-            });
         }
     }
 
@@ -1854,7 +1855,18 @@
         const paidAmount = parseFloat(document.getElementById('modalPaidAmount').value) || 0;
         const discountAmount = parseFloat(document.getElementById('modalDiscountAmount').value) || 0;
         const paymentMethod = document.getElementById('modalPaymentMethod').value;
-        const collectionDate = document.getElementById('modalCollectionDate').value;
+        let collectionDate = document.getElementById('modalCollectionDate').value;
+        if (customerDuePicker && customerDuePicker.selectedDates && customerDuePicker.selectedDates.length > 0) {
+            collectionDate = customerDuePicker.formatDate(customerDuePicker.selectedDates[0], 'Y-m-d');
+        } else if (collectionDate && (collectionDate.includes('-') || collectionDate.includes('/'))) {
+            const parts = collectionDate.split(/[-/]/);
+            if (parts.length === 3 && parts[0].length === 2 && parts[2].length === 4) {
+                collectionDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+            }
+        }
+        if (!collectionDate) {
+            collectionDate = new Date().toISOString().slice(0, 10);
+        }
         const transactionId = document.getElementById('modalTransactionId').value;
         const btn = document.getElementById('btnSubmitCollection');
 
