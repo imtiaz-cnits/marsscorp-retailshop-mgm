@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Customer;
 use Illuminate\Http\Request;
@@ -1233,7 +1234,8 @@ public function CustomerPaymentDetailsUpdate(Request $request)
         $inputPaidAmount     = $request->paid_amount ?? 0;
         $inputDiscountAmount = $request->discount_amount ?? 0;
         $paymentMethod       = $request->payment_method ?? null;
-        $dueCollectionDate   = $request->due_collection_date ?? $request->collection_date ?? date('Y-m-d');
+        $rawDate             = $request->due_collection_date ?? $request->collection_date;
+        $dueCollectionDate   = !empty($rawDate) ? Carbon::parse($rawDate)->format('Y-m-d') : date('Y-m-d');
         $transactionId       = $request->transaction_id ?? null;
         $collectionType      = $request->collection_type ?? 'all'; // 'all', 'previous', 'invoice'
 
