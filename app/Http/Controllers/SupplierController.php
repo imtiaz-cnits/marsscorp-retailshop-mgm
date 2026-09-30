@@ -293,6 +293,9 @@ public function SupplierUpdate(Request $request)
         $SupplierData_Update->email = $request->input('email') ?? '';
         $SupplierData_Update->purchase_payable_amount = $request->input('purchase_payable_amount') ?: 0;
         $SupplierData_Update->status = $request->input('status') ?: 'Active';
+        if (empty($SupplierData_Update->user_id)) {
+            $SupplierData_Update->user_id = $user_id;
+        }
 
         // Handle the image file if it exists
         $img = null;

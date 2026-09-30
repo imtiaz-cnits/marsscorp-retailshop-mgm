@@ -2279,14 +2279,18 @@
 
       // Hide preloader and show content after 0.5 seconds
       setTimeout(() => {
-        preloader.style.opacity = "0";
-        preloader.style.visibility = "hidden";
-        content.style.display = "block";
+        if (preloader) {
+          preloader.style.opacity = "0";
+          preloader.style.visibility = "hidden";
+        }
+        if (content) {
+          content.style.display = "block";
 
-        // Fade in the content
-        setTimeout(() => {
-          content.style.opacity = "1";
-        }, 100);
+          // Fade in the content
+          setTimeout(() => {
+            content.style.opacity = "1";
+          }, 100);
+        }
       }, 100);
     });
   </script>

@@ -575,7 +575,7 @@
                         </td>
                         <td class="p-[10px] text-center">
                             <div id="action_btn_wrap" class="flex items-center justify-center gap-1.5">
-                                <a data-id="${item['id']}" href="#" class="link edit-link w-[30px] h-[30px] rounded-lg bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white border border-emerald-200/80 hover:border-emerald-600 dark:bg-emerald-950/40 dark:border-slate-800 dark:text-emerald-400 dark:hover:bg-emerald-600 dark:hover:text-white flex items-center justify-center transition-all duration-150 shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit">
+                                <a data-id="${item['id']}" onclick="FillUpUpdateForm(${item['id']})" href="#" class="link edit-link w-[30px] h-[30px] rounded-lg bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white border border-emerald-200/80 hover:border-emerald-600 dark:bg-emerald-950/40 dark:border-slate-800 dark:text-emerald-400 dark:hover:bg-emerald-600 dark:hover:text-white flex items-center justify-center transition-all duration-150 shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit">
                                     <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M12 20h9"></path>
                                         <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
@@ -639,7 +639,7 @@
                                 Profile
                             </a>
                             <div class="flex items-center gap-1.5">
-                                <a data-id="${item['id']}" href="#" class="edit-link w-[30px] h-[30px] rounded-lg bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white border border-emerald-200/80 hover:border-emerald-600 dark:bg-emerald-950/40 dark:border-slate-800 dark:text-emerald-400 dark:hover:bg-emerald-600 dark:hover:text-white flex items-center justify-center transition-all duration-150 shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit">
+                                <a data-id="${item['id']}" onclick="FillUpUpdateForm(${item['id']})" href="#" class="edit-link w-[30px] h-[30px] rounded-lg bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white border border-emerald-200/80 hover:border-emerald-600 dark:bg-emerald-950/40 dark:border-slate-800 dark:text-emerald-400 dark:hover:bg-emerald-600 dark:hover:text-white flex items-center justify-center transition-all duration-150 shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Edit">
                                     <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M12 20h9"></path>
                                         <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
@@ -659,6 +659,14 @@
                 mobileCardList.append(mobileCard);
             });
         }
+
+        // Edit button listener
+        $(document).off('click', '.edit-link').on('click', '.edit-link', function() {
+            let id = $(this).data('id') || $(this).attr('data-id');
+            if (id && typeof FillUpUpdateForm === 'function') {
+                FillUpUpdateForm(id);
+            }
+        });
 
         // Delete button listener
         $('.custom-delete-modal-btn').on('click', function() {
