@@ -224,11 +224,20 @@ public function SupplierCreate(Request $request)
 
             $destination = public_path('uploads/supplier-img');
             if (!file_exists($destination)) {
-                @mkdir($destination, 0775, true);
+                @mkdir($destination, 0777, true);
             }
+            @chmod($destination, 0777);
 
             // Upload File
-            $img->move($destination, $img_name);
+            try {
+                $img->move($destination, $img_name);
+            } catch (\Throwable $imgEx) {
+                Log::error('Supplier Create image upload failed: ' . $imgEx->getMessage());
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'Image upload failed because directory is not writable on the server. Please check folder permissions (chown -R www:www / chmod -R 775).'
+                ]);
+            }
         }
 
         // Generate SupplierID
@@ -313,26 +322,38 @@ public function SupplierUpdate(Request $request)
 
             $destination = public_path('uploads/supplier-img');
             if (!file_exists($destination)) {
-                @mkdir($destination, 0775, true);
+                @mkdir($destination, 0777, true);
             }
+            @chmod($destination, 0777);
 
             // Move the file to the desired directory
-            $img->move($destination, $img_name);
+            try {
+                $img->move($destination, $img_name);
 
-            // Delete the old image safely if it exists
-            if (!empty($SupplierData_Update->img_url)) {
-                try {
-                    $old_file = public_path($SupplierData_Update->img_url);
-                    if (is_file($old_file) && file_exists($old_file)) {
-                        @unlink($old_file);
+                // Delete the old image safely if it exists
+                if (!empty($SupplierData_Update->img_url)) {
+                    try {
+                        $old_file = public_path($SupplierData_Update->img_url);
+                        if (is_file($old_file) && file_exists($old_file)) {
+                            @unlink($old_file);
+                        }
+                    } catch (\Throwable $ex) {
+                        Log::warning('Old supplier image delete failed: ' . $ex->getMessage());
                     }
-                } catch (\Throwable $ex) {
-                    Log::warning('Old supplier image delete failed: ' . $ex->getMessage());
                 }
-            }
 
-            // Update the img_url field in the database
-            $SupplierData_Update->img_url = $img_url;
+                // Update the img_url field in the database
+                $SupplierData_Update->img_url = $img_url;
+            } catch (\Throwable $imgEx) {
+                Log::error('Supplier image upload failed: ' . $imgEx->getMessage());
+                // Save other fields first so data isn't lost
+                $SupplierData_Update->save();
+
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'Supplier information updated, but image upload failed because "' . $destination . '" is not writable on the server. Please check folder permissions (chown -R www:www / chmod -R 775).'
+                ]);
+            }
         }
 
         // Save the updated supplier data
