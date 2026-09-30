@@ -205,19 +205,30 @@ public function SupplierDueList()
 public function SupplierCreate(Request $request)
 {
     try {
-        $user_id = Auth::id();
+        $user_id = Auth::id() ?? 1;
         $img_url = null;
 
         // Check if an image file is provided
+        $img = null;
         if ($request->hasFile('img_url')) {
             $img = $request->file('img_url');
+        } elseif ($request->hasFile('img')) {
+            $img = $request->file('img');
+        }
+
+        if ($img) {
             $t = time();
-            $file_name = $img->getClientOriginalName();
+            $file_name = preg_replace('/[^A-Za-z0-9._-]/', '_', $img->getClientOriginalName());
             $img_name = "{$user_id}-{$t}-{$file_name}";
             $img_url = "uploads/supplier-img/{$img_name}";
 
+            $destination = public_path('uploads/supplier-img');
+            if (!file_exists($destination)) {
+                @mkdir($destination, 0775, true);
+            }
+
             // Upload File
-            $img->move(public_path('uploads/supplier-img'), $img_name);
+            $img->move($destination, $img_name);
         }
 
         // Generate SupplierID
@@ -244,7 +255,7 @@ public function SupplierCreate(Request $request)
             'message' => 'Supplier Created Successfully',
             'supplier' => $newSupplier
         ]);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
     }
 }
@@ -257,7 +268,7 @@ function SupplierByID(Request $request){
 
         $rows = Supplier ::where('id', $request->input('id'))->first();
         return response()->json(['status' => 'success', 'rows' => $rows]);
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
         return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
     }
 }
@@ -266,9 +277,13 @@ function SupplierByID(Request $request){
 public function SupplierUpdate(Request $request)
 {
     try {
-        $user_id = Auth::id();
+        $user_id = Auth::id() ?? 1;
         // Find the supplier record to update
         $SupplierData_Update = Supplier::find($request->input('id'));
+
+        if (!$SupplierData_Update) {
+            return response()->json(['status' => 'fail', 'message' => 'Supplier not found.']);
+        }
 
         // Update the supplier's fields
         $SupplierData_Update->name = $request->input('name');
@@ -280,22 +295,41 @@ public function SupplierUpdate(Request $request)
         $SupplierData_Update->status = $request->input('status') ?: 'Active';
 
         // Handle the image file if it exists
+        $img = null;
         if ($request->hasFile('img')) {
             $img = $request->file('img');
+        } elseif ($request->hasFile('img_url')) {
+            $img = $request->file('img_url');
+        }
+
+        if ($img) {
             $t = time();
-            $file_name = $img->getClientOriginalName();
+            $file_name = preg_replace('/[^A-Za-z0-9._-]/', '_', $img->getClientOriginalName());
             $img_name = "{$user_id}-{$t}-{$file_name}";
             $img_url = "uploads/supplier-img/{$img_name}";
 
-            // Move the file to the desired directory
-            if ($img->move(public_path('uploads/supplier-img/'), $img_name)) {
-                // Delete the old image if it exists
-                if ($SupplierData_Update->img_url && file_exists(public_path($SupplierData_Update->img_url))) {
-                    unlink(public_path($SupplierData_Update->img_url));
-                }
-                // Update the img_url field in the database
-                $SupplierData_Update->img_url = $img_url;
+            $destination = public_path('uploads/supplier-img');
+            if (!file_exists($destination)) {
+                @mkdir($destination, 0775, true);
             }
+
+            // Move the file to the desired directory
+            $img->move($destination, $img_name);
+
+            // Delete the old image safely if it exists
+            if (!empty($SupplierData_Update->img_url)) {
+                try {
+                    $old_file = public_path($SupplierData_Update->img_url);
+                    if (is_file($old_file) && file_exists($old_file)) {
+                        @unlink($old_file);
+                    }
+                } catch (\Throwable $ex) {
+                    Log::warning('Old supplier image delete failed: ' . $ex->getMessage());
+                }
+            }
+
+            // Update the img_url field in the database
+            $SupplierData_Update->img_url = $img_url;
         }
 
         // Save the updated supplier data
@@ -303,12 +337,12 @@ public function SupplierUpdate(Request $request)
 
         // Return success response
         return response()->json(['status' => 'success', 'message' => 'Supplier updated successfully']);
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
         // Log the error for debugging purposes
         Log::error('Supplier Update Error: ' . $e->getMessage());
 
         // Return failure response
-        return response()->json(['status' => 'fail', 'message' => 'An error occurred while updating the supplier.']);
+        return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
     }
 }
 
