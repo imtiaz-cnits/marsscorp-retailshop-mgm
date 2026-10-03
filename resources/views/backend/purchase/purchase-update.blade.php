@@ -144,6 +144,10 @@
                             <input type="number" step="any" class="form-control font-bold" placeholder="Grand Subtotal" id="UpdateGrandSubtotal" required />
                         </div>
                         <div class="col-md-6 mb-2">
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Delivery & Transport Charge (৳)</label>
+                            <input type="number" step="any" min="0" class="form-control font-bold" placeholder="Delivery & Transport Charge" id="UpdateDeliveryCharge" value="0" />
+                        </div>
+                        <div class="col-md-6 mb-2">
                             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Paid Amount (৳)</label>
                             <input type="number" step="any" class="form-control font-bold text-emerald-600 dark:text-emerald-400" placeholder="Paid Amount" id="UpdatePaidAmount" />
                         </div>
@@ -248,12 +252,15 @@
             });
         }
 
-        // Recalculate due when subtotal or paid changes
-        $('#UpdateGrandSubtotal, #UpdatePaidAmount').on('input', function() {
+        // Recalculate due when subtotal, delivery charge, or paid changes
+        function recalculateUpdateDue() {
             let g = parseFloat($('#UpdateGrandSubtotal').val()) || 0;
+            let del = parseFloat($('#UpdateDeliveryCharge').val()) || 0;
             let p = parseFloat($('#UpdatePaidAmount').val()) || 0;
-            $('#UpdateDueAmount').val(Math.max(0, g - p).toFixed(2));
-        });
+            let due = Math.max(0, (g + del) - p);
+            $('#UpdateDueAmount').val(due.toFixed(2));
+        }
+        $('#UpdateGrandSubtotal, #UpdateDeliveryCharge, #UpdatePaidAmount').on('input', recalculateUpdateDue);
     });
 
     function renderUpdateSupplierDropdownItems(suppliers) {
@@ -323,6 +330,7 @@
                 }
 
                 document.getElementById('UpdateGrandSubtotal').value = data.grand_subtotal || 0;
+                document.getElementById('UpdateDeliveryCharge').value = data.delivery_charge || 0;
                 document.getElementById('UpdatePaidAmount').value = data.paid_amount || 0;
                 document.getElementById('UpdateDueAmount').value = data.due_amount || 0;
                 if (data.supplier_id) {
@@ -364,6 +372,7 @@
             formData.append('referance_no', $('#UpdateReferanceNo').val().trim());
             formData.append('date', $('#UpdatePurchaseDate').val());
             formData.append('grand_subtotal', grandSubtotal);
+            formData.append('delivery_charge', parseFloat($('#UpdateDeliveryCharge').val()) || 0);
             formData.append('paid_amount', paidAmount);
             formData.append('due_amount', dueAmount);
             formData.append('supplier_id', $('#UpdateSupplierSelect').val());

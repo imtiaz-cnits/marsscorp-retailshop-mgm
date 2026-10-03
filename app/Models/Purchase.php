@@ -15,6 +15,7 @@ class Purchase extends Model
         'due_amount',
         'date',
         'grand_subtotal',
+        'delivery_charge',
         'return_adjustment_amount',
         'attach_document',
         'purchase_payable_amount',

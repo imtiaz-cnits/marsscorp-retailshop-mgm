@@ -55,6 +55,8 @@ public function PurchaseShowDetails($id)
         return $orderDetail->cost_price * $orderDetail->quantity;
     });
 
+    $deliveryCharge = (float) ($purchaseinvoicedata->delivery_charge ?? 0);
+
     // Calculate Paid Amount from Payment Details
     $paidAmount = $purchaseinvoicedata->paymentDetails->sum('paid_amount');
 
@@ -64,8 +66,8 @@ public function PurchaseShowDetails($id)
     // Previous due amount from the current purchase (stored in DB)
     $PreviousDueAmount = $purchaseinvoicedata->supplier->purchase_payable_amount;
 
-    // Calculate Due Amount (in case it's not stored directly)
-    $dueAmount = $subTotal - $paidAmount;
+    // Calculate Due Amount (including delivery charge)
+    $dueAmount = ($subTotal + $deliveryCharge) - $paidAmount;
     $supplierDueAmount = $purchaseinvoicedata->supplier->sum('purchase_payable_amount');
     $purchaseDueAmount = Purchase::sum('due_amount');
 
@@ -78,6 +80,7 @@ public function PurchaseShowDetails($id)
         'paymentDetailsStatus',
         'PreviousDueAmount',
         'subTotal',
+        'deliveryCharge',
         'paidAmount',
         'dueAmount',
         'totalDueFromAllPurchases'
@@ -168,15 +171,17 @@ public function PurchasesList()
         $formatted = $purchases->map(function ($purchase) use ($hasPurchaseReturns) {
             $totalPaid = (float) ($purchase->paymentDetails ? $purchase->paymentDetails->sum('paid_amount') : 0);
             $grandTotal = (float) ($purchase->grand_subtotal ?? 0);
+            $deliveryCharge = (float) ($purchase->delivery_charge ?? 0);
             $returnAdj = (float) ($purchase->return_adjustment_amount ?? 0);
 
+            $effectiveGrandTotal = $grandTotal + $deliveryCharge;
             $effectivePaid = $totalPaid + $returnAdj;
-            $dueAmount = max(0, $grandTotal - $effectivePaid);
+            $dueAmount = max(0, $effectiveGrandTotal - $effectivePaid);
 
             $paymentMethod = $purchase->paymentDetails?->sortByDesc('created_at')->first()?->payment_method ?? 'N/A';
 
             $paymentStatus = 'Unpaid';
-            if ($effectivePaid >= $grandTotal && $grandTotal > 0) {
+            if ($effectivePaid >= $effectiveGrandTotal && $effectiveGrandTotal > 0) {
                 $paymentStatus = 'Fully Paid';
             } elseif ($effectivePaid > 0) {
                 $paymentStatus = 'Partial Paid';
@@ -221,6 +226,7 @@ public function PurchasesList()
                 'supplier_db_id'    => $purchase->supplier_id,
                 'supplier'          => $purchase->supplier?->name ?? 'N/A',
                 'grand_subtotal'    => $grandTotal,
+                'delivery_charge'   => $deliveryCharge,
                 'paid_amount'       => $totalPaid,
                 'due_amount'        => $dueAmount,
                 'payment_method'    => $paymentMethod,
@@ -293,6 +299,7 @@ public function PurchasesList()
                 'referance_no' => $request->referance_no,
                 'date' => $formattedDate,
                 'grand_subtotal' => $request->grand_subtotal,
+                'delivery_charge' => (float) ($request->delivery_charge ?? 0),
                 'attach_document' => $img_url,
                 'supplier_id' => $request->supplier_id,
                 'user_id' => $user_id,
@@ -645,6 +652,7 @@ public function updatePaymentDetails(Request $request)
                 'referance_no' => $request->input('referance_no', $purchase->referance_no),
                 'date' => $updateDate,
                 'grand_subtotal' => $request->input('grand_subtotal', $purchase->grand_subtotal),
+                'delivery_charge' => $request->input('delivery_charge', $purchase->delivery_charge ?? 0),
                 'paid_amount' => $request->input('paid_amount', $purchase->paid_amount),
                 'due_amount' => $request->input('due_amount', $purchase->due_amount),
                 'supplier_id' => $request->input('supplier_id', $purchase->supplier_id),

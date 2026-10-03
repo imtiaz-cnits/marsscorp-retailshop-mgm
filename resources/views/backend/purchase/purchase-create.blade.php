@@ -406,6 +406,15 @@
                                         <span class="font-bold text-slate-800 dark:text-white text-sm">৳ <span id="totalSubTotal">0.00</span></span>
                                         <input type="hidden" id="grandSubtotal" value="0.00" />
                                     </div>
+                                    <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                                        <label for="deliveryTransportCharge" class="text-slate-600 dark:text-slate-300 font-semibold mb-0 cursor-pointer">
+                                            Delivery & Transport Charge:
+                                        </label>
+                                        <div class="flex items-center gap-1">
+                                            <span class="text-slate-400 font-bold text-xs">৳</span>
+                                            <input type="number" step="any" min="0" class="form-control w-28 h-8 text-end font-bold rounded-lg text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:border-emerald-600 focus:outline-none" id="deliveryTransportCharge" value="0" placeholder="0.00" oninput="calculateDuePayment()" />
+                                        </div>
+                                    </div>
                                     <div class="flex justify-between items-center py-1" style="display: none;">
                                         <label class="inline-flex items-center gap-2 cursor-pointer mb-0">
                                             <input type="checkbox" id="useReturnCreditCheckbox" onchange="syncReturnCreditCheckbox(this.checked)" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer">
@@ -530,10 +539,13 @@
 
         window.calculateDuePayment = function() {
             let grandSubtotal = parseFloat(grandSubtotalInput.value) || 0;
+            let deliveryCharge = parseFloat(document.getElementById("deliveryTransportCharge")?.value) || 0;
             let checkbox = document.getElementById("useReturnCreditCheckbox");
             let returnAdjInput = document.getElementById("returnAdjustmentAmount");
             let netPayableInput = document.getElementById("netPayableAmount");
             let netDisplay = document.getElementById("netPayableDisplay");
+
+            let totalWithDelivery = grandSubtotal + deliveryCharge;
 
             let returnAdj = 0;
             if (checkbox && checkbox.checked) {
@@ -544,15 +556,15 @@
                     returnAdj = maxCredit;
                     returnAdjInput.value = maxCredit.toFixed(2);
                 }
-                if (returnAdj > grandSubtotal) {
-                    returnAdj = grandSubtotal;
-                    returnAdjInput.value = grandSubtotal.toFixed(2);
+                if (returnAdj > totalWithDelivery) {
+                    returnAdj = totalWithDelivery;
+                    returnAdjInput.value = totalWithDelivery.toFixed(2);
                 }
             } else {
                 if (returnAdjInput) returnAdjInput.value = "0.00";
             }
 
-            let netPayable = Math.max(0, grandSubtotal - returnAdj);
+            let netPayable = Math.max(0, totalWithDelivery - returnAdj);
             if (netPayableInput) netPayableInput.value = netPayable.toFixed(2);
             if (netDisplay) netDisplay.textContent = netPayable.toFixed(2);
 
@@ -1195,6 +1207,7 @@
         formData.append('referance_no', document.getElementById('ReferenceNo').value);
         formData.append('payment_status', document.getElementById('paymentStatusDisplay').textContent.trim());
         formData.append('grand_subtotal', parseFloat(document.getElementById('grandSubtotal').value) || 0);
+        formData.append('delivery_charge', parseFloat(document.getElementById('deliveryTransportCharge')?.value) || 0);
         formData.append('return_adjustment_amount', parseFloat(document.getElementById('returnAdjustmentAmount').value) || 0);
         formData.append('payment_method', selectedMethod);
         formData.append('paid_amount', parseFloat(document.getElementById('paidAmount').value) || 0);

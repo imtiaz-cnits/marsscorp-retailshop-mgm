@@ -595,7 +595,7 @@
         // 2. Calculate Totals
         let totalG = 0, totalP = 0, totalD = 0, totalReturn = 0;
         filtered.forEach(item => {
-            totalG += parseFloat(item.grand_subtotal) || 0;
+            totalG += (parseFloat(item.grand_subtotal) || 0) + (parseFloat(item.delivery_charge) || 0);
             totalP += parseFloat(item.paid_amount) || 0;
             totalD += parseFloat(item.due_amount) || 0;
             totalReturn += parseFloat(item.return_amount) || 0;
@@ -628,7 +628,7 @@
         } else {
             pageItems.forEach(function (item, idx) {
                 let realIndex = startIndex + idx;
-                const g = parseFloat(item.grand_subtotal) || 0;
+                const g = (parseFloat(item.grand_subtotal) || 0) + (parseFloat(item.delivery_charge) || 0);
                 const p = parseFloat(item.paid_amount) || 0;
                 const d = parseFloat(item.due_amount) || 0;
                 const r = parseFloat(item.return_amount) || 0;

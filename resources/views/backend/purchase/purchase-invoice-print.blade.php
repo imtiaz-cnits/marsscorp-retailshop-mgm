@@ -516,7 +516,7 @@
                     @endforeach
                 </tbody>
                 <tr>
-                    <td colspan="1" rowspan="6" id="payment_status" class="full-paid">
+                    <td colspan="1" rowspan="{{ ($deliveryCharge ?? 0) > 0 ? '7' : '6' }}" id="payment_status" class="full-paid">
                         {{ $paymentDetailsStatus ?? 'Not Available' }}
                     </td>
                 </tr>
@@ -524,6 +524,12 @@
                     <td colspan="2" class="amount_text" style="text-align: right">Sub Total:</td>
                     <td class="amount" id="sub_total" style="text-align: right">৳ {{ number_format((float)($subTotal ?? 0), 2) }}</td>
                 </tr>
+                @if(($deliveryCharge ?? 0) > 0)
+                <tr>
+                    <td colspan="2" class="amount_text" style="text-align: right">Delivery & Transport Charge:</td>
+                    <td class="amount" style="text-align: right">৳ {{ number_format((float)($deliveryCharge ?? 0), 2) }}</td>
+                </tr>
+                @endif
                 <tr>
                     <td colspan="2" class="amount_text table_bg" style="text-align: right">Paid Amount:</td>
                     <td class="amount table_bg" id="paidamount" style="text-align: right">৳ {{ number_format((float)($paidAmount ?? 0), 2) }}</td>
