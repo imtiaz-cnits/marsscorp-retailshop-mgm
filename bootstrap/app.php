@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             '/nexus-login-page',
             '/user-registration',
             '/verify-otp',
+            '/supplier-payment-details-update',
         ]);
         $middleware->alias([
             'is_admin' => \App\Http\Middleware\AdminOnly::class,

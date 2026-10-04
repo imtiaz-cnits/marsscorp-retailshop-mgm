@@ -68,7 +68,6 @@
                                     <th class="py-2 px-[5px] text-center w-[34px] rounded-tl-2xl bg-[#15803d] text-white" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">SL</th>
                                     <th class="py-2 px-[5px] text-center bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Date</th>
                                     <th class="py-2 px-[5px] text-center bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Purchase<br>ID</th>
-                                    <th class="py-2 px-[5px] text-start bg-[#15803d] text-white leading-tight" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Barcode</th>
                                     <th class="py-2 px-[5px] text-start bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Reference<br>No</th>
                                     <th class="py-2 px-[5px] text-start bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Supplier<br>ID</th>
                                     <th class="py-2 px-[5px] text-start bg-[#15803d] text-white leading-tight" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Supplier<br>Name</th>
@@ -84,7 +83,7 @@
                             <tbody id="tableList" class="divide-y divide-slate-100 dark:divide-slate-800 text-[11px] lg:text-xs text-slate-700 dark:text-slate-200"></tbody>
                             <tfoot>
                                 <tr class="bg-slate-50/80 dark:bg-slate-800/80 font-bold text-xs border-t border-slate-200 dark:border-slate-800">
-                                    <td colspan="7" class="py-2 px-[5px] text-end font-bold text-slate-700 dark:text-slate-200">Total:</td>
+                                    <td colspan="6" class="py-2 px-[5px] text-end font-bold text-slate-700 dark:text-slate-200">Total:</td>
                                     <td id="totalGrandTotal" class="py-2 px-[5px] text-end font-bold text-slate-800 dark:text-white text-xs sm:text-[12.5px] whitespace-nowrap font-mono">৳ 0.00</td>
                                     <td id="totalPaidAmount" class="py-2 px-[5px] text-end font-bold text-emerald-600 dark:text-emerald-400 text-xs sm:text-[12.5px] whitespace-nowrap font-mono">৳ 0.00</td>
                                     <td id="totalDueAmount" class="py-2 px-[5px] text-end font-bold text-rose-600 dark:text-rose-400 text-xs sm:text-[12.5px] whitespace-nowrap font-mono">৳ 0.00</td>
@@ -623,7 +622,7 @@
         mobileCardList.empty();
 
         if (pageItems.length === 0) {
-            tbody.html('<tr><td colspan="14" class="text-center text-rose-500 p-6 font-bold">❌ No purchase data found.</td></tr>');
+            tbody.html('<tr><td colspan="13" class="text-center text-rose-500 p-6 font-bold">❌ No purchase data found.</td></tr>');
             mobileCardList.html('<div class="p-6 text-center text-rose-500 font-bold bg-white dark:bg-slate-800 rounded-2xl unified-ui-border shadow-sm">❌ No purchase data found.</div>');
         } else {
             pageItems.forEach(function (item, idx) {
@@ -647,7 +646,6 @@
                         <td class="py-2 px-[5px] text-center font-semibold text-slate-500 dark:text-slate-400 text-[11px]">${realIndex + 1}</td>
                         <td class="py-2 px-[5px] text-center font-medium text-slate-600 dark:text-slate-300 text-[11px] lg:text-xs whitespace-nowrap">${item.date || 'N/A'}</td>
                         <td class="py-2 px-[5px] text-center font-bold text-emerald-700 dark:text-emerald-400 text-[11px] lg:text-xs whitespace-nowrap">${item.purchase_id || 'N/A'}</td>
-                        <td class="py-2 px-[5px] text-start">${formatBarcodes(item.barcodes)}</td>
                         <td class="py-2 px-[5px] text-start font-medium text-slate-500 dark:text-slate-400 text-[11px] lg:text-xs whitespace-nowrap">${item.referance_no || '-'}</td>
                         <td class="py-2 px-[5px] text-start whitespace-nowrap">
                             <a href="/supplier/profile/${item.supplier_db_id || item.supplier_id}" class="inline-flex items-center gap-1 font-semibold text-emerald-700 dark:text-emerald-400 hover:underline text-[11px] lg:text-xs">

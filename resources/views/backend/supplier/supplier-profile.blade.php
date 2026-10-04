@@ -1872,7 +1872,16 @@
                 transaction_id:      note
             };
 
-            const res = await axios.post('/supplier-payment-details-update', payload, HeaderToken());
+            let res;
+            try {
+                res = await axios.post('/api/supplier-payment-details-update', payload, HeaderToken());
+            } catch (apiErr) {
+                if (apiErr.response && apiErr.response.status === 404) {
+                    res = await axios.post('/supplier-payment-details-update', payload, HeaderToken());
+                } else {
+                    throw apiErr;
+                }
+            }
             if (typeof hideLoader === 'function') hideLoader();
 
             if (res.data && res.data.status === 'success') {

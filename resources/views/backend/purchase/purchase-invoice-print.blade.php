@@ -36,6 +36,8 @@
         padding: 24px;
         border: 1px solid #cbd5e1;
         box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        display: flex !important;
+        flex-direction: column !important;
     }
     body[light-mode="dark"] .invoice-container,
     html[light-mode="dark"] .invoice-container,
@@ -213,13 +215,12 @@
         border-color: #334155 !important;
     }
 
-    /* Footer Message Styled Matching Table Border */
+    /* Footer Message Styled - Centered, No Border, Always at Bottom */
     .invoice-container .footer-message {
-        margin-top: 14px !important;
-        padding: 8px 12px !important;
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 6px !important;
-        text-align: left !important;
+        margin-top: auto !important;
+        padding-top: 16px !important;
+        border: none !important;
+        text-align: center !important;
         color: #64748b !important;
         font-size: 13px !important;
         font-weight: 500 !important;
@@ -229,7 +230,8 @@
         color: inherit !important;
         font-size: 13px !important;
         margin: 0 !important;
-        text-align: left !important;
+        text-align: center !important;
+        border: none !important;
     }
 
     body[light-mode="dark"] .invoice-container .footer-message,
@@ -239,9 +241,9 @@
     body.dark .invoice-container .footer-message,
     body.dark-mode .invoice-container .footer-message,
     [data-theme="dark"] .invoice-container .footer-message {
-        border-color: #334155 !important;
-        color: #ffffff !important;
-        background-color: #0f172a !important;
+        border: none !important;
+        color: #94a3b8 !important;
+        background-color: transparent !important;
     }
     body[light-mode="dark"] .invoice-container .footer-message p,
     html[light-mode="dark"] .invoice-container .footer-message p,
@@ -250,7 +252,9 @@
     body.dark .invoice-container .footer-message p,
     body.dark-mode .invoice-container .footer-message p,
     [data-theme="dark"] .invoice-container .footer-message p {
-        color: #ffffff !important;
+        border: none !important;
+        color: #94a3b8 !important;
+        text-align: center !important;
     }
 
     @media (max-width: 768px) {
@@ -316,7 +320,7 @@
             min-width: 100% !important;
             border: none !important;
             box-shadow: none !important;
-            padding: 0 !important;
+            padding: 0 0 35px 0 !important;
             margin: 0 !important;
             background: #ffffff !important;
         }
@@ -427,20 +431,26 @@
             font-size: 16px !important;
         }
         .invoice-container .footer-message {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
             width: 100% !important;
-            border: 1px solid #cbd5e1 !important;
+            border: none !important;
             color: #000000 !important;
-            margin-top: 12px !important;
-            padding: 6px 10px !important;
-            text-align: left !important;
+            margin: 0 !important;
+            padding: 6px 0 !important;
+            text-align: center !important;
             font-size: 11px !important;
             box-sizing: border-box !important;
-            background: #ffffff !important;
+            background: transparent !important;
         }
         .invoice-container .footer-message p {
             color: #000000 !important;
             margin: 0 !important;
-            text-align: left !important;
+            text-align: center !important;
+            border: none !important;
+            font-size: 11px !important;
         }
     }
 </style>

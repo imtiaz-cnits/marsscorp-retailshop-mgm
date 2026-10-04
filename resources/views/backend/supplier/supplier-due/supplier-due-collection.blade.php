@@ -25,7 +25,7 @@
 <!-- Action Button Edit Modal Start -->
 <div id="editModal" class="payment-edit modal">
     <div class="modal-content">
-        <a class="close-btn close">
+        <a class="close-btn close" onclick="closeModal(document.getElementById('editModal'))" style="cursor: pointer;">
             <i class="fa-solid fa-xmark"></i>
         </a>
         <h2 class="heading">Supplier Due collection</h2>
@@ -364,6 +364,7 @@ function calculateDuePayment() {
 
             // Fixed: Use correct elements that exist in your Blade
             const SupplierPreviousDue = parseFloat(document.getElementById('SupplierPreviousDue').innerText.replace(/[^\d.-]/g, '')) || 0;
+            const PurchasePreviousDue = parseFloat(document.getElementById('PurchasePreviousDue').innerText.replace(/[^\d.-]/g, '')) || 0;
 
             const TotalPreviousDue = parseFloat(document.getElementById('TotalPreviousDue').dataset.raw) || 0;
 

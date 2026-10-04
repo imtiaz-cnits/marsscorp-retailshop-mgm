@@ -198,6 +198,9 @@ Route::get('/customer/profile/{id}', [App\Http\Controllers\CustomerController::c
 // সাপ্লাইয়ার প্রোফাইল পেজ দেখানোর জন্য
 Route::get('/supplier/profile/{id}', [App\Http\Controllers\SupplierController::class, 'SupplierProfilePage']);
 
+// Supplier Payment Details Update (Web fallback route to prevent 404 on live server or non-api requests)
+Route::post('/supplier-payment-details-update', [App\Http\Controllers\SupplierDueCollectionController::class, 'SupplierPaymentDetailsUpdate'])->middleware('auth:sanctum');
+
 
 
 

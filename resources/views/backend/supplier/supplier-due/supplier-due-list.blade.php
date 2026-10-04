@@ -622,7 +622,7 @@
                         </div>
 
                         <div class="flex items-center justify-end pt-2.5 mt-1 border-t border-slate-100 dark:border-slate-700/60">
-                            <button type="button" data-id="${item['id']}" class="edit-link inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-xs transition-colors" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <button type="button" data-id="${item['id']}" class="edit-link inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-xs transition-colors">
                                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M12 20h9"></path>
                                     <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
@@ -630,11 +630,14 @@
                                 Collect
                             </button>
                         </div>
+                    </div>`;
+                mobileCardList.append(mobileCard);
             });
         }
 
         // Bind events for edit buttons
-        $('.edit-link').on('click', async function() {
+        $('.edit-link').off('click').on('click', async function(e) {
+            e.preventDefault();
             let id = $(this).data('id');
             if (typeof FillUpUpdateForm === "function") {
                 await FillUpUpdateForm(id);
