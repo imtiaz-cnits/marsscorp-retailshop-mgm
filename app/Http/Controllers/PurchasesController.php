@@ -173,9 +173,10 @@ public function PurchasesList()
             $totalPaid = (float) ($purchase->paymentDetails ? $purchase->paymentDetails->sum('paid_amount') : 0);
             $grandTotal = (float) ($purchase->grand_subtotal ?? 0);
             $deliveryCharge = (float) ($purchase->delivery_charge ?? 0);
+            $discountAmount = (float) ($purchase->discount_amount ?? 0);
             $returnAdj = (float) ($purchase->return_adjustment_amount ?? 0);
 
-            $effectiveGrandTotal = $grandTotal + $deliveryCharge;
+            $effectiveGrandTotal = max(0, ($grandTotal - $discountAmount) + $deliveryCharge);
             $effectivePaid = $totalPaid + $returnAdj;
             $dueAmount = max(0, $effectiveGrandTotal - $effectivePaid);
 
@@ -222,17 +223,20 @@ public function PurchasesList()
                 'date'              => $purchase->date 
                     ? \Carbon\Carbon::parse($purchase->date)->format('d-m-Y') 
                     : 'N/A',
+                'raw_date'          => $purchase->date ? \Carbon\Carbon::parse($purchase->date)->format('Y-m-d') : '',
                 'referance_no'      => $purchase->referance_no ?? 'No Reference',
                 'supplier_id'       => $purchase->supplier?->supplier_id ?? 'N/A',
                 'supplier_db_id'    => $purchase->supplier_id,
                 'supplier'          => $purchase->supplier?->name ?? 'N/A',
                 'grand_subtotal'    => $grandTotal,
                 'delivery_charge'   => $deliveryCharge,
+                'discount_amount'   => $discountAmount,
                 'paid_amount'       => $totalPaid,
                 'due_amount'        => $dueAmount,
                 'payment_method'    => $paymentMethod,
                 'payment_status'    => $paymentStatus,
                 'return_amount'     => (float) $totalReturnAmount,
+                'attach_document'   => $purchase->attach_document,
                 'barcodes'          => $barcodes,
             ];
         });
@@ -328,6 +332,10 @@ public function PurchasesList()
 
             if (Schema::hasColumn('purchases', 'delivery_charge')) {
                 $purchaseData['delivery_charge'] = (float) ($request->delivery_charge ?? 0);
+            }
+
+            if (Schema::hasColumn('purchases', 'discount_amount')) {
+                $purchaseData['discount_amount'] = (float) ($request->discount_amount ?? 0);
             }
 
             if (Schema::hasColumn('purchases', 'return_adjustment_amount')) {
@@ -678,7 +686,7 @@ public function updatePaymentDetails(Request $request)
                 }
             }
 
-            $purchase->update([
+            $updateData = [
                 'referance_no' => $request->input('referance_no', $purchase->referance_no),
                 'date' => $updateDate,
                 'grand_subtotal' => $request->input('grand_subtotal', $purchase->grand_subtotal),
@@ -686,7 +694,22 @@ public function updatePaymentDetails(Request $request)
                 'paid_amount' => $request->input('paid_amount', $purchase->paid_amount),
                 'due_amount' => $request->input('due_amount', $purchase->due_amount),
                 'supplier_id' => $request->input('supplier_id', $purchase->supplier_id),
-            ]);
+            ];
+
+            if ($request->hasFile('img')) {
+                $img = $request->file('img');
+                $user_id = Auth::id() ?? $purchase->user_id;
+                $img_name = "{$user_id}-" . time() . "-" . $img->getClientOriginalName();
+                $img_url = "uploads/purchases-img/{$img_name}";
+                $img->move(public_path('uploads/purchases-img'), $img_name);
+                $updateData['attach_document'] = $img_url;
+            }
+
+            if ($request->filled('discount_amount')) {
+                $updateData['discount_amount'] = (float) $request->discount_amount;
+            }
+
+            $purchase->update($updateData);
 
             return response()->json(['status' => 'success', 'message' => 'Purchase updated successfully']);
         } catch (\Exception $e) {

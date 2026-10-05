@@ -1123,6 +1123,7 @@
                                     <thead>
                                         <tr class="bg-[#15803d] text-white text-xs font-semibold uppercase tracking-wider">
                                             <th class="p-[10px] text-center w-[46px] rounded-tl-2xl whitespace-nowrap">SL</th>
+                                            <th class="p-[10px] text-center w-[46px] whitespace-nowrap">Img</th>
                                             <th class="p-[10px] text-center whitespace-nowrap">Purchase ID</th>
                                             <th class="p-[10px] text-center whitespace-nowrap">Date</th>
                                             <th class="p-[10px] text-start whitespace-nowrap">Reference</th>
@@ -1134,7 +1135,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="purchasesTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm text-slate-700 dark:text-slate-200">
-                                        <tr><td colspan="9" class="sp-empty-state"><i class="fa-solid fa-receipt block text-3xl opacity-40 mb-2"></i>Loading purchase invoices...</td></tr>
+                                        <tr><td colspan="10" class="sp-empty-state"><i class="fa-solid fa-receipt block text-3xl opacity-40 mb-2"></i>Loading purchase invoices...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -1216,6 +1217,21 @@
     </div>
 </div>
 <!-- Hero Main Content End -->
+
+<!-- Full-Screen Image Preview Modal (Overlay, Max 80vh, No Scroll, Centered) -->
+<div id="imagePreviewModal" class="image-preview-overlay" onclick="if(event.target === this) closeImagePopup()" style="display: none; position: fixed; inset: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 99999999; align-items: center; justify-content: center; padding: 20px; overflow: hidden; margin: 0; box-sizing: border-box;">
+    <!-- Centered Card Container (Max 80vh, Zero Scroll) -->
+    <div class="relative flex flex-col items-center justify-center select-none" style="max-height: 80vh; max-width: 88vw; margin: auto;" onclick="event.stopPropagation()">
+        <!-- Floating Close Button on Top Right Corner -->
+        <button type="button" onclick="closeImagePopup()" class="absolute -top-3.5 -right-3.5 z-50 w-9 h-9 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center shadow-2xl transition-transform hover:scale-110 cursor-pointer border-2 border-white focus:outline-none" title="Close Preview">
+            <i class="fa-solid fa-xmark text-sm font-bold"></i>
+        </button>
+        <!-- Image Box strictly constrained within 80vh -->
+        <div class="rounded-2xl overflow-hidden shadow-2xl bg-slate-900 border border-white/20 flex items-center justify-center p-1" style="max-height: 80vh; max-width: 88vw; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);">
+            <img id="imagePreviewSrc" src="" alt="Preview" class="block w-auto h-auto rounded-xl object-contain" style="max-height: calc(80vh - 12px); max-width: calc(88vw - 12px); object-fit: contain; display: block;" />
+        </div>
+    </div>
+</div>
 
 {{-- ════════════════════════════════════════════════
      PAY SUPPLIER DUE MODAL (PRODUCT LIST MODAL RULES)
@@ -1629,7 +1645,7 @@
                 purchasesCards.empty();
 
                 if (purchases.length === 0) {
-                    purchasesTbody.html('<tr><td colspan="9" class="sp-empty-state"><i class="fa-solid fa-receipt block text-3xl opacity-40 mb-2"></i>No purchase records found for this supplier</td></tr>');
+                    purchasesTbody.html('<tr><td colspan="10" class="sp-empty-state"><i class="fa-solid fa-receipt block text-3xl opacity-40 mb-2"></i>No purchase records found for this supplier</td></tr>');
                     purchasesCards.html('<div class="p-6 text-center text-slate-400 sp-mobile-card"><i class="fa-solid fa-receipt block text-3xl opacity-40 mb-2"></i>No purchase records found</div>');
                 } else {
                     purchases.forEach((item, index) => {
@@ -1641,10 +1657,29 @@
                             paidDisplayHtml += `<br><span class="sp-badge sp-badge-teal text-[10px] mt-0.5">+৳${parseFloat(item.return_adjustment_amount).toFixed(2)} Adj</span>`;
                         }
 
+                        let imgHtml = '';
+                        let mobileImgHtml = '';
+                        if (item.attach_document) {
+                            let imgSrc = item.attach_document.startsWith('http') || item.attach_document.startsWith('/') ? item.attach_document : `/${item.attach_document}`;
+                            imgHtml = `
+                                <div class="w-7 h-7 rounded-full border border-slate-200 dark:border-slate-700 overflow-hidden mx-auto shadow-xs cursor-pointer hover:scale-110 hover:border-emerald-500 transition-all bg-slate-100 dark:bg-slate-800 flex items-center justify-center" onclick="openImagePopup('${imgSrc}', 'Purchase #${item.purchase_id || item.id}')" title="Click to view full image">
+                                    <img src="${imgSrc}" alt="Doc" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\\'fa-solid fa-file-image text-slate-400 text-xs\\'></i>';">
+                                </div>
+                            `;
+                            mobileImgHtml = `
+                                <div class="w-6 h-6 rounded-full border border-slate-200 dark:border-slate-700 overflow-hidden shadow-xs cursor-pointer hover:scale-110 hover:border-emerald-500 transition-all bg-slate-100 dark:bg-slate-800 flex items-center justify-center" onclick="openImagePopup('${imgSrc}', 'Purchase #${item.purchase_id || item.id}')" title="Click to view full image">
+                                    <img src="${imgSrc}" alt="Doc" class="w-full h-full object-cover">
+                                </div>
+                            `;
+                        } else {
+                            imgHtml = `<div class="w-7 h-7 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-300 dark:text-slate-600 flex items-center justify-center mx-auto text-[10px]" title="No Document"><i class="fa-solid fa-image"></i></div>`;
+                        }
+
                         // Desktop Row
                         purchasesTbody.append(`
                             <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors">
                                 <td class="text-center font-bold text-slate-500">${index + 1}</td>
+                                <td class="text-center">${imgHtml}</td>
                                 <td class="text-center"><span class="sp-badge sp-badge-id">${item.purchase_id}</span></td>
                                 <td class="text-center text-slate-600 dark:text-slate-300 whitespace-nowrap">${item.date}</td>
                                 <td class="text-start text-slate-600 dark:text-slate-300 font-medium">${item.referance_no || 'N/A'}</td>
@@ -1670,6 +1705,7 @@
                                     <div class="flex items-center gap-1.5">
                                         <span class="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[11px] font-bold">#${index + 1}</span>
                                         <span class="sp-badge sp-badge-id">${item.purchase_id}</span>
+                                        ${mobileImgHtml}
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <span class="sp-badge ${statusClass}">${item.payment_status}</span>
@@ -1896,4 +1932,31 @@
             alert("Error: " + (err.response?.data?.message || err.message || "Payment request failed."));
         }
     }
+
+    function openImagePopup(src, title) {
+        const modal = document.getElementById('imagePreviewModal');
+        const img = document.getElementById('imagePreviewSrc');
+        if (modal && img) {
+            if (modal.parentElement !== document.body) {
+                document.body.appendChild(modal);
+            }
+            img.src = src;
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeImagePopup() {
+        const modal = document.getElementById('imagePreviewModal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+            const img = document.getElementById('imagePreviewSrc');
+            if (img) img.src = '';
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeImagePopup();
+    });
 </script>

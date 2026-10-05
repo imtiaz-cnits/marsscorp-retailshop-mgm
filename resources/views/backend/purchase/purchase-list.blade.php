@@ -34,28 +34,80 @@
                         </div>
                     </div>
 
-                    <!-- 2. Controls & Filter Row -->
-                    <div class="controls-row-wrapper mb-3 w-full">
-                        <!-- Search Bar -->
-                        <div class="search-input-wrapper unified-ui-border h-[38px] flex items-center bg-white dark:bg-slate-800/90 rounded-xl shadow-sm transition-all focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20">
+                    <!-- Controls & Filter Row: 5 Columns on Desktop (1 Row), 2 Items Per Row on Mobile -->
+                    <div class="controls-five-cols-bar mb-3 w-full">
+                        <!-- 1st: Search Bar (col-search) -->
+                        <div class="col-search search-input-wrapper unified-ui-border h-[38px] flex items-center px-4 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm transition-all focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20">
                             <svg class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0 mr-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                             </svg>
-                            <input type="text" id="searchInput" style="border: none !important; outline: none !important; box-shadow: none !important; width: 100% !important; padding-left: 4px !important; padding-right: 4px !important;" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0 focus:border-0 focus:outline-none" placeholder="Search Purchase..." />
+                            <input type="text" id="searchInput" style="border: none !important; outline: none !important; box-shadow: none !important; width: 100% !important; padding: 0 8px !important;" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0 focus:border-0 focus:outline-none" placeholder="Search Purchase..." />
                         </div>
 
-                        <!-- Secondary Controls Group (Show Entries) -->
-                        <div class="controls-filter-group">
-                            <div class="entries-wrapper unified-ui-border flex items-center gap-1.5 bg-white dark:bg-slate-800/90 h-[38px] rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 shadow-sm transition-all hover:border-emerald-500">
-                                <span class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider whitespace-nowrap">SHOW:</span>
-                                <select id="entries" class="bg-transparent border-0 text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-400 focus:outline-none cursor-pointer py-1 pr-1 text-end" style="cursor: pointer;">
-                                    <option value="15" selected class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">15</option>
-                                    <option value="50" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">50</option>
-                                    <option value="100" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">100</option>
-                                    <option value="200" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">200</option>
-                                    <option value="500" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">500</option>
-                                </select>
+                        <!-- 2nd: Start Date with Flatpickr (col-start-date) -->
+                        <div class="col-start-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
+                            <input type="text" id="startDate" name="startDate" placeholder="Start Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-xs font-medium text-slate-700 dark:text-slate-200 placeholder:text-xs placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
+                            <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </div>
+
+                        <!-- 3rd: End Date with Flatpickr (col-end-date) -->
+                        <div class="col-end-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
+                            <input type="text" id="endDate" name="endDate" placeholder="End Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-xs font-medium text-slate-700 dark:text-slate-200 placeholder:text-xs placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
+                            <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </div>
+
+                        <!-- 4th: Entries Selector (col-entries) -->
+                        <div class="col-entries entries-wrapper unified-ui-border flex items-center justify-between gap-1 bg-white dark:bg-slate-800/90 h-[38px] px-3 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 shadow-sm transition-all hover:border-emerald-500 flex-shrink-0">
+                            <span class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider whitespace-nowrap">SHOW:</span>
+                            <select id="entries" class="bg-transparent border-0 text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-400 focus:outline-none cursor-pointer py-1 pr-1 text-end" style="cursor: pointer;">
+                                <option value="15" selected class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">15</option>
+                                <option value="50" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">50</option>
+                                <option value="100" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">100</option>
+                                <option value="200" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">200</option>
+                                <option value="500" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">500</option>
+                            </select>
+                        </div>
+
+                        <!-- 5th: Custom Quick Filter Dropdown (col-filter) -->
+                        <div class="col-filter custom-searchable-select custom-filter-dropdown flex-shrink-0" id="purchaseFilterDropdown">
+                            <div class="select-trigger unified-ui-border flex items-center justify-between px-3 h-[38px] bg-white dark:bg-slate-800/90 rounded-xl shadow-sm text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer hover:border-emerald-500 transition-all duration-150" onclick="toggleCustomPurchaseFilter()">
+                                <div class="flex items-center gap-1.5 overflow-hidden">
+                                    <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                                    </svg>
+                                    <span id="selectedPurchaseFilterLabel" class="selected-text truncate font-semibold">Filter</span>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-slate-400 chevron-icon transition-transform duration-200 flex-shrink-0 ms-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="select-menu dropdown-menus shadow-xl" style="min-width: 170px;">
+                                <div class="select-options-list">
+                                    <a href="#" data-filter="all" class="select-option-item active" onclick="selectPurchaseFilterOption(event, 'all', 'All time')">
+                                        <span>All time</span>
+                                        <i class="fa-solid fa-check small text-emerald-600 check-icon"></i>
+                                    </a>
+                                    <a href="#" data-filter="today" class="select-option-item" onclick="selectPurchaseFilterOption(event, 'today', 'Today')">
+                                        <span>Today</span>
+                                    </a>
+                                    <a href="#" data-filter="7" class="select-option-item" onclick="selectPurchaseFilterOption(event, '7', 'Last 7 Days')">
+                                        <span>Last 7 Days</span>
+                                    </a>
+                                    <a href="#" data-filter="30" class="select-option-item" onclick="selectPurchaseFilterOption(event, '30', 'Last Month')">
+                                        <span>Last Month</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -66,6 +118,7 @@
                             <thead>
                                 <tr class="bg-[#15803d] text-white text-xs font-semibold uppercase tracking-wider">
                                     <th class="py-2 px-[5px] text-center w-[34px] rounded-tl-2xl bg-[#15803d] text-white" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">SL</th>
+                                    <th class="py-2 px-[5px] text-center w-[46px] bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Img</th>
                                     <th class="py-2 px-[5px] text-center bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Date</th>
                                     <th class="py-2 px-[5px] text-center bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Purchase<br>ID</th>
                                     <th class="py-2 px-[5px] text-start bg-[#15803d] text-white leading-tight whitespace-nowrap" style="font-size: 11px !important; padding-left: 5px !important; padding-right: 5px !important;">Reference<br>No</th>
@@ -83,7 +136,7 @@
                             <tbody id="tableList" class="divide-y divide-slate-100 dark:divide-slate-800 text-[11px] lg:text-xs text-slate-700 dark:text-slate-200"></tbody>
                             <tfoot>
                                 <tr class="bg-slate-50/80 dark:bg-slate-800/80 font-bold text-xs border-t border-slate-200 dark:border-slate-800">
-                                    <td colspan="6" class="py-2 px-[5px] text-end font-bold text-slate-700 dark:text-slate-200">Total:</td>
+                                    <td colspan="7" class="py-2 px-[5px] text-end font-bold text-slate-700 dark:text-slate-200">Total:</td>
                                     <td id="totalGrandTotal" class="py-2 px-[5px] text-end font-bold text-slate-800 dark:text-white text-xs sm:text-[12.5px] whitespace-nowrap font-mono">৳ 0.00</td>
                                     <td id="totalPaidAmount" class="py-2 px-[5px] text-end font-bold text-emerald-600 dark:text-emerald-400 text-xs sm:text-[12.5px] whitespace-nowrap font-mono">৳ 0.00</td>
                                     <td id="totalDueAmount" class="py-2 px-[5px] text-end font-bold text-rose-600 dark:text-rose-400 text-xs sm:text-[12.5px] whitespace-nowrap font-mono">৳ 0.00</td>
@@ -117,10 +170,94 @@
 </div>
 <!-- Hero Main Content End -->
 
+<!-- Full-Screen Image Preview Modal (Overlay, Max 80vh, No Scroll, Centered) -->
+<div id="imagePreviewModal" class="image-preview-overlay" onclick="if(event.target === this) closeImagePopup()" style="display: none; position: fixed; inset: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 99999999; align-items: center; justify-content: center; padding: 20px; overflow: hidden; margin: 0; box-sizing: border-box;">
+    <!-- Centered Card Container (Max 80vh, Zero Scroll) -->
+    <div class="relative flex flex-col items-center justify-center select-none" style="max-height: 80vh; max-width: 88vw; margin: auto;" onclick="event.stopPropagation()">
+        <!-- Floating Close Button on Top Right Corner -->
+        <button type="button" onclick="closeImagePopup()" class="absolute -top-3.5 -right-3.5 z-50 w-9 h-9 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center shadow-2xl transition-transform hover:scale-110 cursor-pointer border-2 border-white focus:outline-none" title="Close Preview">
+            <i class="fa-solid fa-xmark text-sm font-bold"></i>
+        </button>
+        <!-- Image Box strictly constrained within 80vh -->
+        <div class="rounded-2xl overflow-hidden shadow-2xl bg-slate-900 border border-white/20 flex items-center justify-center p-1" style="max-height: 80vh; max-width: 88vw; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);">
+            <img id="imagePreviewSrc" src="" alt="Preview" class="block w-auto h-auto rounded-xl object-contain" style="max-height: calc(80vh - 12px); max-width: calc(88vw - 12px); object-fit: contain; display: block;" />
+        </div>
+    </div>
+</div>
+
 <style>
+    /* 5-Column Controls Row: 1 Row on Desktop, 2 Items Per Row on Mobile */
+    .controls-five-cols-bar {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        width: 100% !important;
+        align-items: center !important;
+    }
+    .controls-five-cols-bar .col-search {
+        grid-column: span 2 !important;
+        width: 100% !important;
+    }
+    .controls-five-cols-bar .col-start-date,
+    .controls-five-cols-bar .col-end-date,
+    .controls-five-cols-bar .col-entries,
+    .controls-five-cols-bar .col-filter {
+        grid-column: span 1 !important;
+        width: 100% !important;
+    }
+    .controls-five-cols-bar .col-entries {
+        display: flex !important;
+        justify-content: space-between !important;
+    }
+    .controls-five-cols-bar .col-filter .select-trigger {
+        width: 100% !important;
+    }
+
+    @media (min-width: 768px) {
+        .controls-five-cols-bar {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        .controls-five-cols-bar .col-search {
+            flex: 1 1 0% !important;
+            min-width: 140px !important;
+            width: auto !important;
+        }
+        .controls-five-cols-bar .col-start-date {
+            flex: 0 0 135px !important;
+            width: 135px !important;
+        }
+        .controls-five-cols-bar .col-end-date {
+            flex: 0 0 135px !important;
+            width: 135px !important;
+        }
+        .controls-five-cols-bar .col-entries {
+            flex: 0 0 auto !important;
+            width: auto !important;
+        }
+        .controls-five-cols-bar .col-filter {
+            flex: 0 0 130px !important;
+            width: 130px !important;
+        }
+    }
+
     /* Flatpickr z-index on top of modals */
     .flatpickr-calendar {
         z-index: 999999 !important;
+    }
+
+    /* Date field placeholder text size and weight matching other inputs */
+    #startDate, #endDate {
+        font-size: 12px !important;
+        font-weight: 500 !important;
+    }
+    #startDate::placeholder, #endDate::placeholder {
+        font-size: 12px !important;
+        font-weight: 400 !important;
+        color: #94a3b8 !important;
     }
 
     /* Full Height & Sticky Layout with Equal Gap from Top Bar */
@@ -366,6 +503,99 @@
         }
     }
 
+    /* Custom Filter Dropdown Styling */
+    .custom-filter-dropdown {
+        position: relative;
+        user-select: none;
+    }
+    .custom-filter-dropdown.is-open {
+        z-index: 50 !important;
+    }
+    .custom-filter-dropdown .select-trigger {
+        transition: all 0.2s ease;
+    }
+    .custom-filter-dropdown .select-trigger:hover {
+        border-color: #16a34a !important;
+    }
+    .custom-filter-dropdown.is-open .select-trigger {
+        border-color: #16a34a !important;
+        box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15) !important;
+    }
+    .custom-filter-dropdown .select-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        min-width: 170px;
+        z-index: 9999 !important;
+        background: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 12px;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+        padding: 6px;
+        max-height: none !important;
+        overflow: visible !important;
+        overflow-y: visible !important;
+    }
+    .custom-filter-dropdown .select-options-list {
+        max-height: none !important;
+        overflow: visible !important;
+        overflow-y: visible !important;
+    }
+    .custom-filter-dropdown.is-open .select-menu {
+        display: block !important;
+    }
+    .custom-filter-dropdown .select-option-item {
+        background-color: #ffffff !important;
+        color: #334155;
+        padding: 8px 12px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer !important;
+        border-radius: 6px;
+        border-left: 4px solid transparent !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.15s ease-in-out;
+        margin-bottom: 2px;
+        text-decoration: none !important;
+    }
+    .custom-filter-dropdown .select-option-item:hover {
+        background-color: #f0fdf4 !important;
+        color: #15803d !important;
+        border-left: 4px solid #16a34a !important;
+    }
+    .custom-filter-dropdown .select-option-item.active {
+        background-color: #dcfce7 !important;
+        color: #15803d !important;
+        border-left: 4px solid #16a34a !important;
+        font-weight: 600;
+    }
+
+    body[light-mode="dark"] .custom-filter-dropdown .select-menu,
+    html.dark .custom-filter-dropdown .select-menu {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .custom-filter-dropdown .select-option-item,
+    html.dark .custom-filter-dropdown .select-option-item {
+        background-color: #1e293b !important;
+        color: #f1f5f9 !important;
+    }
+    body[light-mode="dark"] .custom-filter-dropdown .select-option-item:hover,
+    html.dark .custom-filter-dropdown .select-option-item:hover {
+        background-color: #0f172a !important;
+        color: #34d399 !important;
+        border-left: 4px solid #34d399 !important;
+    }
+    body[light-mode="dark"] .custom-filter-dropdown .select-option-item.active,
+    html.dark .custom-filter-dropdown .select-option-item.active {
+        background-color: rgba(16, 185, 129, 0.2) !important;
+        color: #34d399 !important;
+        border-left: 4px solid #34d399 !important;
+    }
+
     /* Solid Green Header Across Light & Dark Mode and Horizontal Scroll */
     #printTable thead tr,
     #printTable thead th {
@@ -536,10 +766,138 @@
     let rawPurchaseData = [];
     let currentPage = 1;
     let pageSize = 15;
+    let startPicker = null;
+    let endPicker = null;
+
+    function initPurchaseFlatpickr() {
+        if (typeof flatpickr !== 'undefined') {
+            startPicker = flatpickr("#startDate", {
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "d/m/Y",
+                altInputClass: "w-full bg-transparent border-0 outline-none text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-400 p-0 m-0 cursor-pointer",
+                allowInput: true,
+                monthSelectorType: "static",
+                onChange: function(selectedDates, dateStr) {
+                    if (endPicker) {
+                        endPicker.set("minDate", dateStr);
+                    }
+                    currentPage = 1;
+                    renderPaginatedList();
+                },
+                onClose: function() {
+                    currentPage = 1;
+                    renderPaginatedList();
+                }
+            });
+
+            endPicker = flatpickr("#endDate", {
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "d/m/Y",
+                altInputClass: "w-full bg-transparent border-0 outline-none text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-400 p-0 m-0 cursor-pointer",
+                allowInput: true,
+                monthSelectorType: "static",
+                onChange: function(selectedDates, dateStr) {
+                    if (startPicker) {
+                        startPicker.set("maxDate", dateStr);
+                    }
+                    currentPage = 1;
+                    renderPaginatedList();
+                },
+                onClose: function() {
+                    currentPage = 1;
+                    renderPaginatedList();
+                }
+            });
+        }
+    }
+
+    function toggleCustomPurchaseFilter() {
+        const dropdown = document.getElementById('purchaseFilterDropdown');
+        if (!dropdown) return;
+        const isOpen = dropdown.classList.contains('is-open');
+        dropdown.classList.toggle('is-open', !isOpen);
+        const chevron = dropdown.querySelector('.chevron-icon');
+        if (chevron) {
+            chevron.style.transform = !isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+    }
+
+    function selectPurchaseFilterOption(e, filterVal, labelText) {
+        if (e) e.preventDefault();
+        const dropdown = document.getElementById('purchaseFilterDropdown');
+        if (dropdown) {
+            const labelEl = document.getElementById('selectedPurchaseFilterLabel');
+            if (labelEl) labelEl.textContent = labelText;
+
+            dropdown.querySelectorAll('.select-option-item').forEach(item => {
+                if (item.getAttribute('data-filter') === filterVal) {
+                    item.classList.add('active');
+                    if (!item.querySelector('.check-icon')) {
+                        item.innerHTML = `<span>${labelText}</span><i class="fa-solid fa-check small text-emerald-600 check-icon"></i>`;
+                    }
+                } else {
+                    item.classList.remove('active');
+                    const check = item.querySelector('.check-icon');
+                    if (check) check.remove();
+                }
+            });
+
+            dropdown.classList.remove('is-open');
+            const chevron = dropdown.querySelector('.chevron-icon');
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+        }
+
+        // Apply date range
+        let today = new Date();
+        let startDate = '';
+        let endDate = today.toISOString().split('T')[0];
+
+        if (filterVal === 'today') {
+            startDate = endDate;
+        } else if (filterVal === '7') {
+            let d = new Date();
+            d.setDate(d.getDate() - 7);
+            startDate = d.toISOString().split('T')[0];
+        } else if (filterVal === '30') {
+            let d = new Date();
+            d.setDate(d.getDate() - 30);
+            startDate = d.toISOString().split('T')[0];
+        } else if (filterVal === 'all') {
+            startDate = '';
+            endDate = '';
+        }
+
+        if (startPicker) {
+            startPicker.setDate(startDate, false);
+        } else {
+            $("#startDate").val(startDate);
+        }
+
+        if (endPicker) {
+            endPicker.setDate(endDate, false);
+        } else {
+            $("#endDate").val(endDate);
+        }
+
+        currentPage = 1;
+        renderPaginatedList();
+    }
+
+    document.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('purchaseFilterDropdown');
+        if (dropdown && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('is-open');
+            const chevron = dropdown.querySelector('.chevron-icon');
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+        }
+    });
 
     $(document).ready(function () {
         if ($.fn.select2) $('.select2').select2();
         $("#entries").val("15");
+        initPurchaseFlatpickr();
         getList();
         $("#searchInput").val("");
     });
@@ -578,8 +936,10 @@
         if (!rawPurchaseData) return;
 
         let searchTerm = $("#searchInput").val().toLowerCase().trim();
+        let startVal = $("#startDate").val();
+        let endVal = $("#endDate").val();
 
-        // 1. Filter Purchases
+        // 1. Filter Purchases by search & date range
         let filtered = rawPurchaseData.filter(function (item) {
             let purchaseId = (item.purchase_id || "").toLowerCase();
             let supplierName = (item.supplier || "").toLowerCase();
@@ -588,7 +948,30 @@
             let status = (item.payment_status || "").toLowerCase();
             let barcodesStr = Array.isArray(item.barcodes) ? item.barcodes.join(' ').toLowerCase() : "";
 
-            return !searchTerm || purchaseId.includes(searchTerm) || supplierName.includes(searchTerm) || supplierId.includes(searchTerm) || refNo.includes(searchTerm) || status.includes(searchTerm) || barcodesStr.includes(searchTerm);
+            let matchSearch = !searchTerm || purchaseId.includes(searchTerm) || supplierName.includes(searchTerm) || supplierId.includes(searchTerm) || refNo.includes(searchTerm) || status.includes(searchTerm) || barcodesStr.includes(searchTerm);
+
+            let matchDate = true;
+            let itemDate = item.raw_date || "";
+            if (!itemDate && item.date && item.date !== 'N/A') {
+                let parts = item.date.split('-');
+                if (parts.length === 3) {
+                    itemDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                }
+            }
+
+            if (startVal && itemDate) {
+                if (itemDate < startVal) matchDate = false;
+            } else if (startVal && !itemDate) {
+                matchDate = false;
+            }
+
+            if (endVal && itemDate) {
+                if (itemDate > endVal) matchDate = false;
+            } else if (endVal && !itemDate) {
+                matchDate = false;
+            }
+
+            return matchSearch && matchDate;
         });
 
         // 2. Calculate Totals
@@ -622,7 +1005,7 @@
         mobileCardList.empty();
 
         if (pageItems.length === 0) {
-            tbody.html('<tr><td colspan="13" class="text-center text-rose-500 p-6 font-bold">❌ No purchase data found.</td></tr>');
+            tbody.html('<tr><td colspan="14" class="text-center text-rose-500 p-6 font-bold">❌ No purchase data found.</td></tr>');
             mobileCardList.html('<div class="p-6 text-center text-rose-500 font-bold bg-white dark:bg-slate-800 rounded-2xl unified-ui-border shadow-sm">❌ No purchase data found.</div>');
         } else {
             pageItems.forEach(function (item, idx) {
@@ -640,10 +1023,23 @@
 
                 const isLastRow = (idx >= pageItems.length - 2 && pageItems.length > 1);
 
+                let imgHtml = '';
+                if (item.attach_document) {
+                    let imgSrc = item.attach_document.startsWith('http') || item.attach_document.startsWith('/') ? item.attach_document : `/${item.attach_document}`;
+                    imgHtml = `
+                        <div class="w-7 h-7 rounded-full border border-slate-200 dark:border-slate-700 overflow-hidden mx-auto shadow-xs cursor-pointer hover:scale-110 hover:border-emerald-500 transition-all bg-slate-100 dark:bg-slate-800 flex items-center justify-center" onclick="openImagePopup('${imgSrc}', 'Purchase #${item.purchase_id || item.id}')" title="Click to view full image">
+                            <img src="${imgSrc}" alt="Doc" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\\'fa-solid fa-file-image text-slate-400 text-xs\\'></i>';">
+                        </div>
+                    `;
+                } else {
+                    imgHtml = `<div class="w-7 h-7 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-300 dark:text-slate-600 flex items-center justify-center mx-auto text-[10px]" title="No Document"><i class="fa-solid fa-image"></i></div>`;
+                }
+
                 // Desktop Row (Action is placed on the FAR RIGHT)
                 let row = `
                     <tr data-row="${realIndex + 1}" class="hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors">
                         <td class="py-2 px-[5px] text-center font-semibold text-slate-500 dark:text-slate-400 text-[11px]">${realIndex + 1}</td>
+                        <td class="py-2 px-[5px] text-center">${imgHtml}</td>
                         <td class="py-2 px-[5px] text-center font-medium text-slate-600 dark:text-slate-300 text-[11px] lg:text-xs whitespace-nowrap">${item.date || 'N/A'}</td>
                         <td class="py-2 px-[5px] text-center font-bold text-emerald-700 dark:text-emerald-400 text-[11px] lg:text-xs whitespace-nowrap">${item.purchase_id || 'N/A'}</td>
                         <td class="py-2 px-[5px] text-start font-medium text-slate-500 dark:text-slate-400 text-[11px] lg:text-xs whitespace-nowrap">${item.referance_no || '-'}</td>
@@ -924,4 +1320,31 @@
     });
 
     window.refreshPurchaseList = getList;
+
+    function openImagePopup(src, title) {
+        const modal = document.getElementById('imagePreviewModal');
+        const img = document.getElementById('imagePreviewSrc');
+        if (modal && img) {
+            if (modal.parentElement !== document.body) {
+                document.body.appendChild(modal);
+            }
+            img.src = src;
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeImagePopup() {
+        const modal = document.getElementById('imagePreviewModal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+            const img = document.getElementById('imagePreviewSrc');
+            if (img) img.src = '';
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeImagePopup();
+    });
 </script>

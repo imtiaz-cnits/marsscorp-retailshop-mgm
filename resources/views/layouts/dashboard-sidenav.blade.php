@@ -3028,6 +3028,110 @@
       }, 60000);
     });
   </script>
+
+  <style>
+    /* Native Scrollbar Triangle Stepper Buttons - Zero Gap */
+    ::-webkit-scrollbar-button {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+    ::-webkit-scrollbar-button:vertical:start:increment,
+    ::-webkit-scrollbar-button:vertical:end:decrement {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+    ::-webkit-scrollbar-button:horizontal {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    /* Single Up Button at Top */
+    ::-webkit-scrollbar-button:vertical:single-button:start:decrement {
+      display: block !important;
+      height: 14px !important;
+      width: 10px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 8px 6px;
+      background-color: #f1f5f9;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='%2315803d'><polygon points='5,0 10,6 0,6'/></svg>");
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+    ::-webkit-scrollbar-button:vertical:single-button:start:decrement:hover {
+      background-color: #e2e8f0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='%2316a34a'><polygon points='5,0 10,6 0,6'/></svg>");
+    }
+
+    /* Single Down Button at Bottom */
+    ::-webkit-scrollbar-button:vertical:single-button:end:increment {
+      display: block !important;
+      height: 14px !important;
+      width: 10px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 8px 6px;
+      background-color: #f1f5f9;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='%2315803d'><polygon points='0,0 10,0 5,6'/></svg>");
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+    ::-webkit-scrollbar-button:vertical:single-button:end:increment:hover {
+      background-color: #e2e8f0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='%2316a34a'><polygon points='0,0 10,0 5,6'/></svg>");
+    }
+
+    /* Zero Gap between Track/Thumb and Stepper Buttons */
+    ::-webkit-scrollbar-track {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    ::-webkit-scrollbar-track-piece {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* Dark Mode Support for Scrollbar Stepper Buttons */
+    body[light-mode="dark"] ::-webkit-scrollbar-button:vertical:single-button:start:decrement,
+    html.dark ::-webkit-scrollbar-button:vertical:single-button:start:decrement,
+    body.dark ::-webkit-scrollbar-button:vertical:single-button:start:decrement,
+    body.dark-mode ::-webkit-scrollbar-button:vertical:single-button:start:decrement,
+    [data-theme="dark"] ::-webkit-scrollbar-button:vertical:single-button:start:decrement {
+      background-color: #1e293b;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='%2334d399'><polygon points='5,0 10,6 0,6'/></svg>");
+    }
+    body[light-mode="dark"] ::-webkit-scrollbar-button:vertical:single-button:start:decrement:hover,
+    html.dark ::-webkit-scrollbar-button:vertical:single-button:start:decrement:hover,
+    body.dark ::-webkit-scrollbar-button:vertical:single-button:start:decrement:hover,
+    body.dark-mode ::-webkit-scrollbar-button:vertical:single-button:start:decrement:hover,
+    [data-theme="dark"] ::-webkit-scrollbar-button:vertical:single-button:start:decrement:hover {
+      background-color: #334155;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='%2310b981'><polygon points='5,0 10,6 0,6'/></svg>");
+    }
+    body[light-mode="dark"] ::-webkit-scrollbar-button:vertical:single-button:end:increment,
+    html.dark ::-webkit-scrollbar-button:vertical:single-button:end:increment,
+    body.dark ::-webkit-scrollbar-button:vertical:single-button:end:increment,
+    body.dark-mode ::-webkit-scrollbar-button:vertical:single-button:end:increment,
+    [data-theme="dark"] ::-webkit-scrollbar-button:vertical:single-button:end:increment {
+      background-color: #1e293b;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='%2334d399'><polygon points='0,0 10,0 5,6'/></svg>");
+    }
+    body[light-mode="dark"] ::-webkit-scrollbar-button:vertical:single-button:end:increment:hover,
+    html.dark ::-webkit-scrollbar-button:vertical:single-button:end:increment:hover,
+    body.dark ::-webkit-scrollbar-button:vertical:single-button:end:increment:hover,
+    body.dark-mode ::-webkit-scrollbar-button:vertical:single-button:end:increment:hover,
+    [data-theme="dark"] ::-webkit-scrollbar-button:vertical:single-button:end:increment:hover {
+      background-color: #334155;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='%2310b981'><polygon points='0,0 10,0 5,6'/></svg>");
+    }
+  </style>
 </body>
 
 </html>

@@ -295,12 +295,12 @@
     /* Print Styles: Full Width A4 Paper Output */
     @media print {
         @page {
-            size: A4 portrait;
-            margin: 8mm 10mm 10mm 10mm;
+            size: portrait;
+            margin: 0mm;
         }
         html, body {
             width: 100% !important;
-            height: 100% !important;
+            min-height: 100vh !important;
             margin: 0 !important;
             padding: 0 !important;
             background: #ffffff !important;
@@ -318,11 +318,10 @@
             max-width: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
+            min-height: auto !important;
             height: auto !important;
             display: block !important;
             float: none !important;
-            left: 0 !important;
-            right: 0 !important;
             border: none !important;
             outline: none !important;
             box-shadow: none !important;
@@ -345,20 +344,21 @@
             box-shadow: none !important;
         }
         .invoice-container {
-            width: 190mm !important;
-            max-width: 190mm !important;
-            min-width: 190mm !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 100% !important;
             border: none !important;
             outline: none !important;
             box-shadow: none !important;
             border-radius: 0 !important;
-            padding: 0 !important;
-            margin: 0 auto !important;
+            padding: 16px 16px 0 16px !important;
+            margin: 0 !important;
             background: #ffffff !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: space-between !important;
             box-sizing: border-box !important;
+            flex-grow: 1 !important;
         }
         .invoice-main-content {
             flex-grow: 1 !important;
@@ -499,43 +499,62 @@
             color: #000000 !important;
         }
 
-        /* Copyright on LAST PAGE only at bottom with clean styling */
-        .invoice-container .footer-message {
+        /* Bill Footer Section on LAST PAGE at bottom */
+        .invoice-container .bill-footer-section {
             position: static !important;
             display: block !important;
             width: 100% !important;
             margin-top: auto !important;
-            padding-top: 15px !important;
-            padding-bottom: 0 !important;
             margin-bottom: 0 !important;
-            border: none !important;
-            outline: none !important;
-            box-shadow: none !important;
-            color: #000000 !important;
-            text-align: center !important;
-            font-size: 11px !important;
-            box-sizing: border-box !important;
-            background: transparent !important;
+            padding-top: 10px !important;
+            padding-bottom: 0 !important;
             page-break-before: auto !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
         }
-        .invoice-container .footer-message p {
+        .invoice-container .taka-words-box {
             color: #000000 !important;
-            margin: 0 !important;
-            text-align: center !important;
-            border: none !important;
-            outline: none !important;
-            box-shadow: none !important;
-            font-size: 11px !important;
-            background: transparent !important;
+            margin-top: 14px !important;
+            margin-bottom: 20px !important;
         }
-        .invoice-container .footer-message a {
+        .invoice-container .taka-words-val {
+            border-bottom: 1px dotted #000000 !important;
             color: #000000 !important;
-            text-decoration: none !important;
-            border: none !important;
-            outline: none !important;
-            box-shadow: none !important;
+        }
+        .invoice-container .signatures-row {
+            display: flex !important;
+            justify-content: space-between !important;
+            color: #000000 !important;
+            margin-top: 20px !important;
+            padding-bottom: 6px !important;
+        }
+        .invoice-container .sig-box {
+            border-top: 1px dotted #000000 !important;
+            color: #000000 !important;
+            width: 35% !important;
+        }
+        .invoice-container .bottom-color-bar {
+            display: flex !important;
+            height: 12px !important;
+            width: calc(100% + 32px) !important;
+            margin-left: -16px !important;
+            margin-right: -16px !important;
+            margin-bottom: 0 !important;
+            margin-top: 6px !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        .invoice-container .bottom-color-bar .red-bar {
+            width: 50% !important;
+            background-color: #dc2626 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        .invoice-container .bottom-color-bar .green-bar {
+            width: 50% !important;
+            background-color: #15803d !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
     }
 </style>
@@ -569,7 +588,7 @@
                     <div class="logo-wrapper text-center flex flex-col items-center justify-center">
                         <h2 class="text-base sm:text-lg font-bold text-black mb-2 tracking-tight" style="color: #000000 !important;">Purchase Details</h2>
                         <img src="{{ asset('backend/assets/img/marss-corporation-icon2.svg') }}" onerror="this.src='{{ asset('backend/assets/icons/marss-corporation-logo.svg') }}'" alt="MARSS Corporation Logo" class="mb-2" style="max-height: 48px; max-width: 180px; object-fit: contain;" />
-                        <button type="button" class="print-button inline-flex items-center gap-1.5 px-4 py-1.5 bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 cursor-pointer" onclick="window.print()">
+                        <button type="button" class="print-button inline-flex items-center gap-1.5 px-4 py-1.5 bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 cursor-pointer" onclick="preparePrintInvoice(); window.print()">
                             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="6 9 6 2 18 2 18 9"></polyline>
                                 <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
@@ -647,11 +666,36 @@
                 </table>
             </div>
 
-            <!-- Footer Message -->
-            <div class="footer-message">
-                <p>
-                    Powered by: <a href="https://codenextit.com" target="_blank" style="color:inherit;">CodeNext IT</a> - <a href="https://codenextit.com" target="_blank" style="color:inherit;">www.codenextit.com</a>
-                </p>
+            <!-- Bill Footer Section: Taka in Words, Signatures, Copyright, Color Bar -->
+            <div class="bill-footer-section" style="margin-top: auto; width: 100%;">
+                <!-- Taka in Words -->
+                <div class="taka-words-box" style="width: 100%; margin-top: 25px; margin-bottom: 40px;">
+                    <div class="taka-words-line" style="display: flex; align-items: flex-end;">
+                        <span class="meta-label" style="font-weight: 700; font-size: 12px; color: #000000;">Taka in Words:</span>
+                        <span class="taka-words-val" id="purchase_taka_words" style="flex: 1; border-bottom: 1px dotted #000000; font-weight: 700; padding-left: 6px; color: #000000;"></span>
+                    </div>
+                </div>
+
+                <!-- Signature Lines -->
+                <div class="signatures-row" style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 35px; padding-bottom: 15px; font-size: 12px; font-weight: 600; color: #000000;">
+                    <div class="sig-box" style="width: 35%; text-align: center; border-top: 1px dotted #000000; padding-top: 4px; color: #000000;">
+                        Received by
+                    </div>
+                    <div class="sig-box" style="width: 35%; text-align: center; border-top: 1px dotted #000000; padding-top: 4px; color: #000000;">
+                        Authorized Signature
+                    </div>
+                </div>
+
+                <!-- Centered Copyright -->
+                <div class="invoice-bottom-copyright" style="text-align: center; font-size: 11px; color: #475569; margin: 10px 0 6px 0;">
+                    Powered by: <a href="https://codenextit.com" target="_blank" style="color: inherit; text-decoration: none;">CodeNext IT</a> - <a href="https://codenextit.com" target="_blank" style="color: inherit; text-decoration: none;">www.codenextit.com</a>
+                </div>
+
+                <!-- Red & Green Bottom Accent Bar -->
+                <div class="bottom-color-bar" style="display: flex; height: 12px; width: calc(100% + 48px); margin-left: -24px; margin-right: -24px; margin-bottom: -24px;">
+                    <div class="red-bar" style="width: 50%; background-color: #dc2626;"></div>
+                    <div class="green-bar" style="width: 50%; background-color: #15803d;"></div>
+                </div>
             </div>
         </div>
 
@@ -665,35 +709,83 @@
 </div>
 
 <script>
-    function preparePrintInvoice() {
-        const container = document.querySelector('.invoice-container');
-        const mainContent = document.querySelector('.invoice-main-content');
-        const footer = document.querySelector('.footer-message');
-        if (!container || !mainContent || !footer) return;
+    function numberToWords(num) {
+        num = Math.round(Number(num) || 0);
+        if (num === 0) return 'Zero Taka Only';
 
-        // Reset minHeight to measure true content height
-        container.style.minHeight = 'auto';
+        const single = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const double = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
 
-        // 279mm printable page height at 96 DPI: 279 * 96 / 25.4 = 1054.49px
-        const printablePagePx = 1054.49;
-        const footerHeight = footer.offsetHeight || 25;
-        const contentHeight = mainContent.offsetHeight;
-
-        // Calculate pages required
-        const remainder = contentHeight % printablePagePx;
-        let numPages = Math.floor(contentHeight / printablePagePx) + 1;
-
-        // If remaining room on last page is less than footer + 15px gap, page will wrap
-        if (remainder > 0 && (printablePagePx - remainder) < (footerHeight + 15)) {
-            numPages++;
+        function convertLessThanOneThousand(n) {
+            let str = '';
+            if (n >= 100) {
+                str += single[Math.floor(n / 100)] + ' Hundred ';
+                n %= 100;
+            }
+            if (n >= 20) {
+                str += double[Math.floor(n / 10)] + ' ';
+                n %= 10;
+            }
+            if (n > 0) {
+                str += single[n] + ' ';
+            }
+            return str;
         }
 
-        // Set min-height so flex container pushes footer to the bottom with 10px (~3mm) gap
-        container.style.minHeight = ((numPages * 279) - 3) + 'mm';
+        let crore = Math.floor(num / 10000000);
+        num %= 10000000;
+        let lakh = Math.floor(num / 100000);
+        num %= 100000;
+        let thousand = Math.floor(num / 1000);
+        num %= 1000;
+        let remainder = num;
+
+        let res = '';
+        if (crore > 0) {
+            res += convertLessThanOneThousand(crore) + 'Crore ';
+        }
+        if (lakh > 0) {
+            res += convertLessThanOneThousand(lakh) + 'Lakh ';
+        }
+        if (thousand > 0) {
+            res += convertLessThanOneThousand(thousand) + 'Thousand ';
+        }
+        if (remainder > 0) {
+            res += convertLessThanOneThousand(remainder);
+        }
+
+        return res.trim() ? res.trim() + ' Taka Only' : 'Zero Taka Only';
+    }
+
+    function preparePrintInvoice() {
+        const container = document.querySelector('.invoice-container');
+        if (!container) return;
+        container.style.removeProperty('min-height');
+        container.style.minHeight = 'auto';
+        const pagePx = 1120; // safe threshold for A4 page height
+        const totalHeight = container.scrollHeight || container.offsetHeight;
+        let numPages = Math.max(1, Math.ceil(totalHeight / pagePx));
+        // Use (numPages * 297) - 8 mm to guarantee the footer sits at the bottom
+        // of the last page without ever triggering an accidental blank next page
+        const safeHeightMm = (numPages * 297) - 8;
+        container.style.setProperty('min-height', safeHeightMm + 'mm', 'important');
     }
 
     window.addEventListener('beforeprint', preparePrintInvoice);
+    window.addEventListener('afterprint', function() {
+        const container = document.querySelector('.invoice-container');
+        if (container) {
+            container.style.removeProperty('min-height');
+            container.style.minHeight = '';
+        }
+    });
+
     window.onload = function() {
+        const wordsEl = document.getElementById('purchase_taka_words');
+        if (wordsEl) {
+            let totalVal = parseFloat("{{ (float)($PreviousDueAmount ?? 0) + (float)($dueAmount ?? 0) > 0 ? (float)($PreviousDueAmount ?? 0) + (float)($dueAmount ?? 0) : (float)($subTotal ?? 0) }}") || 0;
+            wordsEl.innerText = numberToWords(Math.round(totalVal));
+        }
         setTimeout(function() {
             preparePrintInvoice();
             window.print();

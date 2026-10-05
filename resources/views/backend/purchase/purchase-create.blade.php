@@ -415,6 +415,18 @@
                                             <input type="number" step="any" min="0" class="form-control w-28 h-8 text-end font-bold rounded-lg text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:border-emerald-600 focus:outline-none" id="deliveryTransportCharge" value="0" placeholder="0.00" oninput="calculateDuePayment()" />
                                         </div>
                                     </div>
+                                    <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                                        <label for="purchaseDiscountInput" class="text-slate-600 dark:text-slate-300 font-semibold mb-0 cursor-pointer">
+                                            Discount:
+                                        </label>
+                                        <div class="flex items-center gap-1.5">
+                                            <select id="purchaseDiscountType" class="form-select h-8 px-2 py-0 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:border-emerald-600 focus:outline-none cursor-pointer" onchange="calculateDuePayment()" style="width: 58px;">
+                                                <option value="fixed">৳</option>
+                                                <option value="percent">%</option>
+                                            </select>
+                                            <input type="number" step="any" min="0" class="form-control w-28 h-8 text-end font-bold rounded-lg text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:border-emerald-600 focus:outline-none" id="purchaseDiscountInput" value="0" placeholder="0.00" oninput="calculateDuePayment()" />
+                                        </div>
+                                    </div>
                                     <div class="flex justify-between items-center py-1" style="display: none;">
                                         <label class="inline-flex items-center gap-2 cursor-pointer mb-0">
                                             <input type="checkbox" id="useReturnCreditCheckbox" onchange="syncReturnCreditCheckbox(this.checked)" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer">
@@ -538,14 +550,39 @@
         };
 
         window.calculateDuePayment = function() {
-            let grandSubtotal = parseFloat(grandSubtotalInput.value) || 0;
+            let rawSubtotal = parseFloat(window.purchaseRawSubtotal ?? grandSubtotalInput.value) || 0;
             let deliveryCharge = parseFloat(document.getElementById("deliveryTransportCharge")?.value) || 0;
+
+            // Calculate Discount (% or fixed amount)
+            let discType = document.getElementById("purchaseDiscountType")?.value || 'fixed';
+            let discVal = parseFloat(document.getElementById("purchaseDiscountInput")?.value) || 0;
+            let discountAmount = 0;
+            if (discType === 'percent') {
+                discountAmount = (rawSubtotal * discVal) / 100;
+            } else {
+                discountAmount = discVal;
+            }
+            if (discountAmount < 0) discountAmount = 0;
+            if (discountAmount > rawSubtotal) discountAmount = rawSubtotal;
+
+            let discountedSubtotal = Math.max(0, rawSubtotal - discountAmount);
+
+            // Dynamically show Grand Subtotal after discount deduction
+            let subTotalEl = document.getElementById("totalSubTotal");
+            if (subTotalEl) {
+                if (discountAmount > 0) {
+                    subTotalEl.innerHTML = `${discountedSubtotal.toFixed(2)} <span class="text-[11px] font-normal text-rose-500">(-৳ ${discountAmount.toFixed(2)})</span>`;
+                } else {
+                    subTotalEl.innerText = rawSubtotal.toFixed(2);
+                }
+            }
+
             let checkbox = document.getElementById("useReturnCreditCheckbox");
             let returnAdjInput = document.getElementById("returnAdjustmentAmount");
             let netPayableInput = document.getElementById("netPayableAmount");
             let netDisplay = document.getElementById("netPayableDisplay");
 
-            let totalWithDelivery = grandSubtotal + deliveryCharge;
+            let totalWithDelivery = discountedSubtotal + deliveryCharge;
 
             let returnAdj = 0;
             if (checkbox && checkbox.checked) {
@@ -1116,6 +1153,7 @@
             totalSub += qty * price;
         });
 
+        window.purchaseRawSubtotal = totalSub;
         document.getElementById("totalQuantity").innerText = totalQty;
         document.getElementById("totalSubTotal").innerText = totalSub.toFixed(2);
         document.getElementById("grandSubtotal").value = totalSub.toFixed(2);
@@ -1265,6 +1303,15 @@
         formData.append('payment_status', document.getElementById('paymentStatusDisplay').textContent.trim());
         formData.append('grand_subtotal', parseFloat(document.getElementById('grandSubtotal').value) || 0);
         formData.append('delivery_charge', parseFloat(document.getElementById('deliveryTransportCharge')?.value) || 0);
+
+        let rawSubVal = window.purchaseRawSubtotal || parseFloat(document.getElementById('grandSubtotal').value) || 0;
+        let discTypeVal = document.getElementById('purchaseDiscountType')?.value || 'fixed';
+        let discNumVal = parseFloat(document.getElementById('purchaseDiscountInput')?.value) || 0;
+        let discAmountVal = (discTypeVal === 'percent') ? (rawSubVal * discNumVal / 100) : discNumVal;
+        if (discAmountVal < 0) discAmountVal = 0;
+        if (discAmountVal > rawSubVal) discAmountVal = rawSubVal;
+        formData.append('discount_amount', discAmountVal || 0);
+
         formData.append('return_adjustment_amount', parseFloat(document.getElementById('returnAdjustmentAmount').value) || 0);
         formData.append('payment_method', selectedMethod);
         formData.append('paid_amount', parseFloat(document.getElementById('paidAmount').value) || 0);

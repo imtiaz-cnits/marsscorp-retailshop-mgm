@@ -554,6 +554,11 @@
                 </div>
             </div>
 
+            <!-- Centered Copyright -->
+            <div class="invoice-bottom-copyright" style="text-align: center; font-size: 11px; color: #475569; margin: 10px 0 6px 0;">
+                Powered by: <a href="https://codenextit.com" target="_blank" style="color: inherit; text-decoration: none;">CodeNext IT</a> - <a href="https://codenextit.com" target="_blank" style="color: inherit; text-decoration: none;">www.codenextit.com</a>
+            </div>
+
             <!-- Red & Green Bottom Accent Bar -->
             <div class="bottom-color-bar">
                 <div class="red-bar"></div>

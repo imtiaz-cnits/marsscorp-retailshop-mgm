@@ -475,6 +475,7 @@ function SupplierDelete(Request $request)
                         'payment_method'           => $purchase->paymentDetails->first()?->payment_method ?? 'N/A',
                         'payment_status'           => $paymentStatus,
                         'barcodes'                 => $barcodes,
+                        'attach_document'          => $purchase->attach_document,
                     ];
                 });
 

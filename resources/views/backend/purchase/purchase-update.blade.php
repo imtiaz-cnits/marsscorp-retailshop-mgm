@@ -165,6 +165,14 @@
                                 <div id="updateSupplierDropdownList" class="dropdown-menu shadow-xl w-full p-0 overflow-auto rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800" style="max-height: 220px; display: none; position: absolute; z-index: 1070; top: 100%; left: 0;"></div>
                             </div>
                         </div>
+
+                        <div class="col-md-6 mb-2">
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-0 text-left">Attach Invoice Doc</label>
+                                <span id="currentDocLink" class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400"></span>
+                            </div>
+                            <input type="file" id="UpdateAttachDocument" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs" />
+                        </div>
                     </div>
 
                     <!-- Cancel button red with white text, Update button emerald with white text -->
@@ -333,6 +341,20 @@
                 document.getElementById('UpdateDeliveryCharge').value = data.delivery_charge || 0;
                 document.getElementById('UpdatePaidAmount').value = data.paid_amount || 0;
                 document.getElementById('UpdateDueAmount').value = data.due_amount || 0;
+
+                // Reset file input & show current document link
+                const docInput = document.getElementById('UpdateAttachDocument');
+                if (docInput) docInput.value = '';
+
+                const docLink = document.getElementById('currentDocLink');
+                if (docLink) {
+                    if (data.attach_document) {
+                        docLink.innerHTML = `<a href="/${data.attach_document}" target="_blank" class="hover:underline flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold"><i class="fa-solid fa-file"></i> View Current</a>`;
+                    } else {
+                        docLink.innerHTML = '';
+                    }
+                }
+
                 if (data.supplier_id) {
                     document.getElementById('UpdateSupplierSelect').value = data.supplier_id;
                     const foundSupp = updateAllSuppliersData.find(s => s.id == data.supplier_id);
@@ -377,8 +399,14 @@
             formData.append('due_amount', dueAmount);
             formData.append('supplier_id', $('#UpdateSupplierSelect').val());
 
+            const imgInput = document.getElementById('UpdateAttachDocument');
+            if (imgInput && imgInput.files[0]) {
+                formData.append('img', imgInput.files[0]);
+            }
+
             const config = {
                 headers: {
+                    'content-type': 'multipart/form-data',
                     ...HeaderToken().headers
                 }
             };

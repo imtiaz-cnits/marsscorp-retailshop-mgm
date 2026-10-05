@@ -3,11 +3,11 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <!-- Hero Main Content Start -->
-<div class="main-content">
-    <div class="page-content min-h-screen flex flex-col justify-between">
+<div class="main-content min-h-screen flex flex-col justify-between">
+    <div class="page-content invoice-page-content flex-grow flex flex-col justify-between">
         <div class="data-table flex-grow">
             <div class="card bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm overflow-hidden mb-4 transition-colors">
-                <div class="card-body product-card-body p-4 sm:p-6 md:p-10">
+                <div class="card-body product-card-body p-4 sm:p-6 md:p-8">
                     
                     <!-- 1. Top Section: Page Title (Zero bottom margin, description removed) -->
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
@@ -25,11 +25,10 @@
                         </div>
                     </div>
 
-                    <!-- 2. Controls & Filter Rows: Searchbar + 2 Date Fields in Row 1; Show Entries + Filter + Export in Row 2 -->
-                    <!-- Row 1: 3 Columns in 1 Row on Desktop: Search Bar, Start Date, End Date -->
-                    <div class="row-controls-grid grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 mb-3 sm:mb-4 w-full">
-                        <!-- 1st Column: Search Bar -->
-                        <div class="search-input-wrapper unified-ui-border h-[38px] flex items-center px-4 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm transition-all focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20">
+                    <!-- Controls & Filter Row: 5 Columns on Desktop (1 Row), 2 Items Per Row on Mobile -->
+                    <div class="controls-five-cols-bar mb-3 w-full">
+                        <!-- 1st: Search Bar (col-search) -->
+                        <div class="col-search search-input-wrapper unified-ui-border h-[38px] flex items-center px-4 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm transition-all focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20">
                             <svg class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0 mr-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -37,9 +36,9 @@
                             <input type="text" id="searchInput" style="border: none !important; outline: none !important; box-shadow: none !important; width: 100% !important; padding: 0 8px !important;" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0 focus:border-0 focus:outline-none" placeholder="Searching Invoice..." />
                         </div>
 
-                        <!-- 2nd Column: Start Date with Flatpickr -->
-                        <div class="date-input-wrapper unified-ui-border h-[38px] flex items-center px-4 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer">
-                            <input type="text" id="startDate" name="dateInput" placeholder="Start Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-400 p-0 cursor-pointer" />
+                        <!-- 2nd: Start Date with Flatpickr (col-start-date) -->
+                        <div class="col-start-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
+                            <input type="text" id="startDate" name="dateInput" placeholder="Start Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-xs font-medium text-slate-700 dark:text-slate-200 placeholder:text-xs placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
                             <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -48,69 +47,64 @@
                             </svg>
                         </div>
 
-                        <!-- 3rd Column: End Date with Flatpickr -->
-                        <div class="date-input-wrapper unified-ui-border h-[38px] flex items-center px-4 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer">
-                            <input type="text" id="endDate" name="dateInput" placeholder="End Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-400 p-0 cursor-pointer" />
+                        <!-- 3rd: End Date with Flatpickr (col-end-date) -->
+                        <div class="col-end-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
+                            <input type="text" id="endDate" name="dateInput" placeholder="End Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-xs font-medium text-slate-700 dark:text-slate-200 placeholder:text-xs placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
                             <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
+                        </div>
+
+                        <!-- 4th: Entries Selector (col-entries) -->
+                        <div class="col-entries entries-wrapper unified-ui-border flex items-center justify-between gap-1 bg-white dark:bg-slate-800/90 h-[38px] px-3 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 shadow-sm transition-all hover:border-emerald-500 flex-shrink-0">
+                            <span class="text-slate-400 dark:text-slate-400 text-[11px] uppercase tracking-wider font-bold">Show:</span>
+                            <select id="entries" class="bg-transparent border-0 text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-400 focus:outline-none cursor-pointer py-1 pr-1 text-end" style="cursor: pointer;">
+                                <option value="10" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">10</option>
+                                <option value="15" selected class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">15</option>
+                                <option value="25" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">25</option>
+                                <option value="50" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">50</option>
+                                <option value="100" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">100</option>
+                            </select>
+                        </div>
+
+                        <!-- 5th: Custom Quick Filter Dropdown (col-filter) -->
+                        <div class="col-filter custom-searchable-select custom-filter-dropdown flex-shrink-0" id="invoiceFilterDropdown">
+                            <div class="select-trigger unified-ui-border flex items-center justify-between px-3 h-[38px] bg-white dark:bg-slate-800/90 rounded-xl shadow-sm text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer hover:border-emerald-500 transition-all duration-150" onclick="toggleCustomInvoiceFilter()">
+                                <div class="flex items-center gap-1.5 overflow-hidden">
+                                    <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                                    </svg>
+                                    <span id="selectedFilterLabel" class="selected-text truncate font-semibold">Filter</span>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-slate-400 chevron-icon transition-transform duration-200 flex-shrink-0 ms-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="select-menu dropdown-menus shadow-xl" style="min-width: 170px;">
+                                <div class="select-options-list">
+                                    <a href="#" data-filter="all" class="select-option-item active" onclick="selectInvoiceFilterOption(event, 'all', 'All time')">
+                                        <span>All time</span>
+                                        <i class="fa-solid fa-check small text-emerald-600 check-icon"></i>
+                                    </a>
+                                    <a href="#" data-filter="today" class="select-option-item" onclick="selectInvoiceFilterOption(event, 'today', 'Today')">
+                                        <span>Today</span>
+                                    </a>
+                                    <a href="#" data-filter="7" class="select-option-item" onclick="selectInvoiceFilterOption(event, '7', 'Last 7 Days')">
+                                        <span>Last 7 Days</span>
+                                    </a>
+                                    <a href="#" data-filter="30" class="select-option-item" onclick="selectInvoiceFilterOption(event, '30', 'Last Month')">
+                                        <span>Last Month</span>
+                                    </a>
+                                    <a href="#" data-filter="365" class="select-option-item" onclick="selectInvoiceFilterOption(event, '365', 'Last Year')">
+                                        <span>Last Year</span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Row 2: Show Entries + Filter on Left, Export Buttons on Right above Table (Centered on Mobile) -->
-                    <div class="row-actions-bar flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 mb-4 w-full">
-                        <!-- Left Group: Show Entries + Filter Dropdown (Centered on Mobile, Left-aligned on Desktop) -->
-                        <div class="filter-controls-group flex items-center justify-center sm:justify-start gap-2 sm:gap-2.5 flex-wrap w-full sm:w-auto">
-                            <!-- Entries Selector (Default 15) -->
-                            <div class="entries-wrapper unified-ui-border flex items-center gap-1 bg-white dark:bg-slate-800/90 px-3 h-[38px] rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 shadow-sm transition-all hover:border-emerald-500 flex-shrink-0">
-                                <span class="text-slate-400 dark:text-slate-400 text-[11px] uppercase tracking-wider font-bold">Show:</span>
-                                <select id="entries" class="bg-transparent border-0 text-xs font-bold text-emerald-700 dark:text-emerald-400 focus:outline-none cursor-pointer py-1 pr-1">
-                                    <option value="10" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">10</option>
-                                    <option value="15" selected class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">15</option>
-                                    <option value="25" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">25</option>
-                                    <option value="50" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">50</option>
-                                    <option value="100" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">100</option>
-                                </select>
-                            </div>
-
-                            <!-- Custom Quick Filter Dropdown (Compact width) -->
-                            <div class="custom-searchable-select custom-filter-dropdown w-[130px] sm:w-[145px] flex-shrink-0" id="invoiceFilterDropdown">
-                                <div class="select-trigger unified-ui-border flex items-center justify-between px-3 h-[38px] bg-white dark:bg-slate-800/90 rounded-xl shadow-sm text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer hover:border-emerald-500 transition-all duration-150" onclick="toggleCustomInvoiceFilter()">
-                                    <div class="flex items-center gap-1.5 overflow-hidden">
-                                        <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-                                        </svg>
-                                        <span id="selectedFilterLabel" class="selected-text truncate font-semibold">Filter</span>
-                                    </div>
-                                    <svg class="w-3.5 h-3.5 text-slate-400 chevron-icon transition-transform duration-200 flex-shrink-0 ms-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
-                                </div>
-                                <div class="select-menu dropdown-menus shadow-xl" style="min-width: 170px;">
-                                    <div class="select-options-list">
-                                        <a href="#" data-filter="all" class="select-option-item active" onclick="selectInvoiceFilterOption(event, 'all', 'All time')">
-                                            <span>All time</span>
-                                            <i class="fa-solid fa-check small text-emerald-600 check-icon"></i>
-                                        </a>
-                                        <a href="#" data-filter="today" class="select-option-item" onclick="selectInvoiceFilterOption(event, 'today', 'Today')">
-                                            <span>Today</span>
-                                        </a>
-                                        <a href="#" data-filter="7" class="select-option-item" onclick="selectInvoiceFilterOption(event, '7', 'Last 7 Days')">
-                                            <span>Last 7 Days</span>
-                                        </a>
-                                        <a href="#" data-filter="30" class="select-option-item" onclick="selectInvoiceFilterOption(event, '30', 'Last Month')">
-                                            <span>Last Month</span>
-                                        </a>
-                                        <a href="#" data-filter="365" class="select-option-item" onclick="selectInvoiceFilterOption(event, '365', 'Last Year')">
-                                            <span>Last Year</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- Right Group: Export Action Buttons (Centered on Mobile, Right-aligned on Desktop) -->
                         {{-- <div class="export-buttons-group flex items-center justify-center sm:justify-end gap-1.5 flex-wrap w-full sm:w-auto sm:ms-auto">
@@ -152,7 +146,6 @@
                                 </svg>
                             </button>
                         </div> --}}
-                    </div>
 
                     <!-- 3. Desktop Table (SL header, solid emerald header, single line, 10px padding) -->
                     <div class="table-responsive unified-ui-border hidden md:block w-full max-w-full overflow-x-auto rounded-2xl shadow-sm bg-white dark:bg-slate-900 mb-4">
@@ -192,6 +185,9 @@
                 &copy; {{ date('Y') }} MARSS CORPORATION | Software By: <a href="https://www.codenextit.com" target="_blank" class="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 font-bold hover:underline transition-colors">CodeNext IT</a>
             </footer>
         </div>
+    </div>
+</div>
+<!-- Hero Main Content End -->
 
 <!-- Quick View Invoice Details Modal -->
 <div id="invoiceQuickViewModal" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
@@ -332,6 +328,64 @@
 </div>
 
 <style>
+    /* 5-Column Controls Row: 1 Row on Desktop, 2 Items Per Row on Mobile */
+    .controls-five-cols-bar {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        width: 100% !important;
+        align-items: center !important;
+    }
+    .controls-five-cols-bar .col-search {
+        grid-column: span 2 !important;
+        width: 100% !important;
+    }
+    .controls-five-cols-bar .col-start-date,
+    .controls-five-cols-bar .col-end-date,
+    .controls-five-cols-bar .col-entries,
+    .controls-five-cols-bar .col-filter {
+        grid-column: span 1 !important;
+        width: 100% !important;
+    }
+    .controls-five-cols-bar .col-entries {
+        display: flex !important;
+        justify-content: space-between !important;
+    }
+    .controls-five-cols-bar .col-filter .select-trigger {
+        width: 100% !important;
+    }
+
+    @media (min-width: 768px) {
+        .controls-five-cols-bar {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        .controls-five-cols-bar .col-search {
+            flex: 1 1 0% !important;
+            min-width: 140px !important;
+            width: auto !important;
+        }
+        .controls-five-cols-bar .col-start-date {
+            flex: 0 0 135px !important;
+            width: 135px !important;
+        }
+        .controls-five-cols-bar .col-end-date {
+            flex: 0 0 135px !important;
+            width: 135px !important;
+        }
+        .controls-five-cols-bar .col-entries {
+            flex: 0 0 auto !important;
+            width: auto !important;
+        }
+        .controls-five-cols-bar .col-filter {
+            flex: 0 0 130px !important;
+            width: 130px !important;
+        }
+    }
+
     /* Full Height & Zoom-Out Sticky Footer Fix */
     html, body {
         min-height: 100vh !important;
@@ -341,12 +395,20 @@
         display: flex !important;
         flex-direction: column !important;
     }
-    .page-content {
+    .page-content,
+    .invoice-page-content {
         min-height: 100vh !important;
         display: flex !important;
         flex-direction: column !important;
         flex-grow: 1 !important;
-        padding-bottom: 0 !important;
+        padding: calc(70px + 16px) 16px 16px 16px !important;
+        box-sizing: border-box !important;
+    }
+    @media (min-width: 768px) {
+        .page-content,
+        .invoice-page-content {
+            padding: calc(70px + 20px) 20px 20px 20px !important;
+        }
     }
     .data-table {
         flex-grow: 1 !important;
@@ -356,13 +418,24 @@
         width: 100% !important;
     }
 
+    /* Date field placeholder text size and weight matching other inputs */
+    #startDate, #endDate {
+        font-size: 12px !important;
+        font-weight: 500 !important;
+    }
+    #startDate::placeholder, #endDate::placeholder {
+        font-size: 12px !important;
+        font-weight: 400 !important;
+        color: #94a3b8 !important;
+    }
+
     /* Card-body padding standard */
     .product-card-body {
-        padding: 14px !important;
+        padding: 16px !important;
     }
     @media (min-width: 640px) {
         .product-card-body {
-            padding: 18px !important;
+            padding: 20px !important;
         }
     }
     @media (min-width: 768px) {
@@ -515,6 +588,12 @@
         border-radius: 12px;
         box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06) !important;
         padding: 6px;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+    .custom-filter-dropdown .select-options-list {
+        max-height: none !important;
+        overflow: visible !important;
     }
     .custom-filter-dropdown.is-open .select-menu {
         display: block !important;
