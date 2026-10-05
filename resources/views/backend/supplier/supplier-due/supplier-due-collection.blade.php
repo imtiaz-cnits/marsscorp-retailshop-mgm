@@ -1,166 +1,305 @@
 <style>
+    #editModal {
+        z-index: 1060 !important;
+        background: rgba(0, 0, 0, 0.65) !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        display: none;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 20px 10px !important;
+        box-sizing: border-box !important;
+    }
+    #editModal .modal-dialog {
+        background: transparent !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        text-align: left !important;
+        max-width: 620px !important;
+        width: 100% !important;
+        max-height: 90vh !important;
+        height: auto !important;
+        margin: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    @media screen and (max-width: 768px) {
+        #editModal .modal-dialog {
+            max-width: 95% !important;
+            width: 95% !important;
+            margin: auto !important;
+        }
+    }
     #editModal .modal-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        border-radius: 16px !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4) !important;
+        background: #ffffff !important;
+        text-align: left !important;
+        max-height: 90vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        position: relative !important;
+        transform: none !important;
+        top: auto !important;
+        left: auto !important;
     }
-
+    body[light-mode="dark"] #editModal .modal-content,
+    html[light-mode="dark"] #editModal .modal-content,
+    body[data-layout-mode="dark"] #editModal .modal-content,
+    html.dark #editModal .modal-content,
+    body.dark #editModal .modal-content {
+        background-color: #0f172a !important;
+        border: 1px solid #1e293b !important;
+    }
+    body[light-mode="dark"] #editModal .modal-footer-sticky,
+    html[light-mode="dark"] #editModal .modal-footer-sticky,
+    body[data-layout-mode="dark"] #editModal .modal-footer-sticky,
+    html.dark #editModal .modal-footer-sticky,
+    body.dark #editModal .modal-footer-sticky {
+        background-color: #0f172a !important;
+        border-top-color: #1e293b !important;
+    }
+    #editModal .form-label-title {
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        margin-bottom: 6px !important;
+        display: block !important;
+        line-height: 1.3 !important;
+        text-align: left !important;
+    }
+    body[light-mode="dark"] #editModal .form-label-title {
+        color: #cbd5e1 !important;
+    }
+    #editModal input[type="text"],
+    #editModal input[type="number"],
+    #editModal input[type="date"] {
+        width: 100% !important;
+        height: 42px !important;
+        font-size: 13.5px !important;
+        color: #334155 !important;
+        padding: 8px 14px !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        outline: none !important;
+        background: #ffffff !important;
+        transition: border-color 0.2s, box-shadow 0.2s !important;
+        text-align: left !important;
+        box-sizing: border-box !important;
+    }
+    #editModal input:focus {
+        border-color: #15803d !important;
+        box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.2) !important;
+    }
+    body[light-mode="dark"] #editModal input[type="text"],
+    body[light-mode="dark"] #editModal input[type="number"],
+    body[light-mode="dark"] #editModal input[type="date"] {
+        background-color: #1e293b !important;
+        color: #f1f5f9 !important;
+        border-color: #334155 !important;
+    }
+    #editModal .due-info-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-bottom: 16px;
+    }
+    body[light-mode="dark"] #editModal .due-info-box {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    #editModal .due-info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        font-size: 13px;
+        border-bottom: 1px dashed #e2e8f0;
+    }
+    body[light-mode="dark"] #editModal .due-info-row {
+        border-bottom-color: #334155;
+    }
+    #editModal .due-info-row:last-child {
+        border-bottom: none;
+    }
     .fully-paid-status {
-        color: green;
+        color: #15803d !important;
         font-weight: bold;
     }
-
     .partial-payment-status {
-        color: orange;
+        color: #d97706 !important;
         font-weight: bold;
     }
-
     .unpaid-status {
-        color: red;
+        color: #dc2626 !important;
         font-weight: bold;
     }
 </style>
 
 <!-- Action Button Edit Modal Start -->
-<div id="editModal" class="payment-edit modal">
-    <div class="modal-content">
-        <a class="close-btn close" onclick="closeModal(document.getElementById('editModal'))" style="cursor: pointer;">
-            <i class="fa-solid fa-xmark"></i>
-        </a>
-        <h2 class="heading">Supplier Due collection</h2>
-        <div class="table-wrapper">
-            <form id="paymentForm">
-                <div class="totals">
-                    <div class="subtotal mb-3">
-                        <span>Due collection Date</span>
+<div id="editModal" class="payment-edit modal" onclick="if(event.target===this) closeModal(this)">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Sticky Green Header with White Text & Red Close Icon -->
+            <div style="background-color: #15803d; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; position: sticky; top: 0; z-index: 20; border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                <h2 style="font-size: 18px; font-weight: 700; color: #ffffff; margin: 0; padding: 0; line-height: 1.2;">Supplier Due collection</h2>
+                <button type="button" class="close-btn close" onclick="closeModal(document.getElementById('editModal'))" style="position: static !important; width: 28px; height: 28px; min-width: 28px; min-height: 28px; border-radius: 50%; background-color: #dc2626; color: #ffffff; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: all 0.15s ease; margin: 0; padding: 0;" title="Close">
+                    <i class="fa-solid fa-xmark" style="color: #ffffff; font-size: 14px;"></i>
+                </button>
+            </div>
+
+            <!-- Scrollable Body Content -->
+            <div id="popup-modal" style="padding: 20px 24px; overflow-y: auto; flex: 1 1 auto; max-height: calc(90vh - 130px); text-align: left;">
+                <form id="paymentForm">
+                    <input type="hidden" id="updateID">
+
+                    <!-- Date input with top-bottom padding -->
+                    <div class="mb-3">
+                        <label for="DueCollectionDate" class="form-label-title">Due collection Date</label>
                         <input type="date" name="" id="DueCollectionDate">
                     </div>
-                    <div class="subtotal">
-                        <span>Supplier Previous Due</span>
-                        <span id="SupplierPreviousDue">৳ 0</span>
-                    </div>
-                    <div class="subtotal">
-                        <span>Purchase Previous Due</span>
-                        <span id="PurchasePreviousDue">৳ 0</span>
-                    </div>
-                    <div class="subtotal">
-                        <span>Total Previous Due</span>
-                        <span id="TotalPreviousDue">৳ 0</span>
-                    </div>
-                    <div class="subtotal">
-                        <span>Enter Discount Amount</span>
-                        <input type="number" id="DiscountAmount" oninput="calculateDuePayment()" placeholder="Enter Discount">
-                    </div>
-                    <div class="subtotal">
-                        <span>Enter Pay Amount</span>
-                        <input type="number" id="PayAmount" oninput="calculateDuePayment()" placeholder="Enter Pay Amount">
-                    </div>
-                    <div class="total">
-                        <span>Final Due Amount</span>
-                        <span id="FinalDueAmount">৳ 0</span>
-                    </div>
-                    <div class="total">
-                        <span>Status</span>
-                        <span id="ShowpaymentStatusDisplay">Pending</span>
-                    </div>
-                </div>
-                <input type="hidden" id="updateID">
 
-            </form>
-            <div id="payment">
-
-                <div class="payments">
-                    <div class="heading">
-                        <h2>Payment Method</h2>
-                    </div>
-                    <form action="#">
-                        <input type="radio" name="payment" id="cash" />
-                        <input type="radio" name="payment" id="bkash" />
-                        <input type="radio" name="payment" id="nagad" />
-                        <input type="radio" name="payment" id="rocket" />
-                        <input type="radio" name="payment" id="bank" />
-                        <input type="radio" name="payment" id="mastercard" />
-
-                        <div class="category-wrapper">
-                            <div class="category">
-                                <label for="cash" class="cashMethod" onclick="toggleTransactionInput('cash')">
-                                    <input type="radio" name="payment" id="cash" />
-                                    <div class="imgName">
-                                        <div class="imgContainer cash">
-                                            <img src="{{ asset('backend/assets/img/payment-cash.png') }}"
-                                                alt="" />
-                                        </div>
-                                        <h1>Cash</h1>
-                                    </div>
-                                    <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                </label>
-
-                                <label for="bkash" class="bkashMethod" onclick="toggleTransactionInput('bkash')">
-                                    <div class="imgName">
-                                        <div class="imgContainer bkash">
-                                            <img src="{{ asset('backend/assets/img/payment-bkash.png') }}"
-                                                alt="" />
-                                        </div>
-                                        <h1>bKash</h1>
-                                    </div>
-                                    <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                </label>
-
-                                <label for="nagad" class="nagadMethod">
-                                    <div class="imgName">
-                                        <div class="imgContainer nagad">
-                                            <img src="{{ asset('backend/assets/img/payment-nagad.png') }}"
-                                                alt="" />
-                                        </div>
-                                        <h1>Nagad</h1>
-                                    </div>
-                                    <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                </label>
-                                <input type="hidden" id="selectedPaymentMethod">
-
-                                <label for="rocket" class="rocketMethod">
-                                    <div class="imgName">
-                                        <div class="imgContainer rocket">
-                                            <img src="{{ asset('backend/assets/img/payment-rocket.png') }}"
-                                                alt="" />
-                                        </div>
-                                        <h1>Rocket</h1>
-                                    </div>
-                                    <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                </label>
-
-                                <label for="bank" class="bankMethod">
-                                    <div class="imgName">
-                                        <div class="imgContainer bank">
-                                            <img src="{{ asset('backend/assets/img/payment-bank.png') }}"
-                                                alt="" />
-                                        </div>
-                                        <h1>Bank</h1>
-                                    </div>
-                                    <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                </label>
-
-                                <label for="mastercard" class="mastercardMethod">
-                                    <div class="imgName">
-                                        <div class="imgContainer mastercard">
-                                            <img src="{{ asset('backend/assets/img/payment-card.png') }}"
-                                                alt="" />
-                                        </div>
-                                        <h1>Card</h1>
-                                    </div>
-                                    <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                </label>
-                            </div>
+                    <!-- Due Info Summary Box -->
+                    <div class="due-info-box">
+                        <div class="due-info-row">
+                            <span class="text-slate-600 dark:text-slate-300 font-medium">Supplier Previous Due</span>
+                            <span id="SupplierPreviousDue" class="font-bold text-slate-800 dark:text-slate-100">৳ 0</span>
                         </div>
-                    </form>
+                        <div class="due-info-row">
+                            <span class="text-slate-600 dark:text-slate-300 font-medium">Purchase Previous Due</span>
+                            <span id="PurchasePreviousDue" class="font-bold text-slate-800 dark:text-slate-100">৳ 0</span>
+                        </div>
+                        <div class="due-info-row">
+                            <span class="text-slate-700 dark:text-slate-200 font-bold">Total Previous Due</span>
+                            <span id="TotalPreviousDue" class="font-bold text-emerald-600 dark:text-emerald-400">৳ 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Input Fields with top-bottom padding -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="DiscountAmount" class="form-label-title">Enter Discount Amount</label>
+                            <input type="number" id="DiscountAmount" oninput="calculateDuePayment()" placeholder="Enter Discount">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="PayAmount" class="form-label-title">Enter Pay Amount</label>
+                            <input type="number" id="PayAmount" oninput="calculateDuePayment()" placeholder="Enter Pay Amount">
+                        </div>
+                    </div>
+
+                    <!-- Final Due & Status Box -->
+                    <div class="due-info-box">
+                        <div class="due-info-row">
+                            <span class="text-slate-700 dark:text-slate-200 font-bold">Final Due Amount</span>
+                            <span id="FinalDueAmount" class="font-bold text-rose-600 dark:text-rose-400 text-sm">৳ 0</span>
+                        </div>
+                        <div class="due-info-row">
+                            <span class="text-slate-700 dark:text-slate-200 font-bold">Status</span>
+                            <span id="ShowpaymentStatusDisplay" class="font-bold">Pending</span>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Payment Method Section -->
+                <div id="payment">
+                    <div class="payments mt-3">
+                        <label class="form-label-title mb-2">Payment Method</label>
+                        <form action="#">
+                            <input type="radio" name="payment" id="cash" />
+                            <input type="radio" name="payment" id="bkash" />
+                            <input type="radio" name="payment" id="nagad" />
+                            <input type="radio" name="payment" id="rocket" />
+                            <input type="radio" name="payment" id="bank" />
+                            <input type="radio" name="payment" id="mastercard" />
+
+                            <div class="category-wrapper">
+                                <div class="category">
+                                    <label for="cash" class="cashMethod" onclick="toggleTransactionInput('cash')">
+                                        <input type="radio" name="payment" id="cash" />
+                                        <div class="imgName">
+                                            <div class="imgContainer cash">
+                                                <img src="{{ asset('backend/assets/img/payment-cash.png') }}" alt="" />
+                                            </div>
+                                            <h1>Cash</h1>
+                                        </div>
+                                        <span class="check"><i class="fa-solid fa-circle-check"></i></span>
+                                    </label>
+
+                                    <label for="bkash" class="bkashMethod" onclick="toggleTransactionInput('bkash')">
+                                        <div class="imgName">
+                                            <div class="imgContainer bkash">
+                                                <img src="{{ asset('backend/assets/img/payment-bkash.png') }}" alt="" />
+                                            </div>
+                                            <h1>bKash</h1>
+                                        </div>
+                                        <span class="check"><i class="fa-solid fa-circle-check"></i></span>
+                                    </label>
+
+                                    <label for="nagad" class="nagadMethod">
+                                        <div class="imgName">
+                                            <div class="imgContainer nagad">
+                                                <img src="{{ asset('backend/assets/img/payment-nagad.png') }}" alt="" />
+                                            </div>
+                                            <h1>Nagad</h1>
+                                        </div>
+                                        <span class="check"><i class="fa-solid fa-circle-check"></i></span>
+                                    </label>
+                                    <input type="hidden" id="selectedPaymentMethod">
+
+                                    <label for="rocket" class="rocketMethod">
+                                        <div class="imgName">
+                                            <div class="imgContainer rocket">
+                                                <img src="{{ asset('backend/assets/img/payment-rocket.png') }}" alt="" />
+                                            </div>
+                                            <h1>Rocket</h1>
+                                        </div>
+                                        <span class="check"><i class="fa-solid fa-circle-check"></i></span>
+                                    </label>
+
+                                    <label for="bank" class="bankMethod">
+                                        <div class="imgName">
+                                            <div class="imgContainer bank">
+                                                <img src="{{ asset('backend/assets/img/payment-bank.png') }}" alt="" />
+                                            </div>
+                                            <h1>Bank</h1>
+                                        </div>
+                                        <span class="check"><i class="fa-solid fa-circle-check"></i></span>
+                                    </label>
+
+                                    <label for="mastercard" class="mastercardMethod">
+                                        <div class="imgName">
+                                            <div class="imgContainer mastercard">
+                                                <img src="{{ asset('backend/assets/img/payment-card.png') }}" alt="" />
+                                            </div>
+                                            <h1>Card</h1>
+                                        </div>
+                                        <span class="check"><i class="fa-solid fa-circle-check"></i></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="transaction mt-2">
+                        <label for="transactionInput" class="form-label-title">Transaction ID</label>
+                        <input type="text" id="transactionInput" placeholder="Enter Transaction ID" />
+                    </div>
                 </div>
-                <div class="transaction">
-                    <input type="text" id="transactionInput" placeholder="Enter Transaction ID" />
-                </div>
-                <div class="submit-btn">
-                    <button type="submit" onclick="SavePaymentInfo(event)" class="submit">SUBMIT</button>
-                </div>
+            </div>
+
+            <!-- Sticky Bottom Footer with Submit Button -->
+            <div style="padding: 12px 24px 16px; background: #ffffff; border-top: 1px solid #f1f5f9; flex-shrink: 0; position: sticky; bottom: 0; z-index: 20;" class="modal-footer-sticky submit-btn">
+                <button type="submit" onclick="SavePaymentInfo(event)" class="submit btn-save" style="width: 100% !important; height: 42px !important; background-color: #15803d !important; color: #ffffff !important; border-radius: 8px !important; font-weight: 600 !important; font-size: 15px !important; border: none !important; cursor: pointer !important; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s ease;">Submit</button>
             </div>
         </div>
     </div>
@@ -169,10 +308,10 @@
 <script>
     // Call this function when the form is filled up to set the initial values
 
-    // Function to open a modal by setting its display style to 'block'
+    // Function to open a modal by setting its display style to 'flex'
     function openModal(modal) {
         if (modal) {
-            modal.style.display = 'block';
+            modal.style.display = 'flex';
         }
     }
 

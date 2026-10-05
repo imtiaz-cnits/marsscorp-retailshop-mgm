@@ -662,6 +662,7 @@
             const creditLabel = creditVal > 0 ? `<span class="badge bg-teal ms-1" style="background:#0d9488;">🎁 ৳${creditVal.toFixed(2)}</span>` : '';
             const payable = parseFloat(s.purchase_payable_amount || 0);
             const payableLabel = payable > 0 ? `<span class="badge bg-danger ms-1">Due: ৳${payable.toFixed(2)}</span>` : '';
+            const suppIdBadge = s.supplier_id ? `<span class="badge bg-emerald-50 text-emerald-700 border border-emerald-200 me-1 font-mono">${s.supplier_id}</span>` : '';
 
             return `
                 <div class="dropdown-item px-3 py-2 border-bottom supplier-select-item"
@@ -670,7 +671,7 @@
                      data-payable="${payable}"
                      data-credit="${creditVal}"
                      style="cursor: pointer;">
-                     <div class="fw-bold text-dark">${s.name} ${s.company ? `<small class="text-muted">(${s.company})</small>` : ''}</div>
+                     <div class="fw-bold text-dark flex items-center">${suppIdBadge} <span>${s.name}</span> ${s.company ? `<small class="text-muted ms-1">(${s.company})</small>` : ''}</div>
                      <div class="small text-muted">${s.mobile || ''} ${payableLabel} ${creditLabel}</div>
                 </div>
             `;
@@ -742,10 +743,27 @@
                 const filtered = allSuppliersData.filter(s =>
                     (s.name && s.name.toLowerCase().includes(query)) ||
                     (s.mobile && s.mobile.toLowerCase().includes(query)) ||
-                    (s.company && s.company.toLowerCase().includes(query))
+                    (s.company && s.company.toLowerCase().includes(query)) ||
+                    (s.supplier_id && s.supplier_id.toLowerCase().includes(query))
                 );
 
                 renderSupplierDropdownItems(filtered);
+            });
+
+            suppInput.addEventListener("change", function() {
+                const query = this.value.trim().toLowerCase();
+                if (!query) {
+                    document.getElementById("SupplierDataList").value = "none";
+                    return;
+                }
+                const match = allSuppliersData.find(s => 
+                    (s.supplier_id && s.supplier_id.toLowerCase() === query) ||
+                    (s.name && s.name.toLowerCase() === query) ||
+                    (s.mobile && s.mobile === query)
+                );
+                if (match) {
+                    selectSupplierItem(match);
+                }
             });
 
             document.addEventListener("click", function(e) {
@@ -1154,6 +1172,45 @@
 
     async function PurchaseDataSave(event) {
         if (event) event.preventDefault();
+
+        // 1. Validate Supplier Selection
+        let supplierIdVal = document.getElementById('SupplierDataList')?.value;
+        const suppInputVal = document.getElementById('supplierSearchInput')?.value.trim();
+
+        if ((!supplierIdVal || supplierIdVal === 'none') && suppInputVal && typeof allSuppliersData !== 'undefined' && Array.isArray(allSuppliersData)) {
+            const query = suppInputVal.toLowerCase();
+            const matched = allSuppliersData.find(s => 
+                (s.supplier_id && s.supplier_id.toLowerCase() === query) ||
+                (s.name && s.name.toLowerCase() === query) ||
+                (s.mobile && s.mobile === query)
+            );
+            if (matched) {
+                selectSupplierItem(matched);
+                supplierIdVal = matched.id;
+            }
+        }
+
+        if (!supplierIdVal || supplierIdVal === 'none' || supplierIdVal.trim() === '') {
+            showPurchaseTopToast("Please select a Supplier!", true);
+            document.getElementById('supplierSearchInput')?.focus();
+            return;
+        }
+
+        // 2. Validate Reference No
+        const refNoVal = document.getElementById('ReferenceNo')?.value.trim();
+        if (!refNoVal) {
+            showPurchaseTopToast("Please enter Reference / Invoice No!", true);
+            document.getElementById('ReferenceNo')?.focus();
+            return;
+        }
+
+        // 3. Validate Purchase Date
+        const purchaseDateVal = document.getElementById('PurchaseDate')?.value.trim();
+        if (!purchaseDateVal) {
+            showPurchaseTopToast("Please select a Purchase Date!", true);
+            document.getElementById('PurchaseDate')?.focus();
+            return;
+        }
 
         const products = [];
         const rows = document.querySelectorAll('#orderTableBody tr');

@@ -21,7 +21,7 @@
             margin: 0;
             padding: 20px;
             font-family: 'Valley Sans', 'Baloo Da 2', Arial, sans-serif;
-            color: #0f172a;
+            color: #000000;
         }
 
         .no-print-wrapper {
@@ -144,7 +144,7 @@
         .header-office-info {
             text-align: right;
             font-size: 10.5px;
-            color: #334155;
+            color: #000000;
             line-height: 1.35;
             max-width: 250px;
         }
@@ -154,6 +154,7 @@
             margin-bottom: 12px;
             font-size: 12px;
             line-height: 1.8;
+            color: #000000;
         }
 
         .meta-line {
@@ -164,17 +165,17 @@
 
         .meta-label {
             font-weight: 600;
-            color: #0f172a;
+            color: #000000;
             white-space: nowrap;
             margin-right: 5px;
         }
 
         .meta-dots {
             flex: 1;
-            border-bottom: 1px dotted #64748b;
+            border-bottom: 1px dotted #000000;
             padding-left: 6px;
             font-weight: 600;
-            color: #0f172a;
+            color: #000000;
             min-height: 20px;
         }
 
@@ -189,13 +190,14 @@
         .items-table td {
             border: 1px solid #000 !important;
             padding: 6px 8px;
+            color: #000000;
         }
 
         .items-table th {
             background-color: #f8fafc;
             font-weight: 700;
             text-align: center;
-            color: #0f172a;
+            color: #000000;
         }
 
         .bill-main-body {
@@ -214,6 +216,7 @@
         .taka-words-box {
             width: 60%;
             font-size: 12px;
+            color: #000000;
         }
 
         .taka-words-line {
@@ -223,10 +226,10 @@
 
         .taka-words-val {
             flex: 1;
-            border-bottom: 1px dotted #64748b;
+            border-bottom: 1px dotted #000000;
             font-weight: 700;
             padding-left: 6px;
-            color: #0f172a;
+            color: #000000;
         }
 
         .totals-table-box {
@@ -242,6 +245,7 @@
         .totals-table td {
             border: 1px solid #000 !important;
             padding: 5px 8px;
+            color: #000000;
         }
 
         .totals-table td.lbl {
@@ -249,12 +253,14 @@
             text-align: left;
             background-color: #f8fafc;
             width: 50%;
+            color: #000000;
         }
 
         .totals-table td.val {
             font-weight: 700;
             text-align: right;
             width: 50%;
+            color: #000000;
         }
 
         .signatures-row {
@@ -265,6 +271,7 @@
             padding-bottom: 15px;
             font-size: 12px;
             font-weight: 600;
+            color: #000000;
         }
 
         .sig-box {
@@ -272,6 +279,7 @@
             text-align: center;
             border-top: 1px dotted #000;
             padding-top: 4px;
+            color: #000000;
         }
 
         .bottom-color-bar {

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\PurchaseOrderDetails;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PurchasePaymentDetails;
+use App\Models\Supplier;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 
@@ -290,6 +291,27 @@ public function PurchasesList()
                 $formattedDueDate = $formattedDate;
             }
 
+            // Validate & resolve supplier_id
+            $supplier_id = null;
+            if ($request->filled('supplier_id') && $request->supplier_id !== 'none') {
+                if (is_numeric($request->supplier_id)) {
+                    $supplier_id = (int) $request->supplier_id;
+                } else {
+                    $foundSupplier = Supplier::where('supplier_id', trim($request->supplier_id))->first();
+                    if ($foundSupplier) {
+                        $supplier_id = $foundSupplier->id;
+                    }
+                }
+            }
+
+            if (!$supplier_id || !Supplier::where('id', $supplier_id)->exists()) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'Please select a valid supplier.'
+                ]);
+            }
+
             // Create Purchase record
             $purchaseData = [
                 'purchase_id' => $this->generatePurchasesID(),
@@ -299,11 +321,14 @@ public function PurchasesList()
                 'referance_no' => $request->referance_no,
                 'date' => $formattedDate,
                 'grand_subtotal' => $request->grand_subtotal,
-                'delivery_charge' => (float) ($request->delivery_charge ?? 0),
                 'attach_document' => $img_url,
-                'supplier_id' => $request->supplier_id,
+                'supplier_id' => $supplier_id,
                 'user_id' => $user_id,
             ];
+
+            if (Schema::hasColumn('purchases', 'delivery_charge')) {
+                $purchaseData['delivery_charge'] = (float) ($request->delivery_charge ?? 0);
+            }
 
             if (Schema::hasColumn('purchases', 'return_adjustment_amount')) {
                 $purchaseData['return_adjustment_amount'] = (float) ($request->return_adjustment_amount ?? 0);
@@ -407,7 +432,12 @@ private function generatePurchasesID()
     $newId = DB::transaction(function () use ($prefix) {
         $last = Purchase::orderBy('id', 'desc')->first();
         $number = $last ? ($last->id + 1) : 1;
-        return $prefix . str_pad($number, 5, '0', STR_PAD_LEFT);
+        $id = $prefix . str_pad($number, 5, '0', STR_PAD_LEFT);
+        while (Purchase::where('purchase_id', $id)->exists()) {
+            $number++;
+            $id = $prefix . str_pad($number, 5, '0', STR_PAD_LEFT);
+        }
+        return $id;
     });
 
     return $newId;

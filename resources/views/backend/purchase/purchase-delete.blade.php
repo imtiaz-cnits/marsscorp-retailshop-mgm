@@ -1,15 +1,51 @@
 <style>
-    #confirmationModal {
+    /* Reset legacy styles from all-modal.css.css and guarantee dead-center positioning */
+    #confirmationModal.modal {
+        display: none;
+        background: rgba(15, 23, 42, 0.6) !important;
+        backdrop-filter: blur(4px) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
         z-index: 1060 !important;
     }
+    #confirmationModal.modal.show {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
     #confirmationModal .modal-dialog {
-        max-width: 420px;
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin: auto !important;
+        max-width: 420px !important;
+        width: 92% !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        min-width: auto !important;
+        overflow: visible !important;
+    }
+    #confirmationModal .modal-dialog form {
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
     }
     #confirmationModal .modal-content {
-        border-radius: 16px;
-        border: none;
-        overflow: hidden;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        background: #ffffff !important;
+        border-radius: 20px !important;
+        border: 1px solid rgba(226, 232, 240, 0.8) !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+        padding: 28px 24px 24px !important;
+        text-align: center !important;
+        position: relative !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        width: 100% !important;
     }
 
     /* Dark Mode */
@@ -19,8 +55,19 @@
     html.dark #confirmationModal .modal-content,
     body.dark #confirmationModal .modal-content,
     body.dark-mode #confirmationModal .modal-content {
-        background-color: #0f172a !important;
+        background: #0f172a !important;
         color: #ffffff !important;
+        border: 1px solid #1e293b !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
+    }
+    body[light-mode="dark"] #confirmationModal .modal-dialog,
+    html[light-mode="dark"] #confirmationModal .modal-dialog,
+    body[data-layout-mode="dark"] #confirmationModal .modal-dialog,
+    html.dark #confirmationModal .modal-dialog,
+    body.dark #confirmationModal .modal-dialog,
+    body.dark-mode #confirmationModal .modal-dialog {
+        background: transparent !important;
+        background-color: transparent !important;
     }
 </style>
 

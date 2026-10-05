@@ -1089,11 +1089,120 @@
       overflow: hidden !important;
       padding: 0 !important;
     }
-    @media (max-width: 575.98px) {
+
+    .noti-mobile-close-btn {
+      display: none;
+    }
+
+    /* Mobile Overlay Starts Exactly Below 72px Navbar */
+    .noti-mobile-backdrop {
+      display: none;
+      position: fixed !important;
+      top: 72px !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      width: 100vw !important;
+      height: calc(100vh - 72px) !important;
+      background: rgba(15, 23, 42, 0.45) !important;
+      backdrop-filter: blur(2px) !important;
+      -webkit-backdrop-filter: blur(2px) !important;
+      z-index: 1030 !important;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.28s ease, visibility 0.28s ease;
+      cursor: pointer;
+    }
+    .noti-mobile-backdrop.show {
+      display: block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+
+    #page-topbar {
+      z-index: 1040 !important;
+    }
+
+    /* Mobile View: Compact, all-corner rounded, smooth right-to-left slide with 10px gap */
+    @media (max-width: 768px) {
+      .noti-mobile-close-btn {
+        display: inline-flex !important;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #fee2e2;
+        color: #dc2626;
+        border: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.15s ease;
+        padding: 0;
+        margin-left: 4px;
+        flex-shrink: 0;
+      }
+      .noti-mobile-close-btn:hover {
+        background: #fecaca;
+        color: #b91c1c;
+      }
+      body[light-mode="dark"] .noti-mobile-close-btn,
+      body[data-layout-mode="dark"] .noti-mobile-close-btn,
+      html[light-mode="dark"] .noti-mobile-close-btn,
+      body.dark-mode .noti-mobile-close-btn {
+        background: #450a0a !important;
+        color: #f87171 !important;
+      }
+
+      .navbar-header .dropdown .dropdown-menu.page-header-notifications-dropdown-v,
       .page-header-notifications-dropdown-v {
-        width: calc(100vw - 20px) !important;
+        position: fixed !important;
+        top: 80px !important;
+        bottom: auto !important;
+        right: 10px !important;
+        left: auto !important;
+        width: 340px !important;
         max-width: calc(100vw - 20px) !important;
-        right: -50px !important;
+        height: auto !important;
+        max-height: calc(100vh - 92px) !important;
+        border-radius: 14px !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        z-index: 1050 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25) !important;
+        border: 1px solid #e2e8f0 !important;
+        transform: translateX(calc(100% + 25px)) !important;
+        transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, visibility 0.32s ease !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+
+      .navbar-header .dropdown .dropdown-menu.page-header-notifications-dropdown-v.show,
+      .page-header-notifications-dropdown-v.show {
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+      }
+
+      .stock-noti-header {
+        padding: 10px 14px !important;
+        flex-shrink: 0 !important;
+      }
+
+      #notification-items-list {
+        max-height: 290px !important;
+        height: auto !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .stock-noti-footer {
+        flex-shrink: 0 !important;
+        padding: 10px 14px !important;
       }
     }
 
@@ -1426,9 +1535,14 @@
                   <p class="noti-subtitle">Products with stock below 10</p>
                 </div>
               </div>
-              <a href="/admin-dashboard-stock-out" class="noti-view-all-btn">
-                <span>View All</span> <i class="fa-solid fa-arrow-right" style="font-size: 8.5px;"></i>
-              </a>
+              <div class="d-flex align-items-center gap-1.5">
+                <a href="/admin-dashboard-stock-out" class="noti-view-all-btn">
+                  <span>View All</span> <i class="fa-solid fa-arrow-right" style="font-size: 8.5px;"></i>
+                </a>
+                <button type="button" class="noti-mobile-close-btn" id="noti-mobile-close-btn" aria-label="Close notifications" title="Close">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
             </div>
             <div id="notification-items-list">
               <!-- Dynamic Low Stock Product Notifications Populated via JS -->
@@ -1470,6 +1584,9 @@
       </div>
     </div>
   </nav>
+
+  <!-- Mobile Offcanvas Backdrop for Notifications (Positioned below topbar) -->
+  <div id="noti-mobile-backdrop" class="noti-mobile-backdrop"></div>
   <!-- Right Sidebar setting Start -->
   <div class="right-bar">
     <div data-simplebar class="h-100">
@@ -2826,11 +2943,84 @@
       loadLowStockNotifications(false);
 
       const bellBtn = document.getElementById('page-header-notifications-dropdown-v');
+      const notiDropdown = document.querySelector('.page-header-notifications-dropdown-v');
+      const notiBackdrop = document.getElementById('noti-mobile-backdrop');
+      const notiCloseBtn = document.getElementById('noti-mobile-close-btn');
+
+      function closeMobileNotiSidebar() {
+        if (notiDropdown) {
+          notiDropdown.classList.remove('show');
+          if (bellBtn) {
+            bellBtn.classList.remove('show');
+            bellBtn.setAttribute('aria-expanded', 'false');
+            if (window.bootstrap && bootstrap.Dropdown) {
+              const instance = bootstrap.Dropdown.getInstance(bellBtn);
+              if (instance) instance.hide();
+            }
+          }
+        }
+        if (notiBackdrop) {
+          notiBackdrop.classList.remove('show');
+        }
+      }
+
       if (bellBtn) {
         bellBtn.addEventListener('click', function() {
           loadLowStockNotifications(false);
+          if (window.innerWidth <= 768 && notiBackdrop) {
+            setTimeout(() => {
+              if (notiDropdown && notiDropdown.classList.contains('show')) {
+                notiBackdrop.classList.add('show');
+              } else if (notiBackdrop) {
+                notiBackdrop.classList.remove('show');
+              }
+            }, 60);
+          }
+        });
+
+        // Sync with Bootstrap dropdown events if available
+        if (window.jQuery && $(bellBtn).length) {
+          $(bellBtn).on('show.bs.dropdown', function () {
+            if (window.innerWidth <= 768 && notiBackdrop) {
+              notiBackdrop.classList.add('show');
+            }
+          });
+          $(bellBtn).on('hide.bs.dropdown', function () {
+            if (notiBackdrop) {
+              notiBackdrop.classList.remove('show');
+            }
+          });
+        }
+      }
+
+      if (notiCloseBtn) {
+        notiCloseBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          closeMobileNotiSidebar();
         });
       }
+
+      if (notiBackdrop) {
+        notiBackdrop.addEventListener('click', function(e) {
+          e.preventDefault();
+          closeMobileNotiSidebar();
+        });
+      }
+
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 768 && notiBackdrop) {
+          notiBackdrop.classList.remove('show');
+        }
+      });
+
+      document.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768 && notiBackdrop && notiBackdrop.classList.contains('show')) {
+          if (notiDropdown && !notiDropdown.contains(e.target) && bellBtn && !bellBtn.contains(e.target)) {
+            closeMobileNotiSidebar();
+          }
+        }
+      });
 
       // Poll silently every 60 seconds for live stock alerts
       setInterval(() => {

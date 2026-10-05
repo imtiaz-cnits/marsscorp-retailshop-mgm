@@ -535,9 +535,8 @@
                             <div class="flex justify-center">
                                 <img style="width: 38px; height: 38px; object-fit: cover;" class="rounded-full border border-slate-200 dark:border-slate-700 shadow-xs" alt="${item['name']}" src="${img_url}" onerror="this.src='{{ asset('backend/assets/img/demo-img.jpeg') }}'">
                             </div>
-                        </td>
-                        <td class="p-[10px] text-start whitespace-nowrap">
-                            <span class="inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400 text-xs whitespace-nowrap">
+                                      <td class="p-[10px] text-start whitespace-nowrap">
+                            <a href="{{ url('/supplier/profile') }}/${item['id']}" class="inline-flex items-center gap-1 font-semibold text-emerald-600 hover:text-emerald-700 hover:underline dark:text-emerald-400 dark:hover:text-emerald-300 text-xs whitespace-nowrap cursor-pointer" title="View Profile">
                                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="1" y="3" width="15" height="13"></rect>
                                     <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
@@ -545,7 +544,7 @@
                                     <circle cx="18.5" cy="18.5" r="2.5"></circle>
                                 </svg>
                                 <span>${item['supplier_id']}</span>
-                            </span>
+                            </a>
                         </td>
                         <td class="p-[10px] text-start whitespace-nowrap font-bold text-slate-800 dark:text-slate-100">${item['name']}</td>
                         <td class="p-[10px] text-start whitespace-nowrap text-slate-600 dark:text-slate-400 font-medium">${item['company'] || '-'}</td>
@@ -576,7 +575,7 @@
                         <div class="flex items-center justify-between pb-2 mb-2.5 border-b border-slate-100 dark:border-slate-700/60">
                             <div class="flex items-center gap-1.5">
                                 <span class="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[11px] font-bold">#${realIndex + 1}</span>
-                                <span class="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold inline-flex items-center gap-1">
+                                <a href="{{ url('/supplier/profile') }}/${item['id']}" class="px-2 py-0.5 rounded-md bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold inline-flex items-center gap-1 cursor-pointer" title="View Profile">
                                     <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <rect x="1" y="3" width="15" height="13"></rect>
                                         <polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon>
@@ -584,7 +583,7 @@
                                         <circle cx="18.5" cy="18.5" r="2.5"></circle>
                                     </svg>
                                     ${item['supplier_id']}
-                                </span>
+                                </a>
                             </div>
                             <div>
                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border ${statusBadgeClass}">

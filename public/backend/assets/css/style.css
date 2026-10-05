@@ -474,7 +474,7 @@ input::-webkit-inner-spin-button {
 .invoice-container {
     max-width: 100%;
     background-color: #ffffff;
-    margin: 0 auto;
+    margin: 0;
     padding: 20px;
     border-radius: 8px;
 }

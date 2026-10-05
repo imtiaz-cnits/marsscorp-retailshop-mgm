@@ -29,8 +29,8 @@
         box-sizing: border-box !important;
     }
     .invoice-container {
-        flex-grow: 1 !important;
-        margin-bottom: 24px !important;
+        max-width: 100%;
+        margin:0px 0px 24px 0px !important;
         background: #ffffff;
         border-radius: 16px;
         padding: 24px;
@@ -50,15 +50,15 @@
         border-color: #334155 !important;
     }
 
-    /* 3 Equal Header Columns */
+    /* 3 Equal Header Columns - No horizontal bar divider, 10px gap below */
     .invoice-header-grid {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
         gap: 20px;
         align-items: start;
-        padding-bottom: 20px;
-        margin-bottom: 20px;
-        border-bottom: 1px solid #cbd5e1;
+        padding-bottom: 0px;
+        margin-bottom: 10px;
+        border-bottom: none !important;
     }
     body[light-mode="dark"] .invoice-header-grid,
     html[light-mode="dark"] .invoice-header-grid,
@@ -67,29 +67,39 @@
     body.dark .invoice-header-grid,
     body.dark-mode .invoice-header-grid,
     [data-theme="dark"] .invoice-header-grid {
-        border-bottom-color: #334155 !important;
+        border-bottom: none !important;
     }
 
     .billed-to-details {
         text-align: left !important;
+        color: #000000 !important;
     }
     .company-details {
         text-align: right !important;
+        color: #000000 !important;
     }
 
-    /* Meta Table (Invoice No / Date) */
+    /* Meta Table (Invoice No / Date) - Fixed separate borders so top border is always crisp */
     .invoice-meta-table {
         width: 100% !important;
         max-width: 220px !important;
-        border-collapse: collapse !important;
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 6px !important;
-        overflow: hidden !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        border: 1.5px solid #000000 !important;
         margin-top: 6px !important;
     }
-    .invoice-meta-table tr,
-    .invoice-meta-table td {
-        border: 1px solid #cbd5e1 !important;
+    .invoice-meta-table tr td {
+        border-right: 1px solid #000000 !important;
+        border-bottom: 1px solid #000000 !important;
+        border-top: none !important;
+        border-left: none !important;
+        color: #000000 !important;
+    }
+    .invoice-meta-table tr td:last-child {
+        border-right: none !important;
+    }
+    .invoice-meta-table tr:last-child td {
+        border-bottom: none !important;
     }
     body[light-mode="dark"] .invoice-meta-table,
     body[light-mode="dark"] .invoice-meta-table tr,
@@ -119,35 +129,38 @@
     .invoice-container .invoice_table_list {
         width: 100% !important;
         border-collapse: collapse !important;
-        margin-top: 16px !important;
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 8px !important;
+        margin-top: 0px !important;
+        border: 1px solid #000000 !important;
+        border-radius: 0px !important;
         overflow: hidden !important;
     }
     .invoice-container .invoice_table_list th {
         background-color: #f1f5f9 !important;
-        color: #1e293b !important;
+        color: #000000 !important;
         font-weight: 700 !important;
-        font-size: 13.5px !important;
-        border: 1px solid #cbd5e1 !important;
-        padding: 9px 12px !important;
+        font-size: 12px !important;
+        border: 1px solid #000000 !important;
+        padding: 6px 8px !important;
         text-align: center !important;
     }
     .invoice-container .invoice_table_list td {
-        border: 1px solid #cbd5e1 !important;
-        color: #334155 !important;
-        font-size: 13px !important;
-        padding: 8px 12px !important;
+        border: 1px solid #000000 !important;
+        color: #000000 !important;
+        font-size: 12px !important;
+        padding: 6px 8px !important;
         background-color: #ffffff !important;
     }
     .invoice-container .invoice_table_list .amount_text {
         font-weight: 600 !important;
+        color: #000000 !important;
     }
     .invoice-container .invoice_table_list .amount {
         font-weight: 700 !important;
+        color: #000000 !important;
     }
     .invoice-container .invoice_table_list .table_bg {
         background-color: #f8fafc !important;
+        color: #000000 !important;
     }
     .invoice-container .full-paid {
         font-weight: 800 !important;
@@ -155,6 +168,13 @@
         text-align: center !important;
         color: #15803d !important;
         background-color: #f0fdf4 !important;
+    }
+
+    /* Order Summary tbody below order_details - DEEP BORDER */
+    .invoice-container .invoice_table_list #order_summary td,
+    .invoice-container .invoice_table_list #payment_status {
+        border: 1.5px solid #000000 !important;
+        color: #000000 !important;
     }
 
     /* Dark Mode Table Colors & Borders */
@@ -215,23 +235,27 @@
         border-color: #334155 !important;
     }
 
-    /* Footer Message Styled - Centered, No Border, Always at Bottom */
+    /* Footer Message Styled - Pure Black, Centered, No Border/Shadow, Clean Gap */
     .invoice-container .footer-message {
         margin-top: auto !important;
-        padding-top: 16px !important;
+        padding-top: 25px !important;
         border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
         text-align: center !important;
-        color: #64748b !important;
+        color: #000000 !important;
         font-size: 13px !important;
         font-weight: 500 !important;
         background-color: transparent !important;
     }
     .invoice-container .footer-message p {
-        color: inherit !important;
+        color: #000000 !important;
         font-size: 13px !important;
         margin: 0 !important;
         text-align: center !important;
         border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
     }
 
     body[light-mode="dark"] .invoice-container .footer-message,
@@ -272,12 +296,11 @@
     @media print {
         @page {
             size: A4 portrait;
-            margin: 8mm 10mm;
+            margin: 8mm 10mm 10mm 10mm;
         }
         html, body {
             width: 100% !important;
-            height: auto !important;
-            min-height: auto !important;
+            height: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
             background: #ffffff !important;
@@ -295,11 +318,16 @@
             max-width: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
-            min-height: auto !important;
+            height: auto !important;
             display: block !important;
             float: none !important;
             left: 0 !important;
             right: 0 !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            background: #ffffff !important;
         }
         .vertical-menu,
         .navbar-header,
@@ -313,25 +341,38 @@
             display: none !important;
             width: 0 !important;
             height: 0 !important;
-        }
-        .invoice-container {
-            width: 100% !important;
-            max-width: 100% !important;
-            min-width: 100% !important;
             border: none !important;
             box-shadow: none !important;
-            padding: 0 0 35px 0 !important;
-            margin: 0 !important;
-            background: #ffffff !important;
         }
+        .invoice-container {
+            width: 190mm !important;
+            max-width: 190mm !important;
+            min-width: 190mm !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            padding: 0 !important;
+            margin: 0 auto !important;
+            background: #ffffff !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            box-sizing: border-box !important;
+        }
+        .invoice-main-content {
+            flex-grow: 1 !important;
+            width: 100% !important;
+        }
+        /* Top header without divider, exactly 10px gap below before table */
         .invoice-header-grid {
             display: grid !important;
             grid-template-columns: 1fr 1fr 1fr !important;
             width: 100% !important;
             gap: 15px !important;
-            border-bottom: 1px solid #cbd5e1 !important;
-            padding-bottom: 12px !important;
-            margin-bottom: 14px !important;
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+            margin-bottom: 10px !important;
             align-items: start !important;
         }
         .billed-to-details {
@@ -346,17 +387,29 @@
         .invoice-meta-table {
             width: 100% !important;
             max-width: 220px !important;
-            border-collapse: collapse !important;
-            border: 1px solid #cbd5e1 !important;
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+            border: 1.5px solid #000000 !important;
             margin-top: 6px !important;
         }
-        .invoice-meta-table tr,
-        .invoice-meta-table td {
-            border: 1px solid #cbd5e1 !important;
+        .invoice-meta-table tr td {
+            border-right: 1px solid #000000 !important;
+            border-bottom: 1px solid #000000 !important;
+            border-top: none !important;
+            border-left: none !important;
             color: #000000 !important;
             padding: 3px 6px !important;
             font-size: 11px !important;
             background: #ffffff !important;
+        }
+        .invoice-meta-table tr td:last-child {
+            border-right: none !important;
+        }
+        .invoice-meta-table tr:last-child td {
+            border-bottom: none !important;
+        }
+        .invoice-meta-table td#order_no {
+            color: #047857 !important;
         }
         .logo-wrapper {
             text-align: center !important;
@@ -365,6 +418,9 @@
             align-items: center !important;
             justify-content: center !important;
             width: 100% !important;
+        }
+        .logo-wrapper h2 {
+            color: #000000 !important;
         }
         .logo-wrapper img {
             max-height: 48px !important;
@@ -393,16 +449,19 @@
             margin-bottom: 2px !important;
             white-space: normal !important;
         }
+        .company-details p.text-emerald-700 {
+            color: #047857 !important;
+        }
         .invoice_table_list {
             width: 100% !important;
             border-collapse: collapse !important;
-            border: 1px solid #cbd5e1 !important;
-            margin-top: 10px !important;
+            border: 1px solid #000000 !important;
+            margin-top: 0 !important;
         }
         .invoice_table_list th {
             background-color: #f1f5f9 !important;
             color: #000000 !important;
-            border: 1px solid #cbd5e1 !important;
+            border: 1px solid #000000 !important;
             padding: 6px 8px !important;
             font-size: 12px !important;
             font-weight: 700 !important;
@@ -411,46 +470,72 @@
         .invoice_table_list td {
             background-color: #ffffff !important;
             color: #000000 !important;
-            border: 1px solid #cbd5e1 !important;
+            border: 1px solid #000000 !important;
             padding: 6px 8px !important;
             font-size: 12px !important;
         }
         .invoice_table_list .amount_text {
             text-align: right !important;
             font-weight: 600 !important;
+            color: #000000 !important;
         }
         .invoice_table_list .amount {
             text-align: right !important;
             font-weight: 700 !important;
+            color: #000000 !important;
         }
         .full-paid {
-            color: #000000 !important;
+            color: #15803d !important;
             background-color: #ffffff !important;
             text-align: center !important;
             font-weight: 800 !important;
             font-size: 16px !important;
         }
-        .invoice-container .footer-message {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            width: 100% !important;
-            border: none !important;
+
+        /* Deep border for order summary tbody */
+        .invoice_table_list #order_summary td,
+        .invoice_table_list #payment_status {
+            border: 1.5px solid #000000 !important;
             color: #000000 !important;
-            margin: 0 !important;
-            padding: 6px 0 !important;
+        }
+
+        /* Copyright on LAST PAGE only at bottom with clean styling */
+        .invoice-container .footer-message {
+            position: static !important;
+            display: block !important;
+            width: 100% !important;
+            margin-top: auto !important;
+            padding-top: 15px !important;
+            padding-bottom: 0 !important;
+            margin-bottom: 0 !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            color: #000000 !important;
             text-align: center !important;
             font-size: 11px !important;
             box-sizing: border-box !important;
             background: transparent !important;
+            page-break-before: auto !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
         }
         .invoice-container .footer-message p {
             color: #000000 !important;
             margin: 0 !important;
             text-align: center !important;
             border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
             font-size: 11px !important;
+            background: transparent !important;
+        }
+        .invoice-container .footer-message a {
+            color: #000000 !important;
+            text-decoration: none !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
         }
     }
 </style>
@@ -458,105 +543,109 @@
 <div class="main-content min-h-screen flex flex-col justify-between">
     <div class="page-content invoice-page-content flex-grow flex flex-col justify-between">
         <div class="invoice-container">
-            <!-- 3-Column Equal Top Header: Left (Billed To), Center (Logo & Title), Right (Company Info) -->
-            <div class="invoice-header-grid">
-                <!-- 1. Left Column: Billed To Details & Invoice Meta -->
-                <div class="billed-to-details">
-                    <h4 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider mb-1">Billed To</h4>
-                    <p class="font-bold text-slate-800 dark:text-slate-100 text-sm mb-0.5" id="SupplierName">{{ $purchaseinvoicedata->supplier->name ?? 'N/A' }}</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-0.5" id="SupplierAddress">{{ $purchaseinvoicedata->supplier->address ?? 'N/A' }}</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Phone: <span class="font-semibold text-slate-700 dark:text-slate-300" id="SupplierMobile">{{ $purchaseinvoicedata->supplier->mobile ?? 'N/A' }}</span></p>
+            <div class="invoice-main-content">
+                <!-- 3-Column Equal Top Header: Left (Billed To), Center (Logo & Title), Right (Company Info) -->
+                <div class="invoice-header-grid">
+                    <!-- 1. Left Column: Billed To Details & Invoice Meta -->
+                    <div class="billed-to-details">
+                        <h4 class="text-sm font-bold text-black uppercase tracking-wider mb-1" style="color: #000000 !important;">Billed To</h4>
+                        <p class="font-bold text-black text-sm mb-0.5" id="SupplierName" style="color: #000000 !important;">{{ $purchaseinvoicedata->supplier->name ?? 'N/A' }}</p>
+                        <p class="text-xs text-black mb-0.5" id="SupplierAddress" style="color: #000000 !important;">{{ $purchaseinvoicedata->supplier->address ?? 'N/A' }}</p>
+                        <p class="text-xs text-black mb-2" style="color: #000000 !important;">Phone: <span class="font-semibold text-black font-mono" id="SupplierMobile" style="color: #000000 !important;">{{ $purchaseinvoicedata->supplier->mobile ?? 'N/A' }}</span></p>
 
-                    <table class="invoice-meta-table text-xs">
+                        <table class="invoice-meta-table text-xs">
+                            <tr>
+                                <td class="p-1.5 px-2 bg-slate-50 dark:bg-slate-800 font-semibold text-black" style="color: #000000 !important;">Invoice No:</td>
+                                <td class="p-1.5 px-2 font-bold text-emerald-700 dark:text-emerald-400 font-mono" id="order_no">{{ $purchaseinvoicedata->purchase_id }}</td>
+                            </tr>
+                            <tr>
+                                <td class="p-1.5 px-2 bg-slate-50 dark:bg-slate-800 font-semibold text-black" style="color: #000000 !important;">Invoice Date:</td>
+                                <td class="p-1.5 px-2 font-medium text-black font-mono" id="invoice_date" style="color: #000000 !important;">{{ \Carbon\Carbon::parse($purchaseinvoicedata->created_at)->format('d-m-Y') }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- 2. Center Column: Purchase Details Title, Logo & Print Button -->
+                    <div class="logo-wrapper text-center flex flex-col items-center justify-center">
+                        <h2 class="text-base sm:text-lg font-bold text-black mb-2 tracking-tight" style="color: #000000 !important;">Purchase Details</h2>
+                        <img src="{{ asset('backend/assets/img/marss-corporation-icon2.svg') }}" onerror="this.src='{{ asset('backend/assets/icons/marss-corporation-logo.svg') }}'" alt="MARSS Corporation Logo" class="mb-2" style="max-height: 48px; max-width: 180px; object-fit: contain;" />
+                        <button type="button" class="print-button inline-flex items-center gap-1.5 px-4 py-1.5 bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 cursor-pointer" onclick="window.print()">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                                <rect x="6" y="14" width="12" height="8"></rect>
+                            </svg>
+                            <span>Print</span>
+                        </button>
+                    </div>
+
+                    <!-- 3. Right Column: Company Official Information -->
+                    <div class="company-details text-left md:text-right">
+                        <h4 class="text-sm font-bold text-black uppercase tracking-wider mb-1" style="color: #000000 !important;">MARSS CORPORATION</h4>
+                        <p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">Retail &amp; Wholesale Management System</p>
+                        <p class="text-xs text-black mb-0.5 leading-relaxed" style="color: #000000 !important;">All Kinds of Dry &amp; Gel Battery Supplier</p>
+                        <p class="text-xs text-black mb-0.5" style="color: #000000 !important;">Success Super Market, Sadar Police Fari,</p>
+                        <p class="text-xs text-black mb-1" style="color: #000000 !important;">Ataikula Road, Pabna</p>
+                        <p class="text-xs text-black mb-0.5" style="color: #000000 !important;">Mobile: <span class="font-semibold text-black font-mono" style="color: #000000 !important;">01975-703216, 01715-842083</span></p>
+                        <p class="text-xs text-black" style="color: #000000 !important;">Email: <span class="font-medium text-black" style="color: #000000 !important;">marsscorporation2018@gmail.com</span></p>
+                    </div>
+                </div>
+
+                <!-- Table Section -->
+                <table class="invoice_table_list">
+                    <thead>
                         <tr>
-                            <td class="p-1.5 px-2 bg-slate-50 dark:bg-slate-800 font-semibold text-slate-600 dark:text-slate-300">Invoice No:</td>
-                            <td class="p-1.5 px-2 font-bold text-emerald-700 dark:text-emerald-400 font-mono" id="order_no">{{ $purchaseinvoicedata->purchase_id }}</td>
+                            <th>SL. No.</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="order_details">
+                        @foreach ($purchaseinvoicedata->orderDetails as $key => $orderDetail)
+                        <tr>
+                            <td>{{ $key + 1 }}</td>
+                            <td>{{ $orderDetail->product->product_name ?? 'N/A' }}</td>
+                            <td>{{ $orderDetail->quantity }}</td>
+                            <td style="text-align: right">৳ {{ number_format((float)($orderDetail->cost_price ?? 0), 2) }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                    <tbody id="order_summary">
+                        <tr>
+                            <td colspan="1" rowspan="{{ ($deliveryCharge ?? 0) > 0 ? '7' : '6' }}" id="payment_status" class="full-paid">
+                                {{ $paymentDetailsStatus ?? 'Not Available' }}
+                            </td>
                         </tr>
                         <tr>
-                            <td class="p-1.5 px-2 bg-slate-50 dark:bg-slate-800 font-semibold text-slate-600 dark:text-slate-300">Invoice Date:</td>
-                            <td class="p-1.5 px-2 font-medium text-slate-700 dark:text-slate-300" id="invoice_date">{{ \Carbon\Carbon::parse($purchaseinvoicedata->created_at)->format('d-m-Y') }}</td>
+                            <td colspan="2" class="amount_text" style="text-align: right">Sub Total:</td>
+                            <td class="amount" id="sub_total" style="text-align: right">৳ {{ number_format((float)($subTotal ?? 0), 2) }}</td>
                         </tr>
-                    </table>
-                </div>
-
-                <!-- 2. Center Column: Purchase Details Title, Logo & Print Button -->
-                <div class="logo-wrapper text-center flex flex-col items-center justify-center">
-                    <h2 class="text-base sm:text-lg font-bold text-slate-800 dark:text-white mb-2 tracking-tight">Purchase Details</h2>
-                    <img src="{{ asset('backend/assets/img/marss-corporation-icon2.svg') }}" onerror="this.src='{{ asset('backend/assets/icons/marss-corporation-logo.svg') }}'" alt="MARSS Corporation Logo" class="mb-2" style="max-height: 48px; max-width: 180px; object-fit: contain;" />
-                    <button type="button" class="print-button inline-flex items-center gap-1.5 px-4 py-1.5 bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 cursor-pointer" onclick="window.print()">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                            <rect x="6" y="14" width="12" height="8"></rect>
-                        </svg>
-                        <span>Print</span>
-                    </button>
-                </div>
-
-                <!-- 3. Right Column: Company Official Information -->
-                <div class="company-details text-left md:text-right">
-                    <h4 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider mb-1">MARSS CORPORATION</h4>
-                    <p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">Retail &amp; Wholesale Management System</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-0.5 leading-relaxed">All Kinds of Dry &amp; Gel Battery Supplier</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-0.5">Success Super Market, Sadar Police Fari,</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Ataikula Road, Pabna</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-0.5">Mobile: <span class="font-semibold text-slate-700 dark:text-slate-300 font-mono">01975-703216, 01715-842083</span></p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Email: <span class="font-medium text-slate-600 dark:text-slate-400">marsscorporation2018@gmail.com</span></p>
-                </div>
+                        @if(($deliveryCharge ?? 0) > 0)
+                        <tr>
+                            <td colspan="2" class="amount_text" style="text-align: right">Delivery & Transport Charge:</td>
+                            <td class="amount" style="text-align: right">৳ {{ number_format((float)($deliveryCharge ?? 0), 2) }}</td>
+                        </tr>
+                        @endif
+                        <tr>
+                            <td colspan="2" class="amount_text table_bg" style="text-align: right">Paid Amount:</td>
+                            <td class="amount table_bg" id="paidamount" style="text-align: right">৳ {{ number_format((float)($paidAmount ?? 0), 2) }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="amount_text" style="text-align: right">Due Amount:</td>
+                            <td id="due_amount" class="amount" style="text-align: right">৳ {{ number_format((float)($dueAmount ?? 0), 2) }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="amount_text" style="text-align: right">Previous Due Amount:</td>
+                            <td id="due_amount" class="amount" style="text-align: right">৳ {{ number_format((float)($PreviousDueAmount ?? 0), 2) }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="amount_text" style="text-align: right">Total Due Amount:</td>
+                            <td id="due_amount" class="amount" style="text-align: right">৳ {{ number_format((float)($PreviousDueAmount ?? 0) + (float)($dueAmount ?? 0), 2) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-
-            <!-- Table Section -->
-            <table class="invoice_table_list">
-                <thead>
-                    <tr>
-                        <th>SL. No.</th>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody id="order_details">
-                    @foreach ($purchaseinvoicedata->orderDetails as $key => $orderDetail)
-                    <tr>
-                        <td>{{ $key + 1 }}</td>
-                        <td>{{ $orderDetail->product->product_name ?? 'N/A' }}</td>
-                        <td>{{ $orderDetail->quantity }}</td>
-                        <td style="text-align: right">৳ {{ number_format((float)($orderDetail->cost_price ?? 0), 2) }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-                <tr>
-                    <td colspan="1" rowspan="{{ ($deliveryCharge ?? 0) > 0 ? '7' : '6' }}" id="payment_status" class="full-paid">
-                        {{ $paymentDetailsStatus ?? 'Not Available' }}
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="amount_text" style="text-align: right">Sub Total:</td>
-                    <td class="amount" id="sub_total" style="text-align: right">৳ {{ number_format((float)($subTotal ?? 0), 2) }}</td>
-                </tr>
-                @if(($deliveryCharge ?? 0) > 0)
-                <tr>
-                    <td colspan="2" class="amount_text" style="text-align: right">Delivery & Transport Charge:</td>
-                    <td class="amount" style="text-align: right">৳ {{ number_format((float)($deliveryCharge ?? 0), 2) }}</td>
-                </tr>
-                @endif
-                <tr>
-                    <td colspan="2" class="amount_text table_bg" style="text-align: right">Paid Amount:</td>
-                    <td class="amount table_bg" id="paidamount" style="text-align: right">৳ {{ number_format((float)($paidAmount ?? 0), 2) }}</td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="amount_text" style="text-align: right">Due Amount:</td>
-                    <td id="due_amount" class="amount" style="text-align: right">৳ {{ number_format((float)($dueAmount ?? 0), 2) }}</td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="amount_text" style="text-align: right">Previous Due Amount:</td>
-                    <td id="due_amount" class="amount" style="text-align: right">৳ {{ number_format((float)($PreviousDueAmount ?? 0), 2) }}</td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="amount_text" style="text-align: right">Total Due Amount:</td>
-                    <td id="due_amount" class="amount" style="text-align: right">৳ {{ number_format((float)($PreviousDueAmount ?? 0) + (float)($dueAmount ?? 0), 2) }}</td>
-                </tr>
-            </table>
 
             <!-- Footer Message -->
             <div class="footer-message">
@@ -576,9 +665,40 @@
 </div>
 
 <script>
-    window.onload = function() {
-        window.print();
+    function preparePrintInvoice() {
+        const container = document.querySelector('.invoice-container');
+        const mainContent = document.querySelector('.invoice-main-content');
+        const footer = document.querySelector('.footer-message');
+        if (!container || !mainContent || !footer) return;
+
+        // Reset minHeight to measure true content height
+        container.style.minHeight = 'auto';
+
+        // 279mm printable page height at 96 DPI: 279 * 96 / 25.4 = 1054.49px
+        const printablePagePx = 1054.49;
+        const footerHeight = footer.offsetHeight || 25;
+        const contentHeight = mainContent.offsetHeight;
+
+        // Calculate pages required
+        const remainder = contentHeight % printablePagePx;
+        let numPages = Math.floor(contentHeight / printablePagePx) + 1;
+
+        // If remaining room on last page is less than footer + 15px gap, page will wrap
+        if (remainder > 0 && (printablePagePx - remainder) < (footerHeight + 15)) {
+            numPages++;
+        }
+
+        // Set min-height so flex container pushes footer to the bottom with 10px (~3mm) gap
+        container.style.minHeight = ((numPages * 279) - 3) + 'mm';
     }
+
+    window.addEventListener('beforeprint', preparePrintInvoice);
+    window.onload = function() {
+        setTimeout(function() {
+            preparePrintInvoice();
+            window.print();
+        }, 300);
+    };
 </script>
 
 @endsection

@@ -1125,7 +1125,6 @@
                                             <th class="p-[10px] text-center w-[46px] rounded-tl-2xl whitespace-nowrap">SL</th>
                                             <th class="p-[10px] text-center whitespace-nowrap">Purchase ID</th>
                                             <th class="p-[10px] text-center whitespace-nowrap">Date</th>
-                                            <th class="p-[10px] text-start whitespace-nowrap">Barcodes</th>
                                             <th class="p-[10px] text-start whitespace-nowrap">Reference</th>
                                             <th class="p-[10px] text-end whitespace-nowrap">Grand Total</th>
                                             <th class="p-[10px] text-end whitespace-nowrap">Paid Amount</th>
@@ -1135,7 +1134,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="purchasesTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm text-slate-700 dark:text-slate-200">
-                                        <tr><td colspan="10" class="sp-empty-state"><i class="fa-solid fa-receipt block text-3xl opacity-40 mb-2"></i>Loading purchase invoices...</td></tr>
+                                        <tr><td colspan="9" class="sp-empty-state"><i class="fa-solid fa-receipt block text-3xl opacity-40 mb-2"></i>Loading purchase invoices...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -1630,19 +1629,12 @@
                 purchasesCards.empty();
 
                 if (purchases.length === 0) {
-                    purchasesTbody.html('<tr><td colspan="10" class="sp-empty-state"><i class="fa-solid fa-receipt block text-3xl opacity-40 mb-2"></i>No purchase records found for this supplier</td></tr>');
+                    purchasesTbody.html('<tr><td colspan="9" class="sp-empty-state"><i class="fa-solid fa-receipt block text-3xl opacity-40 mb-2"></i>No purchase records found for this supplier</td></tr>');
                     purchasesCards.html('<div class="p-6 text-center text-slate-400 sp-mobile-card"><i class="fa-solid fa-receipt block text-3xl opacity-40 mb-2"></i>No purchase records found</div>');
                 } else {
                     purchases.forEach((item, index) => {
                         const statusClass = item.payment_status === 'Fully Paid'   ? 'sp-badge-success' :
                                             item.payment_status === 'Partial Paid' ? 'sp-badge-warning'  : 'sp-badge-danger';
-
-                        let barcodesHtml = '<span class="text-slate-400 text-xs">N/A</span>';
-                        if (item.barcodes && Array.isArray(item.barcodes) && item.barcodes.length > 0) {
-                            barcodesHtml = item.barcodes.map(c =>
-                                `<span class="sp-badge sp-badge-id me-1 font-mono">${c}</span>`
-                            ).join('');
-                        }
 
                         let paidDisplayHtml = `৳ ${parseFloat(item.paid_amount).toFixed(2)}`;
                         if (item.return_adjustment_amount && parseFloat(item.return_adjustment_amount) > 0) {
@@ -1655,7 +1647,6 @@
                                 <td class="text-center font-bold text-slate-500">${index + 1}</td>
                                 <td class="text-center"><span class="sp-badge sp-badge-id">${item.purchase_id}</span></td>
                                 <td class="text-center text-slate-600 dark:text-slate-300 whitespace-nowrap">${item.date}</td>
-                                <td class="text-start">${barcodesHtml}</td>
                                 <td class="text-start text-slate-600 dark:text-slate-300 font-medium">${item.referance_no || 'N/A'}</td>
                                 <td class="text-end font-bold text-slate-800 dark:text-white">৳ ${parseFloat(item.grand_subtotal).toFixed(2)}</td>
                                 <td class="text-end font-bold text-emerald-700 dark:text-emerald-400">${paidDisplayHtml}</td>
@@ -1665,7 +1656,7 @@
                                     <a href="/purchase-invoice/${item.id}" class="sp-action-view-btn" title="View Invoice">
                                         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
+                                             <circle cx="12" cy="12" r="3"></circle>
                                         </svg>
                                     </a>
                                 </td>
