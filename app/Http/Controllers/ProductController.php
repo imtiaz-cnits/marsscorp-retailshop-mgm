@@ -187,11 +187,13 @@ class ProductController extends Controller
                 $codeStr = trim((string)$code);
                 if (empty($codeStr)) continue;
 
-                $existingProduct = Product::whereJsonContains('product_code', $codeStr)->first();
+                $existingProduct = Product::whereJsonContains('product_code', $codeStr)
+                    ->orWhere('product_code', $codeStr)
+                    ->first();
                 if ($existingProduct) {
                     return response()->json([
                         'status' => 'fail',
-                        'message' => "এই বারকোডটি ({$codeStr}) ইতিমধ্যে \"{$existingProduct->product_name}\" প্রোডাক্টে যুক্ত রয়েছে!"
+                        'message' => "এই বারকোডটি ({$codeStr}) ইতিমধ্যে \"{$existingProduct->product_name}\" প্রোডাক্টে যুক্ত রয়েছে! অনুগ্রহ করে অন্য বারকোড দিন।"
                     ]);
                 }
             }
@@ -218,7 +220,16 @@ class ProductController extends Controller
 
             $productName = trim($request->product_name);
             $catId = (!empty($request->category_id) && $request->category_id !== 'none') ? $request->category_id : null;
+            if (!$catId) {
+                $defaultCat = \App\Models\Category::first();
+                $catId = $defaultCat ? $defaultCat->id : 1;
+            }
+
             $brandId = (!empty($request->brand_id) && $request->brand_id !== 'none') ? $request->brand_id : null;
+            if (!$brandId) {
+                $defaultBrand = \App\Models\Brand::where('name', 'General')->first() ?? \App\Models\Brand::first();
+                $brandId = $defaultBrand ? $defaultBrand->id : 1;
+            }
 
             // Check if duplicate product already exists
             if (count($doorEntries) > 1) {
@@ -274,16 +285,22 @@ class ProductController extends Controller
                         'sell_price' => (!is_null($request->sell_price) && $request->sell_price !== '') ? $request->sell_price : 0,
                         'status' => $request->status ?? 'Active',
                         'product_code' => is_string($request->product_code) ? $request->product_code : json_encode(array_values($barcodes)),
-                        'brand_id' => (!empty($request->brand_id) && $request->brand_id !== 'none') ? $request->brand_id : null,
-                        'category_id' => (!empty($request->category_id) && $request->category_id !== 'none') ? $request->category_id : null,
+                        'brand_id' => $brandId,
+                        'category_id' => $catId,
                         'door_side' => $side,
                         'sub_category_id' => $request->sub_category_id,
                         'unit_id' => $request->unit_id,
                         'user_id' => $user_id,
                     ]);
+                    $p->load(['brand', 'category']);
                     $createdProducts[] = $p;
                 }
-                return response()->json(['status' => 'success', 'message' => 'Product Variants Created Successfully', 'products' => $createdProducts]);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Product Variants Created Successfully',
+                    'products' => $createdProducts,
+                    'product' => $createdProducts[0]
+                ]);
             }
 
             // Single door side or standard product
@@ -306,13 +323,14 @@ class ProductController extends Controller
                 'sell_price' => (!is_null($request->sell_price) && $request->sell_price !== '') ? $request->sell_price : 0,
                 'status' => $request->status ?? 'Active',
                 'product_code' => is_string($request->product_code) ? $request->product_code : json_encode(array_values($barcodes)),
-                'brand_id' => (!empty($request->brand_id) && $request->brand_id !== 'none') ? $request->brand_id : null,
-                'category_id' => (!empty($request->category_id) && $request->category_id !== 'none') ? $request->category_id : null,
+                'brand_id' => $brandId,
+                'category_id' => $catId,
                 'door_side' => $doorSide,
                 'sub_category_id' => $request->sub_category_id,
                 'unit_id' => $request->unit_id,
                 'user_id' => $user_id,
             ]);
+            $product->load(['brand', 'category']);
 
             return response()->json(['status' => 'success', 'message' => 'Product Created Successfully', 'product' => $product]);
         } catch (Exception $e) {

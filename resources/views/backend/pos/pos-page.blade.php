@@ -3479,7 +3479,7 @@
                     window.posSwiper.update();
                 }
 
-                loadProductsByBrand(0); // Load All Products Initially
+                await loadProductsByBrand(0); // Load All Products Initially
             } catch (error) {
                 console.error("Error loading product brands:", error);
             }
@@ -4725,8 +4725,18 @@
                                 <input type="text" class="form-control fw-semibold" id="quickProductName" required placeholder="e.g.: HAMKO 12V 20AH Gel Battery" style="border-radius: 7px; font-size: 12px; height: 35px;">
                             </div>
                             <div class="col-md-5">
-                                <label for="quickProductCode" class="form-label fw-bold text-dark mb-1" style="font-size: 12px;">Barcode / Product Code</label>
-                                <input type="text" class="form-control fw-semibold" id="quickProductCode" placeholder="e.g.: BAT-1002" style="border-radius: 7px; font-size: 12px; height: 35px;">
+                                <label for="quickProductCode" class="form-label fw-bold text-dark mb-1 d-flex justify-content-between align-items-center" style="font-size: 12px;">
+                                    <span>Barcode / Product Code</span>
+                                    <a href="javascript:void(0)" onclick="generateQuickBarcode()" class="text-success text-decoration-none fw-bold" style="font-size: 11px;">
+                                        <i class="fa-solid fa-arrows-rotate me-1"></i>New Code
+                                    </a>
+                                </label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control fw-semibold" id="quickProductCode" placeholder="e.g.: BAT-1002" style="border-radius: 7px 0 0 7px; font-size: 12px; height: 35px;">
+                                    <button class="btn btn-outline-secondary d-flex align-items-center justify-content-center" type="button" onclick="generateQuickBarcode()" title="Generate New Barcode" style="border-radius: 0 7px 7px 0; height: 35px; width: 36px;">
+                                        <i class="fa-solid fa-arrows-rotate" style="font-size: 11px;"></i>
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- Searchable Category Dropdown -->
@@ -4865,7 +4875,7 @@
 
                         <div class="d-flex justify-content-end gap-2 mt-3 pt-2 border-top">
                             <button type="button" class="btn btn-danger px-3 py-1.5 fw-bold rounded-3 text-white" data-bs-dismiss="modal" style="font-size: 12.5px; background-color: #dc2626 !important; border-color: #dc2626 !important; color: #ffffff !important; height: 38px !important; min-height: 38px !important; display: inline-flex; align-items: center; justify-content: center;">Cancel</button>
-                            <button type="submit" class="btn btn-success px-3 py-1.5 fw-bold rounded-3 shadow-sm" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none; font-size: 12.5px; height: 38px !important; min-height: 38px !important; display: inline-flex; align-items: center; justify-content: center;">
+                            <button type="submit" id="quickSaveProductBtn" class="btn btn-success px-3 py-1.5 fw-bold rounded-3 shadow-sm" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none; font-size: 12.5px; height: 38px !important; min-height: 38px !important; display: inline-flex; align-items: center; justify-content: center;">
                                 <i class="fa-solid fa-cart-plus me-1"></i> Create & Add to Cart
                             </button>
                         </div>
@@ -5271,12 +5281,19 @@
             });
         }
 
+        function generateQuickBarcode() {
+            const codeInput = document.getElementById('quickProductCode');
+            if (codeInput) {
+                codeInput.value = 'MARSS-' + Math.floor(100000 + Math.random() * 900000);
+            }
+        }
+
         async function openQuickAddProductModal() {
             const modalEl = document.getElementById('quickAddProductModal');
             const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
 
             document.getElementById('quickProductName').value = '';
-            document.getElementById('quickProductCode').value = 'MARSS-BAT-' + Math.floor(1000 + Math.random() * 9000);
+            generateQuickBarcode();
             document.getElementById('quickCostPrice').value = '0';
             document.getElementById('quickSellPrice').value = '0';
             document.getElementById('quickQuantity').value = '0';
@@ -5372,10 +5389,17 @@
                 });
             }
 
+            const saveBtn = document.getElementById('quickSaveProductBtn');
+            const originalBtnHtml = saveBtn ? saveBtn.innerHTML : '';
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Saving...';
+            }
+
             try {
                 const formData = new FormData();
                 formData.append('product_name', name);
-                formData.append('product_code', code ? JSON.stringify([code]) : JSON.stringify(['BAT-' + Date.now()]));
+                formData.append('product_code', code ? JSON.stringify([code]) : JSON.stringify(['MARSS-' + Date.now()]));
                 if (categoryId) formData.append('category_id', categoryId);
                 if (subCategoryId) formData.append('sub_category_id', subCategoryId);
                 if (brandId) formData.append('brand_id', brandId);
@@ -5392,40 +5416,85 @@
                     if (doorSide) formData.append('door_side', doorSide);
                 }
 
+                const tokenHeader = HeaderToken();
+                const headers = {
+                    ...(tokenHeader && tokenHeader.headers ? tokenHeader.headers : {})
+                };
+
                 const res = await axios.post('/api/create-product', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        ...HeaderToken()?.headers,
-                    }
+                    headers: headers
                 });
 
-                if (res.data.status === 'success') {
+                if (res.data && res.data.status === 'success') {
                     const modalEl = document.getElementById('quickAddProductModal');
-                    const instance = bootstrap.Modal.getInstance(modalEl);
-                    if (instance) instance.hide();
+                    if (modalEl) {
+                        const instance = bootstrap.Modal.getInstance(modalEl);
+                        if (instance) instance.hide();
+                    }
+
+                    const createdProduct = res.data.product || (res.data.products && res.data.products[0]);
+
+                    if (createdProduct) {
+                        const formattedProduct = {
+                            id: createdProduct.id,
+                            product_name: createdProduct.product_name,
+                            product_code: createdProduct.product_code,
+                            sell_price: parseFloat(createdProduct.sell_price) || 0,
+                            cost_price: parseFloat(createdProduct.cost_price) || 0,
+                            quantity: parseFloat(createdProduct.quantity) || 0,
+                            door_side: createdProduct.door_side || '',
+                            img_url: createdProduct.img_url || '',
+                            brand: createdProduct.brand || null,
+                            category: createdProduct.category || null,
+                        };
+
+                        const existIdx = allProducts.findIndex(p => p.id === formattedProduct.id);
+                        if (existIdx === -1) {
+                            allProducts.unshift(formattedProduct);
+                        } else {
+                            allProducts[existIdx] = formattedProduct;
+                        }
+
+                        renderProducts(allProducts);
+                        addProductToCart(formattedProduct.id);
+                    }
 
                     Swal.fire({
                         icon: 'success',
                         title: 'Product Created!',
-                        text: `"${name}" created successfully and added to POS cart.`,
+                        text: res.data.message || `"${name}" created successfully and added to POS cart.`,
                         timer: 1500,
                         showConfirmButton: false
                     });
 
-                    // Reload products list and auto add to cart
-                    await ProductBrandData();
-                    if (res.data.product && res.data.product.id) {
-                        addProductToCart(res.data.product.id);
-                    }
+                    // Refresh products in background
+                    loadProductsByBrand(0);
+
+                    // Reset form
+                    const formEl = document.getElementById('quickProductForm');
+                    if (formEl) formEl.reset();
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Could Not Create Product',
+                        text: (res.data && res.data.message) ? res.data.message : 'Error occurred while creating product.',
+                        confirmButtonColor: '#dc2626'
+                    });
                 }
             } catch (e) {
                 console.error("Error creating product:", e);
+                const errorMsg = e.response?.data?.message || e.message || 'Error occurred while creating product.';
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Error occurred while creating product.',
-                    confirmButtonColor: '#15803d'
+                    text: errorMsg,
+                    confirmButtonColor: '#dc2626'
                 });
+            } finally {
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = originalBtnHtml;
+                }
             }
         }
 
