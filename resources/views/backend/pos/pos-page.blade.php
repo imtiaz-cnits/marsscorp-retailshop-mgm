@@ -4725,16 +4725,11 @@
                                 <input type="text" class="form-control fw-semibold" id="quickProductName" required placeholder="e.g.: HAMKO 12V 20AH Gel Battery" style="border-radius: 7px; font-size: 12px; height: 35px;">
                             </div>
                             <div class="col-md-5">
-                                <label for="quickProductCode" class="form-label fw-bold text-dark mb-1 d-flex justify-content-between align-items-center" style="font-size: 12px;">
-                                    <span>Barcode / Product Code</span>
-                                    <a href="javascript:void(0)" onclick="generateQuickBarcode()" class="text-success text-decoration-none fw-bold" style="font-size: 11px;">
-                                        <i class="fa-solid fa-arrows-rotate me-1"></i>New Code
-                                    </a>
-                                </label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control fw-semibold" id="quickProductCode" placeholder="e.g.: BAT-1002" style="border-radius: 7px 0 0 7px; font-size: 12px; height: 35px;">
-                                    <button class="btn btn-outline-secondary d-flex align-items-center justify-content-center" type="button" onclick="generateQuickBarcode()" title="Generate New Barcode" style="border-radius: 0 7px 7px 0; height: 35px; width: 36px;">
-                                        <i class="fa-solid fa-arrows-rotate" style="font-size: 11px;"></i>
+                                <label for="quickProductCode" class="form-label fw-bold text-dark mb-1" style="font-size: 12px;">Barcode / Product Code</label>
+                                <div class="position-relative">
+                                    <input type="text" class="form-control fw-semibold" id="quickProductCode" placeholder="e.g.: BAT-1002" style="border-radius: 7px; font-size: 12px; height: 35px; padding-right: 38px;">
+                                    <button class="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-1 d-flex align-items-center justify-content-center p-0" type="button" onclick="generateQuickBarcode()" title="Generate Unique Barcode" style="height: 27px; width: 27px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; color: #16a34a; transition: all 0.2s; z-index: 4;" onmouseover="this.style.background='#dcfce7'; this.style.borderColor='#86efac';" onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#cbd5e1';">
+                                        <i class="fa-solid fa-arrows-rotate" style="font-size: 12px;"></i>
                                     </button>
                                 </div>
                             </div>
@@ -4804,15 +4799,15 @@
 
                             <div class="col-md-4">
                                 <label for="quickCostPrice" class="form-label fw-bold text-dark mb-1" style="font-size: 12px;">Cost Price (৳)</label>
-                                <input type="number" step="any" class="form-control fw-bold text-danger" id="quickCostPrice" value="0" style="border-radius: 7px; font-size: 12px; height: 35px;">
+                                <input type="number" step="any" class="form-control fw-bold text-danger" id="quickCostPrice" placeholder="0" style="border-radius: 7px; font-size: 12px; height: 35px;">
                             </div>
                             <div class="col-md-4">
-                                <label for="quickSellPrice" class="form-label fw-bold text-dark mb-1" style="font-size: 12px;">Selling Price (৳) <span class="text-danger">*</span></label>
-                                <input type="number" step="any" class="form-control fw-bold text-success" id="quickSellPrice" required value="0" style="border-radius: 7px; font-size: 12px; height: 35px;">
+                                <label for="quickSellPrice" class="form-label fw-bold text-dark mb-1" style="font-size: 12px;">Selling Price (৳)</label>
+                                <input type="number" step="any" class="form-control fw-bold text-success" id="quickSellPrice" placeholder="0" style="border-radius: 7px; font-size: 12px; height: 35px;">
                             </div>
                             <div class="col-md-4">
                                 <label for="quickQuantity" class="form-label fw-bold text-dark mb-1" style="font-size: 12px;">Initial Stock (Quantity)</label>
-                                <input type="number" step="any" class="form-control fw-bold text-primary" id="quickQuantity" value="0" style="border-radius: 7px; font-size: 12px; height: 35px;">
+                                <input type="number" step="any" class="form-control fw-bold text-primary" id="quickQuantity" placeholder="0" style="border-radius: 7px; font-size: 12px; height: 35px;">
                             </div>
 
                             <!-- Door Handedness Dynamic Selection & Quantity Inputs (Shown only when Door category is selected) -->
@@ -5294,9 +5289,9 @@
 
             document.getElementById('quickProductName').value = '';
             generateQuickBarcode();
-            document.getElementById('quickCostPrice').value = '0';
-            document.getElementById('quickSellPrice').value = '0';
-            document.getElementById('quickQuantity').value = '0';
+            document.getElementById('quickCostPrice').value = '';
+            document.getElementById('quickSellPrice').value = '';
+            document.getElementById('quickQuantity').value = '';
 
             resetQuickDoorSide();
 
@@ -5371,9 +5366,9 @@
             const subCategoryId = subCategoryEl ? subCategoryEl.value : '';
             const brandId = document.getElementById('quickBrandSelect').value;
             const unitId = document.getElementById('quickUnitSelect').value;
-            const costPrice = document.getElementById('quickCostPrice').value || '0';
-            const sellPrice = document.getElementById('quickSellPrice').value || '0';
-            const quantity = document.getElementById('quickQuantity').value || '0';
+            const costPrice = document.getElementById('quickCostPrice').value.trim() || '0';
+            const sellPrice = document.getElementById('quickSellPrice').value.trim() || '0';
+            const quantity = document.getElementById('quickQuantity').value.trim() || '0';
 
             const leftQty = parseFloat(document.getElementById('quickDoorQtyLeft')?.value) || 0;
             const rightQty = parseFloat(document.getElementById('quickDoorQtyRight')?.value) || 0;
