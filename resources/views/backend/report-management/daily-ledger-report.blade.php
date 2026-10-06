@@ -463,7 +463,7 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Quick Filter</label>
                             <div class="custom-select-wrap" id="quickFilterWrapper">
-                                <button type="button" id="quickFilterBtn" onclick="toggleQuickFilterMenu()" class="custom-select-btn unified-ui-border text-slate-800 dark:text-slate-100">
+                                <button type="button" id="quickFilterBtn" onclick="toggleQuickFilterMenu(event)" class="custom-select-btn unified-ui-border text-slate-800 dark:text-slate-100">
                                     <span id="quickFilterSelectedText">Today</span>
                                     <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                 </button>
@@ -679,43 +679,52 @@
     }
 
     // Initialize Flatpickr with Static Month (No dropdown, only prev/next)
-    document.addEventListener("DOMContentLoaded", () => {
+    function initFlatpickrAndApp() {
         const todayStr = formatDateStr(new Date());
 
-        startPicker = flatpickr("#startDate", {
-            dateFormat: "Y-m-d",
-            defaultDate: todayStr,
-            monthSelectorType: "static", // NO month dropdown! Only prev/next arrows
-            onChange: function(selectedDates, dateStr) {
-                if (endPicker && dateStr) {
-                    endPicker.set("minDate", dateStr);
+        if (typeof flatpickr !== "undefined") {
+            startPicker = flatpickr("#startDate", {
+                dateFormat: "Y-m-d",
+                defaultDate: todayStr,
+                monthSelectorType: "static", // NO month dropdown! Only prev/next arrows
+                onChange: function(selectedDates, dateStr) {
+                    if (endPicker && dateStr) {
+                        endPicker.set("minDate", dateStr);
+                    }
+                    setQuickFilterUILabel('Custom Range');
+                    autoFilterIfBothDates();
                 }
-                setQuickFilterUILabel('Custom Range');
-                autoFilterIfBothDates();
-            }
-        });
+            });
 
-        endPicker = flatpickr("#endDate", {
-            dateFormat: "Y-m-d",
-            defaultDate: todayStr,
-            monthSelectorType: "static", // NO month dropdown! Only prev/next arrows
-            onChange: function() {
-                setQuickFilterUILabel('Custom Range');
-                autoFilterIfBothDates();
-            }
-        });
+            endPicker = flatpickr("#endDate", {
+                dateFormat: "Y-m-d",
+                defaultDate: todayStr,
+                monthSelectorType: "static", // NO month dropdown! Only prev/next arrows
+                onChange: function() {
+                    setQuickFilterUILabel('Custom Range');
+                    autoFilterIfBothDates();
+                }
+            });
+        }
 
         // Close custom select dropdown on outside click
         document.addEventListener('click', (e) => {
             const wrap = document.getElementById('quickFilterWrapper');
-            if (wrap && !wrap.contains(e.target)) {
-                document.getElementById('quickFilterMenu').classList.remove('open');
+            const menu = document.getElementById('quickFilterMenu');
+            if (wrap && menu && !wrap.contains(e.target)) {
+                menu.classList.remove('open');
             }
         });
 
         // Initial fetch for Today
         fetchDailyLedger();
-    });
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initFlatpickrAndApp);
+    } else {
+        initFlatpickrAndApp();
+    }
 
     // Auto filter when both dates are present
     function autoFilterIfBothDates() {
@@ -728,9 +737,10 @@
     }
 
     // Custom Quick Filter Dropdown logic
-    function toggleQuickFilterMenu() {
+    function toggleQuickFilterMenu(e) {
+        if (e) e.stopPropagation();
         const menu = document.getElementById('quickFilterMenu');
-        menu.classList.toggle('open');
+        if (menu) menu.classList.toggle('open');
     }
 
     function setQuickFilterUILabel(label) {
@@ -884,7 +894,6 @@
             currentPage = 1;
             renderTable(false);
         }
-    }
     }
 
     // Render Table (Desktop Table + Mobile Box Cards)

@@ -626,14 +626,23 @@
             const rowDate = new Date(item.created_at);
             if (isNaN(rowDate.getTime())) return true;
 
+            const now = new Date();
+            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
             if (currentFilter === 'today') {
-                return rowDate.toDateString() === today.toDateString();
+                return rowDate >= startOfToday;
             } else if (currentFilter === '7') {
-                return (today - rowDate) / (1000 * 60 * 60 * 24) <= 7;
+                const past7 = new Date(startOfToday);
+                past7.setDate(past7.getDate() - 7);
+                return rowDate >= past7;
             } else if (currentFilter === '30') {
-                return (today - rowDate) / (1000 * 60 * 60 * 24) <= 30;
+                const past30 = new Date(startOfToday);
+                past30.setDate(past30.getDate() - 30);
+                return rowDate >= past30;
             } else if (currentFilter === '365') {
-                return (today - rowDate) / (1000 * 60 * 60 * 24) <= 365;
+                const past365 = new Date(startOfToday);
+                past365.setDate(past365.getDate() - 365);
+                return rowDate >= past365;
             }
             return true;
         });
@@ -695,7 +704,8 @@
                 } else {
                     paymentStatus = 'Return';
                     statusBadgeClass = 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
-                               let supplierTargetId = item.supplier && item.supplier.id ? item.supplier.id : (item.supplier_id || '');
+                }
+                let supplierTargetId = item.supplier && item.supplier.id ? item.supplier.id : (item.supplier_id || '');
 
                 // Desktop Row
                 let row = `

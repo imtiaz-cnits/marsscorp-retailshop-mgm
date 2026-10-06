@@ -104,7 +104,7 @@
                                 <select id="filterBrand" class="hidden">
                                     <option value="">All Brands</option>
                                 </select>
-                                <div class="custom-searchable-select custom-filter-dropdown flex-1 min-w-0 md:w-[200px] lg:w-[230px]" id="filterBrandDropdown">
+                                <div class="custom-filter-dropdown flex-1 min-w-0 md:w-[200px] lg:w-[230px]" id="filterBrandDropdown">
                                     <div class="select-trigger unified-ui-border flex items-center justify-between px-3 sm:px-3.5 h-[38px] bg-white dark:bg-slate-800/90 rounded-xl shadow-sm text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer hover:border-emerald-500 transition-all duration-150" onclick="toggleCustomListFilter('filterBrandDropdown')">
                                         <span class="selected-text text-truncate flex-1">All Brands</span>
                                         <svg class="w-3.5 h-3.5 text-slate-400 chevron-icon transition-transform duration-200 flex-shrink-0 ms-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -113,11 +113,13 @@
                                     </div>
                                     <div class="select-menu">
                                         <div class="search-wrap">
-                                            <svg class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <circle cx="11" cy="11" r="8"></circle>
-                                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                            </svg>
-                                            <input type="text" placeholder="Search Brand..." oninput="filterCustomListOptions('filterBrandDropdown', this.value)" class="unified-ui-border w-full h-8 pl-8 pr-2 text-xs bg-white dark:bg-slate-800 rounded-lg outline-none focus:border-emerald-500 text-slate-800 dark:text-slate-100" />
+                                            <div class="search-input-pill unified-ui-border flex items-center h-[34px] px-2.5 bg-white dark:bg-slate-900 rounded-lg" style="display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; flex-wrap: nowrap !important; width: 100% !important; height: 34px !important; min-height: 34px !important; max-height: 34px !important; padding: 0 10px !important; box-sizing: border-box !important; border-radius: 8px !important; overflow: hidden !important;">
+                                                <svg class="search-icon text-slate-400 dark:text-slate-400 flex-shrink-0" style="width: 14px !important; height: 14px !important; min-width: 14px !important; max-width: 14px !important; min-height: 14px !important; max-height: 14px !important; flex: 0 0 14px !important; flex-shrink: 0 !important; color: #94a3b8 !important; margin: 0 8px 0 0 !important; padding: 0 !important; display: block !important; position: static !important; transform: none !important; -webkit-transform: none !important; pointer-events: none !important; align-self: center !important;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="11" cy="11" r="8"></circle>
+                                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                                </svg>
+                                                <input type="text" placeholder="Search Brand..." oninput="filterCustomListOptions('filterBrandDropdown', this.value)" style="flex: 1 1 0% !important; width: 100% !important; min-width: 0 !important; height: 100% !important; border: none !important; outline: none !important; background: transparent !important; padding: 0 !important; margin: 0 !important; font-size: 12px !important; line-height: 34px !important; box-shadow: none !important; -webkit-appearance: none !important; align-self: center !important;" class="w-full h-full bg-transparent border-0 outline-none text-xs text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0 focus:border-0 focus:outline-none" />
+                                            </div>
                                         </div>
                                         <div class="select-options-list">
                                             <div class="select-option-item active" data-value="" data-label="All Brands" onclick="selectCustomFilterOption('filterBrandDropdown', 'filterBrand', '', 'All Brands')">
@@ -132,20 +134,22 @@
                                 <select id="filterCategory" class="hidden">
                                     <option value="">All Categories</option>
                                 </select>
-                                <div class="custom-searchable-select custom-filter-dropdown flex-1 min-w-0 md:w-[200px] lg:w-[230px]" id="filterCategoryDropdown">
+                                <div class="custom-filter-dropdown flex-1 min-w-0 md:w-[200px] lg:w-[230px]" id="filterCategoryDropdown">
                                     <div class="select-trigger unified-ui-border flex items-center justify-between px-3 sm:px-3.5 h-[38px] bg-white dark:bg-slate-800/90 rounded-xl shadow-sm text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer hover:border-emerald-500 transition-all duration-150" onclick="toggleCustomListFilter('filterCategoryDropdown')">
                                         <span class="selected-text text-truncate flex-1">All Categories</span>
                                         <svg class="w-3.5 h-3.5 text-slate-400 chevron-icon transition-transform duration-200 flex-shrink-0 ms-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <polyline points="6 9 12 15 18 9"></polyline>
                                         </svg>
                                     </div>
-                                    <div class="select-menu">
+                                    <div class="select-menu" style="right: 0 !important; left: auto !important;">
                                         <div class="search-wrap">
-                                            <svg class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <circle cx="11" cy="11" r="8"></circle>
-                                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                            </svg>
-                                            <input type="text" placeholder="Search Category..." oninput="filterCustomListOptions('filterCategoryDropdown', this.value)" class="unified-ui-border w-full h-8 pl-8 pr-2 text-xs bg-white dark:bg-slate-800 rounded-lg outline-none focus:border-emerald-500 text-slate-800 dark:text-slate-100" />
+                                            <div class="search-input-pill unified-ui-border flex items-center h-[34px] px-2.5 bg-white dark:bg-slate-900 rounded-lg" style="display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; flex-wrap: nowrap !important; width: 100% !important; height: 34px !important; min-height: 34px !important; max-height: 34px !important; padding: 0 10px !important; box-sizing: border-box !important; border-radius: 8px !important; overflow: hidden !important;">
+                                                <svg class="search-icon text-slate-400 dark:text-slate-400 flex-shrink-0" style="width: 14px !important; height: 14px !important; min-width: 14px !important; max-width: 14px !important; min-height: 14px !important; max-height: 14px !important; flex: 0 0 14px !important; flex-shrink: 0 !important; color: #94a3b8 !important; margin: 0 8px 0 0 !important; padding: 0 !important; display: block !important; position: static !important; transform: none !important; -webkit-transform: none !important; pointer-events: none !important; align-self: center !important;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="11" cy="11" r="8"></circle>
+                                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                                </svg>
+                                                <input type="text" placeholder="Search Category..." oninput="filterCustomListOptions('filterCategoryDropdown', this.value)" style="flex: 1 1 0% !important; width: 100% !important; min-width: 0 !important; height: 100% !important; border: none !important; outline: none !important; background: transparent !important; padding: 0 !important; margin: 0 !important; font-size: 12px !important; line-height: 34px !important; box-shadow: none !important; -webkit-appearance: none !important; align-self: center !important;" class="w-full h-full bg-transparent border-0 outline-none text-xs text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0 focus:border-0 focus:outline-none" />
+                                            </div>
                                         </div>
                                         <div class="select-options-list">
                                             <div class="select-option-item active" data-value="" data-label="All Categories" onclick="selectCustomFilterOption('filterCategoryDropdown', 'filterCategory', '', 'All Categories')">
@@ -687,6 +691,10 @@
             box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06) !important;
             padding: 6px;
         }
+        #filterCategoryDropdown .select-menu {
+            right: 0 !important;
+            left: auto !important;
+        }
         .custom-filter-dropdown.is-open .select-menu {
             display: block !important;
         }
@@ -694,8 +702,77 @@
             padding: 4px 6px;
             border-bottom: 1px solid #f1f5f9;
             margin-bottom: 4px;
-            position: relative;
             background: #ffffff !important;
+        }
+        .custom-filter-dropdown .search-input-pill {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            flex-wrap: nowrap !important;
+            width: 100% !important;
+            height: 34px !important;
+            min-height: 34px !important;
+            max-height: 34px !important;
+            padding: 0 10px !important;
+            background-color: #ffffff !important;
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+            box-sizing: border-box !important;
+            transition: all 0.15s ease !important;
+            overflow: hidden !important;
+        }
+        .custom-filter-dropdown .search-input-pill:focus-within {
+            border-color: #10b981 !important;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2) !important;
+        }
+        .custom-filter-dropdown .search-input-pill svg,
+        .custom-filter-dropdown .search-input-pill .search-icon {
+            width: 14px !important;
+            height: 14px !important;
+            min-width: 14px !important;
+            max-width: 14px !important;
+            min-height: 14px !important;
+            max-height: 14px !important;
+            color: #94a3b8 !important;
+            flex: 0 0 14px !important;
+            flex-shrink: 0 !important;
+            margin: 0 8px 0 0 !important;
+            padding: 0 !important;
+            display: block !important;
+            pointer-events: none !important;
+            position: static !important;
+            transform: none !important;
+            -webkit-transform: none !important;
+            top: auto !important;
+            bottom: auto !important;
+            left: auto !important;
+            right: auto !important;
+            align-self: center !important;
+        }
+        .custom-filter-dropdown .search-input-pill input {
+            flex: 1 1 0% !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            height: 100% !important;
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            font-size: 12px !important;
+            line-height: 34px !important;
+            color: #1e293b !important;
+            box-shadow: none !important;
+            -webkit-appearance: none !important;
+            appearance: none !important;
+            align-self: center !important;
+        }
+        .custom-filter-dropdown .search-input-pill input:focus {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
         }
         .custom-filter-dropdown .select-options-list {
             max-height: 200px;
@@ -808,6 +885,9 @@
         body[light-mode="dark"] .custom-filter-dropdown .select-menu,
         body[light-mode="dark"] .custom-filter-dropdown .search-wrap,
         body[light-mode="dark"] .custom-filter-dropdown .search-wrap input,
+        body[light-mode="dark"] .custom-filter-dropdown .search-input-pill,
+        body[data-layout-mode="dark"] .custom-filter-dropdown .search-input-pill,
+        html.dark .custom-filter-dropdown .search-input-pill,
         body[light-mode="dark"] #copyBtn,
         body[light-mode="dark"] #csvBtn,
         body[light-mode="dark"] #pdfBtn,
@@ -1022,12 +1102,30 @@
             background-color: #1e293b !important;
             box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
         }
-        body[light-mode="dark"] .custom-filter-dropdown .search-wrap {
+        body[light-mode="dark"] .custom-filter-dropdown .search-wrap,
+        body[data-layout-mode="dark"] .custom-filter-dropdown .search-wrap,
+        html.dark .custom-filter-dropdown .search-wrap {
             background-color: #1e293b !important;
+            border-bottom-color: #334155 !important;
         }
-        body[light-mode="dark"] .custom-filter-dropdown .search-wrap input {
+        body[light-mode="dark"] .custom-filter-dropdown .search-input-pill,
+        body[data-layout-mode="dark"] .custom-filter-dropdown .search-input-pill,
+        html.dark .custom-filter-dropdown .search-input-pill {
             background-color: #0f172a !important;
+            border-color: #334155 !important;
+        }
+        body[light-mode="dark"] .custom-filter-dropdown .search-input-pill svg,
+        body[data-layout-mode="dark"] .custom-filter-dropdown .search-input-pill svg,
+        html.dark .custom-filter-dropdown .search-input-pill svg {
+            color: #64748b !important;
+        }
+        body[light-mode="dark"] .custom-filter-dropdown .search-input-pill input,
+        body[data-layout-mode="dark"] .custom-filter-dropdown .search-input-pill input,
+        html.dark .custom-filter-dropdown .search-input-pill input {
+            background-color: transparent !important;
             color: #f8fafc !important;
+            border: none !important;
+            box-shadow: none !important;
         }
         body[light-mode="dark"] .custom-filter-dropdown .select-option-item {
             background-color: #1e293b !important;

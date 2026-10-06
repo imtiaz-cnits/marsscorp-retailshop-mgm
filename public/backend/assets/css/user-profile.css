@@ -220,6 +220,10 @@ html ::-webkit-scrollbar-thumb {
   flex-direction: column;
 }
 
+.user_profile .input-group {
+  gap: 0px !important;
+}
+
 .profile-section .input-group::placeholder {
   font-size: 14px;
 }

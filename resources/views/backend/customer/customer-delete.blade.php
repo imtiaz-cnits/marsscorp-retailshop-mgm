@@ -26,7 +26,7 @@
             </div>
 
             <!-- Body -->
-            <div class="modal-body p-5 sm:p-6 text-center">
+            <div class="modal-body p-4 text-center">
                 <div class="w-14 h-14 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-3.5 border border-rose-100 dark:border-slate-800">
                     <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
@@ -40,7 +40,7 @@
             </div>
 
             <!-- Sticky Bottom Footer (Strict 38px buttons) -->
-            <div class="modal-footer sticky bottom-0 z-20 px-4 sm:px-5 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-end gap-2.5 flex-shrink-0">
+            <div class="modal-footer sticky bottom-0 z-20 px-4 sm:px-5 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-center gap-2.5 flex-shrink-0">
                 <button type="button" class="px-4 h-[38px] min-h-[38px] max-h-[38px] rounded-xl text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 unified-ui-border text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700" data-bs-dismiss="modal">
                     Cancel
                 </button>
@@ -55,17 +55,71 @@
 <!-- Delete Confirmation Modal End -->
 
 <style>
+    /* Reset legacy styles from all-modal.css.css and guarantee dead-center positioning */
+    #confirmationModal.modal {
+        display: none;
+        background: rgba(15, 23, 42, 0.6) !important;
+        backdrop-filter: blur(4px) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
+        z-index: 1060 !important;
+    }
+    #confirmationModal.modal.show {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
     #confirmationModal .modal-dialog {
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin: auto !important;
+        max-width: 440px !important;
+        width: 92% !important;
         background: transparent !important;
-        border: none !important;
+        background-color: transparent !important;
         box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        min-width: auto !important;
+        overflow: visible !important;
+    }
+    #confirmationModal .modal-dialog form {
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
     }
     #confirmationModal .modal-content {
         border: none !important;
+        border-radius: 1rem !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+        overflow: hidden !important;
     }
-    body[light-mode="dark"] #confirmationModal .modal-content {
+
+    /* Dark Mode */
+    body[light-mode="dark"] #confirmationModal .modal-content,
+    html.dark #confirmationModal .modal-content,
+    body.dark #confirmationModal .modal-content,
+    body[data-layout-mode="dark"] #confirmationModal .modal-content {
         background-color: #0f172a !important;
-        border: 1px solid #334155 !important;
+        border: 1px solid #1e293b !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
+    }
+    body[light-mode="dark"] #confirmationModal .modal-footer,
+    html.dark #confirmationModal .modal-footer,
+    body.dark #confirmationModal .modal-footer,
+    body[data-layout-mode="dark"] #confirmationModal .modal-footer {
+        background-color: #0f172a !important;
+        border-color: #1e293b !important;
+    }
+    body[light-mode="dark"] #confirmationModal .modal-dialog,
+    html.dark #confirmationModal .modal-dialog,
+    body.dark #confirmationModal .modal-dialog,
+    body[data-layout-mode="dark"] #confirmationModal .modal-dialog {
+        background: transparent !important;
+        background-color: transparent !important;
     }
 </style>
 

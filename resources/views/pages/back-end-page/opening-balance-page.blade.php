@@ -3,4 +3,5 @@
 @section('content')
     @include('backend.opening-balance.opening-balance-list')
     @include('backend.opening-balance.opening-balance-create')
+    @include('backend.opening-balance.opening-balance-delete')
 @endsection

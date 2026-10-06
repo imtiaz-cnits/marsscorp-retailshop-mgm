@@ -87,7 +87,7 @@
                     <form onsubmit="event.preventDefault(); onUpdate();">
                         
                         <!-- Personal Details Card -->
-                        <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px;">
+                        <div class="card user_profile border-0 shadow-sm mb-4" style="border-radius: 20px;">
                             <div class="card-header bg-white py-3 border-0">
                                 <h5 class="fw-bold text-dark mb-0 fs-6">
                                     <i class="fa-solid fa-id-card text-success me-2"></i> Personal Information

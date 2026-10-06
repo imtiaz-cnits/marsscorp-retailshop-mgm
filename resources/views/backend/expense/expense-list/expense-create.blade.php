@@ -61,8 +61,8 @@
                             </small>
                         </div>
 
-                        <div id="ExpenseTypesContainer" class="d-flex flex-column gap-2" style="max-height: 380px; overflow-y: auto;">
-                            <div class="text-center py-4 text-slate-400">
+                        <div id="ExpenseTypesContainer" class="expense-types-grid" style="max-height: 380px; overflow-y: auto;">
+                            <div class="text-center py-4 text-slate-400" style="grid-column: 1 / -1;">
                                 <i class="fa-solid fa-circle-notch fa-spin me-2"></i> Loading expense types...
                             </div>
                         </div>
@@ -360,16 +360,37 @@
         box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.2) !important;
     }
 
+    .expense-types-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 8px;
+    }
+    @media (min-width: 640px) {
+        .expense-types-grid {
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        }
+    }
     .expense-item-card {
         border: 1.5px solid #e2e8f0;
-        border-radius: 12px;
+        border-radius: 8px;
         background-color: #ffffff;
+        padding: 6px 10px;
         transition: all 0.15s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 38px;
+    }
+    .expense-item-card:hover {
+        border-color: #cbd5e1;
+        background-color: #f8fafc;
     }
     .expense-item-card.is-checked {
+        grid-column: 1 / -1;
         border-color: #10b981 !important;
         background-color: #f0fdf4 !important;
         box-shadow: 0 2px 6px rgba(16, 185, 129, 0.1) !important;
+        padding: 10px 14px;
     }
 
     /* Dark Mode Overrides */
@@ -817,7 +838,7 @@
         if (!container) return;
 
         if (globalExpenseTypes.length === 0) {
-            container.innerHTML = `<div class="text-slate-400 py-3 text-center">No expense types found. Click "+ Create New Type" above.</div>`;
+            container.innerHTML = `<div class="text-slate-400 py-3 text-center" style="grid-column: 1 / -1;">No expense types found. Click "+ Create New Type" above.</div>`;
             return;
         }
 
@@ -826,18 +847,18 @@
             const isSalary = isSalaryTypeName(type.type_name);
             
             html += `
-                <div class="expense-item-card p-3 transition-all" id="type-row-${type.id}">
-                    <div class="d-flex align-items-center justify-content-between gap-3">
-                        <div class="form-check mb-0 d-flex align-items-center gap-2">
-                            <input class="form-check-input type-checkbox m-0" type="checkbox" value="${type.id}" id="chk-${type.id}" onchange="toggleTypeInputs(${type.id})" style="transform: scale(1.2); cursor: pointer;" />
-                            <label class="form-check-label fw-bold text-slate-800 dark:text-slate-100 mb-0" for="chk-${type.id}" style="cursor: pointer; font-size: 14px;">
-                                ${type.type_name} ${isSalary ? '<span class="badge bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200 dark:border-slate-800 ms-1" style="font-size: 10px;">👨‍💼 Staff Salary</span>' : ''}
+                <div class="expense-item-card transition-all" id="type-row-${type.id}">
+                    <div class="d-flex align-items-center justify-content-between gap-2">
+                        <div class="form-check mb-0 d-flex align-items-center gap-2 p-0">
+                            <input class="form-check-input type-checkbox m-0" type="checkbox" value="${type.id}" id="chk-${type.id}" onchange="toggleTypeInputs(${type.id})" style="transform: scale(1.1); cursor: pointer;" />
+                            <label class="form-check-label fw-bold text-slate-800 dark:text-slate-100 mb-0" for="chk-${type.id}" style="cursor: pointer; font-size: 13px;">
+                                ${type.type_name} ${isSalary ? '<span class="badge bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200 dark:border-slate-800 ms-1" style="font-size: 9.5px; padding: 2px 4px;">👨‍💼 Staff Salary</span>' : ''}
                             </label>
                         </div>
                     </div>
 
                     <!-- Expandable Inputs when Checked -->
-                    <div class="type-input-group mt-3 d-none pt-2 border-t border-slate-200 dark:border-slate-800" id="input-group-${type.id}">
+                    <div class="type-input-group mt-2 d-none pt-2 border-t border-slate-200 dark:border-slate-800" id="input-group-${type.id}">
                         ${isSalary ? `
                         <div class="salary-rows-wrapper" id="salary-wrapper-${type.id}">
                             <div class="salary-rows-list d-flex flex-column gap-2" id="salary-rows-list-${type.id}">

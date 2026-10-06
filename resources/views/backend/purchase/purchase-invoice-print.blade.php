@@ -347,6 +347,7 @@
             width: 100% !important;
             max-width: 100% !important;
             min-width: 100% !important;
+            min-height: var(--print-min-height, calc(100vh - 4px)) !important;
             border: none !important;
             outline: none !important;
             box-shadow: none !important;
@@ -356,11 +357,10 @@
             background: #ffffff !important;
             display: flex !important;
             flex-direction: column !important;
-            justify-content: space-between !important;
             box-sizing: border-box !important;
-            flex-grow: 1 !important;
         }
         .invoice-main-content {
+            flex: 1 0 auto !important;
             flex-grow: 1 !important;
             width: 100% !important;
         }
@@ -492,7 +492,12 @@
             font-size: 16px !important;
         }
 
-        /* Deep border for order summary tbody */
+        /* Deep border & unbroken block for order summary (Amount Section) */
+        .invoice_table_list #order_summary,
+        .invoice_table_list #order_summary tr {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+        }
         .invoice_table_list #order_summary td,
         .invoice_table_list #payment_status {
             border: 1.5px solid #000000 !important;
@@ -561,8 +566,8 @@
 
 <div class="main-content min-h-screen flex flex-col justify-between">
     <div class="page-content invoice-page-content flex-grow flex flex-col justify-between">
-        <div class="invoice-container">
-            <div class="invoice-main-content">
+        <div class="invoice-container min-h-screen flex flex-col justify-between">
+            <div class="invoice-main-content flex-1 flex flex-col">
                 <!-- 3-Column Equal Top Header: Left (Billed To), Center (Logo & Title), Right (Company Info) -->
                 <div class="invoice-header-grid">
                     <!-- 1. Left Column: Billed To Details & Invoice Meta -->
@@ -588,7 +593,7 @@
                     <div class="logo-wrapper text-center flex flex-col items-center justify-center">
                         <h2 class="text-base sm:text-lg font-bold text-black mb-2 tracking-tight" style="color: #000000 !important;">Purchase Details</h2>
                         <img src="{{ asset('backend/assets/img/marss-corporation-icon2.svg') }}" onerror="this.src='{{ asset('backend/assets/icons/marss-corporation-logo.svg') }}'" alt="MARSS Corporation Logo" class="mb-2" style="max-height: 48px; max-width: 180px; object-fit: contain;" />
-                        <button type="button" class="print-button inline-flex items-center gap-1.5 px-4 py-1.5 bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 cursor-pointer" onclick="preparePrintInvoice(); window.print()">
+                        <button type="button" class="print-button inline-flex items-center gap-1.5 px-4 py-1.5 bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 cursor-pointer" onclick="updatePrintLayoutPages(); window.print()">
                             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="6 9 6 2 18 2 18 9"></polyline>
                                 <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
@@ -614,25 +619,27 @@
                 <table class="invoice_table_list">
                     <thead>
                         <tr>
-                            <th>SL. No.</th>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                            <th>Amount</th>
+                            <th style="width: 8%; text-align: center;">SL. No.</th>
+                            <th style="text-align: left;">Product</th>
+                            <th style="width: 12%; text-align: center;">Quantity</th>
+                            <th style="width: 15%; text-align: right;">Rate</th>
+                            <th style="width: 18%; text-align: right;">Amount</th>
                         </tr>
                     </thead>
                     <tbody id="order_details">
                         @foreach ($purchaseinvoicedata->orderDetails as $key => $orderDetail)
                         <tr>
-                            <td>{{ $key + 1 }}</td>
-                            <td>{{ $orderDetail->product->product_name ?? 'N/A' }}</td>
-                            <td>{{ $orderDetail->quantity }}</td>
-                            <td style="text-align: right">৳ {{ number_format((float)($orderDetail->cost_price ?? 0), 2) }}</td>
+                            <td style="text-align: center;">{{ $key + 1 }}</td>
+                            <td style="text-align: left;">{{ $orderDetail->product->product_name ?? 'N/A' }}</td>
+                            <td style="text-align: center;">{{ $orderDetail->quantity }}</td>
+                            <td style="text-align: right;">৳ {{ number_format((float)($orderDetail->cost_price ?? 0), 2) }}</td>
+                            <td style="text-align: right;">৳ {{ number_format((float)(($orderDetail->cost_price ?? 0) * ($orderDetail->quantity ?? 1)), 2) }}</td>
                         </tr>
                         @endforeach
                     </tbody>
-                    <tbody id="order_summary">
+                    <tbody id="order_summary" class="break-inside-avoid">
                         <tr>
-                            <td colspan="1" rowspan="{{ ($deliveryCharge ?? 0) > 0 ? '7' : '6' }}" id="payment_status" class="full-paid">
+                            <td colspan="2" rowspan="{{ ($deliveryCharge ?? 0) > 0 ? '7' : '6' }}" id="payment_status" class="full-paid">
                                 {{ $paymentDetailsStatus ?? 'Not Available' }}
                             </td>
                         </tr>
@@ -667,7 +674,7 @@
             </div>
 
             <!-- Bill Footer Section: Taka in Words, Signatures, Copyright, Color Bar -->
-            <div class="bill-footer-section" style="margin-top: auto; width: 100%;">
+            <div class="bill-footer-section mt-auto" style="margin-top: auto; width: 100%;">
                 <!-- Taka in Words -->
                 <div class="taka-words-box" style="width: 100%; margin-top: 25px; margin-bottom: 40px;">
                     <div class="taka-words-line" style="display: flex; align-items: flex-end;">
@@ -757,28 +764,24 @@
         return res.trim() ? res.trim() + ' Taka Only' : 'Zero Taka Only';
     }
 
-    function preparePrintInvoice() {
+    function updatePrintLayoutPages() {
+        const header = document.querySelector('.invoice-header-grid');
+        const table = document.querySelector('.invoice_table_list');
+        const footer = document.querySelector('.bill-footer-section');
         const container = document.querySelector('.invoice-container');
-        if (!container) return;
-        container.style.removeProperty('min-height');
-        container.style.minHeight = 'auto';
-        const pagePx = 1120; // safe threshold for A4 page height
-        const totalHeight = container.scrollHeight || container.offsetHeight;
-        let numPages = Math.max(1, Math.ceil(totalHeight / pagePx));
-        // Use (numPages * 297) - 8 mm to guarantee the footer sits at the bottom
-        // of the last page without ever triggering an accidental blank next page
-        const safeHeightMm = (numPages * 297) - 8;
-        container.style.setProperty('min-height', safeHeightMm + 'mm', 'important');
+        if (!header || !table || !footer || !container) return;
+
+        // Calculate natural total content height (without stretched height)
+        const naturalHeight = header.offsetHeight + table.offsetHeight + footer.offsetHeight;
+        
+        // Single A4 printable capacity: ~1020px accounting for paddings and headers
+        const pageThreshold = 1020;
+        const numPages = Math.max(1, Math.ceil(naturalHeight / pageThreshold));
+
+        container.style.setProperty('--print-min-height', `calc(${numPages * 100}vh - 4px)`);
     }
 
-    window.addEventListener('beforeprint', preparePrintInvoice);
-    window.addEventListener('afterprint', function() {
-        const container = document.querySelector('.invoice-container');
-        if (container) {
-            container.style.removeProperty('min-height');
-            container.style.minHeight = '';
-        }
-    });
+    window.addEventListener('beforeprint', updatePrintLayoutPages);
 
     window.onload = function() {
         const wordsEl = document.getElementById('purchase_taka_words');
@@ -786,8 +789,9 @@
             let totalVal = parseFloat("{{ (float)($PreviousDueAmount ?? 0) + (float)($dueAmount ?? 0) > 0 ? (float)($PreviousDueAmount ?? 0) + (float)($dueAmount ?? 0) : (float)($subTotal ?? 0) }}") || 0;
             wordsEl.innerText = numberToWords(Math.round(totalVal));
         }
+        updatePrintLayoutPages();
         setTimeout(function() {
-            preparePrintInvoice();
+            updatePrintLayoutPages();
             window.print();
         }, 300);
     };

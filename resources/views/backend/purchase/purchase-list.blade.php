@@ -42,12 +42,12 @@
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                             </svg>
-                            <input type="text" id="searchInput" style="border: none !important; outline: none !important; box-shadow: none !important; width: 100% !important; padding: 0 8px !important;" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0 focus:border-0 focus:outline-none" placeholder="Search Purchase..." />
+                            <input type="text" id="searchInput" style="border: none !important; outline: none !important; box-shadow: none !important; width: 100% !important; padding: 0 8px !important;" class="w-full h-full bg-transparent border-0 outline-none text-[13px] text-slate-800 dark:text-slate-100 placeholder:text-[13px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0 focus:border-0 focus:outline-none" placeholder="Search Purchase..." />
                         </div>
 
                         <!-- 2nd: Start Date with Flatpickr (col-start-date) -->
                         <div class="col-start-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
-                            <input type="text" id="startDate" name="startDate" placeholder="Start Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-xs font-medium text-slate-700 dark:text-slate-200 placeholder:text-xs placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
+                            <input type="text" id="startDate" name="startDate" placeholder="Start Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
                             <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -58,7 +58,7 @@
 
                         <!-- 3rd: End Date with Flatpickr (col-end-date) -->
                         <div class="col-end-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
-                            <input type="text" id="endDate" name="endDate" placeholder="End Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-xs font-medium text-slate-700 dark:text-slate-200 placeholder:text-xs placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
+                            <input type="text" id="endDate" name="endDate" placeholder="End Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
                             <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -80,7 +80,7 @@
                         </div>
 
                         <!-- 5th: Custom Quick Filter Dropdown (col-filter) -->
-                        <div class="col-filter custom-searchable-select custom-filter-dropdown flex-shrink-0" id="purchaseFilterDropdown">
+                        <div class="col-filter custom-searchable-select custom-filter-dropdown flex-shrink-0" id="purchaseFilterDropdown" style="position: relative !important;">
                             <div class="select-trigger unified-ui-border flex items-center justify-between px-3 h-[38px] bg-white dark:bg-slate-800/90 rounded-xl shadow-sm text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 cursor-pointer hover:border-emerald-500 transition-all duration-150" onclick="toggleCustomPurchaseFilter()">
                                 <div class="flex items-center gap-1.5 overflow-hidden">
                                     <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -92,7 +92,7 @@
                                     <polyline points="6 9 12 15 18 9"></polyline>
                                 </svg>
                             </div>
-                            <div class="select-menu dropdown-menus shadow-xl" style="min-width: 170px;">
+                            <div class="select-menu dropdown-menus shadow-xl" style="min-width: 170px; right: 0 !important; left: auto !important;">
                                 <div class="select-options-list">
                                     <a href="#" data-filter="all" class="select-option-item active" onclick="selectPurchaseFilterOption(event, 'all', 'All time')">
                                         <span>All time</span>
@@ -249,15 +249,21 @@
         z-index: 999999 !important;
     }
 
-    /* Date field placeholder text size and weight matching other inputs */
-    #startDate, #endDate {
-        font-size: 12px !important;
+    /* Search and Date field placeholder text size and weight matching SHOW: 15 (11px) */
+    #searchInput, #startDate, #endDate, .flatpickr-input, .date-input-wrapper input, .search-input-wrapper input {
+        font-size: 11px !important;
         font-weight: 500 !important;
     }
-    #startDate::placeholder, #endDate::placeholder {
-        font-size: 12px !important;
+    #searchInput::placeholder, #startDate::placeholder, #endDate::placeholder, .flatpickr-input::placeholder,
+    .date-input-wrapper input::placeholder, .search-input-wrapper input::placeholder,
+    #searchInput::-webkit-input-placeholder, #startDate::-webkit-input-placeholder, #endDate::-webkit-input-placeholder, .flatpickr-input::-webkit-input-placeholder,
+    .date-input-wrapper input::-webkit-input-placeholder, .search-input-wrapper input::-webkit-input-placeholder,
+    #searchInput::-moz-placeholder, #startDate::-moz-placeholder, #endDate::-moz-placeholder, .flatpickr-input::-moz-placeholder,
+    .date-input-wrapper input::-moz-placeholder, .search-input-wrapper input::-moz-placeholder {
+        font-size: 11px !important;
         font-weight: 400 !important;
         color: #94a3b8 !important;
+        opacity: 1 !important;
     }
 
     /* Full Height & Sticky Layout with Equal Gap from Top Bar */
@@ -521,12 +527,17 @@
         border-color: #16a34a !important;
         box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15) !important;
     }
+    #purchaseFilterDropdown {
+        position: relative !important;
+    }
+    #purchaseFilterDropdown .select-menu,
     .custom-filter-dropdown .select-menu {
         display: none;
-        position: absolute;
-        top: calc(100% + 6px);
-        left: 0;
-        min-width: 170px;
+        position: absolute !important;
+        top: calc(100% + 6px) !important;
+        right: 0 !important;
+        left: auto !important;
+        min-width: 170px !important;
         z-index: 9999 !important;
         background: #ffffff !important;
         border: 1.5px solid #cbd5e1 !important;
@@ -760,7 +771,7 @@
         if (!barcodes || !Array.isArray(barcodes) || barcodes.length === 0) {
             return '<span class="text-slate-400 text-xs">N/A</span>';
         }
-        return barcodes.map(code => `<span class="inline-block px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 text-[11px] font-mono font-semibold me-1">${code}</span>`).join('');
+        return barcodes.map(code => `<span class="inline-block px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 text-[13px] font-mono font-semibold me-1">${code}</span>`).join('');
     }
 
     let rawPurchaseData = [];
@@ -775,7 +786,7 @@
                 dateFormat: "Y-m-d",
                 altInput: true,
                 altFormat: "d/m/Y",
-                altInputClass: "w-full bg-transparent border-0 outline-none text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-400 p-0 m-0 cursor-pointer",
+                altInputClass: "w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 p-0 m-0 cursor-pointer",
                 allowInput: true,
                 monthSelectorType: "static",
                 onChange: function(selectedDates, dateStr) {
@@ -795,7 +806,7 @@
                 dateFormat: "Y-m-d",
                 altInput: true,
                 altFormat: "d/m/Y",
-                altInputClass: "w-full bg-transparent border-0 outline-none text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-400 p-0 m-0 cursor-pointer",
+                altInputClass: "w-full bg-transparent border-0 outline-none text-[13px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[13px] placeholder:font-normal placeholder:text-slate-400 p-0 m-0 cursor-pointer",
                 allowInput: true,
                 monthSelectorType: "static",
                 onChange: function(selectedDates, dateStr) {

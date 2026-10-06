@@ -3027,9 +3027,320 @@
         loadLowStockNotifications(false);
       }, 60000);
     });
+
+    /* -------------------------------------------------------------------------- */
+    /* Universal Custom Show Entries Dropdown Component                           */
+    /* -------------------------------------------------------------------------- */
+    (function() {
+      // Patch jQuery .val() to sync custom entries when changed programmatically
+      if (window.jQuery && !window.jQuery.fn._customEntriesValPatched) {
+        const origVal = window.jQuery.fn.val;
+        window.jQuery.fn.val = function(val) {
+          const ret = origVal.apply(this, arguments);
+          if (arguments.length > 0) {
+            this.each(function() {
+              if (typeof this._syncCustomEntries === 'function') {
+                this._syncCustomEntries();
+              }
+            });
+          }
+          return ret;
+        };
+        window.jQuery.fn._customEntriesValPatched = true;
+      }
+
+      function enhanceEntriesSelect(select) {
+        if (!select) return;
+        if (select.dataset.customEntriesInitialized === "true") {
+          return;
+        }
+        select.dataset.customEntriesInitialized = "true";
+
+        // Hide the native browser select completely
+        select.style.setProperty('display', 'none', 'important');
+        select.classList.add('custom-entries-hidden');
+
+        const wrapper = select.closest('.entries-wrapper');
+        const isInsideWrapper = !!wrapper;
+
+        const comp = document.createElement('div');
+        comp.className = 'custom-entries-component' + (isInsideWrapper ? '' : ' custom-entries-standalone');
+
+        const trigger = document.createElement('div');
+        trigger.className = 'custom-entries-trigger';
+
+        if (isInsideWrapper) {
+          trigger.innerHTML = `
+            <span class="custom-entries-value text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-400"></span>
+            <svg class="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400 chevron-icon transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          `;
+        } else {
+          trigger.innerHTML = `
+            <div class="flex items-center gap-1.5 overflow-hidden">
+              <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">SHOW:</span>
+              <span class="custom-entries-value text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-400"></span>
+            </div>
+            <svg class="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400 chevron-icon transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          `;
+        }
+
+        const menu = document.createElement('div');
+        menu.className = 'custom-entries-menu shadow-xl';
+        const list = document.createElement('div');
+        list.className = 'custom-entries-list';
+        menu.appendChild(list);
+
+        comp.appendChild(trigger);
+        comp.appendChild(menu);
+
+        // Place component next to the native select
+        select.parentNode.insertBefore(comp, select.nextSibling);
+
+        const valEl = trigger.querySelector('.custom-entries-value');
+
+        function buildOptions() {
+          list.innerHTML = '';
+          Array.from(select.options).forEach(opt => {
+            const item = document.createElement('div');
+            const isSelected = (opt.value == select.value);
+            item.className = 'custom-entries-item' + (isSelected ? ' active' : '');
+            item.setAttribute('data-value', opt.value);
+
+            const checkIcon = `<svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+            item.innerHTML = `<span>${opt.text}</span>` + (isSelected ? checkIcon : '');
+
+            item.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              const newVal = opt.value;
+              if (select.value !== newVal) {
+                select.value = newVal;
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+                if (window.jQuery) {
+                  window.jQuery(select).trigger('change');
+                }
+                if (typeof select.onchange === 'function') {
+                  select.onchange();
+                }
+              }
+              syncUI();
+              comp.classList.remove('is-open');
+            });
+
+            list.appendChild(item);
+          });
+        }
+
+        function syncUI() {
+          const curOpt = select.options[select.selectedIndex] || select.options[0];
+          const curText = curOpt ? curOpt.text : select.value;
+          if (valEl) valEl.textContent = curText;
+
+          list.querySelectorAll('.custom-entries-item').forEach(item => {
+            const itemVal = item.getAttribute('data-value');
+            const isActive = (itemVal == select.value);
+            item.classList.toggle('active', isActive);
+            const existingCheck = item.querySelector('.check-icon');
+            if (isActive && !existingCheck) {
+              item.insertAdjacentHTML('beforeend', `<svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`);
+            } else if (!isActive && existingCheck) {
+              existingCheck.remove();
+            }
+          });
+        }
+
+        select._syncCustomEntries = syncUI;
+
+        trigger.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const isOpen = comp.classList.contains('is-open');
+          document.querySelectorAll('.custom-entries-component.is-open').forEach(c => {
+            if (c !== comp) c.classList.remove('is-open');
+          });
+          comp.classList.toggle('is-open', !isOpen);
+        });
+
+        if (isInsideWrapper) {
+          wrapper.addEventListener('click', function(e) {
+            if (!e.target.closest('.custom-entries-trigger') && !e.target.closest('.custom-entries-menu')) {
+              trigger.click();
+            }
+          });
+        }
+
+        buildOptions();
+        syncUI();
+
+        select.addEventListener('change', syncUI);
+      }
+
+      function initAllEntriesSelects() {
+        document.querySelectorAll('select#entries, .entries-wrapper select, select[name="entries"]').forEach(enhanceEntriesSelect);
+      }
+
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.custom-entries-component')) {
+          document.querySelectorAll('.custom-entries-component.is-open').forEach(c => {
+            c.classList.remove('is-open');
+          });
+        }
+      });
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAllEntriesSelects);
+      } else {
+        initAllEntriesSelects();
+      }
+
+      window.addEventListener('load', initAllEntriesSelects);
+    })();
   </script>
 
   <style>
+    /* Universal Custom Show Entries Dropdown */
+    .entries-wrapper {
+      position: relative !important;
+      overflow: visible !important;
+    }
+    .entries-wrapper select,
+    select#entries.custom-entries-hidden {
+      display: none !important;
+    }
+    .custom-entries-component {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      height: 100%;
+      user-select: none;
+    }
+    .custom-entries-standalone {
+      width: 100%;
+      height: 38px;
+    }
+    .custom-entries-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 100%;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+    .custom-entries-standalone .custom-entries-trigger {
+      width: 100%;
+      justify-content: space-between;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+    }
+    .custom-entries-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 95px;
+      background-color: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      z-index: 9999 !important;
+      padding: 4px;
+      overflow: hidden;
+    }
+    .custom-entries-component.is-open .custom-entries-menu {
+      display: block !important;
+      animation: customEntriesFadeIn 0.15s ease-out forwards;
+    }
+    .custom-entries-component.is-open .chevron-icon {
+      transform: rotate(180deg);
+    }
+    @keyframes customEntriesFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .custom-entries-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      max-height: 220px;
+    }
+    .custom-entries-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 7px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .custom-entries-item:hover {
+      background-color: #f1f5f9;
+      color: #15803d;
+    }
+    .custom-entries-item.active {
+      background-color: #f0fdf4;
+      color: #15803d;
+      font-weight: 700;
+    }
+
+    /* Dark Mode Support */
+    body[light-mode="dark"] .custom-entries-standalone .custom-entries-trigger,
+    html.dark .custom-entries-standalone .custom-entries-trigger,
+    body.dark .custom-entries-standalone .custom-entries-trigger,
+    body.dark-mode .custom-entries-standalone .custom-entries-trigger,
+    [data-theme="dark"] .custom-entries-standalone .custom-entries-trigger {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #f1f5f9 !important;
+    }
+    body[light-mode="dark"] .custom-entries-menu,
+    html.dark .custom-entries-menu,
+    body.dark .custom-entries-menu,
+    body.dark-mode .custom-entries-menu,
+    [data-theme="dark"] .custom-entries-menu {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
+    }
+    body[light-mode="dark"] .custom-entries-item,
+    html.dark .custom-entries-item,
+    body.dark .custom-entries-item,
+    body.dark-mode .custom-entries-item,
+    [data-theme="dark"] .custom-entries-item {
+      color: #cbd5e1 !important;
+      background-color: transparent !important;
+    }
+    body[light-mode="dark"] .custom-entries-item:hover,
+    html.dark .custom-entries-item:hover,
+    body.dark .custom-entries-item:hover,
+    body.dark-mode .custom-entries-item:hover,
+    [data-theme="dark"] .custom-entries-item:hover {
+      background-color: #334155 !important;
+      color: #4ade80 !important;
+    }
+    body[light-mode="dark"] .custom-entries-item.active,
+    html.dark .custom-entries-item.active,
+    body.dark .custom-entries-item.active,
+    body.dark-mode .custom-entries-item.active,
+    [data-theme="dark"] .custom-entries-item.active {
+      background-color: rgba(34, 197, 94, 0.15) !important;
+      color: #4ade80 !important;
+    }
     /* Native Scrollbar Triangle Stepper Buttons - Zero Gap */
     ::-webkit-scrollbar-button {
       display: none !important;

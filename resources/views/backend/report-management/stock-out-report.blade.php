@@ -95,8 +95,7 @@ html.dark .export-btn--print { background:#0c1a3b; color:#60a5fa; border-color:#
                                 <input type="text" id="searchInput" class="search-bare-input w-full h-full bg-transparent text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal" placeholder="Search product or barcode..." />
                             </div>
                             <!-- Entries -->
-                            <div class="control-border flex items-center gap-1 bg-white dark:bg-slate-800 px-3 h-[38px] rounded-xl shadow-sm flex-shrink-0 hover:border-emerald-500 transition-all">
-                                <span class="text-[11px] uppercase tracking-wider font-bold text-slate-400">Show:</span>
+                            <div class="control-border flex items-center gap-1 bg-white dark:bg-slate-800 h-[38px] border-0 border-none rounded-xl flex-shrink-0  transition-all">
                                 <select id="entries" class="bg-transparent border-0 text-xs font-bold text-emerald-700 dark:text-emerald-400 focus:outline-none cursor-pointer py-1 pr-1">
                                     <option value="15" selected>15</option>
                                     <option value="50">50</option>

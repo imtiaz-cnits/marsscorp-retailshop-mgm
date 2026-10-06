@@ -81,7 +81,7 @@
         position: relative !important;
     }
 
-    .custom-searchable-select .select-trigger {
+    #createProduct .custom-searchable-select .select-trigger {
         height: 42px;
         border-radius: 8px;
         cursor: pointer !important;
@@ -98,16 +98,16 @@
         color: #1e293b;
     }
 
-    .custom-searchable-select .select-trigger:hover {
+    #createProduct .custom-searchable-select .select-trigger:hover {
         border-color: #16a34a !important;
     }
 
-    .custom-searchable-select.is-open .select-trigger {
+    #createProduct .custom-searchable-select.is-open .select-trigger {
         border-color: #16a34a !important;
         box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15) !important;
     }
 
-    .custom-searchable-select .select-menu {
+    #createProduct .custom-searchable-select .select-menu {
         display: none;
         position: absolute;
         top: calc(100% + 4px);
@@ -122,11 +122,11 @@
         padding: 6px;
     }
 
-    .custom-searchable-select.is-open .select-menu {
+    #createProduct .custom-searchable-select.is-open .select-menu {
         display: block !important;
     }
 
-    .custom-searchable-select .search-wrap {
+    #createProduct .custom-searchable-select .search-wrap {
         padding: 4px 6px;
         border-bottom: 1px solid #e2e8f0;
         margin-bottom: 4px;
@@ -135,7 +135,7 @@
         z-index: 2;
     }
 
-    .custom-searchable-select .search-wrap input {
+    #createProduct .custom-searchable-select .search-wrap input {
         height: 34px !important;
         font-size: 13px !important;
         border-radius: 6px !important;
@@ -148,27 +148,27 @@
         background: #ffffff !important;
     }
 
-    .custom-searchable-select .search-wrap input:focus {
+    #createProduct .custom-searchable-select .search-wrap input:focus {
         border-color: #16a34a !important;
         box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.1) !important;
     }
 
-    .custom-searchable-select .select-options-list {
+    #createProduct .custom-searchable-select .select-options-list {
         max-height: 180px;
         overflow-y: auto;
         scrollbar-width: thin;
         scrollbar-color: #cbd5e1 transparent;
     }
 
-    .custom-searchable-select .select-options-list::-webkit-scrollbar {
+    #createProduct .custom-searchable-select .select-options-list::-webkit-scrollbar {
         width: 4px;
     }
-    .custom-searchable-select .select-options-list::-webkit-scrollbar-thumb {
+    #createProduct .custom-searchable-select .select-options-list::-webkit-scrollbar-thumb {
         background: #cbd5e1;
         border-radius: 4px;
     }
 
-    .custom-searchable-select .select-option-item {
+    #createProduct .custom-searchable-select .select-option-item {
         padding: 8px 10px;
         font-size: 13px;
         cursor: pointer !important;
@@ -182,12 +182,12 @@
         user-select: none;
     }
 
-    .custom-searchable-select .select-option-item:hover {
+    #createProduct .custom-searchable-select .select-option-item:hover {
         background-color: #f0fdf4;
         color: #15803d;
     }
 
-    .custom-searchable-select .select-option-item.active {
+    #createProduct .custom-searchable-select .select-option-item.active {
         background-color: #dcfce7;
         color: #15803d;
         font-weight: 700;
@@ -201,36 +201,106 @@
         cursor: pointer !important;
     }
 
+    /* Modal Close Button Compact Styling & Pure White Icon */
+    #createProduct .modal-content .close-btn {
+        width: 24px !important;
+        height: 24px !important;
+        min-width: 24px !important;
+        min-height: 24px !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: #ef4444 !important;
+        border-radius: 50% !important;
+        border: none !important;
+        cursor: pointer !important;
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
+    }
+
+    #createProduct .modal-content .close-btn i,
+    #createProduct .close-btn i {
+        font-size: 10px !important;
+        color: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        line-height: 1 !important;
+        background: transparent !important;
+        display: inline-block !important;
+        transition: transform 0.2s ease !important;
+    }
+
+    #createProduct .modal-content .close-btn:hover {
+        background: #dc2626 !important;
+        opacity: 1 !important;
+    }
+
+    #createProduct .modal-content .close-btn:hover i {
+        color: #ffffff !important;
+        transform: scale(1.1) !important;
+    }
+
+    /* Add New Brand/Category/Sub-Category Green Plus Buttons */
+    #createProduct .btn-add {
+        width: 42px !important;
+        height: 42px !important;
+        min-width: 42px !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        border-radius: 8px !important;
+        background-color: #16a34a !important;
+        border: none !important;
+        color: #ffffff !important;
+        transition: all 0.2s ease !important;
+    }
+
+    #createProduct .btn-add:hover {
+        background-color: #15803d !important;
+        opacity: 0.95 !important;
+    }
+
+    #createProduct .btn-add i {
+        font-size: 18px !important;
+        color: #ffffff !important;
+        line-height: 1 !important;
+        font-weight: 700 !important;
+    }
+
     /* Dark mode support */
-    body[light-mode="dark"] .custom-searchable-select .select-trigger {
+    body[light-mode="dark"] #createProduct .custom-searchable-select .select-trigger {
         background-color: #0f172a !important;
         border-color: #334155 !important;
         color: #f8fafc !important;
     }
-    body[light-mode="dark"] .custom-searchable-select .select-trigger .selected-text {
+    body[light-mode="dark"] #createProduct .custom-searchable-select .select-trigger .selected-text {
         color: #cbd5e1 !important;
     }
-    body[light-mode="dark"] .custom-searchable-select .select-menu {
+    body[light-mode="dark"] #createProduct .custom-searchable-select .select-menu {
         background-color: #1e293b !important;
         border-color: #334155 !important;
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
     }
-    body[light-mode="dark"] .custom-searchable-select .search-wrap {
+    body[light-mode="dark"] #createProduct .custom-searchable-select .search-wrap {
         border-color: #334155 !important;
     }
-    body[light-mode="dark"] .custom-searchable-select .search-wrap input {
+    body[light-mode="dark"] #createProduct .custom-searchable-select .search-wrap input {
         background-color: #0f172a !important;
         border-color: #334155 !important;
         color: #f8fafc !important;
     }
-    body[light-mode="dark"] .custom-searchable-select .select-option-item {
+    body[light-mode="dark"] #createProduct .custom-searchable-select .select-option-item {
         color: #cbd5e1 !important;
     }
-    body[light-mode="dark"] .custom-searchable-select .select-option-item:hover {
+    body[light-mode="dark"] #createProduct .custom-searchable-select .select-option-item:hover {
         background-color: #334155 !important;
         color: #ffffff !important;
     }
-    body[light-mode="dark"] .custom-searchable-select .select-option-item.active {
+    body[light-mode="dark"] #createProduct .custom-searchable-select .select-option-item.active {
         background-color: rgba(22, 163, 74, 0.25) !important;
         color: #4ade80 !important;
     }
@@ -310,8 +380,8 @@
     }
 
     .newmodal-close-btn {
-        background: #f1f5f9;
-        color: #64748b;
+        background: #ef4444 !important;
+        color: #ffffff !important;
         border: none;
         width: 32px;
         height: 32px;
@@ -319,14 +389,19 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
+        font-size: 14px;
         cursor: pointer;
         transition: all 0.2s ease;
     }
 
     .newmodal-close-btn:hover {
-        background: #e2e8f0;
-        color: #0f172a;
+        background: #dc2626 !important;
+        color: #ffffff !important;
+    }
+
+    .newmodal-close-btn i {
+        color: #ffffff !important;
+        font-size: 14px !important;
     }
 
     /* Image Upload Area */
@@ -453,6 +528,158 @@
         font-size: 12px;
     }
 
+    /* Custom Searchable Dropdown for Sub-Category Modal */
+    .custom-subcategory-select {
+        position: relative !important;
+        width: 100% !important;
+        user-select: none;
+    }
+
+    .custom-subcategory-select .select-trigger {
+        height: 42px;
+        border-radius: 8px;
+        cursor: pointer !important;
+        border: 1px solid #cbd5e1 !important;
+        background: #ffffff;
+        transition: all 0.2s ease;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 14px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1e293b;
+    }
+
+    .custom-subcategory-select .select-trigger:hover {
+        border-color: #16a34a !important;
+    }
+
+    .custom-subcategory-select.is-open .select-trigger {
+        border-color: #16a34a !important;
+        box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15) !important;
+    }
+
+    .custom-subcategory-select .select-trigger i.fa-chevron-down {
+        font-size: 12px;
+        color: #64748b;
+        transition: transform 0.2s ease;
+    }
+
+    .custom-subcategory-select.is-open .select-trigger i.fa-chevron-down {
+        transform: rotate(180deg);
+    }
+
+    .custom-subcategory-select .select-trigger .selected-text {
+        font-size: 14px;
+        font-weight: 500;
+        color: #64748b;
+    }
+
+    .custom-subcategory-select .select-trigger .selected-text.has-value {
+        color: #0f172a;
+    }
+
+    .custom-subcategory-select .select-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        width: 100%;
+        min-width: 100%;
+        z-index: 100000005 !important;
+        background: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 10px;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        padding: 6px;
+    }
+
+    .custom-subcategory-select.is-open .select-menu {
+        display: block !important;
+    }
+
+    .custom-subcategory-select .search-wrap {
+        padding: 4px 6px;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 4px;
+        position: relative;
+        background: #ffffff !important;
+        z-index: 2;
+    }
+
+    .custom-subcategory-select .search-wrap i {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 14px;
+        font-size: 12px;
+        color: #94a3b8;
+        pointer-events: none;
+    }
+
+    .custom-subcategory-select .search-wrap input {
+        height: 34px !important;
+        font-size: 13px !important;
+        border-radius: 6px !important;
+        border: 1px solid #cbd5e1 !important;
+        padding-left: 32px !important;
+        padding-right: 8px !important;
+        width: 100% !important;
+        outline: none !important;
+        box-sizing: border-box !important;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        line-height: normal !important;
+    }
+
+    .custom-subcategory-select .search-wrap input:focus {
+        border-color: #16a34a !important;
+        box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.1) !important;
+    }
+
+    .custom-subcategory-select .select-options-list {
+        max-height: 180px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
+    }
+
+    .custom-subcategory-select .select-options-list::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .custom-subcategory-select .select-options-list::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .custom-subcategory-select .select-option-item {
+        padding: 8px 10px;
+        font-size: 13px;
+        cursor: pointer !important;
+        border-radius: 6px;
+        margin: 1px 2px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #334155;
+        transition: all 0.15s ease;
+        user-select: none;
+    }
+
+    .custom-subcategory-select .select-option-item:hover {
+        background-color: #f0fdf4;
+        color: #15803d;
+    }
+
+    .custom-subcategory-select .select-option-item.active {
+        background-color: #dcfce7;
+        color: #15803d;
+        font-weight: 700;
+    }
+
     /* Action Buttons */
     .newmodal-actions {
         display: flex;
@@ -468,17 +695,18 @@
         padding: 9px 18px;
         font-size: 13px;
         font-weight: 600;
-        color: #475569;
-        background: #f1f5f9;
-        border: 1px solid #cbd5e1;
+        color: #ffffff !important;
+        background: #ef4444 !important;
+        border: 1px solid #ef4444 !important;
         border-radius: 8px;
         cursor: pointer;
         transition: all 0.2s ease;
     }
 
     .newmodal-btn-cancel:hover {
-        background: #e2e8f0;
-        color: #1e293b;
+        background: #dc2626 !important;
+        border-color: #dc2626 !important;
+        color: #ffffff !important;
     }
 
     .newmodal-btn-save {
@@ -700,8 +928,15 @@
     body[data-layout-mode="dark"] .newmodal-close-btn,
     html.dark .newmodal-close-btn,
     body.dark .newmodal-close-btn {
-        background: #1e293b !important;
-        color: #94a3b8 !important;
+        background: #ef4444 !important;
+        color: #ffffff !important;
+    }
+    body[light-mode="dark"] .newmodal-close-btn i,
+    html[light-mode="dark"] .newmodal-close-btn i,
+    body[data-layout-mode="dark"] .newmodal-close-btn i,
+    html.dark .newmodal-close-btn i,
+    body.dark .newmodal-close-btn i {
+        color: #ffffff !important;
     }
     body[light-mode="dark"] .newmodal-label,
     html[light-mode="dark"] .newmodal-label,
@@ -754,9 +989,124 @@
     body[data-layout-mode="dark"] .newmodal-btn-cancel,
     html.dark .newmodal-btn-cancel,
     body.dark .newmodal-btn-cancel {
-        background: #1e293b !important;
-        border: 1px solid #334155 !important;
-        color: #e2e8f0 !important;
+        background: #ef4444 !important;
+        border: 1px solid #ef4444 !important;
+        color: #ffffff !important;
+    }
+    body[light-mode="dark"] .newmodal-btn-cancel:hover,
+    html[light-mode="dark"] .newmodal-btn-cancel:hover,
+    body[data-layout-mode="dark"] .newmodal-btn-cancel:hover,
+    html.dark .newmodal-btn-cancel:hover,
+    body.dark .newmodal-btn-cancel:hover {
+        background: #dc2626 !important;
+        border-color: #dc2626 !important;
+        color: #ffffff !important;
+    }
+
+    /* Dark Mode for Custom Sub-Category Dropdown */
+    body[light-mode="dark"] .custom-subcategory-select .select-trigger,
+    html[light-mode="dark"] .custom-subcategory-select .select-trigger,
+    body[data-layout-mode="dark"] .custom-subcategory-select .select-trigger,
+    html.dark .custom-subcategory-select .select-trigger,
+    body.dark .custom-subcategory-select .select-trigger {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] .custom-subcategory-select .select-trigger .selected-text,
+    html[light-mode="dark"] .custom-subcategory-select .select-trigger .selected-text,
+    body[data-layout-mode="dark"] .custom-subcategory-select .select-trigger .selected-text,
+    html.dark .custom-subcategory-select .select-trigger .selected-text,
+    body.dark .custom-subcategory-select .select-trigger .selected-text {
+        color: #94a3b8 !important;
+    }
+
+    body[light-mode="dark"] .custom-subcategory-select .select-trigger .selected-text.has-value,
+    html[light-mode="dark"] .custom-subcategory-select .select-trigger .selected-text.has-value,
+    body[data-layout-mode="dark"] .custom-subcategory-select .select-trigger .selected-text.has-value,
+    html.dark .custom-subcategory-select .select-trigger .selected-text.has-value,
+    body.dark .custom-subcategory-select .select-trigger .selected-text.has-value {
+        color: #f8fafc !important;
+    }
+
+    body[light-mode="dark"] .custom-subcategory-select .select-trigger i.fa-chevron-down,
+    html[light-mode="dark"] .custom-subcategory-select .select-trigger i.fa-chevron-down,
+    body[data-layout-mode="dark"] .custom-subcategory-select .select-trigger i.fa-chevron-down,
+    html.dark .custom-subcategory-select .select-trigger i.fa-chevron-down,
+    body.dark .custom-subcategory-select .select-trigger i.fa-chevron-down {
+        color: #94a3b8 !important;
+    }
+
+    body[light-mode="dark"] .custom-subcategory-select .select-menu,
+    html[light-mode="dark"] .custom-subcategory-select .select-menu,
+    body[data-layout-mode="dark"] .custom-subcategory-select .select-menu,
+    html.dark .custom-subcategory-select .select-menu,
+    body.dark .custom-subcategory-select .select-menu {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    body[light-mode="dark"] .custom-subcategory-select .search-wrap,
+    html[light-mode="dark"] .custom-subcategory-select .search-wrap,
+    body[data-layout-mode="dark"] .custom-subcategory-select .search-wrap,
+    html.dark .custom-subcategory-select .search-wrap,
+    body.dark .custom-subcategory-select .search-wrap {
+        background-color: #1e293b !important;
+        border-bottom-color: #334155 !important;
+    }
+
+    body[light-mode="dark"] .custom-subcategory-select .search-wrap i,
+    html[light-mode="dark"] .custom-subcategory-select .search-wrap i,
+    body[data-layout-mode="dark"] .custom-subcategory-select .search-wrap i,
+    html.dark .custom-subcategory-select .search-wrap i,
+    body.dark .custom-subcategory-select .search-wrap i {
+        color: #64748b !important;
+    }
+
+    body[light-mode="dark"] .custom-subcategory-select .search-wrap input,
+    html[light-mode="dark"] .custom-subcategory-select .search-wrap input,
+    body[data-layout-mode="dark"] .custom-subcategory-select .search-wrap input,
+    html.dark .custom-subcategory-select .search-wrap input,
+    body.dark .custom-subcategory-select .search-wrap input {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] .custom-subcategory-select .select-options-list::-webkit-scrollbar-thumb,
+    html[light-mode="dark"] .custom-subcategory-select .select-options-list::-webkit-scrollbar-thumb,
+    body[data-layout-mode="dark"] .custom-subcategory-select .select-options-list::-webkit-scrollbar-thumb,
+    html.dark .custom-subcategory-select .select-options-list::-webkit-scrollbar-thumb,
+    body.dark .custom-subcategory-select .select-options-list::-webkit-scrollbar-thumb {
+        background: #334155 !important;
+    }
+
+    body[light-mode="dark"] .custom-subcategory-select .select-option-item,
+    html[light-mode="dark"] .custom-subcategory-select .select-option-item,
+    body[data-layout-mode="dark"] .custom-subcategory-select .select-option-item,
+    html.dark .custom-subcategory-select .select-option-item,
+    body.dark .custom-subcategory-select .select-option-item {
+        color: #cbd5e1 !important;
+    }
+
+    body[light-mode="dark"] .custom-subcategory-select .select-option-item:hover,
+    html[light-mode="dark"] .custom-subcategory-select .select-option-item:hover,
+    body[data-layout-mode="dark"] .custom-subcategory-select .select-option-item:hover,
+    html.dark .custom-subcategory-select .select-option-item:hover,
+    body.dark .custom-subcategory-select .select-option-item:hover {
+        background-color: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    body[light-mode="dark"] .custom-subcategory-select .select-option-item.active,
+    html[light-mode="dark"] .custom-subcategory-select .select-option-item.active,
+    body[data-layout-mode="dark"] .custom-subcategory-select .select-option-item.active,
+    html.dark .custom-subcategory-select .select-option-item.active,
+    body.dark .custom-subcategory-select .select-option-item.active {
+        background-color: rgba(22, 163, 74, 0.25) !important;
+        color: #4ade80 !important;
     }
 
     body[light-mode="dark"] #createProduct .img-box,
@@ -807,8 +1157,8 @@
             <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2 m-0 fs-5">
                 <i class="fa-solid fa-cart-plus me-1"></i> Add New Product
             </h5>
-            <button type="button" class="close-btn closes d-flex align-items-center justify-content-center border-0 shadow-sm" onclick="closeProductModal()" style="width: 24px; height: 24px; border-radius: 50%; background: #ef4444; color: #ffffff; font-size: 11px; cursor: pointer; transition: all 0.2s ease;" title="Close">
-                <i class="fa-solid fa-xmark"></i>
+            <button type="button" class="close-btn closes d-flex align-items-center justify-content-center border-0 shadow-sm" onclick="closeProductModal()" style="width: 24px; height: 24px; min-width: 24px; min-height: 24px; border-radius: 50%; background: #ef4444; color: #ffffff; padding: 0 !important; cursor: pointer; transition: all 0.2s ease; position: relative !important; right: auto !important; top: auto !important;" title="Close">
+                <i class="fa-solid fa-xmark" style="font-size: 10px !important; color: #ffffff !important; padding: 0 !important; margin: 0 !important; line-height: 1 !important; display: inline-block !important;"></i>
             </button>
         </div>
 
@@ -843,7 +1193,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn-add newbrand-open text-nowrap" style="height: 42px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; font-weight: 600;">+ Add</button>
+                                <button type="button" class="btn-add newbrand-open text-nowrap" style="width: 42px; height: 42px; min-width: 42px; padding: 0 !important; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px;" title="Add New Brand">
+                                    <i class="fa-solid fa-plus" style="font-size: 18px !important; color: #ffffff !important; line-height: 1 !important;"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -873,8 +1225,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn-add newcategory-open text-nowrap" style="height: 42px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; font-weight: 600;">
-                                    + Add
+                                <button type="button" class="btn-add newcategory-open text-nowrap" style="width: 42px; height: 42px; min-width: 42px; padding: 0 !important; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px;" title="Add New Category">
+                                    <i class="fa-solid fa-plus" style="font-size: 18px !important; color: #ffffff !important; line-height: 1 !important;"></i>
                                 </button>
                             </div>
                         </div>
@@ -905,8 +1257,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn-add newsubcategory-open text-nowrap" onclick="openSubCategoryModal()" style="height: 42px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; font-weight: 600;">
-                                    + Add
+                                <button type="button" class="btn-add newsubcategory-open text-nowrap" onclick="openSubCategoryModal()" style="width: 42px; height: 42px; min-width: 42px; padding: 0 !important; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px;" title="Add New Sub-Category">
+                                    <i class="fa-solid fa-plus" style="font-size: 18px !important; color: #ffffff !important; line-height: 1 !important;"></i>
                                 </button>
                             </div>
                         </div>
@@ -1165,12 +1517,26 @@
         </div>
         <form id="addSubCategoryForm" onsubmit="SubCategorySave(event)">
             <div class="newmodal-form-group">
-                <label class="newmodal-label" for="SubCategoryParentID">Category <span class="text-danger">*</span></label>
-                <div class="newmodal-select-wrapper">
-                    <select id="SubCategoryParentID" class="newmodal-select" required>
-                        <option value="none" disabled selected>Select Category *</option>
-                    </select>
-                    <i class="fa-solid fa-chevron-down"></i>
+                <label class="newmodal-label">Category <span class="text-danger">*</span></label>
+                <!-- Native select kept hidden for form validation & value retention -->
+                <select id="SubCategoryParentID" class="d-none" required>
+                    <option value="none" disabled selected>Select Category *</option>
+                </select>
+                <!-- Custom Searchable Dropdown for Sub-Category Category -->
+                <div class="custom-subcategory-select" id="subCategoryCategoryDropdown">
+                    <div class="select-trigger" onclick="toggleSubCategoryCategoryDropdown()">
+                        <span class="selected-text text-truncate" id="subCategoryCategorySelectedText">Select Category *</span>
+                        <i class="fa-solid fa-chevron-down ms-1"></i>
+                    </div>
+                    <div class="select-menu">
+                        <div class="search-wrap">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="subCategoryCategorySearchInput" placeholder="Search Category..." oninput="filterSubCategoryCategoryOptions(this.value)" autocomplete="off">
+                        </div>
+                        <div class="select-options-list" id="subCategoryCategoryOptionsList">
+                            <!-- Category options loaded dynamically -->
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1526,24 +1892,140 @@
         await refreshSubCategoryList(null, categoryId);
     }
 
-    function openSubCategoryModal() {
+    function toggleSubCategoryCategoryDropdown() {
+        const dropdown = document.getElementById('subCategoryCategoryDropdown');
+        if (!dropdown) return;
+        const isOpen = dropdown.classList.contains('is-open');
+        if (isOpen) {
+            dropdown.classList.remove('is-open');
+        } else {
+            dropdown.classList.add('is-open');
+            const searchInput = document.getElementById('subCategoryCategorySearchInput');
+            if (searchInput) {
+                searchInput.value = '';
+                filterSubCategoryCategoryOptions('');
+                setTimeout(() => searchInput.focus(), 60);
+            }
+        }
+    }
+
+    function filterSubCategoryCategoryOptions(keyword) {
+        const listEl = document.getElementById('subCategoryCategoryOptionsList');
+        if (!listEl) return;
+        const term = (keyword || '').toLowerCase().trim();
+        const items = listEl.querySelectorAll('.select-option-item');
+        let matchCount = 0;
+
+        items.forEach(item => {
+            const label = (item.getAttribute('data-label') || '').toLowerCase();
+            if (!term || label.includes(term)) {
+                item.style.display = 'flex';
+                matchCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        let noResultEl = listEl.querySelector('.no-results-msg');
+        if (matchCount === 0) {
+            if (!noResultEl) {
+                noResultEl = document.createElement('div');
+                noResultEl.className = 'no-results-msg text-center py-2 text-muted';
+                noResultEl.style.fontSize = '12px';
+                noResultEl.textContent = 'No results found';
+                listEl.appendChild(noResultEl);
+            }
+        } else if (noResultEl) {
+            noResultEl.remove();
+        }
+    }
+
+    function selectSubCategoryCategoryOption(id, name) {
+        const hiddenSelect = document.getElementById('SubCategoryParentID');
+        if (hiddenSelect) {
+            hiddenSelect.value = id;
+            hiddenSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        const triggerText = document.getElementById('subCategoryCategorySelectedText');
+        if (triggerText) {
+            triggerText.textContent = name;
+            triggerText.classList.toggle('has-value', !!(id && id !== 'none'));
+        }
+
+        const listEl = document.getElementById('subCategoryCategoryOptionsList');
+        if (listEl) {
+            listEl.querySelectorAll('.select-option-item').forEach(item => {
+                if (item.getAttribute('data-value') === String(id)) {
+                    item.classList.add('active');
+                    if (!item.querySelector('.fa-check')) {
+                        item.innerHTML = `<span>${item.getAttribute('data-label')}</span><i class="fa-solid fa-check small text-success"></i>`;
+                    }
+                } else {
+                    item.classList.remove('active');
+                    const check = item.querySelector('.fa-check');
+                    if (check) check.remove();
+                }
+            });
+        }
+
+        const dropdown = document.getElementById('subCategoryCategoryDropdown');
+        if (dropdown) dropdown.classList.remove('is-open');
+    }
+
+    async function openSubCategoryModal() {
         const modal = document.getElementById('addSubCategoryModal');
         if (!modal) return;
 
-        // Populate Category dropdown in Sub-Category modal
-        const parentCatSelect = document.getElementById('SubCategoryParentID');
-        if (parentCatSelect && window.productCategoriesList) {
-            let currentSelectedCat = document.getElementById('ProductCategoryDataID')?.value || 'none';
-            let html = '<option value="none" disabled>Select Category *</option>';
-            window.productCategoriesList.forEach(c => {
-                const isSel = String(c.id) === String(currentSelectedCat);
-                html += `<option value="${c.id}" ${isSel ? 'selected' : ''}>${c.category_name}</option>`;
-            });
-            parentCatSelect.innerHTML = html;
-            if (currentSelectedCat !== 'none') {
-                parentCatSelect.value = String(currentSelectedCat);
+        if (!window.productCategoriesList || window.productCategoriesList.length === 0) {
+            if (typeof refreshCategoryList === 'function') {
+                await refreshCategoryList();
             }
         }
+
+        // Populate Category dropdown in Sub-Category modal
+        const parentCatSelect = document.getElementById('SubCategoryParentID');
+        const customList = document.getElementById('subCategoryCategoryOptionsList');
+        const triggerText = document.getElementById('subCategoryCategorySelectedText');
+        const searchInput = document.getElementById('subCategoryCategorySearchInput');
+
+        if (searchInput) searchInput.value = '';
+
+        if (window.productCategoriesList && window.productCategoriesList.length > 0) {
+            let currentSelectedCat = document.getElementById('ProductCategoryDataID')?.value || 'none';
+            let html = '<option value="none" disabled>Select Category *</option>';
+            let customHtml = '';
+            let selectedName = 'Select Category *';
+            let isAnySelected = false;
+
+            window.productCategoriesList.forEach(c => {
+                const isSel = (currentSelectedCat !== 'none' && String(c.id) === String(currentSelectedCat));
+                if (isSel) {
+                    selectedName = c.category_name;
+                    isAnySelected = true;
+                }
+                html += `<option value="${c.id}" ${isSel ? 'selected' : ''}>${c.category_name}</option>`;
+                customHtml += `<div class="select-option-item ${isSel ? 'active' : ''}" data-value="${c.id}" data-label="${c.category_name.replace(/"/g, '&quot;')}" onclick="selectSubCategoryCategoryOption('${c.id}', '${c.category_name.replace(/'/g, "\\'")}')">
+                    <span>${c.category_name}</span>
+                    ${isSel ? '<i class="fa-solid fa-check small text-success"></i>' : ''}
+                </div>`;
+            });
+
+            if (parentCatSelect) {
+                parentCatSelect.innerHTML = html;
+                parentCatSelect.value = isAnySelected ? String(currentSelectedCat) : 'none';
+            }
+            if (customList) {
+                customList.innerHTML = customHtml;
+            }
+            if (triggerText) {
+                triggerText.textContent = selectedName;
+                triggerText.classList.toggle('has-value', isAnySelected);
+            }
+        }
+
+        const dropdown = document.getElementById('subCategoryCategoryDropdown');
+        if (dropdown) dropdown.classList.remove('is-open');
 
         const nameInput = document.getElementById('SubCategoryNameInput');
         if (nameInput) nameInput.value = '';
@@ -1557,6 +2039,8 @@
     function closeSubCategoryModal() {
         const modal = document.getElementById('addSubCategoryModal');
         if (modal) modal.classList.remove('show');
+        const dropdown = document.getElementById('subCategoryCategoryDropdown');
+        if (dropdown) dropdown.classList.remove('is-open');
     }
 
     async function SubCategorySave(event) {
@@ -2058,6 +2542,10 @@
     document.addEventListener('click', function(e) {
         if (!e.target.closest('#createProduct .custom-searchable-select')) {
             closeAllCustomProductDropdowns();
+        }
+        if (!e.target.closest('#subCategoryCategoryDropdown')) {
+            const scDrop = document.getElementById('subCategoryCategoryDropdown');
+            if (scDrop) scDrop.classList.remove('is-open');
         }
     });
 

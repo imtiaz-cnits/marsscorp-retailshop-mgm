@@ -593,6 +593,14 @@ class UserController extends Controller
             }
 
             $user = User::findOrFail($id);
+
+            if ($user->role === 'super_admin' || $user->role === 'admin') {
+                return response()->json([
+                    'status'  => 'fail',
+                    'message' => 'Super Admin একাউন্ট ডিলিট করা সম্ভব নয়!'
+                ], 403);
+            }
+
             $user->delete();
 
             return response()->json([

@@ -1,9 +1,9 @@
-<!-- Expense Type Delete Confirmation Modal Start -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true" data-bs-backdrop="static">
+<!-- Delete Confirmation Modal Start -->
+<div class="modal fade" id="deleteOpeningBalanceModal" tabindex="-1" aria-labelledby="deleteOpeningBalanceModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm sm:modal-md my-3" style="max-width: 440px;">
         <div class="modal-content bg-white dark:bg-slate-900 border-0 rounded-2xl shadow-2xl overflow-hidden transition-colors flex flex-col" style="border: none !important;">
             
-            <!-- Sticky Top Header (Red) -->
+            <!-- Sticky Top Header -->
             <div class="modal-header sticky top-0 z-20 px-4 sm:px-5 py-3.5 bg-rose-600 text-white flex items-center justify-between shadow-sm border-0 flex-shrink-0" style="background-color: #dc2626 !important; color: #ffffff !important; border: none !important;">
                 <div class="flex items-center gap-2.5">
                     <div class="w-8 h-8 rounded-lg bg-white/20 text-white flex items-center justify-center flex-shrink-0">
@@ -14,7 +14,7 @@
                             <line x1="14" y1="11" x2="14" y2="17"></line>
                         </svg>
                     </div>
-                    <h5 class="modal-title text-base font-bold text-white tracking-tight mb-0" id="confirmationModalLabel" style="color: #ffffff !important;">Delete Expense Type</h5>
+                    <h5 class="modal-title text-base font-bold text-white tracking-tight mb-0" id="deleteOpeningBalanceModalLabel" style="color: #ffffff !important;">Delete Opening Balance</h5>
                 </div>
                 <!-- Circular Red Close Button with White Icon -->
                 <button type="button" class="qv-close-btn" data-bs-dismiss="modal" aria-label="Close" style="width: 30px !important; height: 30px !important; min-width: 30px !important; min-height: 30px !important; border-radius: 50% !important; background-color: #991b1b !important; color: #ffffff !important; border: none !important; display: flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; padding: 0 !important; margin: 0 !important;">
@@ -35,40 +35,40 @@
                     </svg>
                 </div>
                 <h4 class="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 mb-1.5">Confirm Deletion</h4>
-                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-0">Are you sure you want to delete this expense type? This action cannot be undone.</p>
-                <input type="hidden" id="deleteID" />
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-0">Are you sure you want to delete this opening balance? This action cannot be undone.</p>
+                <input type="hidden" id="deleteOpeningBalanceID" />
             </div>
 
             <!-- Sticky Bottom Footer (Strict 38px buttons) -->
             <div class="modal-footer sticky bottom-0 z-20 px-4 sm:px-5 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-center gap-2.5 flex-shrink-0">
                 <button type="button" class="px-4 h-[38px] min-h-[38px] max-h-[38px] rounded-xl text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 unified-ui-border text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700" data-bs-dismiss="modal">
-                    Cancel
+                    No
                 </button>
-                <button type="button" onclick="itemDelete()" class="px-5 h-[38px] min-h-[38px] max-h-[38px] rounded-xl text-white text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center cursor-pointer hover:bg-rose-700 active:scale-[0.98]" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; background-color: #dc2626 !important; color: #ffffff !important; border: none !important;">
-                    Yes, Delete
+                <button type="button" onclick="itemDeleteOpeningBalance()" class="px-5 h-[38px] min-h-[38px] max-h-[38px] rounded-xl text-white text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center cursor-pointer hover:bg-rose-700 active:scale-[0.98]" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; background-color: #dc2626 !important; color: #ffffff !important; border: none !important;">
+                    Yes
                 </button>
             </div>
 
         </div>
     </div>
 </div>
-<!-- Expense Type Delete Confirmation Modal End -->
+<!-- Delete Confirmation Modal End -->
 
 <style>
     /* Reset legacy styles from all-modal.css.css and guarantee dead-center positioning */
-    #confirmationModal.modal {
+    #deleteOpeningBalanceModal.modal {
         display: none;
         background: rgba(15, 23, 42, 0.6) !important;
         backdrop-filter: blur(4px) !important;
         -webkit-backdrop-filter: blur(4px) !important;
         z-index: 1060 !important;
     }
-    #confirmationModal.modal.show {
+    #deleteOpeningBalanceModal.modal.show {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
     }
-    #confirmationModal .modal-dialog {
+    #deleteOpeningBalanceModal .modal-dialog {
         position: static !important;
         top: auto !important;
         left: auto !important;
@@ -84,74 +84,94 @@
         min-width: auto !important;
         overflow: visible !important;
     }
-    #confirmationModal .modal-dialog form {
+    #deleteOpeningBalanceModal .modal-dialog form {
         background: transparent !important;
         padding: 0 !important;
         margin: 0 !important;
         max-height: none !important;
         overflow: visible !important;
     }
-    #confirmationModal .modal-content {
+    #deleteOpeningBalanceModal .modal-content {
         border: none !important;
         border-radius: 1rem !important;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
         overflow: hidden !important;
-        background-color: #ffffff !important;
     }
 
     /* Dark Mode */
-    body[light-mode="dark"] #confirmationModal .modal-content,
-    html.dark #confirmationModal .modal-content,
-    body.dark #confirmationModal .modal-content,
-    body[data-layout-mode="dark"] #confirmationModal .modal-content {
+    body[light-mode="dark"] #deleteOpeningBalanceModal .modal-content,
+    html.dark #deleteOpeningBalanceModal .modal-content,
+    body.dark #deleteOpeningBalanceModal .modal-content,
+    body[data-layout-mode="dark"] #deleteOpeningBalanceModal .modal-content {
         background-color: #0f172a !important;
         border: 1px solid #1e293b !important;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
     }
-    body[light-mode="dark"] #confirmationModal .modal-footer,
-    html.dark #confirmationModal .modal-footer,
-    body.dark #confirmationModal .modal-footer,
-    body[data-layout-mode="dark"] #confirmationModal .modal-footer {
+    body[light-mode="dark"] #deleteOpeningBalanceModal .modal-footer,
+    html.dark #deleteOpeningBalanceModal .modal-footer,
+    body.dark #deleteOpeningBalanceModal .modal-footer,
+    body[data-layout-mode="dark"] #deleteOpeningBalanceModal .modal-footer {
         background-color: #0f172a !important;
         border-color: #1e293b !important;
     }
-    body[light-mode="dark"] #confirmationModal .modal-dialog,
-    html.dark #confirmationModal .modal-dialog,
-    body.dark #confirmationModal .modal-dialog,
-    body[data-layout-mode="dark"] #confirmationModal .modal-dialog {
+    body[light-mode="dark"] #deleteOpeningBalanceModal .modal-dialog,
+    html.dark #deleteOpeningBalanceModal .modal-dialog,
+    body.dark #deleteOpeningBalanceModal .modal-dialog,
+    body[data-layout-mode="dark"] #deleteOpeningBalanceModal .modal-dialog {
         background: transparent !important;
         background-color: transparent !important;
     }
 </style>
 
 <script>
-    async function itemDelete() {
+    $(document).ready(function() {
+        $('#deleteOpeningBalanceModal').appendTo("body");
+    });
+
+    function openDeleteOpeningBalanceModal(id) {
+        document.getElementById('deleteOpeningBalanceID').value = id;
+        $("#deleteOpeningBalanceModal").modal('show');
+    }
+
+    // Delete Opening Balance function
+    async function itemDeleteOpeningBalance() {
         try {
-            let id = document.getElementById('deleteID').value;
+            let id = document.getElementById('deleteOpeningBalanceID').value;
+
             if (!id) {
-                errorToast("Expense Type ID is missing.");
+                errorToast("Opening Balance ID is missing. Please try again.");
                 return;
             }
 
             showLoader();
-            let res = await axios.post("/api/delete-expense-type", { id: id }, HeaderToken());
+
+            let res = await axios.post(
+                "/api/delete-opening-balance", {
+                    id: id
+                },
+                HeaderToken()
+            );
+
             hideLoader();
 
             if (res.data && res.data.status === "success") {
-                successToast(res.data.message);
-                $("#confirmationModal").modal('hide');
+                successToast(res.data.message || "Deleted successfully!");
+                $("#deleteOpeningBalanceModal").modal('hide');
+
                 if (typeof getList === 'function') {
                     await getList();
                 } else {
-                    setTimeout(() => location.reload(), 500);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 500);
                 }
             } else {
-                errorToast(res.data ? res.data.message : "Failed to delete expense type.");
+                errorToast(res.data ? res.data.message : "Failed to delete opening balance.");
             }
         } catch (e) {
             hideLoader();
             console.error(e);
-            unauthorized(e.response ? e.response.status : 500);
+            errorToast((e.response && e.response.data && e.response.data.message) ? e.response.data.message : (e.message || "An error occurred. Please try again."));
         }
     }
 </script>

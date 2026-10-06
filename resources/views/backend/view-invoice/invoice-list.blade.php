@@ -33,12 +33,12 @@
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                             </svg>
-                            <input type="text" id="searchInput" style="border: none !important; outline: none !important; box-shadow: none !important; width: 100% !important; padding: 0 8px !important;" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0 focus:border-0 focus:outline-none" placeholder="Searching Invoice..." />
+                            <input type="text" id="searchInput" style="border: none !important; outline: none !important; box-shadow: none !important; width: 100% !important; padding: 0 8px !important;" class="w-full h-full bg-transparent border-0 outline-none text-[13px] text-slate-800 dark:text-slate-100 placeholder:text-[13px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0 focus:border-0 focus:outline-none" placeholder="Searching Invoice..." />
                         </div>
 
                         <!-- 2nd: Start Date with Flatpickr (col-start-date) -->
                         <div class="col-start-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
-                            <input type="text" id="startDate" name="dateInput" placeholder="Start Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-xs font-medium text-slate-700 dark:text-slate-200 placeholder:text-xs placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
+                            <input type="text" id="startDate" name="dateInput" placeholder="Start Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
                             <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -49,7 +49,7 @@
 
                         <!-- 3rd: End Date with Flatpickr (col-end-date) -->
                         <div class="col-end-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
-                            <input type="text" id="endDate" name="dateInput" placeholder="End Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-xs font-medium text-slate-700 dark:text-slate-200 placeholder:text-xs placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
+                            <input type="text" id="endDate" name="dateInput" placeholder="End Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
                             <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -418,15 +418,21 @@
         width: 100% !important;
     }
 
-    /* Date field placeholder text size and weight matching other inputs */
-    #startDate, #endDate {
-        font-size: 12px !important;
+    /* Search and Date field placeholder text size and weight matching SHOW: 15 (11px) */
+    #searchInput, #startDate, #endDate, .flatpickr-input, .date-input-wrapper input, .search-input-wrapper input {
+        font-size: 11px !important;
         font-weight: 500 !important;
     }
-    #startDate::placeholder, #endDate::placeholder {
-        font-size: 12px !important;
+    #searchInput::placeholder, #startDate::placeholder, #endDate::placeholder, .flatpickr-input::placeholder,
+    .date-input-wrapper input::placeholder, .search-input-wrapper input::placeholder,
+    #searchInput::-webkit-input-placeholder, #startDate::-webkit-input-placeholder, #endDate::-webkit-input-placeholder, .flatpickr-input::-webkit-input-placeholder,
+    .date-input-wrapper input::-webkit-input-placeholder, .search-input-wrapper input::-webkit-input-placeholder,
+    #searchInput::-moz-placeholder, #startDate::-moz-placeholder, #endDate::-moz-placeholder, .flatpickr-input::-moz-placeholder,
+    .date-input-wrapper input::-moz-placeholder, .search-input-wrapper input::-moz-placeholder {
+        font-size: 11px !important;
         font-weight: 400 !important;
         color: #94a3b8 !important;
+        opacity: 1 !important;
     }
 
     /* Card-body padding standard */
@@ -1206,7 +1212,7 @@
             dateFormat: "Y-m-d",
             altInput: true,
             altFormat: "d/m/Y",
-            altInputClass: "w-full bg-transparent border-0 outline-none text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-400 p-0 m-0 cursor-pointer",
+            altInputClass: "w-full bg-transparent border-0 outline-none text-[13px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[13px] placeholder:font-normal placeholder:text-slate-400 p-0 m-0 cursor-pointer",
             allowInput: true,
             monthSelectorType: "static",
             onChange: function(selectedDates, dateStr) {
@@ -1224,7 +1230,7 @@
             dateFormat: "Y-m-d",
             altInput: true,
             altFormat: "d/m/Y",
-            altInputClass: "w-full bg-transparent border-0 outline-none text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-400 p-0 m-0 cursor-pointer",
+            altInputClass: "w-full bg-transparent border-0 outline-none text-[13px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[13px] placeholder:font-normal placeholder:text-slate-400 p-0 m-0 cursor-pointer",
             allowInput: true,
             monthSelectorType: "static",
             onChange: function(selectedDates, dateStr) {

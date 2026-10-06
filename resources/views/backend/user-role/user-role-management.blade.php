@@ -697,6 +697,90 @@
         border-color: #334155 !important;
         color: #94a3b8 !important;
     }
+
+    /* ── Delete Confirmation Modal Project Design & Dead-Center Alignment ── */
+    #deleteUserModal.modal {
+        display: none;
+        background: rgba(15, 23, 42, 0.6) !important;
+        backdrop-filter: blur(4px) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
+        z-index: 1060 !important;
+    }
+    #deleteUserModal.modal.show {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    #deleteUserModal .modal-dialog {
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin: auto !important;
+        max-width: 440px !important;
+        width: 92% !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        min-width: auto !important;
+        overflow: visible !important;
+    }
+    #deleteUserModal .modal-content {
+        border: none !important;
+        border-radius: 1rem !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+        overflow: hidden !important;
+        background-color: #ffffff !important;
+    }
+    body[light-mode="dark"] #deleteUserModal .modal-content,
+    html.dark #deleteUserModal .modal-content,
+    body.dark #deleteUserModal .modal-content,
+    body[data-layout-mode="dark"] #deleteUserModal .modal-content {
+        background-color: #0f172a !important;
+        border: 1px solid #1e293b !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
+    }
+    body[light-mode="dark"] #deleteUserModal .modal-footer,
+    html.dark #deleteUserModal .modal-footer,
+    body.dark #deleteUserModal .modal-footer,
+    body[data-layout-mode="dark"] #deleteUserModal .modal-footer {
+        background-color: #0f172a !important;
+        border-color: #1e293b !important;
+    }
+    body[light-mode="dark"] #deleteUserModal .modal-dialog,
+    html.dark #deleteUserModal .modal-dialog,
+    body.dark #deleteUserModal .modal-dialog,
+    body[data-layout-mode="dark"] #deleteUserModal .modal-dialog {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+
+    /* Disabled Delete Button Styling */
+    .user-action-btn-delete:disabled,
+    .user-action-btn-delete[disabled] {
+        opacity: 0.35 !important;
+        cursor: not-allowed !important;
+        filter: grayscale(0.8) !important;
+        pointer-events: auto !important;
+    }
+    .user-action-btn-delete:disabled:hover,
+    .user-action-btn-delete[disabled]:hover {
+        background-color: #fee2e2 !important;
+        color: #ef4444 !important;
+        border-color: #fecaca !important;
+        transform: none !important;
+    }
+    body[light-mode="dark"] .user-action-btn-delete:disabled,
+    body[light-mode="dark"] .user-action-btn-delete[disabled],
+    html.dark .user-action-btn-delete:disabled,
+    html.dark .user-action-btn-delete[disabled] {
+        background-color: rgba(225, 29, 72, 0.1) !important;
+        border-color: rgba(225, 29, 72, 0.2) !important;
+        color: #94a3b8 !important;
+        opacity: 0.35 !important;
+    }
 </style>
 
 <div class="main-content">
@@ -870,7 +954,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 no-shadow">
             <div class="modal-header border-0 sticky-modal-header bg-success text-white d-flex align-items-center justify-content-between">
-                <h5 class="modal-title fw-bold m-0 d-flex align-items-center">
+                <h5 class="modal-title fw-bold m-0 d-flex align-items-center text-white">
                     <i class="fa-solid fa-user-plus me-2"></i> Create New User & Permissions
                 </h5>
                 <button type="button" class="modal-close-red-btn" data-bs-dismiss="modal" aria-label="Close" id="createUserModalCloseBtn" title="Close">
@@ -995,7 +1079,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 no-shadow">
             <div class="modal-header border-0 sticky-modal-header bg-success text-white d-flex align-items-center justify-content-between">
-                <h5 class="modal-title fw-bold m-0 d-flex align-items-center">
+                <h5 class="modal-title fw-bold m-0 d-flex align-items-center text-white">
                     <i class="fa-solid fa-user-gear me-2"></i> Edit User Role & Permissions
                 </h5>
                 <button type="button" class="modal-close-red-btn" data-bs-dismiss="modal" aria-label="Close" id="editUserModalCloseBtn" title="Close">
@@ -1115,6 +1199,62 @@
         </div>
     </div>
 </div>
+
+<!-- User Delete Confirmation Modal Start -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm sm:modal-md my-3" style="max-width: 440px;">
+        <div class="modal-content bg-white dark:bg-slate-900 border-0 rounded-2xl shadow-2xl overflow-hidden transition-colors flex flex-col" style="border: none !important;">
+            
+            <!-- Sticky Top Header (Red) -->
+            <div class="modal-header sticky top-0 z-20 px-4 sm:px-5 py-3.5 bg-rose-600 text-white flex items-center justify-between shadow-sm border-0 flex-shrink-0" style="background-color: #dc2626 !important; color: #ffffff !important; border: none !important;">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-white/20 text-white flex items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                    </div>
+                    <h5 class="modal-title text-base font-bold text-white tracking-tight mb-0" id="deleteUserModalLabel" style="color: #ffffff !important;">Delete User</h5>
+                </div>
+                <!-- Circular Red Close Button with White Icon -->
+                <button type="button" class="qv-close-btn" data-bs-dismiss="modal" onclick="closeDeleteUserModal()" aria-label="Close" style="width: 30px !important; height: 30px !important; min-width: 30px !important; min-height: 30px !important; border-radius: 50% !important; background-color: #991b1b !important; color: #ffffff !important; border: none !important; display: flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; padding: 0 !important; margin: 0 !important;">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body p-4 text-center">
+                <div class="w-14 h-14 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-3.5 border border-rose-100 dark:border-slate-800">
+                    <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </div>
+                <h4 class="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 mb-1.5">Confirm Deletion</h4>
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-0">Are you sure you want to delete <span id="deleteUserNameText" class="fw-bold text-slate-800 dark:text-slate-200"></span>? This action cannot be undone.</p>
+                <input type="hidden" id="deleteUserID" />
+            </div>
+
+            <!-- Sticky Bottom Footer (Strict 38px buttons) -->
+            <div class="modal-footer sticky bottom-0 z-20 px-4 sm:px-5 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-center gap-2.5 flex-shrink-0">
+                <button type="button" class="px-4 h-[38px] min-h-[38px] max-h-[38px] rounded-xl text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 unified-ui-border text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700" data-bs-dismiss="modal" onclick="closeDeleteUserModal()">
+                    Cancel
+                </button>
+                <button type="button" id="confirmDeleteUserBtn" onclick="confirmDeleteUser()" class="px-5 h-[38px] min-h-[38px] max-h-[38px] rounded-xl text-white text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center cursor-pointer hover:bg-rose-700 active:scale-[0.98]" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; background-color: #dc2626 !important; color: #ffffff !important; border: none !important;">
+                    Yes, Delete
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- User Delete Confirmation Modal End -->
 
 <script>
     let allUsersData = [];
@@ -1295,6 +1435,25 @@
                 ? `<span class="user-status-badge status-approved">${statusText}</span>` 
                 : `<span class="user-status-badge status-pending">${statusText}</span>`;
 
+            let isSuperAdmin = (u.role === 'admin' || u.role === 'super_admin');
+            let deleteBtnHtml = isSuperAdmin
+                ? `<button type="button" disabled class="user-action-btn user-action-btn-delete" style="opacity: 0.35 !important; cursor: not-allowed !important; pointer-events: auto;" title="Super Admin cannot be deleted">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                    </button>`
+                : `<button type="button" onclick="openDeleteUserModal(${u.id}, '${u.name.replace(/'/g, "\\'")}')" class="user-action-btn user-action-btn-delete" title="Delete User">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                    </button>`;
+
             // 1. Desktop Row
             tableHtml += `
                 <tr>
@@ -1320,14 +1479,7 @@
                                     <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                                 </svg>
                             </button>
-                            <button type="button" onclick="deleteUser(${u.id}, '${u.name.replace(/'/g, "\\'")}')" class="user-action-btn user-action-btn-delete" title="Delete User">
-                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                    <line x1="10" y1="11" x2="10" y2="17"></line>
-                                    <line x1="14" y1="11" x2="14" y2="17"></line>
-                                </svg>
-                            </button>
+                            ${deleteBtnHtml}
                         </div>
                     </td>
                 </tr>
@@ -1375,14 +1527,7 @@
                                 <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                             </svg>
                         </button>
-                        <button type="button" onclick="deleteUser(${u.id}, '${u.name.replace(/'/g, "\\'")}')" class="user-action-btn user-action-btn-delete" title="Delete User">
-                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                            </svg>
-                        </button>
+                        ${deleteBtnHtml}
                     </div>
                 </div>
             `;
@@ -1497,32 +1642,105 @@
         }
     });
 
-    // Delete User
+    // Open Delete User Modal
+    function openDeleteUserModal(id, name) {
+        let targetUser = allUsersData.find(u => u.id == id);
+        if (targetUser && (targetUser.role === 'admin' || targetUser.role === 'super_admin')) {
+            if (typeof errorToast === 'function') {
+                errorToast("Super Admin cannot be deleted!");
+            } else {
+                Swal.fire('Warning', 'Super Admin cannot be deleted!', 'warning');
+            }
+            return;
+        }
+
+        document.getElementById('deleteUserID').value = id;
+        document.getElementById('deleteUserNameText').innerText = `"${name}"`;
+
+        const modalEl = document.getElementById('deleteUserModal');
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            let bsModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            bsModal.show();
+        } else if (typeof $ !== 'undefined' && $.fn.modal) {
+            $('#deleteUserModal').modal('show');
+        } else if (modalEl) {
+            modalEl.classList.add('show');
+            modalEl.style.display = 'flex';
+        }
+    }
+
+    function closeDeleteUserModal() {
+        const modalEl = document.getElementById('deleteUserModal');
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            let bsModal = bootstrap.Modal.getInstance(modalEl);
+            if (bsModal) bsModal.hide();
+        }
+        if (typeof $ !== 'undefined' && $.fn.modal) {
+            $('#deleteUserModal').modal('hide');
+        }
+        if (modalEl) {
+            modalEl.classList.remove('show');
+            modalEl.style.display = 'none';
+        }
+    }
+
     function deleteUser(id, name) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: `"${name}" user will be deleted from system!`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    const res = await axios.post('/delete-user-admin', { id: id });
-                    if (res.data && res.data.status === 'success') {
-                        Swal.fire('Deleted!', res.data.message, 'success');
-                        loadAllUsers();
-                    } else {
-                        Swal.fire('Error!', res.data.message || 'Could not delete user.', 'error');
-                    }
-                } catch (err) {
-                    Swal.fire('Error!', err.response?.data?.message || 'Error occurred.', 'error');
+        openDeleteUserModal(id, name);
+    }
+
+    // Confirm Delete User
+    async function confirmDeleteUser() {
+        const id = document.getElementById('deleteUserID').value;
+        if (!id) return;
+
+        let targetUser = allUsersData.find(u => u.id == id);
+        if (targetUser && (targetUser.role === 'admin' || targetUser.role === 'super_admin')) {
+            if (typeof errorToast === 'function') {
+                errorToast("Super Admin cannot be deleted!");
+            } else {
+                Swal.fire('Warning', 'Super Admin cannot be deleted!', 'warning');
+            }
+            closeDeleteUserModal();
+            return;
+        }
+
+        const deleteBtn = document.getElementById('confirmDeleteUserBtn');
+        const originalBtnHtml = deleteBtn ? deleteBtn.innerHTML : 'Yes, Delete';
+        if (deleteBtn) {
+            deleteBtn.disabled = true;
+            deleteBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Deleting...`;
+        }
+
+        try {
+            const res = await axios.post('/delete-user-admin', { id: id });
+            if (res.data && res.data.status === 'success') {
+                closeDeleteUserModal();
+                if (typeof successToast === 'function') {
+                    successToast(res.data.message || 'User deleted successfully.');
+                } else {
+                    Swal.fire('Deleted!', res.data.message, 'success');
+                }
+                loadAllUsers();
+            } else {
+                if (typeof errorToast === 'function') {
+                    errorToast(res.data.message || 'Could not delete user.');
+                } else {
+                    Swal.fire('Error!', res.data.message || 'Could not delete user.', 'error');
                 }
             }
-        });
+        } catch (err) {
+            let msg = err.response?.data?.message || 'Error occurred while deleting user.';
+            if (typeof errorToast === 'function') {
+                errorToast(msg);
+            } else {
+                Swal.fire('Error!', msg, 'error');
+            }
+        } finally {
+            if (deleteBtn) {
+                deleteBtn.disabled = false;
+                deleteBtn.innerHTML = originalBtnHtml;
+            }
+        }
     }
 
     document.addEventListener("DOMContentLoaded", function () {
