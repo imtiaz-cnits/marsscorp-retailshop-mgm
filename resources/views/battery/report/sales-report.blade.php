@@ -1,0 +1,1322 @@
+﻿@extends('layouts.dashboard-sidenav')
+@section('title', 'Battery Sales Report - MARSS CORPORATION')
+@section('content')
+
+<!-- Flatpickr & html2pdf CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+    /* â”€â”€ A4 Print Styles: Exactly 10px Margin Around Page â”€â”€ */
+    @media print {
+        @page {
+            size: A4 portrait;
+            margin: 10px !important;
+        }
+        html, body {
+            background: #ffffff !important;
+            color: #000000 !important;
+            height: auto !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: visible !important;
+        }
+        nav, header, aside, .sidebar, .isvertical-topbar, #page-topbar, .navbar-header,
+        .no-print, .copyright, .footer, .export-btn, .sales-cards-grid, .top-filter-grid, #paginationContainer {
+            display: none !important;
+        }
+        .main-content, .page-content, .card, .card-body, .data-table, .table-responsive {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            background: #ffffff !important;
+            overflow: visible !important;
+            height: auto !important;
+            position: static !important;
+        }
+        #printTable {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            display: table !important;
+            font-size: 9.5px !important;
+        }
+        #printTable th {
+            background-color: #15803d !important;
+            color: #ffffff !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            padding: 5px 6px !important;
+            font-size: 9px !important;
+            border: 1px solid #15803d !important;
+        }
+        #printTable td {
+            padding: 4px 6px !important;
+            border: 1px solid #cbd5e1 !important;
+            font-size: 9px !important;
+            color: #111827 !important;
+        }
+        #printTable tfoot td {
+            background-color: #f8fafc !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            font-weight: 700 !important;
+            border-top: 2px solid #15803d !important;
+        }
+    }
+
+    /* â”€â”€ Export Button Styles â”€â”€ */
+    .export-btn { display:inline-flex; align-items:center; gap:5px; height:32px; padding:0 12px; border-radius:8px; font-size:11.5px; font-weight:700; cursor:pointer; border:1.5px solid transparent; transition:all 0.15s; white-space:nowrap; }
+    .export-btn--copy  { background:#f1f5f9; color:#475569; border-color:#cbd5e1; }
+    .export-btn--copy:hover  { background:#e2e8f0; border-color:#94a3b8; }
+    .export-btn--csv   { background:#ecfdf5; color:#065f46; border-color:#a7f3d0; }
+    .export-btn--csv:hover   { background:#d1fae5; border-color:#34d399; }
+    .export-btn--excel { background:#f0fdf4; color:#15803d; border-color:#bbf7d0; }
+    .export-btn--excel:hover { background:#dcfce7; border-color:#4ade80; }
+    .export-btn--pdf   { background:#fff1f2; color:#be123c; border-color:#fecaca; }
+    .export-btn--pdf:hover   { background:#ffe4e6; border-color:#f87171; }
+    .export-btn--print { background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe; }
+    .export-btn--print:hover { background:#dbeafe; border-color:#60a5fa; }
+
+    /* â”€â”€ Top Filter Grid â”€â”€
+       Desktop (1024px+): 1 row 4 columns (Start Date, End Date, Show, Quick Filter)
+       Tablet & Mobile: 2 rows of 2 columns each
+    â”€â”€ */
+    .top-filter-grid {
+        display: grid !important;
+        grid-template-columns: 2fr 2fr 0.9fr 1.3fr !important;
+        gap: 12px !important;
+        align-items: flex-end !important;
+    }
+    @media (max-width: 1023px) {
+        .top-filter-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 10px !important;
+        }
+    }
+
+    /* â”€â”€ Perfectly Aligned Date Input Wrap (No clipping, centered icon) â”€â”€ */
+    .filter-field-wrap {
+        position: relative !important;
+        width: 100% !important;
+        height: 38px !important;
+        display: flex !important;
+        align-items: center !important;
+        margin: 0 !important;
+    }
+    .filter-field-input {
+        width: 100% !important;
+        height: 38px !important;
+        line-height: 38px !important;
+        padding-left: 12px !important;
+        padding-right: 34px !important;
+        border-radius: 10px !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        outline: none !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        transition: border-color 0.2s, box-shadow 0.2s !important;
+    }
+    .filter-field-icon {
+        position: absolute !important;
+        right: 11px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 16px !important;
+        height: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        pointer-events: none !important;
+        color: #94a3b8;
+        z-index: 5 !important;
+    }
+
+    @media (max-width: 639px) {
+        .filter-field-input {
+            font-size: 12px !important;
+            padding-left: 8px !important;
+            padding-right: 28px !important;
+        }
+        .filter-field-icon {
+            right: 8px !important;
+        }
+    }
+
+    /* â”€â”€ Modern Custom Dropdown for Quick Filter â”€â”€ */
+    .custom-select-wrap {
+        position: relative;
+        width: 100%;
+        height: 38px;
+    }
+    .custom-select-btn {
+        width: 100%;
+        height: 38px;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #ffffff;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        outline: none;
+        user-select: none;
+        box-sizing: border-box;
+        transition: all 0.15s ease;
+    }
+    .custom-select-menu {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        padding: 5px;
+        z-index: 50;
+        display: none;
+    }
+    .custom-select-menu.open {
+        display: block;
+        animation: dropFade 0.15s ease;
+    }
+    @keyframes dropFade {
+        from { opacity: 0; transform: translateY(-4px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .custom-select-option {
+        padding: 8px 12px;
+        font-size: 12.5px;
+        font-weight: 600;
+        border-radius: 8px;
+        color: #334155;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: background 0.12s;
+    }
+    .custom-select-option:hover {
+        background: #f1f5f9;
+        color: #15803d;
+    }
+    .custom-select-option.active {
+        background: #ecfdf5;
+        color: #15803d;
+    }
+
+    /* â”€â”€ Summary Cards Responsive Grid: 4 col desktop, 2 col tab, 1 col mobile â”€â”€ */
+    .sales-cards-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 14px !important;
+    }
+    @media (min-width: 640px) and (max-width: 1023px) {
+        .sales-cards-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+    @media (max-width: 639px) {
+        .sales-cards-grid {
+            grid-template-columns: 1fr !important;
+        }
+    }
+
+    .sales-stat-card {
+        border-radius: 14px;
+        padding: 14px 16px;
+        transition: all 0.2s ease;
+    }
+    .sales-stat-card--sales { background: #ecfdf5; border: 1.5px solid #a7f3d0; }
+    .sales-stat-card--sales .card-title { color: #065f46; font-weight: 700; font-size: 11px; }
+    .sales-stat-card--sales .card-val   { color: #047857; font-weight: 900; font-size: 20px; }
+
+    .sales-stat-card--cost { background: #fff1f2; border: 1.5px solid #fecaca; }
+    .sales-stat-card--cost .card-title { color: #9f1239; font-weight: 700; font-size: 11px; }
+    .sales-stat-card--cost .card-val   { color: #be123c; font-weight: 900; font-size: 20px; }
+
+    .sales-stat-card--paid { background: #f0f9ff; border: 1.5px solid #bae6fd; }
+    .sales-stat-card--paid .card-title { color: #0369a1; font-weight: 700; font-size: 11px; }
+    .sales-stat-card--paid .card-val   { color: #0284c7; font-weight: 900; font-size: 20px; }
+
+    .sales-stat-card--due { background: #fffbeb; border: 1.5px solid #fde68a; }
+    .sales-stat-card--due .card-title { color: #92400e; font-weight: 700; font-size: 11px; }
+    .sales-stat-card--due .card-val   { color: #d97706; font-weight: 900; font-size: 20px; }
+
+    .unified-ui-border { border: 1.5px solid #cbd5e1 !important; }
+    .product-card-body { padding: 10px !important; }
+    @media (min-width: 768px) { .product-card-body { padding: 18px !important; } }
+
+    /* â”€â”€ Mobile Box Table View Card â”€â”€ */
+    .mobile-table-card {
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 10px;
+        border: 1.5px solid #e2e8f0;
+        background: #ffffff;
+        transition: transform 0.1s;
+    }
+
+    /* =========================================================
+       COMPREHENSIVE DARK MODE FIXES (NO WHITE BORDERS)
+       ========================================================= */
+    body[light-mode="dark"] .export-btn--copy, body[data-layout-mode="dark"] .export-btn--copy, html.dark .export-btn--copy { background:#1e293b; color:#94a3b8; border-color:#334155; }
+    body[light-mode="dark"] .export-btn--csv,  body[data-layout-mode="dark"] .export-btn--csv,  html.dark .export-btn--csv  { background:#022c1e; color:#34d399; border-color:#064e3b; }
+    body[light-mode="dark"] .export-btn--excel,body[data-layout-mode="dark"] .export-btn--excel,html.dark .export-btn--excel { background:#022c1e; color:#4ade80; border-color:#065f46; }
+    body[light-mode="dark"] .export-btn--pdf,  body[data-layout-mode="dark"] .export-btn--pdf,  html.dark .export-btn--pdf  { background:#3b0006; color:#f87171; border-color:#7f1d1d; }
+    body[light-mode="dark"] .export-btn--print,body[data-layout-mode="dark"] .export-btn--print,html.dark .export-btn--print { background:#0c1a3b; color:#60a5fa; border-color:#1e3a5f; }
+
+    body[light-mode="dark"] .card, body[data-layout-mode="dark"] .card, html[light-mode="dark"] .card, html.dark .card {
+        background-color: #0f172a !important; border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .unified-ui-border, body[data-layout-mode="dark"] .unified-ui-border, html.dark .unified-ui-border {
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .filter-field-input, body[data-layout-mode="dark"] .filter-field-input, html.dark .filter-field-input {
+        background-color: #1e293b !important; border-color: #334155 !important; color: #f1f5f9 !important;
+    }
+    body[light-mode="dark"] .custom-select-btn, body[data-layout-mode="dark"] .custom-select-btn, html.dark .custom-select-btn {
+        background-color: #1e293b !important; border-color: #334155 !important; color: #f1f5f9 !important;
+    }
+    body[light-mode="dark"] .custom-select-menu, body[data-layout-mode="dark"] .custom-select-menu, html.dark .custom-select-menu {
+        background-color: #1e293b !important; border: 1.5px solid #334155 !important; box-shadow: 0 10px 25px rgba(0,0,0,0.5) !important;
+    }
+    body[light-mode="dark"] .custom-select-option, body[data-layout-mode="dark"] .custom-select-option, html.dark .custom-select-option {
+        color: #e2e8f0 !important;
+    }
+    body[light-mode="dark"] .custom-select-option:hover, body[data-layout-mode="dark"] .custom-select-option:hover, html.dark .custom-select-option:hover {
+        background: #334155 !important; color: #34d399 !important;
+    }
+    body[light-mode="dark"] .custom-select-option.active, body[data-layout-mode="dark"] .custom-select-option.active, html.dark .custom-select-option.active {
+        background: #064e3b !important; color: #34d399 !important;
+    }
+
+    /* Stat Cards in Dark Mode */
+    body[light-mode="dark"] .sales-stat-card--sales, body[data-layout-mode="dark"] .sales-stat-card--sales, html.dark .sales-stat-card--sales { background: #022c1e !important; border-color: #064e3b !important; }
+    body[light-mode="dark"] .sales-stat-card--sales .card-title, html.dark .sales-stat-card--sales .card-title { color: #34d399 !important; }
+    body[light-mode="dark"] .sales-stat-card--sales .card-val, html.dark .sales-stat-card--sales .card-val { color: #6ee7b7 !important; }
+
+    body[light-mode="dark"] .sales-stat-card--cost, body[data-layout-mode="dark"] .sales-stat-card--cost, html.dark .sales-stat-card--cost { background: #3b0712 !important; border-color: #7f1d1d !important; }
+    body[light-mode="dark"] .sales-stat-card--cost .card-title, html.dark .sales-stat-card--cost .card-title { color: #f87171 !important; }
+    body[light-mode="dark"] .sales-stat-card--cost .card-val, html.dark .sales-stat-card--cost .card-val { color: #fca5a5 !important; }
+
+    body[light-mode="dark"] .sales-stat-card--paid, body[data-layout-mode="dark"] .sales-stat-card--paid, html.dark .sales-stat-card--paid { background: #082f49 !important; border-color: #075985 !important; }
+    body[light-mode="dark"] .sales-stat-card--paid .card-title, html.dark .sales-stat-card--paid .card-title { color: #38bdf8 !important; }
+    body[light-mode="dark"] .sales-stat-card--paid .card-val, html.dark .sales-stat-card--paid .card-val { color: #7dd3fc !important; }
+
+    body[light-mode="dark"] .sales-stat-card--due, body[data-layout-mode="dark"] .sales-stat-card--due, html.dark .sales-stat-card--due { background: #451a03 !important; border-color: #78350f !important; }
+    body[light-mode="dark"] .sales-stat-card--due .card-title, html.dark .sales-stat-card--due .card-title { color: #fbbf24 !important; }
+    body[light-mode="dark"] .sales-stat-card--due .card-val, html.dark .sales-stat-card--due .card-val { color: #fde68a !important; }
+
+    /* Dark Mode Table, Cells & Badges */
+    body[light-mode="dark"] .table-responsive, body[data-layout-mode="dark"] .table-responsive, html.dark .table-responsive {
+        border-color: #334155 !important; background-color: #0f172a !important;
+    }
+    body[light-mode="dark"] #printTable, body[data-layout-mode="dark"] #printTable, html.dark #printTable {
+        background-color: #0f172a !important;
+    }
+    body[light-mode="dark"] #printTable tbody tr, body[data-layout-mode="dark"] #printTable tbody tr, html.dark #printTable tbody tr {
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #printTable tbody td, body[data-layout-mode="dark"] #printTable tbody td, html.dark #printTable tbody td {
+        border-color: #334155 !important; color: #e2e8f0 !important;
+    }
+    body[light-mode="dark"] #printTable tbody tr:hover, body[data-layout-mode="dark"] #printTable tbody tr:hover, html.dark #printTable tbody tr:hover {
+        background-color: #1e293b !important;
+    }
+    body[light-mode="dark"] #printTable tfoot, body[data-layout-mode="dark"] #printTable tfoot, html.dark #printTable tfoot {
+        background-color: #1e293b !important; border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .mobile-table-card, body[data-layout-mode="dark"] .mobile-table-card, html.dark .mobile-table-card {
+        background-color: #1e293b !important; border-color: #334155 !important;
+    }
+
+    /* Flatpickr Calendar in Dark Mode */
+    body[light-mode="dark"] .flatpickr-calendar, body[data-layout-mode="dark"] .flatpickr-calendar, html.dark .flatpickr-calendar { background: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+    body[light-mode="dark"] .flatpickr-day, body[data-layout-mode="dark"] .flatpickr-day, html.dark .flatpickr-day { color: #e2e8f0 !important; }
+    body[light-mode="dark"] .flatpickr-day:hover, body[data-layout-mode="dark"] .flatpickr-day:hover, html.dark .flatpickr-day:hover { background: #334155 !important; }
+    body[light-mode="dark"] .flatpickr-day.selected, body[data-layout-mode="dark"] .flatpickr-day.selected, html.dark .flatpickr-day.selected { background: #15803d !important; border-color: #15803d !important; }
+    body[light-mode="dark"] .flatpickr-months, body[data-layout-mode="dark"] .flatpickr-months, html.dark .flatpickr-months { background: #1e293b !important; color: #f1f5f9 !important; }
+    body[light-mode="dark"] .flatpickr-current-month, body[data-layout-mode="dark"] .flatpickr-current-month, html.dark .flatpickr-current-month { color: #f1f5f9 !important; font-weight: 700 !important; }
+    body[light-mode="dark"] .flatpickr-weekday, body[data-layout-mode="dark"] .flatpickr-weekday, html.dark .flatpickr-weekday, body[light-mode="dark"] span.flatpickr-weekday { color: #ffffff !important; font-weight: 800 !important; }
+</style>
+
+<!-- Hero Main Content Start -->
+<div class="main-content">
+    <div class="page-content min-h-screen flex flex-col justify-between">
+        <div class="data-table flex-grow">
+            <div class="card bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm overflow-hidden mb-4 transition-colors">
+                <div class="card-body product-card-body p-4 sm:p-6 md:p-8">
+
+                    <!-- 1. Page Title & Export Buttons -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4 no-print">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 flex items-center justify-center border border-emerald-100 dark:border-slate-800 shadow-sm flex-shrink-0">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                                </svg>
+                            </div>
+                            <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white tracking-tight leading-none m-0 p-0">Sales Report</h1>
+                        </div>
+                        <!-- Dynamic Export Buttons -->
+                        <div class="flex items-center flex-wrap gap-1.5">
+                            <button onclick="exportCopyDynamic()" type="button" class="export-btn export-btn--copy" title="Copy table data">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                Copy
+                            </button>
+                            <button onclick="exportCSVDynamic()" type="button" class="export-btn export-btn--csv" title="Export CSV table data">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                                CSV
+                            </button>
+                            <button onclick="exportExcelDynamic()" type="button" class="export-btn export-btn--excel" title="Export Excel table data">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><polyline points="8 13 12 17 16 13"></polyline><line x1="12" y1="17" x2="12" y2="10"></line></svg>
+                                Excel
+                            </button>
+                            <button onclick="exportPDFDynamic()" type="button" class="export-btn export-btn--pdf" title="Download PDF File">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                                PDF
+                            </button>
+                            <button onclick="printTableOnly()" type="button" class="export-btn export-btn--print" title="Print table on A4">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                                Print
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 2. Filter Row: 4 Columns (Desktop 1 row 4 col, Mobile 2 rows 2 col) -->
+                    <div class="top-filter-grid mb-5 no-print">
+                        <!-- Column 1: Start Date (Icon on right, text starts left) -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Start Date</label>
+                            <div class="filter-field-wrap">
+                                <input type="text" id="startDate" readonly placeholder="Start date" class="filter-field-input unified-ui-border bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
+                                <div class="filter-field-icon">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: End Date (Icon on right, text starts left) -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">End Date</label>
+                            <div class="filter-field-wrap">
+                                <input type="text" id="endDate" readonly placeholder="End date" class="filter-field-input unified-ui-border bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder:text-slate-400" />
+                                <div class="filter-field-icon">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 3: Show (Left of Quick Filter) -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Show</label>
+                            <div class="filter-field-wrap">
+                                <select id="entries" class="filter-field-input unified-ui-border bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 cursor-pointer font-bold">
+                                    <option value="15" selected>15</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                    <option value="200">200</option>
+                                    <option value="500">500</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Column 4: Quick Filter Modern Custom Dropdown -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Quick Filter</label>
+                            <div class="custom-select-wrap" id="quickFilterWrapper">
+                                <button type="button" class="custom-select-btn unified-ui-border text-slate-800 dark:text-slate-100" id="quickFilterBtn">
+                                    <span id="quickFilterSelectedText">This Month</span>
+                                    <svg class="w-4 h-4 text-slate-400 transition-transform duration-200" id="quickFilterArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                                <div class="custom-select-menu" id="quickFilterMenu">
+                                    <div class="custom-select-option" data-value="today"><span>Today</span></div>
+                                    <div class="custom-select-option" data-value="yesterday"><span>Yesterday</span></div>
+                                    <div class="custom-select-option" data-value="last7"><span>Last 7 Days</span></div>
+                                    <div class="custom-select-option" data-value="last30"><span>Last 30 Days</span></div>
+                                    <div class="custom-select-option active" data-value="thisMonth"><span>This Month</span></div>
+                                    <div class="custom-select-option" data-value="lastMonth"><span>Last Month</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Summary Stat Cards (4 columns on Desktop, 2 on Tab, 1 on Mobile) -->
+                    <div class="sales-cards-grid mb-5 no-print">
+                        <!-- Card 1: Total Sales -->
+                        <div class="sales-stat-card sales-stat-card--sales shadow-sm">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="card-title uppercase tracking-wider">Total Sales</span>
+                                <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">৳</span>
+                            </div>
+                            <div class="card-val" id="cardTotalSales">৳ 0.00</div>
+                        </div>
+
+                        <!-- Card 2: Total Cost -->
+                        <div class="sales-stat-card sales-stat-card--cost shadow-sm">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="card-title uppercase tracking-wider">Total Cost</span>
+                                <span class="text-xs font-bold text-rose-600 dark:text-rose-400">৳</span>
+                            </div>
+                            <div class="card-val" id="cardTotalCost">৳ 0.00</div>
+                        </div>
+
+                        <!-- Card 3: Total Paid -->
+                        <div class="sales-stat-card sales-stat-card--paid shadow-sm">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="card-title uppercase tracking-wider">Total Paid</span>
+                                <span class="text-xs font-bold text-sky-600 dark:text-sky-400">৳</span>
+                            </div>
+                            <div class="card-val" id="cardTotalPaid">৳ 0.00</div>
+                        </div>
+
+                        <!-- Card 4: Total Due -->
+                        <div class="sales-stat-card sales-stat-card--due shadow-sm">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="card-title uppercase tracking-wider">Total Due</span>
+                                <span class="text-xs font-bold text-amber-600 dark:text-amber-400">৳</span>
+                            </div>
+                            <div class="card-val" id="cardTotalDue">৳ 0.00</div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Real-time Search & Period Badge Row -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 no-print">
+                        <!-- Search Bar -->
+                        <div class="search-input-wrapper unified-ui-border w-full sm:w-[300px] h-[38px] flex items-center px-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm transition-all focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20">
+                            <svg class="w-4 h-4 text-slate-400 flex-shrink-0 mr-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" id="searchInput" style="border: none !important; outline: none !important; box-shadow: none !important;" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0" placeholder="Search Invoice..." />
+                        </div>
+                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                            <span id="salesPeriodBadge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
+                                <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                <span id="periodText">Period: Loading...</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 5. Desktop Table View -->
+                    <div class="table-responsive unified-ui-border hidden md:block w-full max-w-full overflow-x-auto rounded-2xl shadow-sm bg-white dark:bg-slate-900 mb-4">
+                        <table id="printTable" class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-[#15803d] text-white text-xs font-semibold uppercase tracking-wider">
+                                    <th class="p-[10px] text-center w-[50px] rounded-tl-2xl whitespace-nowrap">SL</th>
+                                    <th class="p-[10px] text-start whitespace-nowrap">Invoice</th>
+                                    <th class="p-[10px] text-end whitespace-nowrap">Cost Amount</th>
+                                    <th class="p-[10px] text-end whitespace-nowrap">Sales Amount</th>
+                                    <th class="p-[10px] text-end whitespace-nowrap">Paid Amount</th>
+                                    <th class="p-[10px] text-end whitespace-nowrap">Due Amount</th>
+                                    <th class="p-[10px] text-end rounded-tr-2xl whitespace-nowrap">Return Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm text-slate-700 dark:text-slate-200">
+                                <tr><td colspan="7" class="py-12 text-center text-slate-400 font-medium">Loading sales records...</td></tr>
+                            </tbody>
+                            <tfoot class="bg-slate-50/90 dark:bg-slate-800/70 text-slate-800 dark:text-slate-100 font-bold border-t-2 border-emerald-600/30 dark:border-emerald-600/20 text-xs sm:text-sm">
+                                <tr id="totalCounts">
+                                    <td colspan="2" class="p-[10px] text-end font-bold text-slate-600 dark:text-slate-300">Total Summary:</td>
+                                    <td id="tfootTotalCost" class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="tfootTotalSales" class="p-[10px] text-end font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="tfootTotalPaid" class="p-[10px] text-end font-bold text-sky-600 dark:text-sky-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="tfootTotalDue" class="p-[10px] text-end font-bold text-amber-600 dark:text-amber-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="tfootTotalReturn" class="p-[10px] text-end font-bold text-violet-600 dark:text-violet-400 whitespace-nowrap">৳ 0.00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- 6. Mobile Card View -->
+                    <div id="mobileCardList" class="block md:hidden mb-4 space-y-3 no-print"></div>
+
+                    <!-- 7. Pagination Controls -->
+                    <div id="paginationContainer" class="flex flex-col sm:flex-row items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-800 gap-3 no-print">
+                        <div id="display-info" class="text-xs text-slate-500 dark:text-slate-400 font-medium"></div>
+                        <div id="pagination" class="flex items-center gap-1 sm:gap-1.5 flex-nowrap justify-center max-w-full overflow-x-auto pb-1"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Sticky Copyright Footer -->
+        <div class="copyright sticky bottom-0 z-10 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 py-3 text-center shadow-[0_-4px_12px_rgba(0,0,0,0.03)] no-print">
+            <footer class="footer text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
+                &copy; {{ date('Y') }} MARSS CORPORATION | Software By: <a href="https://www.codenextit.com" target="_blank" class="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 font-bold hover:underline transition-colors">CodeNext IT</a>
+            </footer>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* â”€â”€ Core State Variables â”€â”€ */
+    let allSalesData = [];
+    let currentPage = 1;
+    let isInitialLoading = true;
+
+    // Fallback dummy record for seamless presentation
+    const dummySalesRecord = {
+        order_no: 'INV-2026-001',
+        total_cost: 3200.00,
+        selling_price: 4500.00,
+        paid_amount: 4000.00,
+        due_amount: 500.00,
+        return_amount: 0.00,
+        is_dummy: true
+    };
+
+    // Global clear dummy command if called
+    window.clearSalesDummy = function() {
+        allSalesData = allSalesData.filter(d => !d.is_dummy);
+        renderTable();
+        showExportToast('Dummy sales record cleared!', '#15803d');
+    };
+
+    let startPicker = null;
+    let endPicker = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initQuickFilterDropdown();
+        initFlatpickr();
+
+        // Preset to This Month on load
+        applyQuickFilter('thisMonth', false);
+
+        // Auto-fetch data
+        fetchSalesReport();
+
+        // Event listeners
+        document.getElementById("entries").addEventListener("change", () => {
+            currentPage = 1;
+            renderTable();
+        });
+
+        document.getElementById("searchInput").addEventListener("keyup", () => {
+            currentPage = 1;
+            renderTable();
+        });
+    });
+
+    /* â”€â”€ Quick Filter Dropdown Behavior â”€â”€ */
+    function initQuickFilterDropdown() {
+        const wrap = document.getElementById("quickFilterWrapper");
+        const btn = document.getElementById("quickFilterBtn");
+        const menu = document.getElementById("quickFilterMenu");
+        const arrow = document.getElementById("quickFilterArrow");
+
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const isOpen = menu.classList.contains("open");
+            if (isOpen) {
+                menu.classList.remove("open");
+                arrow.style.transform = "rotate(0deg)";
+            } else {
+                menu.classList.add("open");
+                arrow.style.transform = "rotate(180deg)";
+            }
+        });
+
+        document.querySelectorAll(".custom-select-option").forEach(opt => {
+            opt.addEventListener("click", (e) => {
+                e.stopPropagation();
+                document.querySelectorAll(".custom-select-option").forEach(o => o.classList.remove("active"));
+                opt.classList.add("active");
+                document.getElementById("quickFilterSelectedText").innerText = opt.innerText.trim();
+                menu.classList.remove("open");
+                arrow.style.transform = "rotate(0deg)";
+
+                const val = opt.getAttribute("data-value");
+                applyQuickFilter(val, true);
+            });
+        });
+
+        document.addEventListener("click", () => {
+            if (menu.classList.contains("open")) {
+                menu.classList.remove("open");
+                arrow.style.transform = "rotate(0deg)";
+            }
+        });
+    }
+
+    /* â”€â”€ Flatpickr Initialization (prev/next month, white weekdays in dark mode) â”€â”€ */
+    function initFlatpickr() {
+        const commonConfig = {
+            dateFormat: "Y-m-d",
+            monthSelectorType: "static",
+            prevArrow: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>',
+            nextArrow: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>',
+            onChange: function() {
+                // Remove active styling on quick filter preset when manual date picked
+                document.querySelectorAll(".custom-select-option").forEach(o => o.classList.remove("active"));
+                document.getElementById("quickFilterSelectedText").innerText = "Custom";
+                updatePeriodBadge();
+                fetchSalesReport();
+            }
+        };
+
+        startPicker = flatpickr("#startDate", { ...commonConfig });
+        endPicker   = flatpickr("#endDate",   { ...commonConfig });
+    }
+
+    /* â”€â”€ Apply Quick Filter Date Presets â”€â”€ */
+    function applyQuickFilter(preset, shouldFetch = true) {
+        const now = new Date();
+        let sDate = new Date();
+        let eDate = new Date();
+
+        if (preset === 'today') {
+            sDate = new Date();
+            eDate = new Date();
+        } else if (preset === 'yesterday') {
+            sDate.setDate(now.getDate() - 1);
+            eDate.setDate(now.getDate() - 1);
+        } else if (preset === 'last7') {
+            sDate.setDate(now.getDate() - 6);
+            eDate = new Date();
+        } else if (preset === 'last30') {
+            sDate.setDate(now.getDate() - 29);
+            eDate = new Date();
+        } else if (preset === 'thisMonth') {
+            sDate = new Date(now.getFullYear(), now.getMonth(), 1);
+            eDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        } else if (preset === 'lastMonth') {
+            sDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            eDate = new Date(now.getFullYear(), now.getMonth(), 0);
+        }
+
+        const formatYMD = (d) => {
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        const sStr = formatYMD(sDate);
+        const eStr = formatYMD(eDate);
+
+        if (startPicker && endPicker) {
+            startPicker.setDate(sStr, false);
+            endPicker.setDate(eStr, false);
+        } else {
+            document.getElementById("startDate").value = sStr;
+            document.getElementById("endDate").value = eStr;
+        }
+
+        updatePeriodBadge();
+        if (shouldFetch) {
+            fetchSalesReport();
+        }
+    }
+
+    function updatePeriodBadge() {
+        const s = document.getElementById("startDate").value || '';
+        const e = document.getElementById("endDate").value || '';
+        const badge = document.getElementById("periodText");
+        if (s === e && s) {
+            badge.innerText = `Period: ${s}`;
+        } else if (s && e) {
+            badge.innerText = `Period: ${s} to ${e}`;
+        } else {
+            badge.innerText = `Period: All`;
+        }
+    }
+
+    /* â”€â”€ Fetch Sales Report from API (Logic unchanged) â”€â”€ */
+    async function fetchSalesReport() {
+        const startDate = document.getElementById("startDate").value;
+        const endDate = document.getElementById("endDate").value;
+        if (!startDate || !endDate) return;
+
+        updatePeriodBadge();
+
+        try {
+            if (typeof showLoader === 'function') showLoader();
+            let res = await axios.get("/api/battery/sales-report-list", {
+                ...(typeof HeaderToken === 'function' ? HeaderToken() : {}),
+                params: { start_date: startDate, end_date: endDate }
+            });
+            if (typeof hideLoader === 'function') hideLoader();
+
+            let data = res.data['SalesReportData'] || [];
+
+            // New records shown at the top
+            allSalesData = data.slice().reverse();
+
+            currentPage = 1;
+            renderTable();
+        } catch (e) {
+            if (typeof hideLoader === 'function') hideLoader();
+            console.error('Error fetching sales report:', e);
+            allSalesData = [];
+            currentPage = 1;
+            renderTable();
+            if (typeof unauthorized === 'function' && e.response) {
+                unauthorized(e.response.status);
+            }
+        }
+    }
+
+    /* â”€â”€ Helper Money Formatter â”€â”€ */
+    function formatMoney(val) {
+        const num = parseFloat(val) || 0;
+        return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    /* â”€â”€ Render Table & Summary Cards â”€â”€ */
+    function renderTable() {
+        const search = (document.getElementById("searchInput").value || '').toLowerCase().trim();
+        const perPage = parseInt(document.getElementById("entries").value) || 15;
+
+        // Filter by invoice / order_no
+        const filtered = allSalesData.filter(item =>
+            (item.order_no || '').toLowerCase().includes(search)
+        );
+
+        const total = filtered.length;
+        const totalPages = Math.ceil(total / perPage) || 1;
+        if (currentPage > totalPages) currentPage = 1;
+        const start = (currentPage - 1) * perPage;
+        const pageData = filtered.slice(start, start + perPage);
+
+        // Compute summary totals across all filtered records
+        let totalCost = 0;
+        let totalSales = 0;
+        let totalPaid = 0;
+        let totalDue = 0;
+        let totalReturn = 0;
+
+        filtered.forEach(item => {
+            totalCost += parseFloat(item.total_cost) || 0;
+            totalSales += parseFloat(item.selling_price) || 0;
+            totalPaid += parseFloat(item.paid_amount) || 0;
+            totalDue += parseFloat(item.due_amount) || 0;
+            totalReturn += parseFloat(item.return_amount) || 0;
+        });
+
+        // Update Stat Cards
+        document.getElementById("cardTotalSales").innerText = `৳ ${formatMoney(totalSales)}`;
+        document.getElementById("cardTotalCost").innerText = `৳ ${formatMoney(totalCost)}`;
+        document.getElementById("cardTotalPaid").innerText = `৳ ${formatMoney(totalPaid)}`;
+        document.getElementById("cardTotalDue").innerText = `৳ ${formatMoney(totalDue)}`;
+
+        // Update Table Foot
+        document.getElementById("tfootTotalCost").innerText = `৳ ${formatMoney(totalCost)}`;
+        document.getElementById("tfootTotalSales").innerText = `৳ ${formatMoney(totalSales)}`;
+        document.getElementById("tfootTotalPaid").innerText = `৳ ${formatMoney(totalPaid)}`;
+        document.getElementById("tfootTotalDue").innerText = `৳ ${formatMoney(totalDue)}`;
+        document.getElementById("tfootTotalReturn").innerText = `৳ ${formatMoney(totalReturn)}`;
+
+        // Render Desktop Table Body
+        const tbody = document.getElementById('salesTableBody');
+        tbody.innerHTML = '';
+
+        if (pageData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-slate-400 font-medium">No sales records found for this period.</td></tr>`;
+        } else {
+            pageData.forEach((item, index) => {
+                const sl = start + index + 1;
+                const cost = parseFloat(item.total_cost) || 0;
+                const sales = parseFloat(item.selling_price) || 0;
+                const paid = parseFloat(item.paid_amount) || 0;
+                const due = parseFloat(item.due_amount) || 0;
+                const ret = parseFloat(item.return_amount) || 0;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
+                        <td class="p-[10px] text-center text-slate-400 dark:text-slate-500 font-semibold">${sl}</td>
+                        <td class="p-[10px] text-start font-mono font-bold text-slate-700 dark:text-slate-200">
+                            ${item.order_no}
+                            ${item.is_dummy ? '<span class="ml-1.5 px-1.5 py-0.5 text-[9px] font-bold rounded bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">DEMO</span>' : ''}
+                        </td>
+                        <td class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400">৳ ${formatMoney(cost)}</td>
+                        <td class="p-[10px] text-end font-bold text-emerald-600 dark:text-emerald-400">৳ ${formatMoney(sales)}</td>
+                        <td class="p-[10px] text-end font-bold text-sky-600 dark:text-sky-400">৳ ${formatMoney(paid)}</td>
+                        <td class="p-[10px] text-end font-bold text-amber-600 dark:text-amber-400">৳ ${formatMoney(due)}</td>
+                        <td class="p-[10px] text-end font-bold text-violet-600 dark:text-violet-400">৳ ${formatMoney(ret)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Render Mobile Box Cards
+        const mobileList = document.getElementById('mobileCardList');
+        mobileList.innerHTML = '';
+        if (pageData.length === 0) {
+            mobileList.innerHTML = `<div class="p-6 text-center text-slate-400 font-medium">No sales records found.</div>`;
+        } else {
+            pageData.forEach((item, index) => {
+                const sl = start + index + 1;
+                const cost = parseFloat(item.total_cost) || 0;
+                const sales = parseFloat(item.selling_price) || 0;
+                const paid = parseFloat(item.paid_amount) || 0;
+                const due = parseFloat(item.due_amount) || 0;
+                const ret = parseFloat(item.return_amount) || 0;
+
+                mobileList.innerHTML += `
+                    <div class="mobile-table-card shadow-sm">
+                        <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold text-slate-400">#${sl}</span>
+                                <span class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">${item.order_no}</span>
+                                ${item.is_dummy ? '<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">DEMO</span>' : ''}
+                            </div>
+                            <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">৳ ${formatMoney(sales)}</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div><span class="text-slate-400">Cost:</span> <strong class="text-rose-600 dark:text-rose-400">৳ ${formatMoney(cost)}</strong></div>
+                            <div><span class="text-slate-400">Paid:</span> <strong class="text-sky-600 dark:text-sky-400">৳ ${formatMoney(paid)}</strong></div>
+                            <div><span class="text-slate-400">Due:</span> <strong class="text-amber-600 dark:text-amber-400">৳ ${formatMoney(due)}</strong></div>
+                            <div><span class="text-slate-400">Return:</span> <strong class="text-violet-600 dark:text-violet-400">৳ ${formatMoney(ret)}</strong></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Display info
+        document.getElementById('display-info').innerHTML = total > 0
+            ? `<span class="text-xs text-slate-500 dark:text-slate-400">Showing <strong class="text-slate-700 dark:text-slate-200">${start + 1}â€“${Math.min(start + perPage, total)}</strong> of <strong class="text-slate-700 dark:text-slate-200">${total}</strong> records</span>`
+            : `<span class="text-xs text-slate-400">No records found</span>`;
+
+        // Pagination
+        renderPagination(totalPages);
+    }
+
+    /* â”€â”€ Pagination Buttons â”€â”€ */
+    function renderPagination(totalPages) {
+        const container = document.getElementById('pagination');
+        container.innerHTML = '';
+        if (totalPages <= 1) return;
+
+        const btnClass = "inline-flex items-center justify-center h-8 min-w-[32px] px-2.5 rounded-lg text-xs font-semibold transition-all duration-150 border";
+        const activeClass = "bg-emerald-700 text-white border-emerald-700 shadow-sm";
+        const inactiveClass = "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:border-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-400";
+        const disabledClass = "bg-white dark:bg-slate-800 text-slate-300 dark:text-slate-600 border-slate-200 dark:border-slate-700 cursor-not-allowed";
+
+        container.innerHTML += `<button onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="${btnClass} ${currentPage === 1 ? disabledClass : inactiveClass}">â€¹</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                container.innerHTML += `<button onclick="goPage(${i})" class="${btnClass} ${i === currentPage ? activeClass : inactiveClass}">${i}</button>`;
+            } else if (i === currentPage - 2 || i === currentPage + 2) {
+                container.innerHTML += `<span class="text-slate-400 px-1">â€¦</span>`;
+            }
+        }
+        container.innerHTML += `<button onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="${btnClass} ${currentPage === totalPages ? disabledClass : inactiveClass}">â€º</button>`;
+    }
+
+    function goPage(page) {
+        const perPage = parseInt(document.getElementById("entries").value) || 15;
+        const search = (document.getElementById("searchInput").value || '').toLowerCase().trim();
+        const filtered = allSalesData.filter(item => (item.order_no || '').toLowerCase().includes(search));
+        const totalPages = Math.ceil(filtered.length / perPage) || 1;
+        if (page < 1 || page > totalPages) return;
+        currentPage = page;
+        renderTable();
+    }
+
+    /* â”€â”€ Export Copy â”€â”€ */
+    function exportCopyDynamic() {
+        if (!allSalesData || allSalesData.length === 0) {
+            showExportToast('No sales data to copy!', '#be123c');
+            return;
+        }
+        const headers = ["SL", "Invoice", "Cost Amount", "Sales Amount", "Paid Amount", "Due Amount", "Return Amount"];
+        const rows = [headers.join('\t')];
+
+        let totCost = 0, totSales = 0, totPaid = 0, totDue = 0, totRet = 0;
+        allSalesData.forEach((item, index) => {
+            const cost = parseFloat(item.total_cost) || 0;
+            const sales = parseFloat(item.selling_price) || 0;
+            const paid = parseFloat(item.paid_amount) || 0;
+            const due = parseFloat(item.due_amount) || 0;
+            const ret = parseFloat(item.return_amount) || 0;
+            totCost += cost; totSales += sales; totPaid += paid; totDue += due; totRet += ret;
+
+            rows.push([
+                index + 1,
+                item.order_no || '',
+                cost.toFixed(2),
+                sales.toFixed(2),
+                paid.toFixed(2),
+                due.toFixed(2),
+                ret.toFixed(2)
+            ].join('\t'));
+        });
+
+        rows.push(["Total Summary:", "", totCost.toFixed(2), totSales.toFixed(2), totPaid.toFixed(2), totDue.toFixed(2), totRet.toFixed(2)].join('\t'));
+
+        navigator.clipboard.writeText(rows.join('\n'))
+            .then(() => showExportToast('Sales data copied to clipboard!', '#15803d'))
+            .catch(() => showExportToast('Failed to copy', '#be123c'));
+    }
+
+    /* â”€â”€ Export CSV â”€â”€ */
+    function exportCSVDynamic() {
+        if (!allSalesData || allSalesData.length === 0) {
+            showExportToast('No sales data to export!', '#be123c');
+            return;
+        }
+        const headers = ["SL", "Invoice", "Cost Amount (BDT)", "Sales Amount (BDT)", "Paid Amount (BDT)", "Due Amount (BDT)", "Return Amount (BDT)"];
+        const csvRows = [headers.map(h => `"${h}"`).join(',')];
+
+        let totCost = 0, totSales = 0, totPaid = 0, totDue = 0, totRet = 0;
+        allSalesData.forEach((item, index) => {
+            const cost = parseFloat(item.total_cost) || 0;
+            const sales = parseFloat(item.selling_price) || 0;
+            const paid = parseFloat(item.paid_amount) || 0;
+            const due = parseFloat(item.due_amount) || 0;
+            const ret = parseFloat(item.return_amount) || 0;
+            totCost += cost; totSales += sales; totPaid += paid; totDue += due; totRet += ret;
+
+            csvRows.push([
+                index + 1,
+                `"${(item.order_no || '').replace(/"/g, '""')}"`,
+                cost.toFixed(2),
+                sales.toFixed(2),
+                paid.toFixed(2),
+                due.toFixed(2),
+                ret.toFixed(2)
+            ].join(','));
+        });
+
+        csvRows.push([
+            `"Total Summary"`,
+            `""`,
+            `"${totCost.toFixed(2)}"`,
+            `"${totSales.toFixed(2)}"`,
+            `"${totPaid.toFixed(2)}"`,
+            `"${totDue.toFixed(2)}"`,
+            `"${totRet.toFixed(2)}"`
+        ].join(','));
+
+        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a');
+        const s = document.getElementById("startDate").value || 'report';
+        const e = document.getElementById("endDate").value || 'report';
+        a.href = URL.createObjectURL(blob);
+        a.download = `sales-report-${s}-to-${e}.csv`;
+        a.click();
+        showExportToast('CSV export downloaded!', '#15803d');
+    }
+
+    /* â”€â”€ Export Excel â”€â”€ */
+    function exportExcelDynamic() {
+        if (!allSalesData || allSalesData.length === 0) {
+            showExportToast('No sales data to export!', '#be123c');
+            return;
+        }
+
+        let totCost = 0, totSales = 0, totPaid = 0, totDue = 0, totRet = 0;
+        let tableRows = '';
+
+        allSalesData.forEach((item, index) => {
+            const cost = parseFloat(item.total_cost) || 0;
+            const sales = parseFloat(item.selling_price) || 0;
+            const paid = parseFloat(item.paid_amount) || 0;
+            const due = parseFloat(item.due_amount) || 0;
+            const ret = parseFloat(item.return_amount) || 0;
+            totCost += cost; totSales += sales; totPaid += paid; totDue += due; totRet += ret;
+
+            tableRows += `
+                <tr>
+                    <td align="center">${index + 1}</td>
+                    <td align="left">${item.order_no || ''}</td>
+                    <td align="right">${cost.toFixed(2)}</td>
+                    <td align="right">${sales.toFixed(2)}</td>
+                    <td align="right">${paid.toFixed(2)}</td>
+                    <td align="right">${due.toFixed(2)}</td>
+                    <td align="right">${ret.toFixed(2)}</td>
+                </tr>
+            `;
+        });
+
+        const tableHtml = `
+            <table border="1" style="border-collapse:collapse; font-family:Arial, sans-serif; font-size:11px;">
+                <thead>
+                    <tr style="background-color:#15803d; color:#ffffff; font-weight:bold;">
+                        <th>SL</th>
+                        <th>Invoice</th>
+                        <th>Cost Amount (BDT)</th>
+                        <th>Sales Amount (BDT)</th>
+                        <th>Paid Amount (BDT)</th>
+                        <th>Due Amount (BDT)</th>
+                        <th>Return Amount (BDT)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+                <tfoot>
+                    <tr style="background-color:#f1f5f9; font-weight:bold;">
+                        <td colspan="2" align="right">Total Summary:</td>
+                        <td align="right">৳ ${totCost.toFixed(2)}</td>
+                        <td align="right">৳ ${totSales.toFixed(2)}</td>
+                        <td align="right">৳ ${totPaid.toFixed(2)}</td>
+                        <td align="right">৳ ${totDue.toFixed(2)}</td>
+                        <td align="right">৳ ${totRet.toFixed(2)}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        `;
+
+        const fullHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"></head><body>${tableHtml}</body></html>`;
+        const blob = new Blob([fullHtml], { type: 'application/vnd.ms-excel' });
+        const a = document.createElement('a');
+        const s = document.getElementById("startDate").value || 'report';
+        const e = document.getElementById("endDate").value || 'report';
+        a.href = URL.createObjectURL(blob);
+        a.download = `sales-report-${s}-to-${e}.xls`;
+        a.click();
+        showExportToast('Excel export downloaded!', '#15803d');
+    }
+
+    /* â”€â”€ Direct PDF Download: Full width table, dark crisp headers matching Print view â”€â”€ */
+    function exportPDFDynamic() {
+        if (!allSalesData || allSalesData.length === 0) {
+            showExportToast('No sales data to export!', '#be123c');
+            return;
+        }
+
+        showExportToast('Generating Sales PDF...', '#15803d');
+
+        const period = document.getElementById('periodText').innerText.replace('Period: ', '');
+        const sSales = document.getElementById('cardTotalSales').innerText;
+        const sCost  = document.getElementById('cardTotalCost').innerText;
+        const sPaid  = document.getElementById('cardTotalPaid').innerText;
+        const sDue   = document.getElementById('cardTotalDue').innerText;
+
+        let rowsHtml = '';
+        let totCost = 0, totSales = 0, totPaid = 0, totDue = 0, totRet = 0;
+
+        allSalesData.forEach((item, index) => {
+            const cost = parseFloat(item.total_cost) || 0;
+            const sales = parseFloat(item.selling_price) || 0;
+            const paid = parseFloat(item.paid_amount) || 0;
+            const due = parseFloat(item.due_amount) || 0;
+            const ret = parseFloat(item.return_amount) || 0;
+            totCost += cost; totSales += sales; totPaid += paid; totDue += due; totRet += ret;
+
+            rowsHtml += `
+                <tr style="background-color: #ffffff;">
+                    <td style="width:6%; text-align:center; padding:5px 2px; border:1px solid #cbd5e1; font-size:8.5px; color:#111;">${index + 1}</td>
+                    <td style="width:18%; padding:5px 4px; border:1px solid #cbd5e1; font-size:8.5px; font-family:monospace; font-weight:bold; color:#0f172a;">${item.order_no}</td>
+                    <td style="width:15%; text-align:right; padding:5px 4px; border:1px solid #cbd5e1; font-size:8.5px; font-weight:bold; color:#be123c;">৳ ${formatMoney(cost)}</td>
+                    <td style="width:16%; text-align:right; padding:5px 4px; border:1px solid #cbd5e1; font-size:8.5px; font-weight:bold; color:#047857;">৳ ${formatMoney(sales)}</td>
+                    <td style="width:15%; text-align:right; padding:5px 4px; border:1px solid #cbd5e1; font-size:8.5px; font-weight:bold; color:#0284c7;">৳ ${formatMoney(paid)}</td>
+                    <td style="width:15%; text-align:right; padding:5px 4px; border:1px solid #cbd5e1; font-size:8.5px; font-weight:bold; color:#d97706;">৳ ${formatMoney(due)}</td>
+                    <td style="width:15%; text-align:right; padding:5px 4px; border:1px solid #cbd5e1; font-size:8.5px; font-weight:bold; color:#7c3aed;">৳ ${formatMoney(ret)}</td>
+                </tr>
+            `;
+        });
+
+        // Detached container with exact 690px width for perfect A4 fit without right-side clipping
+        const container = document.createElement('div');
+        container.style.cssText = 'width:690px; padding:10px; font-family:Arial, sans-serif; background:#ffffff !important; color:#111111 !important; box-sizing:border-box;';
+        container.innerHTML = `
+            <div style="text-align:center; border-bottom:2px solid #15803d; padding-bottom:8px; margin-bottom:10px; background:#ffffff;">
+                <h1 style="margin:0; color:#15803d !important; font-size:18px; font-weight:800; text-align:center;">MARSS CORPORATION</h1>
+                <p style="margin:2px 0; font-size:10px; color:#475569 !important; text-align:center;">Retailer & Wholesaler | Proprietor: Md. Anisur Rahman</p>
+                <h2 style="margin:4px 0 2px 0; font-size:13px; font-weight:700; color:#0f172a !important; text-align:center;">Sales Summary Report</h2>
+                <p style="margin:2px 0; font-size:9.5px; color:#64748b !important; text-align:center;">Period: ${period}</p>
+                <div style="display:flex; justify-content:space-around; margin-top:6px; padding:6px 8px; background:#f8fafc !important; border:1px solid #e2e8f0; border-radius:6px; font-size:10px; font-weight:bold; color:#0f172a !important;">
+                    <span style="color:#0f172a !important;">Total Sales: <strong style="color:#047857 !important;">${sSales}</strong></span>
+                    <span style="color:#0f172a !important;">Total Cost: <strong style="color:#be123c !important;">${sCost}</strong></span>
+                    <span style="color:#0f172a !important;">Total Paid: <strong style="color:#0284c7 !important;">${sPaid}</strong></span>
+                    <span style="color:#0f172a !important;">Total Due: <strong style="color:#d97706 !important;">${sDue}</strong></span>
+                </div>
+            </div>
+            <table style="width:100%; table-layout:fixed; border-collapse:collapse; margin-top:8px; font-size:8.5px; background:#ffffff;">
+                <thead>
+                    <tr style="background-color:#15803d !important; color:#ffffff !important;">
+                        <th style="width:6%; padding:5px 2px; border:1px solid #15803d; text-align:center; color:#ffffff !important; background-color:#15803d !important; font-size:8.5px;">SL</th>
+                        <th style="width:18%; padding:5px 4px; border:1px solid #15803d; text-align:left; color:#ffffff !important; background-color:#15803d !important; font-size:8.5px;">Invoice</th>
+                        <th style="width:15%; padding:5px 4px; border:1px solid #15803d; text-align:right; color:#ffffff !important; background-color:#15803d !important; font-size:8.5px;">Cost Amount</th>
+                        <th style="width:16%; padding:5px 4px; border:1px solid #15803d; text-align:right; color:#ffffff !important; background-color:#15803d !important; font-size:8.5px;">Sales Amount</th>
+                        <th style="width:15%; padding:5px 4px; border:1px solid #15803d; text-align:right; color:#ffffff !important; background-color:#15803d !important; font-size:8.5px;">Paid Amount</th>
+                        <th style="width:15%; padding:5px 4px; border:1px solid #15803d; text-align:right; color:#ffffff !important; background-color:#15803d !important; font-size:8.5px;">Due Amount</th>
+                        <th style="width:15%; padding:5px 4px; border:1px solid #15803d; text-align:right; color:#ffffff !important; background-color:#15803d !important; font-size:8.5px;">Return Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rowsHtml}
+                </tbody>
+                <tfoot>
+                    <tr style="background-color:#f8fafc !important; font-weight:bold; color:#0f172a !important;">
+                        <td colspan="2" style="padding:5px 4px; border:1px solid #cbd5e1; text-align:right; font-weight:bold; color:#0f172a !important;">Total Summary:</td>
+                        <td style="padding:5px 4px; border:1px solid #cbd5e1; text-align:right; color:#be123c !important; font-weight:bold;">৳ ${formatMoney(totCost)}</td>
+                        <td style="padding:5px 4px; border:1px solid #cbd5e1; text-align:right; color:#047857 !important; font-weight:bold;">৳ ${formatMoney(totSales)}</td>
+                        <td style="padding:5px 4px; border:1px solid #cbd5e1; text-align:right; color:#0284c7 !important; font-weight:bold;">৳ ${formatMoney(totPaid)}</td>
+                        <td style="padding:5px 4px; border:1px solid #cbd5e1; text-align:right; color:#d97706 !important; font-weight:bold;">৳ ${formatMoney(totDue)}</td>
+                        <td style="padding:5px 4px; border:1px solid #cbd5e1; text-align:right; color:#7c3aed !important; font-weight:bold;">৳ ${formatMoney(totRet)}</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div style="margin-top:35px; display:flex; justify-content:space-between; text-align:center; font-size:9px; font-weight:600; padding:0 20px; background:#ffffff;">
+                <div style="border-top:1px solid #333; width:130px; padding-top:4px; color:#111;">Cashier Signature</div>
+                <div style="border-top:1px solid #333; width:130px; padding-top:4px; color:#111;">Accountant Signature</div>
+                <div style="border-top:1px solid #333; width:130px; padding-top:4px; color:#111;">Owner Signature</div>
+            </div>
+        `;
+
+        const s = document.getElementById("startDate").value || 'report';
+        const e = document.getElementById("endDate").value || 'report';
+        const opt = {
+            margin:       [8, 8, 8, 8],
+            filename:     `sales-report-${s}-to-${e}.pdf`,
+            image:        { type: 'jpeg', quality: 0.99 },
+            html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        if (window.html2pdf) {
+            html2pdf().set(opt).from(container).save().then(() => {
+                showExportToast('PDF downloaded successfully!', '#15803d');
+            }).catch(err => {
+                console.error("PDF Download error:", err);
+                showExportToast('Error generating PDF download', '#be123c');
+            });
+        } else {
+            showExportToast('PDF engine loading, please try again...', '#be123c');
+        }
+    }
+
+    /* â”€â”€ Print Table View: A4 10px margins, header, summary bar, signatures â”€â”€ */
+    function printTableOnly() {
+        if (!allSalesData || allSalesData.length === 0) {
+            showExportToast('No sales data to print!', '#be123c');
+            return;
+        }
+
+        const period = document.getElementById('periodText').innerText.replace('Period: ', '');
+        const sSales = document.getElementById('cardTotalSales').innerText;
+        const sCost  = document.getElementById('cardTotalCost').innerText;
+        const sPaid  = document.getElementById('cardTotalPaid').innerText;
+        const sDue   = document.getElementById('cardTotalDue').innerText;
+
+        let rowsHtml = '';
+        let totCost = 0, totSales = 0, totPaid = 0, totDue = 0, totRet = 0;
+
+        allSalesData.forEach((item, index) => {
+            const cost = parseFloat(item.total_cost) || 0;
+            const sales = parseFloat(item.selling_price) || 0;
+            const paid = parseFloat(item.paid_amount) || 0;
+            const due = parseFloat(item.due_amount) || 0;
+            const ret = parseFloat(item.return_amount) || 0;
+            totCost += cost; totSales += sales; totPaid += paid; totDue += due; totRet += ret;
+
+            rowsHtml += `
+                <tr>
+                    <td style="text-align:center; padding:4px 2px; font-size:9px;">${index + 1}</td>
+                    <td style="padding:4px 6px; font-family:monospace; font-weight:bold; font-size:9.5px;">${item.order_no}</td>
+                    <td style="text-align:right; padding:4px 6px; font-size:9.5px; font-weight:bold; color:#be123c;">৳ ${formatMoney(cost)}</td>
+                    <td style="text-align:right; padding:4px 6px; font-size:9.5px; font-weight:bold; color:#047857;">৳ ${formatMoney(sales)}</td>
+                    <td style="text-align:right; padding:4px 6px; font-size:9.5px; font-weight:bold; color:#0284c7;">৳ ${formatMoney(paid)}</td>
+                    <td style="text-align:right; padding:4px 6px; font-size:9.5px; font-weight:bold; color:#d97706;">৳ ${formatMoney(due)}</td>
+                    <td style="text-align:right; padding:4px 6px; font-size:9.5px; font-weight:bold; color:#7c3aed;">৳ ${formatMoney(ret)}</td>
+                </tr>
+            `;
+        });
+
+        const printWin = window.open('', '_blank', 'width=1000,height=800');
+        printWin.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Sales Report - Print</title>
+                <style>
+                    @page { size: A4 portrait; margin: 10px !important; }
+                    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; padding: 6px; color: #111; background: #fff; }
+                    .report-header { text-align: center; border-bottom: 2px solid #15803d; padding-bottom: 6px; margin-bottom: 8px; }
+                    .report-header h1 { margin: 0; color: #15803d; font-size: 18px; font-weight: 800; }
+                    .report-header p { margin: 2px 0; font-size: 10px; color: #475569; }
+                    .report-header h2 { margin: 4px 0 2px 0; font-size: 13px; font-weight: 700; color: #0f172a; }
+                    .summary-bar { display: flex; justify-content: space-around; margin: 6px 0; padding: 5px 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 10px; font-weight: 700; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 9.5px; }
+                    th { background-color: #15803d !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 6px 5px; text-align: left; font-size: 9.5px; border: 1px solid #15803d; }
+                    td { border: 1px solid #cbd5e1; }
+                    tfoot td { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-weight: bold; border-top: 2px solid #15803d; padding: 6px 5px; font-size: 9.5px; }
+                    .signatures { margin-top: 40px; display: flex; justify-content: space-between; text-align: center; font-size: 10px; font-weight: 600; padding: 0 20px; }
+                    .signatures div { border-top: 1px solid #333; width: 140px; padding-top: 4px; }
+                </style>
+            </head>
+            <body>
+                <div class="report-header">
+                    <h1>MARSS CORPORATION</h1>
+                    <p>Retailer & Wholesaler | Proprietor: Md. Anisur Rahman</p>
+                    <h2>Sales Summary Report</h2>
+                    <p>Period: ${period}</p>
+                    <div class="summary-bar">
+                        <span>Total Sales: <strong style="color:#047857;">${sSales}</strong></span>
+                        <span>Total Cost: <strong style="color:#be123c;">${sCost}</strong></span>
+                        <span>Total Paid: <strong style="color:#0284c7;">${sPaid}</strong></span>
+                        <span>Total Due: <strong style="color:#d97706;">${sDue}</strong></span>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align:center; width:35px;">SL</th>
+                            <th>Invoice</th>
+                            <th style="text-align:right;">Cost Amount</th>
+                            <th style="text-align:right;">Sales Amount</th>
+                            <th style="text-align:right;">Paid Amount</th>
+                            <th style="text-align:right;">Due Amount</th>
+                            <th style="text-align:right;">Return Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2" style="text-align:right;">Total Summary:</td>
+                            <td style="text-align:right; color:#be123c;">৳ ${formatMoney(totCost)}</td>
+                            <td style="text-align:right; color:#047857;">৳ ${formatMoney(totSales)}</td>
+                            <td style="text-align:right; color:#0284c7;">৳ ${formatMoney(totPaid)}</td>
+                            <td style="text-align:right; color:#d97706;">৳ ${formatMoney(totDue)}</td>
+                            <td style="text-align:right; color:#7c3aed;">৳ ${formatMoney(totRet)}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="signatures">
+                    <div>Cashier Signature</div>
+                    <div>Accountant Signature</div>
+                    <div>Owner Signature</div>
+                </div>
+            </body>
+            </html>
+        `);
+        printWin.document.close();
+        printWin.focus();
+        setTimeout(() => {
+            printWin.print();
+            printWin.close();
+        }, 350);
+    }
+
+    /* â”€â”€ Export Toast Notification â”€â”€ */
+    function showExportToast(msg, color) {
+        const existing = document.getElementById('exportToastNotification');
+        if (existing) existing.remove();
+
+        const t = document.createElement('div');
+        t.id = 'exportToastNotification';
+        t.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:99999;padding:10px 18px;border-radius:10px;background:' + color + ';color:#fff;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,0.18);transition:opacity .3s';
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => {
+            t.style.opacity = '0';
+            setTimeout(() => t.remove(), 300);
+        }, 2200);
+    }
+</script>
+
+@endsection
+

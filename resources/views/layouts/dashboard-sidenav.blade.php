@@ -1483,6 +1483,40 @@
           @yield('topbar_back_button')
         @endif
 
+        {{-- Shop Context Switcher (Retail Shop <-> Battery) --}}
+        @php
+          $isBattery = request()->routeIs('battery.*') || request()->is('battery*');
+        @endphp
+        <div class="dropdown d-inline-block ms-2 ms-sm-3" id="shop-mode-switcher">
+          <button type="button" class="btn btn-sm d-flex align-items-center gap-1.5 px-2.5 py-1.5 rounded-xl border font-semibold transition-all shadow-sm {{ $isBattery ? 'bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-300' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300' }}" id="shopSwitcherDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 13px;">
+            <i class="{{ $isBattery ? 'fa-solid fa-car-battery text-amber-500' : 'fa-solid fa-shop text-emerald-600' }}"></i>
+            <span class="d-none d-sm-inline fw-semibold">{{ $isBattery ? 'Battery' : 'Retail Shop' }}</span>
+            <i class="fa-solid fa-chevron-down text-muted ms-1" style="font-size: 9px;"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-start shadow-lg border rounded-xl py-1 text-sm" aria-labelledby="shopSwitcherDropdown" style="min-width: 170px;">
+            <li>
+              <a class="dropdown-item d-flex align-items-center justify-content-between py-2 px-3 {{ !$isBattery ? 'active bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 font-bold' : '' }}" href="{{ url('admin-dashboard') }}">
+                <span class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-shop text-emerald-600"></i> Retail Shop
+                </span>
+                @if(!$isBattery)
+                  <i class="fa-solid fa-check text-emerald-600"></i>
+                @endif
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center justify-content-between py-2 px-3 {{ $isBattery ? 'active bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 font-bold' : '' }}" href="{{ route('battery.dashboard') }}">
+                <span class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-car-battery text-amber-500"></i> Battery
+                </span>
+                @if($isBattery)
+                  <i class="fa-solid fa-check text-amber-600"></i>
+                @endif
+              </a>
+            </li>
+          </ul>
+        </div>
+
         <!-- navbar searchbar -->
         {{-- <div class="search-bar-box d-flex align-items-center">
           <input type="text" placeholder="Search..." />
@@ -1746,7 +1780,7 @@
     </script>
     <!-- LOGO Box -->
     <div class="navbar-brand-box">
-  <a href="{{url('admin-dashboard')}}" class="logo logo-dark d-flex align-items-center text-decoration-none">
+  <a href="{{ $isBattery ? route('battery.dashboard') : url('admin-dashboard') }}" class="logo logo-dark d-flex align-items-center text-decoration-none">
     
     <!-- Collapsed Sidebar Icon (Small Mode) -->
     <span class="logo-sm">
@@ -1754,9 +1788,12 @@
     </span>
     
     <!-- Expanded Sidebar Icon (Large Mode) -->
-    <span class="logo-lg d-flex align-items-center">
+    <span class="logo-lg d-flex align-items-center position-relative">
       <!-- Full MARSS CORPORATION Logo -->
       <img src="{{ asset('backend/assets/img/marss-corporation-icon.svg') }}" alt="MARSS CORPORATION" style="width: 175px; height: auto; max-height: 55px; border-radius: 8px; object-fit: contain;" />
+      @if($isBattery)
+        <span class="badge bg-amber-500 text-slate-950 font-bold uppercase position-absolute" style="bottom: 2px; right: 4px; font-size: 8.5px; padding: 2px 6px; border-radius: 6px; letter-spacing: 0.5px;">BATTERY</span>
+      @endif
     </span>
   </a>
 </div>
@@ -1764,29 +1801,50 @@
 
     @php
       $activeParent = null;
-      if (request()->is('admin-dashboard-product*') || request()->is('admin-dashboard-brand*') || request()->is('admin-dashboard-category*') || request()->is('admin-dashboard-barcode-genarate*')) {
-          $activeParent = 'product';
-      } elseif (request()->is('admin-dashboard-supplier*') || request()->is('supplier-due-page*') || request()->is('supplier-due-collection-page*')) {
-          $activeParent = 'supplier';
-      } elseif (request()->is('admin-dashboard-Purchase*')) {
-          $activeParent = null;
-      } elseif (request()->is('admin-dashboard-customer*') || request()->is('admin-dashboard-customer-due-list*') || request()->is('customer-due-collection-page*')) {
-          $activeParent = 'customer';
-      } elseif (request()->is('admin-dashboard-expence*')) {
-          $activeParent = 'expense';
-      } elseif (request()->is('admin-dashboard-return-list*')) {
-          $activeParent = null;
-      } elseif (request()->is('admin-dashboard-opening-balance*')) {
-          $activeParent = null;
-      } elseif (request()->is('admin-dashboard-*-report*') || request()->is('admin-dashboard-stock-out*') || request()->is('admin-dashboard-daily-*') || request()->is('admin-dashboard-personal-*') || request()->is('admin-dashboard-income-*') || request()->is('admin-dashboard-sales-report*')) {
-          $activeParent = 'report';
-      } elseif (request()->is('admin-dashboard-user-role*') || request()->is('admin-dashboard-user-profile*')) {
-          $activeParent = 'user-role';
+      if ($isBattery) {
+          if (request()->routeIs('battery.products') || request()->routeIs('battery.brands') || request()->routeIs('battery.categories') || request()->routeIs('battery.sub-categories') || request()->routeIs('battery.units') || request()->routeIs('battery.barcode*') || request()->routeIs('battery.reports.stock-out')) {
+              $activeParent = 'battery-product';
+          } elseif (request()->routeIs('battery.suppliers') || request()->routeIs('battery.supplier.*')) {
+              $activeParent = 'battery-supplier';
+          } elseif (request()->routeIs('battery.purchases') || request()->routeIs('battery.purchase.*')) {
+              $activeParent = 'battery-purchase';
+          } elseif (request()->routeIs('battery.customers') || request()->routeIs('battery.customer.*')) {
+              $activeParent = 'battery-customer';
+          } elseif (request()->routeIs('battery.expenses') || request()->routeIs('battery.expense.*')) {
+              $activeParent = 'battery-expense';
+          } elseif (request()->routeIs('battery.sales.returns') || request()->routeIs('battery.purchase.returns')) {
+              $activeParent = 'battery-return';
+          } elseif (request()->routeIs('battery.reports.*')) {
+              $activeParent = 'battery-report';
+          }
+      } else {
+          if (request()->is('admin-dashboard-product*') || request()->is('admin-dashboard-brand*') || request()->is('admin-dashboard-category*') || request()->is('admin-dashboard-barcode-genarate*')) {
+              $activeParent = 'product';
+          } elseif (request()->is('admin-dashboard-supplier*') || request()->is('supplier-due-page*') || request()->is('supplier-due-collection-page*')) {
+              $activeParent = 'supplier';
+          } elseif (request()->is('admin-dashboard-Purchase*')) {
+              $activeParent = null;
+          } elseif (request()->is('admin-dashboard-customer*') || request()->is('admin-dashboard-customer-due-list*') || request()->is('customer-due-collection-page*')) {
+              $activeParent = 'customer';
+          } elseif (request()->is('admin-dashboard-expence*')) {
+              $activeParent = 'expense';
+          } elseif (request()->is('admin-dashboard-return-list*')) {
+              $activeParent = null;
+          } elseif (request()->is('admin-dashboard-opening-balance*')) {
+              $activeParent = null;
+          } elseif (request()->is('admin-dashboard-*-report*') || request()->is('admin-dashboard-stock-out*') || request()->is('admin-dashboard-daily-*') || request()->is('admin-dashboard-personal-*') || request()->is('admin-dashboard-income-*') || request()->is('admin-dashboard-sales-report*')) {
+              $activeParent = 'report';
+          } elseif (request()->is('admin-dashboard-user-role*') || request()->is('admin-dashboard-user-profile*')) {
+              $activeParent = 'user-role';
+          }
       }
     @endphp
 
     <!--- Redesigned Sliding Drilldown Wrapper -->
     <div id="sidebar-slider-wrapper" class="relative flex-1 w-full overflow-hidden">
+      @if($isBattery)
+        @include('battery.layouts.sidebar-panels')
+      @else
       
       <!-- Panel 1: Main Menu Panel -->
       <div id="sidebar-main-panel" class="sidebar-panel-scroll absolute inset-0 w-full h-full overflow-y-auto overflow-x-hidden transition-transform duration-300 ease-in-out py-2 px-3 {{ $activeParent ? '-translate-x-full pointer-events-none' : 'translate-x-0' }}">
@@ -2366,6 +2424,7 @@
           </li>
         </ul>
       </div>
+      @endif
 
     </div>
 

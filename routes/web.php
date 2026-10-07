@@ -201,6 +201,8 @@ Route::get('/supplier/profile/{id}', [App\Http\Controllers\SupplierController::c
 // Supplier Payment Details Update (Web fallback route to prevent 404 on live server or non-api requests)
 Route::post('/supplier-payment-details-update', [App\Http\Controllers\SupplierDueCollectionController::class, 'SupplierPaymentDetailsUpdate'])->middleware('auth:sanctum');
 
+require __DIR__.'/battery.php';
+
 
 
 

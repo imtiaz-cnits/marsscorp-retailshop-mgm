@@ -322,3 +322,5 @@ Route::get('/daily-ledger-report-list', [ReportManagementController::class, 'Dai
 // Dashboard Report API End
 
 // Dashboard All API Route End
+
+require __DIR__.'/battery_api.php';

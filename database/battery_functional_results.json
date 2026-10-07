@@ -1,0 +1,243 @@
+{
+    "timestamp": "2026-10-07 18:28:32",
+    "all_passed": true,
+    "retail_baseline": {
+        "product_count": 212,
+        "product_qty": 2271,
+        "customer_count": 20,
+        "customer_due": 1801415,
+        "order_count": 20,
+        "order_subtotal": 12700,
+        "order_paid": 4805,
+        "order_due": 7990,
+        "order_details_count": 20,
+        "order_payments_count": 20,
+        "order_payments_sum": 4805,
+        "cust_payments_count": 1,
+        "cust_payments_sum": 1000,
+        "supplier_count": 5,
+        "supplier_payable": 56620656,
+        "purchase_count": 5,
+        "purchase_grandtotal": 202232,
+        "purchase_paid": 1050,
+        "purchase_due": 201182,
+        "purchase_details_cnt": 54,
+        "purchase_pay_cnt": 5,
+        "purchase_pay_sum": 1050,
+        "supp_due_col_count": 1,
+        "supp_due_col_sum": 4000,
+        "expense_count": 1,
+        "expense_sum": 500,
+        "return_count": 1,
+        "purchase_ret_count": 0
+    },
+    "retail_after": {
+        "product_count": 212,
+        "product_qty": 2271,
+        "customer_count": 20,
+        "customer_due": 1801415,
+        "order_count": 20,
+        "order_subtotal": 12700,
+        "order_paid": 4805,
+        "order_due": 7990,
+        "order_details_count": 20,
+        "order_payments_count": 20,
+        "order_payments_sum": 4805,
+        "cust_payments_count": 1,
+        "cust_payments_sum": 1000,
+        "supplier_count": 5,
+        "supplier_payable": 56620656,
+        "purchase_count": 5,
+        "purchase_grandtotal": 202232,
+        "purchase_paid": 1050,
+        "purchase_due": 201182,
+        "purchase_details_cnt": 54,
+        "purchase_pay_cnt": 5,
+        "purchase_pay_sum": 1050,
+        "supp_due_col_count": 1,
+        "supp_due_col_sum": 4000,
+        "expense_count": 1,
+        "expense_sum": 500,
+        "return_count": 1,
+        "purchase_ret_count": 0
+    },
+    "retail_differences": [],
+    "test_results": [
+        {
+            "num": 1,
+            "name": "Battery Master Data CRUD",
+            "expected": "All 7 master entities created with exact properties",
+            "actual": "All 7 master entities created successfully",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 2,
+            "name": "POS \/ Order Creation",
+            "expected": "BatteryOrder created with #BAT-INV prefix and linked records",
+            "actual": "Created order #BAT-INV00016 (ID: 29)",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 3,
+            "name": "Stock Decrement on Sale",
+            "expected": "Product stock decremented from 20 to 17 (-3 units)",
+            "actual": "Stock decremented to 17",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 4,
+            "name": "Insufficient Stock & Rollback Protection",
+            "expected": "Failed transaction rolls back cleanly with 0 orphan records and unchanged stock",
+            "actual": "Transaction safely rolled back with 100% data integrity",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 5,
+            "name": "Purchase Creation & Stock Increase",
+            "expected": "Purchase created with #PurID and stock increased from 17 to 27 (+10 units)",
+            "actual": "Created purchase #PurID00011, stock increased to 27",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 6,
+            "name": "Weighted-Average Cost Calculation",
+            "expected": "Expected cost: 4370.37 BDT",
+            "actual": "Actual cost: 4370.37 BDT",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 7,
+            "name": "Purchase Payment Update",
+            "expected": "Paid amount: 40,000 BDT, Due amount: 10,000 BDT, payment record created",
+            "actual": "Paid: 40000.00, Due: 10000.00",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 8,
+            "name": "Customer Due Collection with FIFO",
+            "expected": "Previous Due: 0 BDT, Order 1 Due: 3500 BDT, Order 2 Due: 1500 BDT (Total: 5000 BDT)",
+            "actual": "Prev Due: 0.00, Order 1 Due: 3500.00, Order 2 Due: 1500.00",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 9,
+            "name": "Supplier Due Collection",
+            "expected": "Previous Payable: 0 BDT, Purchase 1 Due: 7000 BDT (Total: 7000 BDT)",
+            "actual": "Prev Payable: 0.00, Purchase Due: 7000.00",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 10,
+            "name": "Sales Return Processing",
+            "expected": "Return recorded, Product stock incremented by 1, order adjusted",
+            "actual": "Stock restored from 26 to 27",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 11,
+            "name": "Purchase Return Processing",
+            "expected": "Return recorded, Product stock decremented by 1",
+            "actual": "Stock decremented from 27 to 26",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 12,
+            "name": "Expenses Management",
+            "expected": "Expense type created and 1,500 BDT expense recorded",
+            "actual": "Recorded expense of 1500.00 BDT",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 13,
+            "name": "Opening Balance Management",
+            "expected": "Opening balance of 25,000 BDT saved for today",
+            "actual": "Saved opening balance: 25000.00 BDT",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 14,
+            "name": "Dashboard Calculations",
+            "expected": "Calculates sales, profit, cash collection, and inventory correctly",
+            "actual": "Dashboard calculated: 11 products, total sales: 191000.02 BDT",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 15,
+            "name": "Sales Report",
+            "expected": "Returns list of sales with order_no, paid, due, return amount",
+            "actual": "Generated sales report with 17 invoices",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 16,
+            "name": "Daily Ledger Report",
+            "expected": "Chronological transaction timeline with inflow, outflow, and running balance",
+            "actual": "Ledger generated with 51 transactions, net balance: 119000 BDT",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 17,
+            "name": "Income\/Expense Summary Report",
+            "expected": "Daily aggregation of sales, costs, discounts, dues, expenses",
+            "actual": "Income\/Expense aggregation generated successfully",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 18,
+            "name": "Daily Receipt & Payment Report",
+            "expected": "Opening balance, sales collection, supplier payment, expense, and closing balance",
+            "actual": "Opening: 25000, Collection: 150000, Closing: -179000",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 19,
+            "name": "Stock-Out Report",
+            "expected": "Returns low-stock and out-of-stock products (quantity <= 10)",
+            "actual": "Stock-out report returned 0 items",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 20,
+            "name": "Endpoint Coexistence (Retail vs Battery)",
+            "expected": "POST \/api\/create-order -> Retail OrderController, POST \/api\/battery\/create-order -> BatteryOrderController",
+            "actual": "Retail: [App\\Http\\Controllers\\OrderController@OrderCreate], Battery: [App\\Http\\Controllers\\Battery\\BatteryOrderController@OrderCreate]",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 21,
+            "name": "Sequential ID Generation & Collision Immunity",
+            "expected": "No duplicates in Battery invoice numbers (#BAT-INV*) or purchase IDs (#PurID*)",
+            "actual": "All IDs uniquely sequential (17 orders, 10 purchases)",
+            "pass": true,
+            "details": ""
+        },
+        {
+            "num": 22,
+            "name": "Retail Database Invariance Check",
+            "expected": "All 22 Retail metrics remain exactly unchanged (Delta = 0.00)",
+            "actual": "Zero changes to Retail database (100% Isolated)",
+            "pass": true,
+            "details": ""
+        }
+    ]
+}
