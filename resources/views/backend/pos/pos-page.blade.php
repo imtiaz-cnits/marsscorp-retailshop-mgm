@@ -4726,11 +4726,11 @@
                             </div>
                             <div class="col-md-5">
                                 <label for="quickProductCode" class="form-label fw-bold text-dark mb-1" style="font-size: 12px;">Barcode / Product Code</label>
-                                <div class="position-relative">
-                                    <input type="text" class="form-control fw-semibold" id="quickProductCode" placeholder="e.g.: BAT-1002" style="border-radius: 7px; font-size: 12px; height: 35px; padding-right: 38px;">
-                                    <button class="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-1 d-flex align-items-center justify-content-center p-0" type="button" onclick="generateQuickBarcode()" title="Generate Unique Barcode" style="height: 27px; width: 27px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; color: #16a34a; transition: all 0.2s; z-index: 4;" onmouseover="this.style.background='#dcfce7'; this.style.borderColor='#86efac';" onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#cbd5e1';">
-                                        <i class="fa-solid fa-arrows-rotate" style="font-size: 12px;"></i>
-                                    </button>
+                                <div style="position: relative; width: 100%;">
+                                    <input type="text" class="form-control fw-semibold" id="quickProductCode" placeholder="e.g.: BAT-1002" style="border-radius: 7px; font-size: 12px; height: 35px; padding-left: 10px; padding-right: 36px; width: 100%;">
+                                    <a href="javascript:void(0)" onclick="generateQuickBarcode()" title="Generate Unique Barcode" style="position: absolute !important; right: 4px !important; top: 4px !important; width: 27px !important; height: 27px !important; display: flex !important; align-items: center !important; justify-content: center !important; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important; border-radius: 6px !important; z-index: 10 !important; cursor: pointer !important; text-decoration: none !important; box-shadow: 0 1px 2px rgba(0,0,0,0.15);" onmouseover="this.style.opacity='0.9';" onmouseout="this.style.opacity='1';">
+                                        <i class="fa-solid fa-arrows-rotate" style="font-size: 11px; color: #ffffff !important;"></i>
+                                    </a>
                                 </div>
                             </div>
 
