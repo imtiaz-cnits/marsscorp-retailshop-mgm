@@ -2190,10 +2190,19 @@
            1. Back to Dashboard Button (Primary Green BG & White Text)
            ======================================================== */
         .nav_back_btn a,
-        .nav_back_btn a.btn {
+        .nav_back_btn a.btn,
+        .nav_back_btn a:visited {
             background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important;
             border: none !important;
             color: #ffffff !important;
+            padding: 6px 14px !important;
+            height: 32px !important;
+            border-radius: 20px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            text-decoration: none !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
         }
 
         .nav_back_btn a i,
@@ -2206,6 +2215,15 @@
             background: linear-gradient(135deg, #166534 0%, #15803d 100%) !important;
             color: #ffffff !important;
             transform: translateY(-1px);
+            padding: 6px 14px !important;
+        }
+
+        .nav_back_btn a:focus,
+        .nav_back_btn a:active {
+            padding: 6px 14px !important;
+            color: #ffffff !important;
+            outline: none !important;
+            box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.4) !important;
         }
 
         .nav_back_btn a:hover i,
@@ -2218,6 +2236,7 @@
             background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important;
             border: none !important;
             color: #ffffff !important;
+            padding: 6px 14px !important;
         }
 
         body[light-mode="dark"] .nav_back_btn a i,
@@ -2227,6 +2246,13 @@
 
         body[light-mode="dark"] .nav_back_btn a:hover {
             background: linear-gradient(135deg, #166534 0%, #15803d 100%) !important;
+            color: #ffffff !important;
+            padding: 6px 14px !important;
+        }
+
+        body[light-mode="dark"] .nav_back_btn a:focus,
+        body[light-mode="dark"] .nav_back_btn a:active {
+            padding: 6px 14px !important;
             color: #ffffff !important;
         }
 

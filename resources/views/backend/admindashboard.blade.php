@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title', 'Admin Dashboard - MARSS CORPORATION')
 @section('content')
 
