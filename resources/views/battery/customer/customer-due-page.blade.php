@@ -215,7 +215,9 @@
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                         <td class="p-[10px] text-center text-slate-400 font-medium">${idx + 1}</td>
-                        <td class="p-[10px] font-semibold text-slate-800 dark:text-slate-100">${c.name}</td>
+                        <td class="p-[10px] font-semibold text-slate-800 dark:text-slate-100">
+                            <a href="/battery/customer/profile/${c.id}" class="text-emerald-700 dark:text-emerald-400 font-bold hover:underline" title="View Customer Profile">${c.name}</a>
+                        </td>
                         <td class="p-[10px] font-mono text-xs text-slate-600 dark:text-slate-300">${c.mobile}</td>
                         <td class="p-[10px] text-end text-slate-600 dark:text-slate-300">৳ ${openDue.toLocaleString()}</td>
                         <td class="p-[10px] text-end text-slate-600 dark:text-slate-300">৳ ${orderDue.toLocaleString()}</td>
@@ -234,7 +236,9 @@
                             <span class="text-xs font-mono text-slate-400">#${idx + 1} | ${c.mobile}</span>
                             <span class="text-xs font-bold text-rose-600">Total: ৳ ${total.toLocaleString()}</span>
                         </div>
-                        <div class="font-bold text-slate-800 dark:text-white">${c.name}</div>
+                        <div class="font-bold text-slate-800 dark:text-white">
+                            <a href="/battery/customer/profile/${c.id}" class="text-emerald-700 dark:text-emerald-400 hover:underline">${c.name}</a>
+                        </div>
                         <div class="grid grid-cols-2 text-xs text-slate-600 dark:text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-800">
                             <div>Opening: ৳ ${openDue.toLocaleString()}</div>
                             <div class="text-end">Invoice Due: ৳ ${orderDue.toLocaleString()}</div>

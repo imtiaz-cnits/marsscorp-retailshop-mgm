@@ -147,14 +147,24 @@ class BatteryPurchaseReturnController extends Controller
         try {
             DB::beginTransaction();
 
-            $user_id = Auth::id();
+            $user_id = Auth::id() ?? 1;
             $purchase = BatteryPurchase::with('orderDetails')->findOrFail($request->purchase_id);
             $supplier = BatterySupplier::findOrFail($request->supplier_id);
 
             $date = Carbon::parse($request->date)->format('Y-m-d');
+            $totalReturnAmount = 0;
 
             foreach ($request->products as $returnedItem) {
-                $orderDetail = BatteryPurchaseOrderDetail::findOrFail($returnedItem['purchase_order_detail_id']);
+                $detailId = $returnedItem['purchase_order_detail_id'] ?? $returnedItem['purchase_details_id'] ?? null;
+                if (!$detailId) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => 'Missing purchase detail reference.'
+                    ], 400);
+                }
+
+                $orderDetail = BatteryPurchaseOrderDetail::findOrFail($detailId);
                 $product = BatteryProduct::findOrFail($returnedItem['product_id']);
                 $returnQty = (int) $returnedItem['quantity'];
 
@@ -166,7 +176,7 @@ class BatteryPurchaseReturnController extends Controller
                     ], 400);
                 }
 
-                $unitPrice = $orderDetail->cost_price;
+                $unitPrice = (float) $orderDetail->cost_price;
                 $returnAmount = $returnQty * $unitPrice;
 
                 BatteryPurchaseReturn::create([
@@ -194,13 +204,34 @@ class BatteryPurchaseReturnController extends Controller
                 } else {
                     $orderDetail->delete();
                 }
+
+                $totalReturnAmount += $returnAmount;
             }
+
+            // 6. Update Parent Battery Purchase Header (Retail-equivalent Parity)
+            $currentPurchaseOrderDetailsSubtotal = BatteryPurchaseOrderDetail::where('purchase_id', $purchase->id)->sum('subtotal');
+            $remainingSubTotal = (float) $currentPurchaseOrderDetailsSubtotal;
+            $remainingPaid = (float) $purchase->paid_amount;
+            $remainingDue = max(0, (float) $purchase->due_amount - $totalReturnAmount);
+
+            $purchase->update([
+                'grand_subtotal' => $remainingSubTotal,
+                'paid_amount'    => $remainingPaid,
+                'due_amount'     => $remainingDue,
+            ]);
+
+            // 7. Update Battery Supplier Payable Balance (Retail-equivalent Parity)
+            $supplier->update([
+                'purchase_payable_amount' => max(0, (float) $supplier->purchase_payable_amount - $totalReturnAmount),
+            ]);
 
             DB::commit();
 
             return response()->json([
-                'status' => 'success',
-                'message' => 'Purchase return recorded successfully.'
+                'status'              => 'success',
+                'message'             => 'Purchase Return Successfully Processed',
+                'remaining_sub_total' => $remainingSubTotal,
+                'remaining_due'       => $remainingDue,
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -208,4 +239,12 @@ class BatteryPurchaseReturnController extends Controller
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function PurchaseReturnShowDetails($id)
+    {
+        $purchaseReturn = BatteryPurchaseReturn::with(['purchase', 'supplier', 'product', 'user'])->findOrFail($id);
+
+        return view('battery.return.purchase-return-details', compact('purchaseReturn'));
+    }
 }
+

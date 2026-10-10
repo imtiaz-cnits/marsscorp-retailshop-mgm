@@ -10,7 +10,7 @@
 
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('backend/assets/icons/nexus-pos-logo.svg') }}" type="image/x-icon" />
+    <link rel="shortcut icon" href="{{ asset('backend/assets/icons/favicon.svg') }}" type="image/x-icon" />
 
     <!-- Google Fonts: Valley Sans & Baloo Da 2 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

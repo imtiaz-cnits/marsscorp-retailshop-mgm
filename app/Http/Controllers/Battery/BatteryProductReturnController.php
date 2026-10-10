@@ -219,4 +219,12 @@ class BatteryProductReturnController extends Controller
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function ReturnShowDetails($id)
+    {
+        $return = BatteryProductReturn::with(['order', 'customer', 'product', 'user'])->findOrFail($id);
+
+        return view('battery.return.return-details', compact('return'));
+    }
 }
+

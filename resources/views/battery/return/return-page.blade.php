@@ -68,12 +68,13 @@
                                     <th class="p-[10px] text-start whitespace-nowrap">Customer</th>
                                     <th class="p-[10px] text-start whitespace-nowrap">Returned Product</th>
                                     <th class="p-[10px] text-center whitespace-nowrap">Qty</th>
-                                    <th class="p-[10px] text-end rounded-tr-2xl whitespace-nowrap">Return Amount</th>
+                                    <th class="p-[10px] text-end whitespace-nowrap">Return Amount</th>
+                                    <th class="p-[10px] text-center w-[90px] rounded-tr-2xl whitespace-nowrap">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="returnsTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
                                 <tr>
-                                    <td colspan="7" class="text-center py-6 text-slate-400">Loading battery sales returns...</td>
+                                    <td colspan="8" class="text-center py-6 text-slate-400">Loading battery sales returns...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -236,7 +237,7 @@
         mobileContainer.innerHTML = '';
 
         if (pageItems.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">No sales return records found.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400">No sales return records found.</td></tr>`;
             mobileContainer.innerHTML = `<div class="p-6 text-center text-slate-400 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">No sales return records found.</div>`;
         } else {
             pageItems.forEach((r, idx) => {
@@ -250,6 +251,11 @@
                         <td class="p-[10px] text-slate-700 dark:text-slate-200">${r.product_name}</td>
                         <td class="p-[10px] text-center font-bold">${r.quantity}</td>
                         <td class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400">৳ ${parseFloat(r.amount || 0).toLocaleString()}</td>
+                        <td class="p-[10px] text-center whitespace-nowrap">
+                            <a href="/battery/return/${r.id}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/50 transition-all shadow-sm" title="View Return Details">
+                                <i class="fa-solid fa-eye text-xs"></i>
+                            </a>
+                        </td>
                     </tr>
                 `;
 
@@ -261,7 +267,12 @@
                         </div>
                         <div class="font-bold text-slate-800 dark:text-white">${r.customer_name}</div>
                         <div class="text-xs text-slate-600 dark:text-slate-300">${r.product_name} (Qty: ${r.quantity})</div>
-                        <div class="text-xs text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-800">Date: ${r.date}</div>
+                        <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
+                            <span class="text-xs text-slate-400">Date: ${r.date}</span>
+                            <a href="/battery/return/${r.id}" class="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline">
+                                <i class="fa-solid fa-eye text-[10px]"></i> View Details
+                            </a>
+                        </div>
                     </div>
                 `;
             });

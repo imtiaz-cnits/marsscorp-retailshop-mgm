@@ -397,7 +397,7 @@
                     <div class="card border-0 p-2 mb-3 modal-search-card">
                         <div class="d-flex align-items-center gap-2">
                             <div class="flex-grow-1 position-relative">
-                                <input type="text" id="fullEditSearchInput" class="form-control" placeholder="ðŸ” Scan barcode or enter product name/code..." autocomplete="off" style="height: 42px; font-size: 13.5px; border-radius: 8px;" />
+                                <input type="text" id="fullEditSearchInput" class="form-control" placeholder="Scan barcode or enter product name/code..." autocomplete="off" style="height: 42px; font-size: 13.5px; border-radius: 8px;" />
                                 
                                 <!-- Dynamic Autocomplete Results Dropdown -->
                                 <div id="fullEditProductSearchResults" class="dropdown-menu shadow-lg w-100 p-0 overflow-auto" style="max-height: 280px; display: none; position: absolute; z-index: 1070; top: 100%; left: 0; border-radius: 8px;"></div>

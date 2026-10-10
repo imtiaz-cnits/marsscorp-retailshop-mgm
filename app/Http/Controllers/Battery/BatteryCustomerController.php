@@ -223,22 +223,78 @@ class BatteryCustomerController extends Controller
         }
     }
 
+    public function CustomerProfilePage($id)
+    {
+        return view('battery.customer.customer-profile', compact('id'));
+    }
+
     public function CustomerProfileData($id)
     {
         try {
-            $customer = BatteryCustomer::findOrFail($id);
+            $customer = BatteryCustomer::where(function ($q) use ($id) {
+                if (is_numeric($id)) {
+                    $q->where('id', $id);
+                }
+                $q->orWhere('customer_id', $id);
+            })->first();
 
-            $invoices = BatteryOrder::where('customer_id', $id)
+            if (!$customer) {
+                return response()->json(['status' => 'fail', 'message' => 'Customer not found']);
+            }
+
+            // Sales Returns list for this battery customer
+            $returns = DB::table('battery_product_returns')
+                ->leftJoin('battery_orders', 'battery_product_returns.order_id', '=', 'battery_orders.id')
+                ->leftJoin('battery_products', 'battery_product_returns.product_id', '=', 'battery_products.id')
+                ->where('battery_product_returns.customer_id', $customer->id)
+                ->select([
+                    'battery_product_returns.id',
+                    'battery_product_returns.amount',
+                    'battery_product_returns.due_amount',
+                    'battery_product_returns.quantity',
+                    'battery_product_returns.date',
+                    'battery_product_returns.created_at',
+                    'battery_orders.id as db_order_id',
+                    'battery_orders.order_no',
+                    'battery_products.product_name'
+                ])
+                ->orderBy('battery_product_returns.created_at', 'desc')
+                ->get()
+                ->map(function ($r) {
+                    return [
+                        'id'                   => $r->id,
+                        'order_no'             => $r->order_no ?? ('#InvID' . str_pad($r->db_order_id ?? 0, 5, '0', STR_PAD_LEFT)),
+                        'product_name'         => $r->product_name ?? 'N/A',
+                        'quantity'             => (int) ($r->quantity ?? 1),
+                        'amount'               => (float) $r->amount,
+                        'date'                 => $r->date ? Carbon::parse($r->date)->format('d-m-Y') : Carbon::parse($r->created_at)->format('d-m-Y'),
+                        'created_at_formatted' => Carbon::parse($r->created_at)->format('d-m-Y h:i A')
+                    ];
+                });
+
+            // Battery Orders / Invoices with accurate effective paid & due calculations
+            $invoices = BatteryOrder::where('customer_id', $customer->id)
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->get()
+                ->map(function ($order) {
+                    $subTotal = (float) $order->sub_total;
+                    $paidAmount = (float) $order->paid_amount;
+                    $returnAdj = (float) ($order->return_adjustment_amount ?? 0);
 
-            $returns = BatteryProductReturn::where('customer_id', $id)
-                ->orderBy('created_at', 'desc')
-                ->get();
+                    $effectivePaid = $paidAmount + $returnAdj;
+                    $dueAmount = max(0, $subTotal - $effectivePaid);
+                    $paymentStatus = ($effectivePaid >= $subTotal && $subTotal > 0) ? 'Fully Paid' : ($effectivePaid > 0 ? 'Partial Paid' : 'Unpaid');
 
+                    $order->due_amount = $dueAmount;
+                    $order->return_adjustment_amount = $returnAdj;
+                    $order->payment_status = $paymentStatus;
+                    return $order;
+                });
+
+            // 1. Initial Invoice Payments (No Double Counting)
             $firstPaymentDetailIds = DB::table('battery_order_payment_details')
                 ->join('battery_orders', 'battery_order_payment_details.order_id', '=', 'battery_orders.id')
-                ->where('battery_orders.customer_id', $id)
+                ->where('battery_orders.customer_id', $customer->id)
                 ->groupBy('battery_order_payment_details.order_id')
                 ->select(DB::raw('MIN(battery_order_payment_details.id) as first_id'))
                 ->pluck('first_id');
@@ -258,8 +314,9 @@ class BatteryCustomerController extends Controller
                 )
                 ->get();
 
+            // 2. Battery Customer Due Collection History
             $dueCollections = DB::table('battery_customer_payment_details')
-                ->where('customer_id', $id)
+                ->where('customer_id', $customer->id)
                 ->where('paid_amount', '>', 0)
                 ->select(
                     'paid_amount',
@@ -272,10 +329,16 @@ class BatteryCustomerController extends Controller
                 )
                 ->get();
 
+            // 3. Transactions unified and sorted
             $allTransactions = $initialInvoicePayments->concat($dueCollections)
                 ->sortByDesc('created_at')
-                ->values();
+                ->values()
+                ->map(function ($trx) {
+                    $trx->created_at_formatted = Carbon::parse($trx->created_at)->format('d-m-Y h:i A');
+                    return $trx;
+                });
 
+            // 4. Summary metrics
             $totalBilled = (float) $invoices->sum('sub_total');
             $totalInvoiceDue = (float) $invoices->sum('due_amount');
             $customerPreviousDue = (float) ($customer->previous_due_amount ?? 0);
@@ -310,7 +373,7 @@ class BatteryCustomerController extends Controller
                 'returns'      => $returns,
                 'transactions' => $allTransactions
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
     }

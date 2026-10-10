@@ -216,8 +216,12 @@
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                         <td class="p-[10px] text-center text-slate-400 font-medium">${idx + 1}</td>
-                        <td class="p-[10px] font-mono text-xs text-slate-500">${s.supplier_id || '—'}</td>
-                        <td class="p-[10px] font-semibold text-slate-800 dark:text-slate-100">${s.name}</td>
+                        <td class="p-[10px] font-mono text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                            <a href="/battery/supplier/profile/${s.id}" class="hover:underline" title="View Supplier Profile">${s.supplier_id || '—'}</a>
+                        </td>
+                        <td class="p-[10px] font-semibold text-slate-800 dark:text-slate-100">
+                            <a href="/battery/supplier/profile/${s.id}" class="text-emerald-700 dark:text-emerald-400 font-bold hover:underline" title="View Supplier Profile">${s.name}</a>
+                        </td>
                         <td class="p-[10px] text-end text-slate-600 dark:text-slate-300">৳ ${prev.toLocaleString()}</td>
                         <td class="p-[10px] text-end text-slate-600 dark:text-slate-300">৳ ${cur.toLocaleString()}</td>
                         <td class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400">৳ ${total.toLocaleString()}</td>
@@ -235,7 +239,9 @@
                             <span class="text-xs font-mono text-slate-400">#${idx + 1} | ${s.supplier_id || ''}</span>
                             <span class="text-xs font-bold text-rose-600">Total: ৳ ${total.toLocaleString()}</span>
                         </div>
-                        <div class="font-bold text-slate-800 dark:text-white">${s.name}</div>
+                        <div class="font-bold text-slate-800 dark:text-white">
+                            <a href="/battery/supplier/profile/${s.id}" class="text-emerald-700 dark:text-emerald-400 hover:underline">${s.name}</a>
+                        </div>
                         <div class="grid grid-cols-2 text-xs text-slate-600 dark:text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-800">
                             <div>Prev Due: ৳ ${prev.toLocaleString()}</div>
                             <div class="text-end">Cur Due: ৳ ${cur.toLocaleString()}</div>

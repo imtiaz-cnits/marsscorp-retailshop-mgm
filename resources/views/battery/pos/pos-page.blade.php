@@ -10,7 +10,7 @@
 
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('backend/assets/icons/nexus-pos-logo.svg') }}" type="image/x-icon" />
+    <link rel="shortcut icon" href="{{ asset('backend/assets/icons/favicon.svg') }}" type="image/x-icon" />
 
     <!-- Google Fonts: Valley Sans & Baloo Da 2 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2707,7 +2707,7 @@
                         <!-- Search input: full width on mobile (col-12), flex-grow on desktop (col-lg) -->
                         <div class="col-12 col-lg p-0 position-relative">
                             <input type="text" id="productCodeSearch"
-                                placeholder="ðŸ” Scan barcode or enter code/name..."
+                                placeholder="Scan barcode or enter code/name..."
                                 oninput="searchByProductCode(this.value, 'productCodeSearch')"
                                 onkeydown="handleBarcodeEnterKey(event, this.value)"
                                 class="form-control posSearchInput py-0 w-100" autofocus autocomplete="off"
@@ -2835,7 +2835,7 @@
                     <div class="searchbar d-flex align-items-center gap-1.5 w-100">
                         <div class="flex-grow-1 position-relative" style="height: 38px;">
                             <input type="text" id="productCodeSearchCart"
-                                placeholder="ðŸ” Scan barcode or enter code/name..."
+                                placeholder="Scan barcode or enter code/name..."
                                 oninput="searchByProductCode(this.value, 'productCodeSearchCart')"
                                 onkeydown="handleBarcodeEnterKey(event, this.value)"
                                 class="form-control posSearchInput py-0 w-100" autocomplete="off"
@@ -3644,7 +3644,7 @@
                 updateTotal();
                 playScanBeepSound();
                 if (typeof successToast === 'function') {
-                    successToast(`âœ… "${product.product_name}" quantity increased to ${cartItem.quantity} Pcs.`);
+                    successToast(`"${product.product_name}" quantity increased to ${cartItem.quantity} Pcs.`);
                 }
             } else {
                 // Add new product to cart
@@ -3662,7 +3662,7 @@
                 renderCart();
                 playScanBeepSound();
                 if (typeof successToast === 'function') {
-                    successToast(`ðŸ›’ "${product.product_name}" added to cart.`);
+                    successToast(`"${product.product_name}" added to cart.`);
                 }
             }
 

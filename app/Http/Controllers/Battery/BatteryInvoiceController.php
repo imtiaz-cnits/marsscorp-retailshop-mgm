@@ -292,4 +292,32 @@ class BatteryInvoiceController extends Controller
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
     }
+
+    public function InvoiceShowDetails($id)
+    {
+        $invoice = BatteryOrder::with(['customer', 'details.product', 'payment', 'paymentDetails'])->find($id);
+
+        if (!$invoice) {
+            abort(404, 'Battery invoice not found');
+        }
+
+        $currentDue = (float) ($invoice->due_amount ?? 0);
+
+        // Previous orders due for this customer up to this invoice
+        $previousOrdersDue = (float) BatteryOrder::where('customer_id', $invoice->customer_id)
+            ->where('id', '!=', $invoice->id)
+            ->where('created_at', '<', $invoice->created_at)
+            ->sum('due_amount');
+
+        $customerPreviousDue = (float) ($invoice->customer->previous_due_amount ?? 0);
+        $actualPreviousDue   = $customerPreviousDue + $previousOrdersDue;
+        $totalDue            = $actualPreviousDue + $currentDue;
+
+        return view('battery.invoice.due-invoice-print', compact(
+            'invoice',
+            'currentDue',
+            'actualPreviousDue',
+            'totalDue'
+        ));
+    }
 }

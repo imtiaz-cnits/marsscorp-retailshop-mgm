@@ -74,7 +74,7 @@
                                     <th class="p-[10px] text-end whitespace-nowrap">Paid</th>
                                     <th class="p-[10px] text-end whitespace-nowrap">Due</th>
                                     <th class="p-[10px] text-center whitespace-nowrap">Status</th>
-                                    <th class="p-[10px] text-center w-[80px] rounded-tr-2xl whitespace-nowrap">Action</th>
+                                    <th class="p-[10px] text-center w-[115px] rounded-tr-2xl whitespace-nowrap">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="purchaseTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
@@ -209,6 +209,106 @@
     </div>
 </div>
 
+<!-- Edit Purchase Modal -->
+<div class="modal fade" id="purchaseEditModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content rounded-2xl border-0 shadow-lg overflow-hidden bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+            <div class="modal-header px-4 py-3 border-0" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important; color: #ffffff !important;">
+                <h5 class="modal-title font-bold text-base flex items-center gap-2 text-white m-0">
+                    <i class="fa-solid fa-pen-to-square text-white"></i> Edit Battery Purchase Order
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editPurchaseForm" onsubmit="saveEditBatteryPurchase(event)">
+                <input type="hidden" id="editPurchaseId">
+                <div class="modal-body p-4 space-y-4">
+                    <!-- Top Info: Supplier, Date, Ref, Attachment -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <div>
+                            <label class="form-label text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Supplier <span class="text-red-500">*</span></label>
+                            <select id="editPurchaseSupplier" required class="form-select rounded-xl text-sm dark:bg-slate-800 dark:border-slate-700 dark:text-white h-[42px]">
+                                <option value="">Select Supplier</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Purchase Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="editPurchaseDate" required class="form-control rounded-xl text-sm dark:bg-slate-800 dark:border-slate-700 dark:text-white h-[42px]">
+                        </div>
+                        <div>
+                            <label class="form-label text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Reference No</label>
+                            <input type="text" id="editPurchaseRef" placeholder="Challan / Bill No" class="form-control rounded-xl text-sm dark:bg-slate-800 dark:border-slate-700 dark:text-white h-[42px]">
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <label class="form-label text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Attach Document</label>
+                                <span id="editCurrentDocLink" class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400"></span>
+                            </div>
+                            <input type="file" id="editPurchaseAttachDocument" class="form-control rounded-xl text-xs dark:bg-slate-800 dark:border-slate-700 dark:text-white h-[42px]">
+                        </div>
+                    </div>
+
+                    <!-- Items Selection -->
+                    <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-3 bg-slate-50 dark:bg-slate-800/40">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">Purchased Battery Products</span>
+                            <button type="button" onclick="addEditPurchaseRow()" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800">
+                                <i class="fa-solid fa-plus me-1"></i> Add Product
+                            </button>
+                        </div>
+                        <div class="table-responsive overflow-x-auto">
+                            <table class="w-full text-xs text-left" id="editPurchaseItemsTable">
+                                <thead>
+                                    <tr class="text-slate-500 uppercase font-bold border-b border-slate-200 dark:border-slate-700">
+                                        <th class="p-2 w-5/12">Product</th>
+                                        <th class="p-2 w-2/12 text-center">Quantity</th>
+                                        <th class="p-2 w-2/12 text-end">Cost Price (৳)</th>
+                                        <th class="p-2 w-2/12 text-end">Subtotal (৳)</th>
+                                        <th class="p-2 w-1/12 text-center"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="editPurchaseItemsBody" class="divide-y divide-slate-200 dark:divide-slate-700">
+                                    <!-- Dynamic Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Financial Summary & Payment -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                        <div>
+                            <label class="form-label text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Discount (৳)</label>
+                            <input type="number" step="0.01" id="editPurchaseDiscount" value="0" oninput="calculateEditPurchaseTotals()" class="form-control rounded-xl text-sm dark:bg-slate-800 dark:border-slate-700 dark:text-white h-[42px]">
+                        </div>
+                        <div>
+                            <label class="form-label text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Delivery Charge (৳)</label>
+                            <input type="number" step="0.01" id="editPurchaseDelivery" value="0" oninput="calculateEditPurchaseTotals()" class="form-control rounded-xl text-sm dark:bg-slate-800 dark:border-slate-700 dark:text-white h-[42px]">
+                        </div>
+                        <div>
+                            <label class="form-label text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Grand Total (৳)</label>
+                            <input type="number" step="0.01" id="editPurchaseGrandTotal" readonly class="form-control rounded-xl text-sm bg-slate-100 dark:bg-slate-800 font-bold text-slate-900 dark:text-white h-[42px]">
+                        </div>
+                        <div>
+                            <label class="form-label text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Paid Amount (৳)</label>
+                            <input type="number" step="0.01" id="editPurchasePaid" value="0" readonly class="form-control rounded-xl text-sm bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed dark:border-slate-700 font-bold h-[42px]">
+                            <small id="editPurchasePaidHint" class="text-[11px] text-amber-600 dark:text-amber-400 font-medium block mt-1">Read-only: ledger-derived. Payments must be recorded in <a href="{{ route('battery.purchase.payments') }}" class="underline font-bold text-emerald-600 dark:text-emerald-400">Purchase Payments</a>.</small>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <div class="text-sm font-semibold text-rose-600 dark:text-rose-400">
+                            Due Amount: ৳ <span id="editPurchaseDueText">0.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-t border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-end gap-2">
+                    <button type="button" class="btn px-4 text-white font-semibold" style="background-color: #dc2626 !important; border-radius: 8px !important; height: 38px;" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn px-4 text-white font-semibold" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important; border: none !important; border-radius: 8px !important; height: 38px;">Update Purchase</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <style>
     .unified-ui-border {
         border: 1px solid #cbd5e1 !important;
@@ -224,6 +324,32 @@
         justify-content: center;
         border-radius: 8px;
         transition: all 0.15s ease;
+    }
+    .action-btn-view {
+        background-color: #ecfdf5;
+        color: #059669;
+    }
+    .action-btn-view:hover {
+        background-color: #d1fae5;
+        color: #047857;
+    }
+    body[light-mode="dark"] .action-btn-view,
+    html.dark .action-btn-view {
+        background-color: rgba(5, 150, 105, 0.2);
+        color: #34d399;
+    }
+    .action-btn-edit {
+        background-color: #fef3c7;
+        color: #d97706;
+    }
+    .action-btn-edit:hover {
+        background-color: #fde68a;
+        color: #b45309;
+    }
+    body[light-mode="dark"] .action-btn-edit,
+    html.dark .action-btn-edit {
+        background-color: rgba(217, 119, 6, 0.2);
+        color: #fbbf24;
     }
     .action-btn-delete {
         background-color: #fff1f2;
@@ -406,15 +532,27 @@
                         <td class="p-[10px] text-center text-slate-400 font-medium">${sl}</td>
                         <td class="p-[10px] font-mono text-xs font-bold text-emerald-700 dark:text-emerald-400">${p.purchase_id}</td>
                         <td class="p-[10px] text-xs text-slate-600 dark:text-slate-300">${p.date}</td>
-                        <td class="p-[10px] font-semibold text-slate-800 dark:text-slate-100">${p.supplier}</td>
+                        <td class="p-[10px] font-semibold text-slate-800 dark:text-slate-100">
+                            ${p.supplier_db_id ? `
+                                <a href="/battery/supplier/profile/${p.supplier_db_id}" class="text-emerald-700 dark:text-emerald-400 font-bold hover:underline" title="View Supplier Profile">${p.supplier}</a>
+                            ` : p.supplier}
+                        </td>
                         <td class="p-[10px] text-end font-bold text-slate-800 dark:text-slate-100">৳ ${parseFloat(p.grand_subtotal || 0).toLocaleString()}</td>
                         <td class="p-[10px] text-end text-emerald-600 dark:text-emerald-400 font-semibold">৳ ${parseFloat(p.paid_amount || 0).toLocaleString()}</td>
-                        <td class="p-[10px] text-end text-rose-600 dark:text-rose-400 font-semibold">৳ ${parseFloat(p.due_amount || 0).toLocaleString()}</td>
+                        <td class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400 font-semibold">৳ ${parseFloat(p.due_amount || 0).toLocaleString()}</td>
                         <td class="p-[10px] text-center">${statusBadge}</td>
                         <td class="p-[10px] text-center">
-                            <button onclick="openDeletePurchaseModal(${p.id})" class="action-btn action-btn-delete" title="Delete">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
+                            <div class="inline-flex items-center gap-1.5 justify-center">
+                                <a href="/battery/purchase-invoice/${p.id}" class="action-btn action-btn-view" title="View Memo / Print">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                                <button onclick="openEditPurchaseModal(${p.id})" class="action-btn action-btn-edit" title="Edit Purchase">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button onclick="openDeletePurchaseModal(${p.id})" class="action-btn action-btn-delete" title="Delete">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -425,14 +563,24 @@
                             <span class="font-mono text-xs font-bold text-emerald-700">${p.purchase_id}</span>
                             <div>${statusBadge}</div>
                         </div>
-                        <div class="font-bold text-slate-800 dark:text-white">${p.supplier}</div>
+                        <div class="font-bold text-slate-800 dark:text-white">
+                            ${p.supplier_db_id ? `
+                                <a href="/battery/supplier/profile/${p.supplier_db_id}" class="text-emerald-700 dark:text-emerald-400 hover:underline">${p.supplier}</a>
+                            ` : p.supplier}
+                        </div>
                         <div class="text-xs text-slate-500">Date: ${p.date} ${p.referance_no ? '| Ref: ' + p.referance_no : ''}</div>
                         <div class="grid grid-cols-3 text-xs pt-1 border-t border-slate-100 dark:border-slate-800">
                             <div>Total: <strong>৳ ${parseFloat(p.grand_subtotal || 0).toLocaleString()}</strong></div>
                             <div class="text-emerald-600">Paid: ৳ ${parseFloat(p.paid_amount || 0).toLocaleString()}</div>
                             <div class="text-end text-rose-600">Due: ৳ ${parseFloat(p.due_amount || 0).toLocaleString()}</div>
                         </div>
-                        <div class="pt-2 flex justify-end border-t border-slate-100 dark:border-slate-800">
+                        <div class="pt-2 flex justify-end gap-1.5 border-t border-slate-100 dark:border-slate-800">
+                            <a href="/battery/purchase-invoice/${p.id}" class="action-btn action-btn-view" title="View Memo / Print">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                            <button onclick="openEditPurchaseModal(${p.id})" class="action-btn action-btn-edit" title="Edit Purchase">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
                             <button onclick="openDeletePurchaseModal(${p.id})" class="action-btn action-btn-delete" title="Delete">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
@@ -547,6 +695,212 @@
         } catch (err) {
             if (typeof hideLoader === 'function') hideLoader();
             errorToast(err.response?.data?.message || 'Error deleting purchase');
+        }
+    }
+
+    let currentEditReturnAdj = 0;
+
+    async function openEditPurchaseModal(id) {
+        try {
+            if (typeof showLoader === 'function') showLoader();
+            const res = await axios.post('/api/battery/purchases-by-id', { id: id }, HeaderToken());
+            if (typeof hideLoader === 'function') hideLoader();
+
+            if (res.data && res.data.status === 'success') {
+                const p = res.data.rows;
+                $('#editPurchaseId').val(p.id);
+
+                let sOpts = '<option value="">Select Supplier</option>';
+                suppliersList.forEach(s => {
+                    const sel = (s.id == p.supplier_id) ? 'selected' : '';
+                    sOpts += `<option value="${s.id}" ${sel}>${s.name}</option>`;
+                });
+                $('#editPurchaseSupplier').html(sOpts);
+
+                let dVal = p.date ? p.date.substring(0, 10) : '';
+                $('#editPurchaseDate').val(dVal);
+                $('#editPurchaseRef').val(p.referance_no || '');
+                $('#editPurchaseDiscount').val(parseFloat(p.discount_amount || 0).toFixed(2));
+                $('#editPurchaseDelivery').val(parseFloat(p.delivery_charge || 0).toFixed(2));
+                $('#editPurchaseGrandTotal').val(parseFloat(p.grand_subtotal || 0).toFixed(2));
+
+                currentEditReturnAdj = parseFloat(p.return_adjustment_amount || 0);
+
+                const payments = p.payment_details || p.paymentDetails || [];
+                let totalLedgerPaid = 0;
+                if (Array.isArray(payments) && payments.length > 0) {
+                    totalLedgerPaid = payments.reduce((sum, item) => sum + (parseFloat(item.paid_amount) || 0), 0);
+                } else {
+                    totalLedgerPaid = parseFloat(p.paid_amount || 0);
+                }
+                $('#editPurchasePaid').val(totalLedgerPaid.toFixed(2));
+                $('#editPurchasePaid').prop('readonly', true).addClass('bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed');
+                $('#editPurchasePaidHint').removeClass('hidden').html('Read-only: ledger-derived. Payments must be recorded in <a href="{{ route("battery.purchase.payments") }}" class="underline font-bold text-emerald-600 dark:text-emerald-400">Purchase Payments</a>.');
+
+                $('#editPurchaseAttachDocument').val('');
+                if (p.attach_document) {
+                    $('#editCurrentDocLink').html(`<a href="/${p.attach_document}" target="_blank" class="hover:underline flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold"><i class="fa-solid fa-file"></i> View Current</a>`);
+                } else {
+                    $('#editCurrentDocLink').empty();
+                }
+
+                const tbody = document.getElementById('editPurchaseItemsBody');
+                tbody.innerHTML = '';
+                const details = p.order_details || p.orderDetails || [];
+                if (details.length > 0) {
+                    details.forEach(item => {
+                        addEditPurchaseRow(item.product_id, item.quantity, item.cost_price);
+                    });
+                } else {
+                    addEditPurchaseRow();
+                }
+
+                calculateEditPurchaseTotals();
+                $('#purchaseEditModal').modal('show');
+            } else {
+                errorToast(res.data?.message || 'Failed to load purchase details');
+            }
+        } catch (err) {
+            if (typeof hideLoader === 'function') hideLoader();
+            console.error(err);
+            errorToast('Error loading purchase details');
+        }
+    }
+
+    function addEditPurchaseRow(productId = '', qty = 1, cost = 0) {
+        const tbody = document.getElementById('editPurchaseItemsBody');
+        let prodOptions = '<option value="">Select Battery Product</option>';
+        productsList.forEach(p => {
+            const sel = (p.id == productId) ? 'selected' : '';
+            prodOptions += `<option value="${p.id}" data-cost="${p.cost_price}" ${sel}>${p.product_name}</option>`;
+        });
+
+        const row = document.createElement('tr');
+        row.className = 'edit-item-row';
+        row.innerHTML = `
+            <td class="p-2">
+                <select class="form-select text-xs edit-item-product rounded-lg h-[36px]" onchange="onEditItemProductChange(this)">
+                    ${prodOptions}
+                </select>
+            </td>
+            <td class="p-2 text-center">
+                <input type="number" min="1" value="${qty}" class="form-control text-xs text-center edit-item-qty rounded-lg h-[36px]" oninput="calculateEditPurchaseTotals()">
+            </td>
+            <td class="p-2 text-end">
+                <input type="number" step="0.01" value="${cost}" class="form-control text-xs text-end edit-item-cost rounded-lg h-[36px]" oninput="calculateEditPurchaseTotals()">
+            </td>
+            <td class="p-2 text-end font-bold text-slate-700 dark:text-slate-200 edit-item-subtotal">
+                ৳ 0.00
+            </td>
+            <td class="p-2 text-center">
+                <button type="button" onclick="this.closest('tr').remove(); calculateEditPurchaseTotals();" class="text-rose-500 hover:text-rose-700 p-1">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+        calculateEditPurchaseTotals();
+    }
+
+    function onEditItemProductChange(sel) {
+        const opt = sel.options[sel.selectedIndex];
+        const cost = opt.getAttribute('data-cost') || 0;
+        const row = sel.closest('tr');
+        row.querySelector('.edit-item-cost').value = cost;
+        calculateEditPurchaseTotals();
+    }
+
+    function calculateEditPurchaseTotals() {
+        let itemsSum = 0;
+        document.querySelectorAll('#editPurchaseItemsBody tr.edit-item-row').forEach(row => {
+            const qty = parseFloat(row.querySelector('.edit-item-qty').value) || 0;
+            const cost = parseFloat(row.querySelector('.edit-item-cost').value) || 0;
+            const sub = qty * cost;
+            row.querySelector('.edit-item-subtotal').innerText = '৳ ' + sub.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            itemsSum += sub;
+        });
+
+        const discount = parseFloat($('#editPurchaseDiscount').val()) || 0;
+        const delivery = parseFloat($('#editPurchaseDelivery').val()) || 0;
+        const grandTotal = Math.max(0, itemsSum - discount + delivery);
+        $('#editPurchaseGrandTotal').val(grandTotal.toFixed(2));
+
+        const paid = parseFloat($('#editPurchasePaid').val()) || 0;
+        const effectivePaid = paid + currentEditReturnAdj;
+        const due = Math.max(0, grandTotal - effectivePaid);
+        $('#editPurchaseDueText').text(due.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+    }
+
+    async function saveEditBatteryPurchase(e) {
+        e.preventDefault();
+        try {
+            const id = $('#editPurchaseId').val();
+            const supplier_id = $('#editPurchaseSupplier').val();
+            const date = $('#editPurchaseDate').val();
+            const referance_no = $('#editPurchaseRef').val();
+            const discount_amount = $('#editPurchaseDiscount').val() || 0;
+            const delivery_charge = $('#editPurchaseDelivery').val() || 0;
+            const grand_subtotal = $('#editPurchaseGrandTotal').val();
+            const paid_amount = $('#editPurchasePaid').val() || 0;
+            const due_amount = Math.max(0, parseFloat(grand_subtotal) - (parseFloat(paid_amount) + currentEditReturnAdj));
+
+            const products = [];
+            document.querySelectorAll('#editPurchaseItemsBody tr.edit-item-row').forEach(row => {
+                const pId = row.querySelector('.edit-item-product').value;
+                const qty = row.querySelector('.edit-item-qty').value;
+                const cost = row.querySelector('.edit-item-cost').value;
+                if (pId && qty > 0) {
+                    products.push({
+                        product_id: pId,
+                        quantity: qty,
+                        cost_price: cost,
+                        subtotal: parseFloat(qty) * parseFloat(cost)
+                    });
+                }
+            });
+
+            if (products.length === 0) {
+                errorToast('Please add at least one battery product');
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append('id', id);
+            formData.append('supplier_id', supplier_id);
+            formData.append('date', date);
+            formData.append('referance_no', referance_no);
+            formData.append('discount_amount', discount_amount);
+            formData.append('delivery_charge', delivery_charge);
+            formData.append('grand_subtotal', grand_subtotal);
+            formData.append('paid_amount', paid_amount);
+            formData.append('due_amount', due_amount);
+            formData.append('products', JSON.stringify(products));
+
+            const docInput = document.getElementById('editPurchaseAttachDocument');
+            if (docInput && docInput.files[0]) {
+                formData.append('img', docInput.files[0]);
+            }
+
+            if (typeof showLoader === 'function') showLoader();
+            const res = await axios.post('/api/battery/update-purchases', formData, {
+                headers: {
+                    'content-type': 'multipart/form-data',
+                    ...HeaderToken().headers
+                }
+            });
+            if (typeof hideLoader === 'function') hideLoader();
+
+            if (res.data && res.data.status === 'success') {
+                successToast(res.data.message || 'Battery purchase updated successfully');
+                $('#purchaseEditModal').modal('hide');
+                getBatteryPurchases();
+            } else {
+                errorToast(res.data?.message || 'Failed to update purchase');
+            }
+        } catch (err) {
+            if (typeof hideLoader === 'function') hideLoader();
+            console.error(err);
+            errorToast(err.response?.data?.message || 'Error updating purchase');
         }
     }
 </script>

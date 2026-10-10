@@ -76,6 +76,7 @@ Route::prefix('battery')->middleware('auth:sanctum')->name('battery.api.')->grou
     Route::post('/supplier-by-id', [BatterySupplierController::class, 'SupplierByID'])->name('supplier.by-id');
     Route::post('/update-supplier', [BatterySupplierController::class, 'SupplierUpdate'])->name('supplier.update');
     Route::post('/delete-supplier', [BatterySupplierController::class, 'SupplierDelete'])->name('supplier.delete');
+    Route::get('/supplier-profile-data/{id}', [BatterySupplierController::class, 'SupplierProfileData'])->name('supplier.profile-data');
 
     // Supplier Due Collections
     Route::get('/supplier-due-collection-list', [BatterySupplierDueCollectionController::class, 'SupplierDueCollectionList'])->name('supplier-due.list');
@@ -136,8 +137,10 @@ Route::prefix('battery')->middleware('auth:sanctum')->name('battery.api.')->grou
     Route::get('/search-invoice-for-return', [BatteryProductReturnController::class, 'SearchInvoiceForReturn'])->name('return.search-invoice');
 
     Route::get('/purchase-return-list', [BatteryPurchaseReturnController::class, 'PurchaseReturnList'])->name('purchase-return.list');
+    Route::get('/purchase-return-product-list', [BatteryPurchaseReturnController::class, 'PurchaseReturnList'])->name('purchase-return.product-list');
     Route::get('/search-purchase-for-return', [BatteryPurchaseReturnController::class, 'SearchPurchaseForReturn'])->name('purchase-return.search');
     Route::post('/create-purchase-return', [BatteryPurchaseReturnController::class, 'PurchaseReturnProductCreate'])->name('purchase-return.create');
+    Route::post('/create-purchase-return-product', [BatteryPurchaseReturnController::class, 'PurchaseReturnProductCreate'])->name('purchase-return.create-product');
 
     // Opening Balance
     Route::get('/opening-balance-list', [BatteryOpeningBalanceController::class, 'OpeningBalanceList'])->name('opening-balance.list');

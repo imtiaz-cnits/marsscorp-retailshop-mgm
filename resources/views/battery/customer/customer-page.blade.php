@@ -315,7 +315,9 @@
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                         <td class="p-[10px] text-center text-slate-400 font-medium">${sl}</td>
-                        <td class="p-[10px] font-semibold text-slate-800 dark:text-slate-100">${c.name}</td>
+                        <td class="p-[10px] font-semibold text-slate-800 dark:text-slate-100">
+                            <a href="/battery/customer/profile/${c.id}" class="text-emerald-700 dark:text-emerald-400 font-bold hover:underline" title="View Customer Profile">${c.name}</a>
+                        </td>
                         <td class="p-[10px] text-slate-600 dark:text-slate-300 font-mono text-xs">${c.mobile}</td>
                         <td class="p-[10px] text-slate-500 text-xs">${c.address || '—'}</td>
                         <td class="p-[10px] text-end">${dueText}</td>
@@ -324,6 +326,9 @@
                         </td>
                         <td class="p-[10px] text-center">
                             <div class="inline-flex items-center gap-1.5">
+                                <a href="/battery/customer/profile/${c.id}" class="action-btn text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40" title="View Profile">
+                                    <i class="fa-solid fa-user"></i>
+                                </a>
                                 <button onclick="openEditCustomerModal(${c.id})" class="action-btn action-btn-edit" title="Edit">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
@@ -341,10 +346,15 @@
                             <span class="text-xs font-mono text-slate-400">#${sl}</span>
                             <div>${dueText}</div>
                         </div>
-                        <div class="font-bold text-slate-800 dark:text-white">${c.name}</div>
+                        <div class="font-bold text-slate-800 dark:text-white">
+                            <a href="/battery/customer/profile/${c.id}" class="text-emerald-700 dark:text-emerald-400 hover:underline">${c.name}</a>
+                        </div>
                         <div class="text-xs text-slate-500"><i class="fa-solid fa-phone me-1"></i>${c.mobile}</div>
                         ${c.address ? `<div class="text-xs text-slate-400"><i class="fa-solid fa-location-dot me-1"></i>${c.address}</div>` : ''}
                         <div class="pt-2 flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
+                            <a href="/battery/customer/profile/${c.id}" class="action-btn text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40" title="View Profile">
+                                <i class="fa-solid fa-user"></i>
+                            </a>
                             <button onclick="openEditCustomerModal(${c.id})" class="action-btn action-btn-edit" title="Edit">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </button>

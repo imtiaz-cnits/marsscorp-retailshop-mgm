@@ -422,13 +422,18 @@
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                         <td class="p-[10px] text-center text-slate-500 font-medium">${sl}</td>
-                        <td class="p-[10px] text-start font-semibold text-slate-800 dark:text-slate-100">${s.name}</td>
+                        <td class="p-[10px] text-start font-semibold text-slate-800 dark:text-slate-100">
+                            <a href="/battery/supplier/profile/${s.id}" class="text-emerald-700 dark:text-emerald-400 font-bold hover:underline" title="View Supplier Profile">${s.name}</a>
+                        </td>
                         <td class="p-[10px] text-start text-slate-600 dark:text-slate-300 font-mono">${s.mobile || s.phone || '—'}</td>
                         <td class="p-[10px] text-start text-slate-600 dark:text-slate-300">${s.email || '—'}</td>
                         <td class="p-[10px] text-start text-slate-600 dark:text-slate-300 text-xs">${s.address || '—'}</td>
                         <td class="p-[10px] text-center">${statusBadge}</td>
                         <td class="p-[10px] text-center">
                             <div class="inline-flex items-center gap-1.5 justify-center">
+                                <a href="/battery/supplier/profile/${s.id}" class="action-btn w-[32px] h-[32px] rounded-lg inline-flex items-center justify-center bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 transition-colors" title="View Profile">
+                                    <i class="fa-solid fa-user text-xs"></i>
+                                </a>
                                 <button onclick="openEditSupplierModal(${s.id})" class="action-btn action-btn-edit edit-link w-[32px] h-[32px] rounded-lg inline-flex items-center justify-center bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 transition-colors" title="Edit">
                                     <i class="fa-solid fa-pen-to-square text-xs"></i>
                                 </button>
@@ -444,11 +449,16 @@
                     mobileContainer.innerHTML += `
                         <div class="unified-ui-border rounded-2xl p-3.5 bg-white dark:bg-slate-800 shadow-sm flex items-center justify-between gap-3">
                             <div>
-                                <div class="font-bold text-slate-800 dark:text-slate-100 text-sm">${s.name}</div>
+                                <div class="font-bold text-slate-800 dark:text-slate-100 text-sm">
+                                    <a href="/battery/supplier/profile/${s.id}" class="text-emerald-700 dark:text-emerald-400 hover:underline">${s.name}</a>
+                                </div>
                                 <div class="text-xs text-slate-500 font-mono mt-0.5"><i class="fa-solid fa-phone text-emerald-600 text-[10px]"></i> ${s.mobile || s.phone || '—'}</div>
                                 <div class="mt-1.5">${statusBadge}</div>
                             </div>
                             <div class="flex items-center gap-1.5">
+                                <a href="/battery/supplier/profile/${s.id}" class="action-btn w-[32px] h-[32px] rounded-lg inline-flex items-center justify-center bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40" title="View Profile">
+                                    <i class="fa-solid fa-user text-xs"></i>
+                                </a>
                                 <button onclick="openEditSupplierModal(${s.id})" class="action-btn action-btn-edit edit-link w-[32px] h-[32px] rounded-lg inline-flex items-center justify-center bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400" title="Edit">
                                     <i class="fa-solid fa-pen-to-square text-xs"></i>
                                 </button>

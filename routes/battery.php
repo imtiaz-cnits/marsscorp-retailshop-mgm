@@ -1,6 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Battery\BatteryCustomerController;
+use App\Http\Controllers\Battery\BatterySupplierController;
+use App\Http\Controllers\Battery\BatteryPurchaseController;
+use App\Http\Controllers\Battery\BatteryInvoiceController;
+use App\Http\Controllers\Battery\BatteryProductReturnController;
+use App\Http\Controllers\Battery\BatteryPurchaseReturnController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +26,8 @@ Route::prefix('battery')->name('battery.')->group(function () {
     // POS & Sales
     Route::view('/pos', 'battery.pos.pos-page')->name('pos');
     Route::view('/invoices', 'battery.invoice.invoice-view-page')->name('invoices');
+    Route::get('/invoice/{id}', [BatteryInvoiceController::class, 'InvoiceShowDetails'])->name('invoice.show');
+    Route::get('/due-invoice-print/{id}', [BatteryInvoiceController::class, 'InvoiceShowDetails'])->name('invoice.due.print');
 
     // Catalog Management
     Route::view('/products', 'battery.product.product-page')->name('products');
@@ -31,13 +39,16 @@ Route::prefix('battery')->name('battery.')->group(function () {
 
     // Supplier & Procurement
     Route::view('/suppliers', 'battery.supplier.supplier-page')->name('suppliers');
+    Route::get('/supplier/profile/{id}', [BatterySupplierController::class, 'SupplierProfilePage'])->name('supplier.profile');
     Route::view('/purchases', 'battery.purchase.purchase-page')->name('purchases');
+    Route::get('/purchase-invoice/{id}', [BatteryPurchaseController::class, 'PurchaseShowDetails'])->name('purchase.invoice.show');
     Route::view('/purchase-payments', 'battery.purchase.purchase-payment-page')->name('purchase.payments');
     Route::view('/supplier-due', 'battery.supplier.supplier-due-page')->name('supplier.due');
     Route::view('/supplier-due-collection', 'battery.supplier.supplier-due-collection-page')->name('supplier.due.collection');
 
     // Customer & Receivables
     Route::view('/customers', 'battery.customer.customer-page')->name('customers');
+    Route::get('/customer/profile/{id}', [BatteryCustomerController::class, 'CustomerProfilePage'])->name('customer.profile');
     Route::view('/customer-due', 'battery.customer.customer-due-page')->name('customer.due');
     Route::view('/customer-due-collection', 'battery.customer.customer-due-collection-page')->name('customer.due.collection');
 
@@ -47,7 +58,9 @@ Route::prefix('battery')->name('battery.')->group(function () {
 
     // Returns
     Route::view('/sales-returns', 'battery.return.return-page')->name('sales.returns');
+    Route::get('/return/{id}', [BatteryProductReturnController::class, 'ReturnShowDetails'])->name('return.show');
     Route::view('/purchase-returns', 'battery.return.purchase-return-page')->name('purchase.returns');
+    Route::get('/purchase-return/{id}', [BatteryPurchaseReturnController::class, 'PurchaseReturnShowDetails'])->name('purchase-return.show');
 
     // Opening Balance
     Route::view('/opening-balance', 'battery.opening-balance.opening-balance-page')->name('opening.balance');

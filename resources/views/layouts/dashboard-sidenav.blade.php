@@ -1792,7 +1792,7 @@
       <!-- Full MARSS CORPORATION Logo -->
       <img src="{{ asset('backend/assets/img/marss-corporation-icon.svg') }}" alt="MARSS CORPORATION" style="width: 175px; height: auto; max-height: 55px; border-radius: 8px; object-fit: contain;" />
       @if($isBattery)
-        <span class="badge bg-amber-500 text-slate-950 font-bold uppercase position-absolute" style="bottom: 2px; right: 4px; font-size: 8.5px; padding: 2px 6px; border-radius: 6px; letter-spacing: 0.5px;">BATTERY</span>
+        <span class="badge bg-amber-500 text-slate-950 font-bold uppercase position-absolute" style="bottom: 2px; right: 4px; font-size: 8.5px; padding: 2px 6px; border-radius: 6px; letter-spacing: 0.5px;"></span>
       @endif
     </span>
   </a>

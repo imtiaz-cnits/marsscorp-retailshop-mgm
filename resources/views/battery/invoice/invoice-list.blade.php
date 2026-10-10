@@ -1332,11 +1332,11 @@
     });
 
     function viewReturn(id) {
-        window.location.href = `/battery/sales-returns`;
+        window.location.href = `/battery/return/${id}`;
     }
 
     function viewInvoice(id) {
-        openInvoiceQuickView(id);
+        window.location.href = `/battery/invoice/${id}`;
     }
 
     function printInvoiceFromModal() {
@@ -1450,7 +1450,7 @@
                         <td class="p-[10px] font-bold text-slate-800 dark:text-slate-100">${item['order_no'] || '-'}</td>
                         <td class="p-[10px]">
                             ${item['customer']?.id ? `
-                                <a href="/battery/customers?id=${item['customer'].id}" class="text-emerald-700 dark:text-emerald-400 font-bold hover:underline" title="View Customer Profile">
+                                <a href="/battery/customer/profile/${item['customer'].id}" class="text-emerald-700 dark:text-emerald-400 font-bold hover:underline" title="View Customer Profile">
                                     <div>${item['customer']?.customer_name ?? 'Walk-in Customer'}</div>
                                 </a>
                             ` : `
@@ -1458,7 +1458,7 @@
                             `}
                             <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5"><i class="fa-solid fa-phone text-[10px]"></i><span>${item['customer']?.mobile ?? '-'}</span></div>
                             ${item['customer']?.customer_id ? `
-                                <a href="/battery/customers?id=${item['customer'].id}" class="inline-block mt-1">
+                                <a href="/battery/customer/profile/${item['customer'].id}" class="inline-block mt-1">
                                     <span class="customer-id-badge inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-bold text-[10px]">
                                         ID: ${item['customer'].customer_id} <i class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i>
                                     </span>
@@ -1522,7 +1522,7 @@
 
                         <div>
                             ${item['customer']?.id ? `
-                                <a href="/battery/customers?id=${item['customer'].id}" class="text-emerald-700 dark:text-emerald-400 font-bold text-sm hover:underline block mb-0.5" title="View Customer Profile">
+                                <a href="/battery/customer/profile/${item['customer'].id}" class="text-emerald-700 dark:text-emerald-400 font-bold text-sm hover:underline block mb-0.5" title="View Customer Profile">
                                     <i class="fa-solid fa-user-circle text-emerald-600 me-1"></i>${item['customer']?.customer_name ?? 'Walk-in Customer'}
                                 </a>
                             ` : `
@@ -1533,7 +1533,7 @@
                             <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs">
                                 <span><i class="fa-solid fa-phone me-1"></i>${item['customer']?.mobile ?? '-'}</span>
                                 ${item['customer']?.customer_id ? `
-                                    <a href="/battery/customers?id=${item['customer'].id}">
+                                    <a href="/battery/customer/profile/${item['customer'].id}">
                                         <span class="customer-id-badge px-1.5 py-0.5 rounded font-bold text-[10px]">ID: ${item['customer'].customer_id}</span>
                                     </a>
                                 ` : ''}
