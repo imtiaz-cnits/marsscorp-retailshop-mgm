@@ -8,7 +8,7 @@
 <!-- Dashboard Main Content Start -->
 <div class="main-content">
     <div class="page-content">
-        <div class="container-fluid px-0">
+        <div class="container-fluid px-3 px-md-4 py-2">
             
             <!-- Dashboard Welcome Header -->
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">

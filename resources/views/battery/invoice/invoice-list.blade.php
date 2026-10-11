@@ -1492,7 +1492,7 @@
                                 <button class="action-btn action-btn-return w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" onclick="viewReturn(${item.id})" title="Sales Return">
                                     <i class="fa-solid fa-rotate-left text-xs"></i>
                                 </button>
-                                <a data-id="${item['id']}" href="#" class="action-btn action-btn-due edit-link w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Due Collection / Payment">
+                                <a data-id="${item['id']}" href="javascript:void(0)" onclick="event.preventDefault(); FillUpUpdateForm('${item.id}')" class="action-btn action-btn-due edit-link w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Due Collection / Payment">
                                     <i class="fa-solid fa-hand-holding-dollar text-xs"></i>
                                 </a>
                                 <a data-id="${item['id']}" href="#" class="action-btn action-btn-edit edit-link w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all shadow-sm" data-bs-toggle="modal" data-bs-target="#invoiceFullEditModal" title="Edit Invoice">
@@ -1577,7 +1577,7 @@
                                 <button class="action-btn action-btn-return w-[30px] h-[30px] rounded-lg flex items-center justify-center shadow-sm" onclick="viewReturn(${item.id})" title="Return Product">
                                     <i class="fa-solid fa-rotate-left text-xs"></i>
                                 </button>
-                                <a data-id="${item['id']}" href="#" class="action-btn action-btn-due edit-link w-[30px] h-[30px] rounded-lg flex items-center justify-center shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Due Collection / Payment">
+                                <a data-id="${item['id']}" href="javascript:void(0)" onclick="event.preventDefault(); FillUpUpdateForm('${item.id}')" class="action-btn action-btn-due edit-link w-[30px] h-[30px] rounded-lg flex items-center justify-center shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Due Collection / Payment">
                                     <i class="fa-solid fa-hand-holding-dollar text-xs"></i>
                                 </a>
                                 <a data-id="${item['id']}" href="#" class="action-btn action-btn-edit edit-link w-[30px] h-[30px] rounded-lg flex items-center justify-center shadow-sm" data-bs-toggle="modal" data-bs-target="#invoiceFullEditModal" title="Edit Invoice">
@@ -1597,7 +1597,7 @@
             <div class="display-info-badge px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 flex-wrap shadow-sm">
                 <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
                 <span>Showing</span>
-                <span class="stat-count px-2 py-0.5 rounded-md font-bold">${fromCount} â€“ ${toCount}</span>
+                <span class="stat-count px-2 py-0.5 rounded-md font-bold">${fromCount} - ${toCount}</span>
                 <span>of</span>
                 <span class="stat-total px-2 py-0.5 rounded-md font-bold">${totalItems}</span>
                 <span>invoices</span>

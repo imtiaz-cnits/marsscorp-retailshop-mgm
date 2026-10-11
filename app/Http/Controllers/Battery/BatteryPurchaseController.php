@@ -511,11 +511,30 @@ class BatteryPurchaseController extends Controller
 
             $effectiveTotal = max(0, ($grandSubtotal - $discountAmount) + $deliveryCharge);
 
-            // 8. Payment Details Reconciliation (Phase 2.4 - Option A: True Ledger-Driven Paid Amount)
-            // Authoritative paid amount is strictly derived from the payment ledger.
-            // Client-supplied paid_amount is completely ignored as an authoritative instruction.
-            // Payment detail records are NEVER created, overwritten, modified, or deleted during purchase editing.
+            // 8. Payment Details Reconciliation
             $authoritativePaid = $existingLedgerPaid;
+            if ($request->filled('paid_amount')) {
+                $requestedPaid = round(floatval($request->input('paid_amount')), 2);
+                if ($requestedPaid != $authoritativePaid) {
+                    $firstPayment = $purchase->paymentDetails->first();
+                    if ($firstPayment) {
+                        $diff = $requestedPaid - $authoritativePaid;
+                        $firstPayment->paid_amount = max(0, (float)$firstPayment->paid_amount + $diff);
+                        $firstPayment->save();
+                        $authoritativePaid = $requestedPaid;
+                    } elseif ($requestedPaid > 0) {
+                        BatteryPurchasePaymentDetail::create([
+                            'purchases_id'    => $purchase->id,
+                            'paid_amount'     => $requestedPaid,
+                            'discount_amount' => 0,
+                            'payment_method'  => 'Cash',
+                            'payment_status'  => ($effectiveTotal - $requestedPaid) <= 0 ? 'Fully Paid' : 'Partial Paid',
+                            'user_id'         => $user_id,
+                        ]);
+                        $authoritativePaid = $requestedPaid;
+                    }
+                }
+            }
             $effectivePaid = $authoritativePaid + $returnAdj;
             $newDue = max(0, $effectiveTotal - $effectivePaid);
 

@@ -172,6 +172,13 @@ class BatteryProductController extends Controller
             $subCatId = (!empty($request->sub_category_id) && $request->sub_category_id !== 'none') ? $request->sub_category_id : null;
             $unitId = (!empty($request->unit_id) && $request->unit_id !== 'none') ? $request->unit_id : null;
 
+            if (!$brandId) {
+                return response()->json(['status' => 'fail', 'message' => 'Product Brand is required.']);
+            }
+            if (!$catId) {
+                return response()->json(['status' => 'fail', 'message' => 'Product Category is required.']);
+            }
+
             $barcodes = [];
             if ($request->has('product_code')) {
                 $rawCode = $request->product_code;
@@ -244,6 +251,13 @@ class BatteryProductController extends Controller
             $categoryId = (!empty($request->input('category_id')) && $request->input('category_id') !== 'none') ? $request->input('category_id') : null;
             $subCategoryId = (!empty($request->input('sub_category_id')) && $request->input('sub_category_id') !== 'none') ? $request->input('sub_category_id') : null;
             $unitId = (!empty($request->input('unit_id')) && $request->input('unit_id') !== 'none') ? $request->input('unit_id') : null;
+
+            if (!$brandId) {
+                return response()->json(['status' => 'fail', 'message' => 'Product Brand is required.']);
+            }
+            if (!$categoryId) {
+                return response()->json(['status' => 'fail', 'message' => 'Product Category is required.']);
+            }
 
             if ($request->hasFile('img_url')) {
                 $img = $request->file('img_url');

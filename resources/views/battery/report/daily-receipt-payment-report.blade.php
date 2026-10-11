@@ -993,19 +993,19 @@
 
         // First & Prev
         container.innerHTML += `<button onclick="goToPage(1)" ${currentPage === 1 ? 'disabled' : ''} class="${btnBase} ${currentPage === 1 ? disabledBtn : inactiveBtn}" title="First Page">Â«</button>`;
-        container.innerHTML += `<button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="${btnBase} ${currentPage === 1 ? disabledBtn : inactiveBtn}" title="Previous Page">â€¹</button>`;
+        container.innerHTML += `<button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="${btnBase} ${currentPage === 1 ? disabledBtn : inactiveBtn}" title="Previous Page">-¹</button>`;
 
         // Numbered Pages
         for (let i = 1; i <= totalPages; i++) {
             if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
                 container.innerHTML += `<button onclick="goToPage(${i})" class="${btnBase} ${i === currentPage ? activeBtn : inactiveBtn}">${i}</button>`;
             } else if (i === currentPage - 2 || i === currentPage + 2) {
-                container.innerHTML += `<span class="text-slate-400 px-1 text-xs select-none">â€¦</span>`;
+                container.innerHTML += `<span class="text-slate-400 px-1 text-xs select-none">-</span>`;
             }
         }
 
         // Next & Last
-        container.innerHTML += `<button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="${btnBase} ${currentPage === totalPages ? disabledBtn : inactiveBtn}" title="Next Page">â€º</button>`;
+        container.innerHTML += `<button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="${btnBase} ${currentPage === totalPages ? disabledBtn : inactiveBtn}" title="Next Page">-</button>`;
         container.innerHTML += `<button onclick="goToPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''} class="${btnBase} ${currentPage === totalPages ? disabledBtn : inactiveBtn}" title="Last Page">Â»</button>`;
     }
 

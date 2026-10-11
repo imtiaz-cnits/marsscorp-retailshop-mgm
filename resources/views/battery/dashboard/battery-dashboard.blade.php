@@ -8,7 +8,7 @@
 <!-- Dashboard Main Content Start -->
 <div class="main-content">
     <div class="page-content">
-        <div class="container-fluid px-0">
+        <div class="container-fluid px-3 px-md-4 py-2">
             
             <!-- Dashboard Welcome Header -->
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
@@ -30,6 +30,51 @@
 
             <!-- FINANCIAL METRICS & CHARTS WRAPPER -->
             <div id="batteryFinancialSections">
+                <style>
+                    #batteryFinancialSections .btn-outline-purple:hover {
+                        background-color: #7c3aed !important;
+                        color: #ffffff !important;
+                    }
+                    #batteryFinancialSections .btn-outline-purple:hover i,
+                    #batteryFinancialSections .btn-outline-purple:hover span {
+                        color: #ffffff !important;
+                    }
+
+                    /* Dark Mode Contrast for Battery Dashboard */
+                    body[light-mode="dark"] #batteryFinancialSections .card,
+                    html[light-mode="dark"] #batteryFinancialSections .card,
+                    body[data-layout-mode="dark"] #batteryFinancialSections .card,
+                    html.dark #batteryFinancialSections .card,
+                    body.dark #batteryFinancialSections .card,
+                    body.dark-mode #batteryFinancialSections .card {
+                        background-color: #0f172a !important;
+                        border-color: #1e293b !important;
+                        color: #f1f5f9 !important;
+                    }
+
+                    body[light-mode="dark"] #batteryFinancialSections .card-header,
+                    html[light-mode="dark"] #batteryFinancialSections .card-header,
+                    body[data-layout-mode="dark"] #batteryFinancialSections .card-header,
+                    html.dark #batteryFinancialSections .card-header,
+                    body.dark #batteryFinancialSections .card-header,
+                    body.dark-mode #batteryFinancialSections .card-header {
+                        background-color: #0f172a !important;
+                        color: #f1f5f9 !important;
+                    }
+
+                    body[light-mode="dark"] #batteryFinancialSections h1,
+                    body[light-mode="dark"] #batteryFinancialSections h5,
+                    html[light-mode="dark"] #batteryFinancialSections h5 {
+                        color: #f1f5f9 !important;
+                    }
+
+                    body[light-mode="dark"] #batteryFinancialSections .table-light th,
+                    html[light-mode="dark"] #batteryFinancialSections .table-light th {
+                        background-color: #1e293b !important;
+                        color: #cbd5e1 !important;
+                        border-color: #334155 !important;
+                    }
+                </style>
                 <!-- ROW 1: TODAY'S KEY METRICS (4 Gradient Cards) -->
                 <div class="row g-3 mb-4">
                     <!-- Today Net Profit -->
@@ -245,7 +290,56 @@
                     </div>
                 </div>
 
-                <!-- ROW 5: OPERATIONAL TABLES (Low Stock Alert & Recent Sales) -->
+                <!-- ROW 5: QUICK SHORTCUTS GRID -->
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 16px;">
+                    <div class="card-header bg-white py-3 border-0">
+                        <h5 class="fw-bold text-dark mb-0 fs-6">
+                            <i class="fa-solid fa-bolt text-warning me-2"></i> Quick Actions & Shortcuts
+                        </h5>
+                    </div>
+                    <div class="card-body p-4 pt-0">
+                        <div class="row g-2">
+                            <div class="col-lg-2 col-md-4 col-6">
+                                <a href="{{ route('battery.pos') }}" class="btn btn-outline-success w-100 py-3 d-flex flex-column align-items-center gap-2 rounded-3 shadow-sm border-2">
+                                    <i class="fa-solid fa-cart-shopping fs-3"></i>
+                                    <span class="fw-bold small">New POS Sale</span>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-6">
+                                <a href="{{ route('battery.products') }}" class="btn btn-outline-primary w-100 py-3 d-flex flex-column align-items-center gap-2 rounded-3 shadow-sm border-2">
+                                    <i class="fa-solid fa-box-open fs-3"></i>
+                                    <span class="fw-bold small">Add Product</span>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-6">
+                                <a href="{{ route('battery.purchases') }}" class="btn btn-outline-info w-100 py-3 d-flex flex-column align-items-center gap-2 rounded-3 shadow-sm border-2">
+                                    <i class="fa-solid fa-truck-ramp-box fs-3"></i>
+                                    <span class="fw-bold small">Purchase Stock</span>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-6">
+                                <a href="{{ route('battery.customers') }}" class="btn btn-outline-purple w-100 py-3 d-flex flex-column align-items-center gap-2 rounded-3 shadow-sm border-2" style="color: #7c3aed; border-color: #7c3aed;">
+                                    <i class="fa-solid fa-users fs-3"></i>
+                                    <span class="fw-bold small">Customers</span>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-6">
+                                <a href="{{ route('battery.suppliers') }}" class="btn btn-outline-dark w-100 py-3 d-flex flex-column align-items-center gap-2 rounded-3 shadow-sm border-2">
+                                    <i class="fa-solid fa-truck-field fs-3"></i>
+                                    <span class="fw-bold small">Suppliers</span>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-6">
+                                <a href="{{ route('battery.customer.due') }}" class="btn btn-outline-danger w-100 py-3 d-flex flex-column align-items-center gap-2 rounded-3 shadow-sm border-2">
+                                    <i class="fa-solid fa-hand-holding-dollar fs-3"></i>
+                                    <span class="fw-bold small">Due Collection</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROW 6: OPERATIONAL TABLES (Low Stock Alert & Recent Sales) -->
                 <div class="row g-3">
                     <!-- Low Stock Alerts -->
                     <div class="col-xl-6 col-lg-12">
@@ -254,7 +348,7 @@
                                 <h5 class="fw-bold text-danger mb-0 d-flex align-items-center gap-2">
                                     <i class="fa-solid fa-triangle-exclamation"></i> Low Stock Alert (Battery Inventory)
                                 </h5>
-                                <a href="{{ route('battery.products') }}" class="btn btn-sm btn-light border rounded-pill px-3 fw-bold small">View Catalog</a>
+                                <a href="{{ route('battery.products') }}" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold small">View Catalog</a>
                             </div>
                             <div class="card-body px-0 pt-1">
                                 <div class="table-responsive">
@@ -287,7 +381,7 @@
                                 <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
                                     <i class="fa-solid fa-clock-rotate-left text-success"></i> Recent Battery Sales
                                 </h5>
-                                <a href="{{ route('battery.invoices') }}" class="btn btn-sm btn-light border rounded-pill px-3 fw-bold small">All Invoices</a>
+                                <a href="{{ route('battery.invoices') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold small">All Invoices</a>
                             </div>
                             <div class="card-body px-0 pt-1">
                                 <div class="table-responsive">

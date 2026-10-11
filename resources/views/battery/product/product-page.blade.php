@@ -205,6 +205,7 @@
     }
 
     /* Modal Styling for Create & Update & Quick View */
+    #createProduct.financemodal,
     .financemodal {
         position: fixed !important;
         top: 0 !important;
@@ -223,19 +224,60 @@
         display: none;
         overflow-y: auto !important;
     }
+    #createProduct.financemodal.show,
+    #createProduct.financemodal.show-modal,
     .financemodal.show,
     .financemodal.show-modal {
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
     }
+    #createProduct .modal-content,
     .financemodal .modal-content {
         position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
         margin: auto !important;
         max-height: 90vh !important;
         overflow-y: auto !important;
         border-radius: 16px !important;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    /* + Add Product Button Strict Styling */
+    #openModalBtns {
+        height: 38px !important;
+        min-height: 38px !important;
+        max-height: 38px !important;
+        background-color: #15803d !important;
+        color: #ffffff !important;
+        border: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+    }
+    #openModalBtns:hover,
+    #openModalBtns:focus,
+    #openModalBtns:active {
+        background-color: #16a34a !important;
+        color: #ffffff !important;
+        border: none !important;
+        box-shadow: 0 4px 12px rgba(21, 128, 61, 0.3) !important;
+    }
+    #openModalBtns *,
+    #openModalBtns:hover *,
+    #openModalBtns:focus *,
+    #openModalBtns:active * {
+        color: #ffffff !important;
+        stroke: #ffffff !important;
+        fill: none !important;
+    }
+    #openModalBtns svg,
+    #openModalBtns:hover svg {
+        stroke: #ffffff !important;
     }
 
     /* Custom Searchable Select Inside Modal */
@@ -356,13 +398,29 @@
         display: flex !important;
     }
     .newbrand-content,
-    .newcategory-content {
+    .newcategory-content,
+    .newbrand.show .newbrand-content,
+    .newcategory.show .newcategory-content,
+    #addBrandModal .newbrand-content,
+    #addCategoryModal .newcategory-content,
+    #addSubCategoryModal .newcategory-content {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+        margin: auto !important;
         background: #ffffff !important;
         padding: 24px 28px !important;
         border-radius: 16px !important;
         width: 440px !important;
         max-width: 90vw !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
+        border: 1px solid #f1f5f9;
+        z-index: 100000001 !important;
     }
     .newmodal-header {
         display: flex;
@@ -436,23 +494,56 @@
         background: #dc2626;
     }
 
-    /* Centered Delete Modal */
+    /* Centered Delete Modal - Immune to legacy all-modal.css & eliminates duplicate white box */
+    #batteryProductDeleteModal.modal,
     #confirmationModal.modal {
+        display: none;
         background: rgba(15, 23, 42, 0.65) !important;
         backdrop-filter: blur(5px) !important;
+        -webkit-backdrop-filter: blur(5px) !important;
+        z-index: 1055 !important;
     }
+    #batteryProductDeleteModal.modal.show,
+    #confirmationModal.modal.show {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    #batteryProductDeleteModal .modal-dialog,
     #confirmationModal .modal-dialog {
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin: auto !important;
         max-width: 420px !important;
         width: 92% !important;
-        margin: auto !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
     }
+    #batteryProductDeleteModal .modal-dialog form,
+    #confirmationModal .modal-dialog form {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+        background: transparent !important;
+    }
+    #batteryProductDeleteModal .modal-content,
     #confirmationModal .modal-content {
         background: #ffffff !important;
         border-radius: 20px !important;
+        border: 1px solid rgba(226, 232, 240, 0.8) !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
         padding: 30px 24px 26px 24px !important;
         text-align: center !important;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+        position: relative !important;
+        overflow: hidden !important;
     }
+    #batteryProductDeleteModal .delete-icon-circle,
     #confirmationModal .delete-icon-circle {
         width: 68px;
         height: 68px;
@@ -465,6 +556,93 @@
         justify-content: center;
         margin: 0 auto 16px auto;
         box-shadow: 0 8px 16px rgba(220, 38, 38, 0.12);
+    }
+    #batteryProductDeleteModal .delete-modal-title,
+    #confirmationModal .delete-modal-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 8px;
+    }
+    #batteryProductDeleteModal .delete-modal-text,
+    #confirmationModal .delete-modal-text {
+        font-size: 13.5px;
+        color: #64748b;
+        line-height: 1.5;
+        margin-bottom: 22px;
+        padding: 0 10px;
+    }
+    #batteryProductDeleteModal .delete-modal-actions,
+    #confirmationModal .delete-modal-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+    }
+    #batteryProductDeleteModal .btn-delete-cancel,
+    #confirmationModal .btn-delete-cancel {
+        flex: 1;
+        height: 42px;
+        border-radius: 10px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #475569;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    #batteryProductDeleteModal .btn-delete-cancel:hover,
+    #confirmationModal .btn-delete-cancel:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+    #batteryProductDeleteModal .btn-delete-confirm,
+    #confirmationModal .btn-delete-confirm {
+        flex: 1;
+        height: 42px;
+        border-radius: 10px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #ffffff;
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    #batteryProductDeleteModal .btn-delete-confirm:hover,
+    #confirmationModal .btn-delete-confirm:hover {
+        background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+        box-shadow: 0 6px 18px rgba(220, 38, 38, 0.35);
+        transform: translateY(-1px);
+    }
+    #batteryProductDeleteModal .btn-delete-close,
+    #confirmationModal .btn-delete-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: #94a3b8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.2s ease;
+    }
+    #batteryProductDeleteModal .btn-delete-close:hover,
+    #confirmationModal .btn-delete-close:hover {
+        background: #f1f5f9;
+        color: #0f172a;
     }
 
     /* Dark Mode Theme */
@@ -529,13 +707,9 @@
                             <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white tracking-tight leading-none m-0 p-0">Battery Product List</h1>
                         </div>
 
-                        <!-- Right Controls: Barcode Print + Add Product Button -->
+                        <!-- Right Controls: Add Product Button -->
                         <div class="flex items-center flex-wrap gap-2">
-                            <a href="{{ route('battery.barcode.generate') }}" class="inline-flex items-center gap-1.5 px-3.5 h-[38px] min-h-[38px] max-h-[38px] bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 transition-all">
-                                <i class="fa-solid fa-barcode text-sm"></i>
-                                <span>Barcode Print</span>
-                            </a>
-                            <button id="openModalBtns" onclick="openProductCreateModal()" type="button" class="inline-flex items-center gap-1.5 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150">
+                            <button id="openModalBtns" onclick="openProductCreateModal()" type="button" class="inline-flex items-center gap-1.5 px-4 h-[38px] rounded-xl shadow-sm text-sm font-semibold">
                                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="12" y1="5" x2="12" y2="19"></line>
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -806,7 +980,7 @@
      ADD NEW PRODUCT MODAL (Image 3 Parity)
      ========================================== -->
 <section id="createProduct" class="financemodal">
-    <div class="modal-content border-0 shadow-lg d-flex flex-column" style="border-radius: 16px; overflow: hidden; background: #ffffff; padding: 0 !important; max-width: 750px; width: 95%; max-height: 90vh;">
+    <div class="modal-content border-0 shadow-lg d-flex flex-column" style="border-radius: 16px; overflow: hidden; background: #ffffff; padding: 0 !important; max-width: 750px; width: 95%; max-height: 90vh; margin: auto !important;">
         <!-- Header: Green Gradient with Cart Icon & Red Close Button -->
         <div class="modal-header text-white py-2.5 px-4 d-flex align-items-center justify-content-between flex-shrink-0" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); position: sticky; top: 0; z-index: 20;">
             <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2 m-0 fs-5">
@@ -820,18 +994,18 @@
         <!-- Scrollable Form Body -->
         <div id="popup-modal" style="padding: 18px 24px; overflow-y: auto; flex: 1 1 auto; max-height: calc(90vh - 120px);">
             <form onsubmit="return ProductDataSave(event)" id="createProductForm">
-                <!-- Row 1: Brand (+), Category* (+), Sub-Category (+) -->
+                <!-- Row 1: Brand* (+), Category* (+), Sub-Category (+) -->
                 <div class="row g-2.5">
                     <div class="col-lg-4 col-md-6 col-12">
                         <div class="form-row flex-column align-items-start">
-                            <label for="ProductBrand" class="fw-semibold small" style="color: #334155; margin-bottom: 2px !important; font-size: 13px;">Brand</label>
+                            <label for="ProductBrand" class="fw-semibold small" style="color: #334155; margin-bottom: 2px !important; font-size: 13px;">Brand <span class="text-danger">*</span></label>
                             <div class="d-flex align-items-center w-100 gap-2">
                                 <select class="d-none" id="ProductBrand">
                                     <option value="none">Select Brand</option>
                                 </select>
                                 <div class="custom-searchable-select flex-grow-1" id="createBrandDropdown">
                                     <div class="select-trigger d-flex align-items-center justify-content-between px-3" onclick="toggleCustomProductDropdown('createBrandDropdown')">
-                                        <span class="selected-text text-truncate" style="font-size: 13px; font-weight: 500; color: #64748b;">Select Brand</span>
+                                        <span class="selected-text text-truncate" style="font-size: 13px; font-weight: 500; color: #64748b;">Select Brand <span class="text-danger">*</span></span>
                                         <i class="fa-solid fa-chevron-down ms-1 text-muted" style="font-size: 11px;"></i>
                                     </div>
                                     <div class="select-menu">
@@ -1170,20 +1344,24 @@
 <!-- ==========================================
      CENTERED DELETE CONFIRMATION MODAL
      ========================================== -->
-<section class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
+<section class="modal fade" id="batteryProductDeleteModal" tabindex="-1" aria-labelledby="batteryProductDeleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
+            <button type="button" class="btn-delete-close" data-bs-dismiss="modal" aria-label="Close" title="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
             <form onsubmit="event.preventDefault(); return false;">
                 <input type="hidden" id="deleteID" />
                 <div class="delete-icon-circle">
                     <i class="fa-solid fa-trash-can" style="font-size: 26px;"></i>
                 </div>
-                <h4 class="fw-bold mb-2 text-slate-800">Delete Product?</h4>
-                <p class="text-muted small mb-4">Are you sure you want to delete this battery product record? This action cannot be undone.</p>
-                <div class="d-flex align-items-center justify-content-center gap-2">
-                    <button type="button" data-bs-dismiss="modal" class="btn btn-secondary px-4 py-2" style="border-radius: 8px;">Cancel</button>
-                    <button type="button" onclick="itemDelete(event)" class="btn btn-danger px-4 py-2 fw-bold" style="border-radius: 8px;">
-                        <i class="fa-solid fa-trash-can me-1"></i> Yes, Delete
+                <h4 class="delete-modal-title">Delete Product?</h4>
+                <p class="delete-modal-text">Are you sure you want to delete this battery product record? This action cannot be undone.</p>
+                <div class="delete-modal-actions">
+                    <button type="button" data-bs-dismiss="modal" class="btn-delete-cancel">Cancel</button>
+                    <button type="button" onclick="itemDelete(event)" class="btn-delete-confirm">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span>Yes, Delete</span>
                     </button>
                 </div>
             </form>
@@ -1230,6 +1408,14 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
+        // Move modals directly to body to guarantee perfect centering
+        ['createProduct', 'addBrandModal', 'addCategoryModal', 'addSubCategoryModal'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && el.parentNode !== document.body) {
+                document.body.appendChild(el);
+            }
+        });
+
         loadFilterOptions();
         getBatteryProductList();
 
@@ -1374,6 +1560,9 @@
         const dropdown = document.getElementById(dropdownId);
         const hiddenSelect = document.getElementById(hiddenSelectId);
         if (hiddenSelect) {
+            if (val && $(hiddenSelect).find(`option[value="${val}"]`).length === 0) {
+                $(hiddenSelect).append(`<option value="${val}">${label}</option>`);
+            }
             $(hiddenSelect).val(val).trigger('change');
         }
         if (dropdown) {
@@ -1383,7 +1572,7 @@
                 triggerText.style.color = '#1e293b';
             }
             dropdown.querySelectorAll('.select-option-item').forEach(it => {
-                it.classList.toggle('active', it.getAttribute('data-value') === String(val));
+                it.classList.toggle('active', String(it.getAttribute('data-value')) === String(val));
             });
         }
         closeAllCustomProductDropdowns();
@@ -1426,6 +1615,11 @@
             subCategoriesList = scRes.data?.SubCategoryData || [];
             unitsList = uRes.data?.units || [];
 
+            // Preserve current selections if user already selected something in create modal
+            const prevBrand = $('#ProductBrand').val();
+            const prevCat = $('#ProductCategoryDataID').val();
+            const prevSubCat = $('#ProductSubCategoryID').val();
+
             // Populate Brand Filters & Modal Options
             let bNativeOpts = '<option value="">All Brands</option>';
             let bCustomList = '<div class="select-option-item active" data-value="" data-label="All Brands" onclick="selectCustomFilterOption(\'filterBrandDropdown\', \'filterBrand\', \'\', \'All Brands\')"><span>All Brands</span><svg class="w-3.5 h-3.5 text-emerald-600 check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg></div>';
@@ -1465,6 +1659,31 @@
             $('#ProductCategoryDataID').html('<option value="none" selected>Select Category</option>' + cNativeOpts.replace('<option value="">All Categories</option>', ''));
             $('#updateProductCategory').html(cUpdateOpts);
             $('#CreateSubCategoryParent').html(cUpdateOpts);
+
+            // Re-apply preserved selections if any
+            if (prevBrand && prevBrand !== 'none') {
+                $('#ProductBrand').val(prevBrand);
+                const bObj = brandsList.find(b => String(b.id) === String(prevBrand));
+                if (bObj) {
+                    const bTrigger = document.querySelector('#createBrandDropdown .selected-text');
+                    if (bTrigger) { bTrigger.textContent = bObj.name; bTrigger.style.color = '#1e293b'; }
+                    $('#createBrandDropdown .select-option-item').removeClass('active');
+                    $(`#createBrandDropdown .select-option-item[data-value="${prevBrand}"]`).addClass('active');
+                }
+            }
+            if (prevCat && prevCat !== 'none') {
+                $('#ProductCategoryDataID').val(prevCat);
+                const cObj = categoriesList.find(c => String(c.id) === String(prevCat));
+                if (cObj) {
+                    const cTrigger = document.querySelector('#createCategoryDropdown .selected-text');
+                    if (cTrigger) { cTrigger.textContent = cObj.category_name || cObj.name; cTrigger.style.color = '#1e293b'; }
+                    $('#createCategoryDropdown .select-option-item').removeClass('active');
+                    $(`#createCategoryDropdown .select-option-item[data-value="${prevCat}"]`).addClass('active');
+                }
+            }
+            if (prevSubCat && prevSubCat !== 'none') {
+                $('#ProductSubCategoryID').val(prevSubCat);
+            }
 
         } catch (e) {
             console.error('Filter options load error:', e);
@@ -1925,6 +2144,9 @@
     function openProductCreateModal() {
         const modal = document.getElementById('createProduct');
         if (modal) {
+            if (modal.parentNode !== document.body) {
+                document.body.appendChild(modal);
+            }
             modal.classList.add('show');
             modal.classList.add('show-modal');
             modal.style.setProperty('display', 'flex', 'important');
@@ -1956,7 +2178,7 @@
         $('#ProductSubCategoryID').val('none');
 
         const bText = document.querySelector('#createBrandDropdown .selected-text');
-        if (bText) { bText.textContent = 'Select Brand'; bText.style.color = '#64748b'; }
+        if (bText) { bText.innerHTML = 'Select Brand <span class="text-danger">*</span>'; bText.style.color = '#64748b'; }
         const cText = document.querySelector('#createCategoryDropdown .selected-text');
         if (cText) { cText.innerHTML = 'Select Category <span class="text-danger">*</span>'; cText.style.color = '#64748b'; }
         const sText = document.querySelector('#createSubCategoryDropdown .selected-text');
@@ -2082,7 +2304,11 @@
                 errorToast("Product Name is required!");
                 return false;
             }
-            if (!catId || catId === 'none') {
+            if (!brandId || brandId === 'none' || brandId === '') {
+                errorToast("Product Brand is required!");
+                return false;
+            }
+            if (!catId || catId === 'none' || catId === '') {
                 errorToast("Product Category is required!");
                 return false;
             }
@@ -2095,8 +2321,8 @@
 
             let formData = new FormData();
             formData.append('product_name', productName);
-            formData.append('brand_id', brandId !== 'none' ? brandId : '');
-            formData.append('category_id', catId !== 'none' ? catId : '');
+            formData.append('brand_id', brandId);
+            formData.append('category_id', catId);
             if (subCatId && subCatId !== 'none') formData.append('sub_category_id', subCatId);
             formData.append('quantity', qty);
             formData.append('cost_price', cost);
@@ -2267,7 +2493,7 @@
     // ==========================================
     function openProductDeleteModal(id) {
         $('#deleteID').val(id);
-        $('#confirmationModal').modal('show');
+        $('#batteryProductDeleteModal').modal('show');
     }
 
     async function itemDelete(event) {
@@ -2282,6 +2508,7 @@
 
             if (res.data?.status === 'success') {
                 successToast(res.data.message || 'Product deleted successfully');
+                $('#batteryProductDeleteModal').modal('hide');
                 $('#confirmationModal').modal('hide');
                 getBatteryProductList();
             } else {
@@ -2297,7 +2524,11 @@
     // ==========================================
     // QUICK ADD BRAND, CATEGORY, SUBCATEGORY
     // ==========================================
-    function openBrandModal() { $('#addBrandModal').addClass('show'); }
+    function openBrandModal() { 
+        const m = document.getElementById('addBrandModal');
+        if (m && m.parentNode !== document.body) document.body.appendChild(m);
+        $('#addBrandModal').addClass('show'); 
+    }
     function closeBrandModal() { $('#addBrandModal').removeClass('show'); $('#addBrandForm')[0].reset(); }
     async function BrandSave(e) {
         e.preventDefault();
@@ -2332,7 +2563,11 @@
         }
     }
 
-    function openCategoryModal() { $('#addCategoryModal').addClass('show'); }
+    function openCategoryModal() { 
+        const m = document.getElementById('addCategoryModal');
+        if (m && m.parentNode !== document.body) document.body.appendChild(m);
+        $('#addCategoryModal').addClass('show'); 
+    }
     function closeCategoryModal() { $('#addCategoryModal').removeClass('show'); $('#addCategoryForm')[0].reset(); }
     async function CategorySave(e) {
         e.preventDefault();
@@ -2373,6 +2608,8 @@
         if (catId && catId !== 'none') {
             $('#CreateSubCategoryParent').val(catId);
         }
+        const m = document.getElementById('addSubCategoryModal');
+        if (m && m.parentNode !== document.body) document.body.appendChild(m);
         $('#addSubCategoryModal').addClass('show');
     }
     function closeSubCategoryModal() { $('#addSubCategoryModal').removeClass('show'); $('#addSubCategoryForm')[0].reset(); }

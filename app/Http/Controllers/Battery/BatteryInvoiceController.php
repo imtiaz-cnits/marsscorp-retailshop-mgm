@@ -66,7 +66,7 @@ class BatteryInvoiceController extends Controller
         try {
             $request->validate(["id" => 'required']);
 
-            $order = BatteryOrder::with(['customer', 'details.product', 'payment', 'payments'])
+            $order = BatteryOrder::with(['customer', 'details.product', 'payment', 'paymentDetails'])
                 ->where('id', $request->input('id'))
                 ->first();
 
@@ -86,24 +86,32 @@ class BatteryInvoiceController extends Controller
             $user_id = Auth::id();
             $order = BatteryOrder::findOrFail($request->input('id'));
 
-            $newPaidAmount = floatval($order->paid_amount) + floatval($request->paid_amount ?? 0);
-            $newDueAmount = max(0, floatval($order->due_amount) - floatval($request->paid_amount ?? 0));
+            $currentPaidAmount = floatval($order->paid_amount ?? 0);
+            $currentDueAmount = floatval($order->due_amount ?? 0);
+
+            $paidAmount = floatval($request->paid_amount ?? 0);
+            $discountAmount = floatval($request->discount_amount ?? 0);
+
+            $applicableDiscount = min($discountAmount, $currentDueAmount);
+            $newPaidAmount = $currentPaidAmount + $paidAmount;
+            $newDueAmount = max(0, $currentDueAmount - $paidAmount - $applicableDiscount);
 
             $order->paid_amount = $newPaidAmount;
             $order->due_amount = $newDueAmount;
+            $order->discount_amount = floatval($order->discount_amount ?? 0) + $applicableDiscount;
             $order->save();
 
-            $status = $newDueAmount <= 0 ? 'Fully Paid' : 'Partial Paid';
+            $status = $newDueAmount <= 0 ? 'Fully Paid' : (($newPaidAmount > 0) ? 'Partial Paid' : 'Unpaid');
 
             $newPayment = BatteryOrderPaymentDetail::create([
                 'order_id' => $order->id,
-                'paid_amount' => $request->paid_amount ?? 0,
-                'discount_amount' => $request->discount_amount ?? 0,
+                'paid_amount' => $paidAmount,
+                'discount_amount' => $applicableDiscount,
                 'payment_status' => $status,
                 'user_id' => $user_id,
                 'transaction_id' => $request->transaction_id ?? null,
                 'payment_method' => $request->payment_method ?? 'Cash',
-                'due_collection_date' => now()->format('Y-m-d'),
+                'due_collection_date' => $request->due_collection_date ?? now()->format('Y-m-d'),
             ]);
 
             return response()->json([

@@ -489,7 +489,7 @@
                 document.getElementById('paidAmount').textContent = `৳ ${paidAmount.toFixed(2)}`;
                 document.getElementById('ShowtotalDuePayable').textContent = `৳ ${dueAmount.toFixed(2)}`;
                 document.getElementById('CustomerDueAmount').textContent = dueAmount.toString();
-                document.getElementById('UpdateDueAmountclear').value = dueAmount > 0 ? dueAmount : 0;
+                document.getElementById('UpdateDueAmountclear').value = '';
                 document.getElementById('UpdateDiscountAmountclear').value = 0;
 
                 calculateDuePayment();
@@ -504,10 +504,12 @@
 
     function calculateDuePayment() {
         const initialDue = parseFloat(document.getElementById('CustomerDueAmount')?.textContent || 0);
+        const initialPaid = parseFloat(document.getElementById('paidAmount')?.textContent.replace(/[^\d.-]/g, '') || 0);
         const payAmount = parseFloat(document.getElementById('UpdateDueAmountclear')?.value || 0);
         const discountAmount = parseFloat(document.getElementById('UpdateDiscountAmountclear')?.value || 0);
 
         const newRemainingDue = Math.max(0, initialDue - (payAmount + discountAmount));
+        const totalPaidAndDiscount = initialPaid + payAmount + discountAmount;
 
         document.getElementById('ShowtotalDuePayable').textContent = `৳ ${newRemainingDue.toFixed(2)}`;
 
@@ -515,10 +517,10 @@
         if (statusDisplay) {
             statusDisplay.classList.remove("fully-paid-status", "partial-payment-status", "unpaid-status");
 
-            if (newRemainingDue === 0) {
+            if (newRemainingDue === 0 && (totalPaidAndDiscount > 0 || initialDue === 0)) {
                 statusDisplay.textContent = "Fully Paid";
                 statusDisplay.classList.add("fully-paid-status");
-            } else if (payAmount > 0) {
+            } else if ((initialPaid + payAmount) > 0) {
                 statusDisplay.textContent = "Partial Paid";
                 statusDisplay.classList.add("partial-payment-status");
             } else {

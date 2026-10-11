@@ -2665,7 +2665,7 @@
         <nav id="navbar" class="mb-2">
             <div class="nav-wrapper py-1 px-2 px-md-3 d-flex align-items-center justify-content-between gap-1 gap-md-2" style="min-height: 42px; border-radius: 12px; flex-wrap: nowrap;">
                 <div class="nav_back_btn p-0 d-flex align-items-center flex-shrink-0">
-                    <a href="{{ url('admin-dashboard') }}" class="btn btn-sm btn-success fw-bold text-white d-inline-flex align-items-center gap-1.5 py-1 px-2.5 shadow-sm" style="border-radius: 20px; font-size: 12px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important; border: none !important; height: 32px; color: #ffffff !important;">
+                    <a href="{{ url('admin-dashboard') }}" class="btn btn-sm btn-success fw-bold text-white d-inline-flex align-items-center gap-1.5 py-1 px-2.5 shadow-sm" style="border-radius: 20px; font-size: 12px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important; border: none !important; height: 32px; color: #ffffff !important; padding: 6px 14px !important;">
                         <i class="fa-solid fa-arrow-left text-white" style="font-size: 12px; color: #ffffff !important;"></i>
                         <span class="nav_back_text text-white m-0 p-0 fw-bold d-none d-sm-inline" style="font-size: 12px; color: #ffffff !important;">Back to Dashboard</span>
                         <span class="nav_back_text text-white m-0 p-0 fw-bold d-inline d-sm-none" style="font-size: 12px; color: #ffffff !important;">Back</span>

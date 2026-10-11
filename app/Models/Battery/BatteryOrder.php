@@ -46,6 +46,11 @@ class BatteryOrder extends Model
         return $this->hasMany(BatteryOrderPaymentDetail::class, 'order_id');
     }
 
+    public function payments()
+    {
+        return $this->hasMany(BatteryOrderPaymentDetail::class, 'order_id');
+    }
+
     public function productReturns()
     {
         return $this->hasMany(BatteryProductReturn::class, 'order_id');

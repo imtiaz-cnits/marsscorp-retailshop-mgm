@@ -1665,14 +1665,14 @@
                         let row = `
                             <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors">
                                 <td class="text-center font-bold text-slate-500">${index + 1}</td>
-                                <td class="text-center"><a href='/battery/invoices' class="sp-badge cp-badge-id font-mono">${item.order_no}</a></td>
+                                <td class="text-center"><a href="/battery/invoice/${item.id}" class="sp-badge cp-badge-id font-mono">${item.order_no}</a></td>
                                 <td class="text-center text-slate-600 dark:text-slate-300 whitespace-nowrap">${formattedDate}</td>
                                 <td class="text-end font-bold text-slate-800 dark:text-white">৳ ${subTotal}</td>
                                 <td class="text-end font-bold text-emerald-700 dark:text-emerald-400">${paidDisplayHtml}</td>
                                 <td class="text-end font-bold ${dueRaw > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400'}">৳ ${due}</td>
                                 <td class="text-center"><span class="cp-badge ${statusBadgeClass}">${paymentStatus}</span></td>
                                 <td class="text-center">
-                                    <a href='/battery/invoices' class="cp-action-view-btn" title="View Invoice">
+                                    <a href="/battery/invoice/${item.id}" class="cp-action-view-btn" title="View Invoice">
                                         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                             <circle cx="12" cy="12" r="3"></circle>
@@ -1693,7 +1693,7 @@
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <span class="cp-badge ${statusBadgeClass}">${paymentStatus}</span>
-                                        <a href='/battery/invoices' class="cp-action-view-btn" title="View Invoice">
+                                        <a href="/battery/invoice/${item.id}" class="cp-action-view-btn" title="View Invoice">
                                             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                                 <circle cx="12" cy="12" r="3"></circle>

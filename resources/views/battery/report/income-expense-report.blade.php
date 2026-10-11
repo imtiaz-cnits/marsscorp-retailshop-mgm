@@ -918,7 +918,7 @@
 
         // Display Info
         document.getElementById('display-info').innerHTML = total > 0
-            ? `<span class="text-xs text-slate-500 dark:text-slate-400">Showing <strong class="text-slate-700 dark:text-slate-200">${start + 1}â€“${Math.min(start + perPage, total)}</strong> of <strong class="text-slate-700 dark:text-slate-200">${total}</strong> records</span>`
+            ? `<span class="text-xs text-slate-500 dark:text-slate-400">Showing <strong class="text-slate-700 dark:text-slate-200">${start + 1}-${Math.min(start + perPage, total)}</strong> of <strong class="text-slate-700 dark:text-slate-200">${total}</strong> records</span>`
             : `<span class="text-xs text-slate-400">No records found</span>`;
 
         renderPagination(totalPages);
@@ -934,15 +934,15 @@
         const inactiveClass = "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:border-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-400";
         const disabledClass = "bg-white dark:bg-slate-800 text-slate-300 dark:text-slate-600 border-slate-200 dark:border-slate-700 cursor-not-allowed";
 
-        container.innerHTML += `<button onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="${btnClass} ${currentPage === 1 ? disabledClass : inactiveClass}">â€¹</button>`;
+        container.innerHTML += `<button onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="${btnClass} ${currentPage === 1 ? disabledClass : inactiveClass}">-¹</button>`;
         for (let i = 1; i <= totalPages; i++) {
             if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
                 container.innerHTML += `<button onclick="goPage(${i})" class="${btnClass} ${i === currentPage ? activeClass : inactiveClass}">${i}</button>`;
             } else if (i === currentPage - 2 || i === currentPage + 2) {
-                container.innerHTML += `<span class="text-slate-400 px-1">â€¦</span>`;
+                container.innerHTML += `<span class="text-slate-400 px-1">-</span>`;
             }
         }
-        container.innerHTML += `<button onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="${btnClass} ${currentPage === totalPages ? disabledClass : inactiveClass}">â€º</button>`;
+        container.innerHTML += `<button onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="${btnClass} ${currentPage === totalPages ? disabledClass : inactiveClass}">-</button>`;
     }
 
     function goPage(page) {

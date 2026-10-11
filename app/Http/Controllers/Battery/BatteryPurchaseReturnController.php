@@ -242,7 +242,29 @@ class BatteryPurchaseReturnController extends Controller
 
     public function PurchaseReturnShowDetails($id)
     {
-        $purchaseReturn = BatteryPurchaseReturn::with(['purchase', 'supplier', 'product', 'user'])->findOrFail($id);
+        // 1. Check if $id is an existing BatteryPurchase (initiated from Purchase List Return action)
+        $purchase = BatteryPurchase::with(['supplier', 'orderDetails.product', 'paymentDetails'])->find($id);
+
+        if ($purchase) {
+            $subTotal = (float) $purchase->orderDetails->sum(function ($detail) {
+                return (float) ($detail->cost_price ?? 0) * (int) ($detail->quantity ?? 1);
+            });
+            $paidAmount = (float) ($purchase->paymentDetails ? $purchase->paymentDetails->sum('paid_amount') : 0);
+            $dueAmount = (float) $purchase->due_amount;
+            $supplierPayable = (float) ($purchase->supplier->purchase_payable_amount ?? 0);
+            $totalPayableAmount = $supplierPayable + $dueAmount;
+
+            return view('battery.return.purchase-return-details', compact(
+                'purchase',
+                'subTotal',
+                'paidAmount',
+                'dueAmount',
+                'totalPayableAmount'
+            ));
+        }
+
+        // 2. Fallback to existing BatteryPurchaseReturn voucher
+        $purchaseReturn = BatteryPurchaseReturn::with(['purchase.supplier', 'supplier', 'product', 'user'])->findOrFail($id);
 
         return view('battery.return.purchase-return-details', compact('purchaseReturn'));
     }

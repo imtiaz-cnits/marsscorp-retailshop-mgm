@@ -18,12 +18,18 @@ class BatteryCategory extends Model
     ];
 
     protected $appends = [
-        'category_name'
+        'category_name',
+        'status'
     ];
 
     public function getCategoryNameAttribute()
     {
         return $this->attributes['name'] ?? null;
+    }
+
+    public function getStatusAttribute()
+    {
+        return $this->attributes['status'] ?? 'Active';
     }
 
     public function products()

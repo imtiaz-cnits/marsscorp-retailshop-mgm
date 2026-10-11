@@ -222,6 +222,18 @@ class BatteryProductReturnController extends Controller
 
     public function ReturnShowDetails($id)
     {
+        $order = BatteryOrder::with(['customer', 'details.product', 'payment', 'paymentDetails'])->find($id);
+        if ($order) {
+            $invoice = $order;
+            $subTotal = $invoice->details->sum(function($orderDetail) {
+                return ($orderDetail->selling_price ?: ($orderDetail->price * $orderDetail->quantity));
+            });
+            $paidAmount = (float) ($invoice->paid_amount ?? ($invoice->payment ? $invoice->payment->paid_amount : 0));
+            $dueAmount = (float) ($invoice->due_amount ?? max(0, $subTotal - $paidAmount));
+
+            return view('battery.return.return-product', compact('invoice', 'subTotal', 'paidAmount', 'dueAmount'));
+        }
+
         $return = BatteryProductReturn::with(['order', 'customer', 'product', 'user'])->findOrFail($id);
 
         return view('battery.return.return-details', compact('return'));

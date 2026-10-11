@@ -1,15 +1,20 @@
-﻿<style>
+<style>
     #exampleModal {
         z-index: 1060 !important;
     }
-    /* Fix duplicate outer box from all-modal.css.css */
+    /* Fix duplicate outer box from all-modal.css.css and guarantee dead-center alignment */
     #exampleModal .modal-dialog {
         background: transparent !important;
         padding: 0 !important;
         border: none !important;
         box-shadow: none !important;
         max-width: 620px;
-        margin: 1.75rem auto;
+        width: 95%;
+        margin: auto !important;
+        min-height: calc(100% - 3.5rem);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     #exampleModal .modal-content {
         background: #ffffff !important;
@@ -464,7 +469,27 @@
 
     async function FillUpUpdateForm(id) {
         try {
+            if (!id) return;
             document.getElementById('updateID').value = id;
+
+            // Immediate pre-population from in-memory rawInvoiceData if available
+            if (typeof rawInvoiceData !== 'undefined' && Array.isArray(rawInvoiceData)) {
+                const cached = rawInvoiceData.find(item => String(item.id) === String(id));
+                if (cached) {
+                    const cSubTotal = parseFloat(cached.sub_total) || 0;
+                    const cPaid = parseFloat(cached.paid_amount) || 0;
+                    const cDue = parseFloat(cached.due_amount) || 0;
+
+                    document.getElementById('ShowSubTotalAmmount').textContent = `৳ ${cSubTotal.toFixed(2)}`;
+                    document.getElementById('paidAmount').textContent = `৳ ${cPaid.toFixed(2)}`;
+                    document.getElementById('ShowtotalDuePayable').textContent = `৳ ${cDue.toFixed(2)}`;
+                    document.getElementById('CustomerDueAmount').textContent = cDue.toString();
+                    document.getElementById('UpdateDueAmountclear').value = '';
+                    document.getElementById('UpdateDiscountAmountclear').value = 0;
+
+                    calculateDuePayment();
+                }
+            }
 
             // Reset date to today using flatpickr
             const today = new Date().toISOString().split('T')[0];
@@ -476,7 +501,7 @@
 
             let res = await axios.post("/api/battery/invoice-payment-details-by-id", {
                 id: id.toString()
-            }, HeaderToken());
+            }, typeof HeaderToken === 'function' ? HeaderToken() : {});
 
             if (res.data.status === "success") {
                 const data = res.data.rows;
@@ -489,7 +514,7 @@
                 document.getElementById('paidAmount').textContent = `৳ ${paidAmount.toFixed(2)}`;
                 document.getElementById('ShowtotalDuePayable').textContent = `৳ ${dueAmount.toFixed(2)}`;
                 document.getElementById('CustomerDueAmount').textContent = dueAmount.toString();
-                document.getElementById('UpdateDueAmountclear').value = dueAmount > 0 ? dueAmount : 0;
+                document.getElementById('UpdateDueAmountclear').value = '';
                 document.getElementById('UpdateDiscountAmountclear').value = 0;
 
                 calculateDuePayment();
@@ -497,17 +522,19 @@
                 console.error("Failed to fetch invoice details:", res.data.message);
             }
         } catch (e) {
-            console.error("Error:", e);
-            unauthorized(e.response ? e.response.status : 500);
+            console.error("Error in FillUpUpdateForm:", e);
         }
     }
+    window.FillUpUpdateForm = FillUpUpdateForm;
 
     function calculateDuePayment() {
         const initialDue = parseFloat(document.getElementById('CustomerDueAmount')?.textContent || 0);
+        const initialPaid = parseFloat(document.getElementById('paidAmount')?.textContent.replace(/[^\d.-]/g, '') || 0);
         const payAmount = parseFloat(document.getElementById('UpdateDueAmountclear')?.value || 0);
         const discountAmount = parseFloat(document.getElementById('UpdateDiscountAmountclear')?.value || 0);
 
         const newRemainingDue = Math.max(0, initialDue - (payAmount + discountAmount));
+        const totalPaidAndDiscount = initialPaid + payAmount + discountAmount;
 
         document.getElementById('ShowtotalDuePayable').textContent = `৳ ${newRemainingDue.toFixed(2)}`;
 
@@ -515,10 +542,10 @@
         if (statusDisplay) {
             statusDisplay.classList.remove("fully-paid-status", "partial-payment-status", "unpaid-status");
 
-            if (newRemainingDue === 0) {
+            if (newRemainingDue === 0 && (totalPaidAndDiscount > 0 || initialDue === 0)) {
                 statusDisplay.textContent = "Fully Paid";
                 statusDisplay.classList.add("fully-paid-status");
-            } else if (payAmount > 0) {
+            } else if ((initialPaid + payAmount) > 0) {
                 statusDisplay.textContent = "Partial Paid";
                 statusDisplay.classList.add("partial-payment-status");
             } else {
@@ -527,6 +554,7 @@
             }
         }
     }
+    window.calculateDuePayment = calculateDuePayment;
 
     async function SavePaymentInfo(event) {
         if (event) event.preventDefault();

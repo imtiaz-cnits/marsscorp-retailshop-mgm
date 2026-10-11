@@ -19,7 +19,7 @@ class BatterySupplierDueCollectionController extends Controller
     public function SupplierDueCollectionList()
     {
         try {
-            $SupplierDueCollectionData = BatterySupplierDueCollection::with('supplier:id,name,supplier_id')->latest()->get();
+            $SupplierDueCollectionData = BatterySupplierDueCollection::with('supplier:id,name,supplier_id,img_url')->latest()->get();
             return response()->json(['status' => 'success', 'SupplierDueCollectionData' => $SupplierDueCollectionData]);
         } catch (Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);

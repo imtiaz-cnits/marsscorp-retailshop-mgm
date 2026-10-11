@@ -48,6 +48,8 @@ class BatterySupplierController extends Controller
                     'company' => $supplier->company,
                     'purchase_payable_amount' => $supplier->purchase_payable_amount ?? 0,
                     'status' => $supplier->status,
+                    'img_url' => $supplier->img_url,
+                    'created_at' => $supplier->created_at,
                     'total_due_amount' => $dueAmounts[$supplier->id] ?? 0,
                 ];
             })
@@ -73,6 +75,19 @@ class BatterySupplierController extends Controller
             $nextId = $lastSupplier ? intval(substr($lastSupplier->supplier_id, 8)) + 1 : 10001;
             $supplierId = 'BAT-SUP-' . $nextId;
 
+            $img_url = null;
+            if ($request->hasFile('img_url')) {
+                $img = $request->file('img_url');
+                $t = time();
+                $file_name = "{$t}-{$user_id}-" . $img->getClientOriginalName();
+                $img_url = "uploads/battery-supplier-img/{$file_name}";
+                $destination = public_path('uploads/battery-supplier-img');
+                if (!file_exists($destination)) {
+                    @mkdir($destination, 0777, true);
+                }
+                $img->move($destination, $file_name);
+            }
+
             $newSupplier = BatterySupplier::create([
                 'supplier_id' => $supplierId,
                 'name' => $request->input('name'),
@@ -80,6 +95,7 @@ class BatterySupplierController extends Controller
                 'purchase_payable_amount' => $request->input('purchase_payable_amount') ?? 0,
                 'mobile' => $request->input('mobile'),
                 'address' => $request->input('address'),
+                'img_url' => $img_url,
                 'user_id' => $user_id,
             ]);
 
@@ -115,11 +131,24 @@ class BatterySupplierController extends Controller
                 return response()->json(['status' => 'fail', 'message' => 'Supplier not found.']);
             }
 
-            $supplier->name = $request->input('name');
-            $supplier->company = $request->input('company');
+            $supplier->name = $request->input('name') ?? $supplier->name;
+            $supplier->company = $request->input('company') ?? $supplier->company;
             $supplier->purchase_payable_amount = $request->input('purchase_payable_amount') ?? $supplier->purchase_payable_amount;
             $supplier->mobile = $request->input('mobile') ?? $supplier->mobile;
             $supplier->address = $request->input('address') ?? $supplier->address;
+
+            if ($request->hasFile('img_url')) {
+                $img = $request->file('img_url');
+                $t = time();
+                $file_name = "{$t}-{$user_id}-" . $img->getClientOriginalName();
+                $img_url = "uploads/battery-supplier-img/{$file_name}";
+                $destination = public_path('uploads/battery-supplier-img');
+                if (!file_exists($destination)) {
+                    @mkdir($destination, 0777, true);
+                }
+                $img->move($destination, $file_name);
+                $supplier->img_url = $img_url;
+            }
 
             $supplier->save();
 

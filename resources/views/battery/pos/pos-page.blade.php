@@ -3948,7 +3948,7 @@
                     </td>
                     <td style="padding: 5px 2px; vertical-align: middle; text-align: center;">
                         <div class="cost-price-wrapper" style="position: relative; z-index: 1; display: inline-block;">
-                            <span class="cost-price-placeholder badge bg-light text-muted border px-1 py-0.5" style="font-size: 12px; cursor: pointer;">ðŸ”’ ***</span>
+                            <span class="cost-price-placeholder badge bg-light text-muted border px-1 py-0.5" style="font-size: 12px; cursor: pointer;">********</span>
                             <input
                                 class="price cost-price-input"
                                 type="number"

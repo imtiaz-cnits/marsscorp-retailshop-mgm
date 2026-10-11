@@ -1,5 +1,5 @@
 <!-- Panel 1: Battery Main Menu Panel -->
-<div id="sidebar-main-panel" class="sidebar-panel-scroll absolute inset-0 w-full h-full overflow-y-auto overflow-x-hidden transition-transform duration-300 ease-in-out py-2 px-3 {{ $activeParent ? '-translate-x-full pointer-events-none' : 'translate-x-0' }}">
+<div id="sidebar-main-panel" class="sidebar-panel-scroll absolute inset-0 w-full h-full overflow-y-auto overflow-x-hidden transition-transform duration-300 ease-in-out py-2 px-3 {{ ($activeParent && $activeParent !== 'battery-purchase') ? '-translate-x-full pointer-events-none' : 'translate-x-0' }}">
   <ul class="space-y-1">
     
     <!-- 1. Dashboard -->
@@ -59,8 +59,6 @@
           <li><a href="{{ route('battery.products') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.products') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-list-ul text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Product List</span></a></li>
           <li><a href="{{ route('battery.brands') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.brands') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-tag text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Brand List</span></a></li>
           <li><a href="{{ route('battery.categories') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.categories') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-layer-group text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Category List</span></a></li>
-          <li><a href="{{ route('battery.sub-categories') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.sub-categories') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-sitemap text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Sub Categories</span></a></li>
-          <li><a href="{{ route('battery.units') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.units') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-scale-balanced text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Unit List</span></a></li>
           <li><a href="{{ route('battery.barcode.generate') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.barcode.generate') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-barcode text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Barcode Print</span></a></li>
           <li><a href="{{ route('battery.reports.stock-out') }}" class="sidebar-flyout-link text-red-300 {{ request()->routeIs('battery.reports.stock-out') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-triangle-exclamation text-[10px] text-red-300 w-4 text-center"></i><span>Low Stock</span></a></li>
         </ul>
@@ -95,30 +93,14 @@
       </div>
     </li>
 
-    <!-- 6. Purchases (Drilldown) -->
-    <li class="sidebar-item has-submenu relative group" data-menu-id="battery-purchase">
-      <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent outline-none transition-all duration-200 text-start {{ $activeParent === 'battery-purchase' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-battery-purchase">
-        <div class="flex items-center gap-2 min-w-0">
-          <i class="fa-solid fa-cart-shopping text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
-          <span class="sidebar-label text-[13.5px] font-medium tracking-wide truncate">Purchases</span>
-        </div>
-        <span class="sidebar-arrow shrink-0 w-5 h-5 rounded-md bg-white/10 flex items-center justify-center text-white/70 group-hover:text-white group-hover:bg-white/20 transition-all">
-          <i class="fa-solid fa-chevron-right text-[9px]"></i>
-        </span>
-      </button>
-      <!-- Collapsed Flyout Popover -->
-      <div class="sidebar-flyout">
-        <div class="sidebar-flyout-header flex items-center justify-between px-3 py-2 border-b border-emerald-500/25 mb-1.5">
-          <span class="text-[11px] font-bold tracking-wider text-emerald-300 uppercase flex items-center gap-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span>
-            Purchases
-          </span>
-          <span class="text-[9.5px] font-semibold text-emerald-200/80 bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-400/30">Menu</span>
-        </div>
-        <ul class="py-0.5 px-1 space-y-0.5">
-          <li><a href="{{ route('battery.purchases') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.purchases') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-cart-arrow-down text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Purchase List</span></a></li>
-          <li><a href="{{ route('battery.purchase.payments') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.purchase.payments') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-money-check-dollar text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Purchase Payments</span></a></li>
-        </ul>
+    <!-- 6. Purchase (Single Menu matching Retail) -->
+    <li class="sidebar-item relative group">
+      <a href="{{ route('battery.purchases') }}" class="sidebar-link w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ (request()->routeIs('battery.purchases') || request()->routeIs('battery.purchase.*')) ? 'active-gradient' : '' }}">
+        <i class="fa-solid fa-cart-shopping text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
+        <span class="sidebar-label text-[13.5px] font-medium tracking-wide">Purchase</span>
+      </a>
+      <div class="sidebar-mini-tooltip">
+        Purchase
       </div>
     </li>
 
@@ -279,20 +261,7 @@
       </a>
       <div class="sidebar-mini-tooltip">Category List</div>
     </li>
-    <li class="relative group">
-      <a href="{{ route('battery.sub-categories') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->routeIs('battery.sub-categories') ? 'active-submenu-link' : '' }}">
-        <i class="fa-solid fa-sitemap text-xs text-emerald-300/80 w-4 text-center"></i>
-        <span>Sub Categories</span>
-      </a>
-      <div class="sidebar-mini-tooltip">Sub Categories</div>
-    </li>
-    <li class="relative group">
-      <a href="{{ route('battery.units') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->routeIs('battery.units') ? 'active-submenu-link' : '' }}">
-        <i class="fa-solid fa-scale-balanced text-xs text-emerald-300/80 w-4 text-center"></i>
-        <span>Unit List</span>
-      </a>
-      <div class="sidebar-mini-tooltip">Unit List</div>
-    </li>
+
     <li class="relative group">
       <a href="{{ route('battery.barcode.generate') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->routeIs('battery.barcode.generate') ? 'active-submenu-link' : '' }}">
         <i class="fa-solid fa-barcode text-xs text-emerald-300/80 w-4 text-center"></i>
@@ -344,8 +313,8 @@
   </ul>
 </div>
 
-<!-- Panel 4: Battery Purchase Submenu Panel -->
-<div id="submenu-panel-battery-purchase" class="sidebar-submenu-panel sidebar-panel-scroll absolute inset-0 w-full h-full overflow-y-auto overflow-x-hidden transition-transform duration-300 ease-in-out py-2 px-3 {{ $activeParent === 'battery-purchase' ? 'translate-x-0 pointer-events-auto' : 'translate-x-full pointer-events-none' }}" data-parent-id="battery-purchase">
+<!-- Panel 4: Battery Purchase Submenu Panel (Merged into Single Purchase Menu + Top Tabs) -->
+<div id="submenu-panel-battery-purchase" class="sidebar-submenu-panel sidebar-panel-scroll absolute inset-0 w-full h-full overflow-y-auto overflow-x-hidden transition-transform duration-300 ease-in-out py-2 px-3 translate-x-full pointer-events-none" data-parent-id="battery-purchase">
   <div class="sidebar-back-wrapper relative group mb-2">
     <button type="button" class="sidebar-back-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-emerald-100 bg-white/10 hover:bg-white/20 border border-white/15 font-semibold text-sm transition-all duration-200 shadow-sm" data-target="main">
       <i class="fa-solid fa-chevron-left text-xs text-emerald-300"></i>

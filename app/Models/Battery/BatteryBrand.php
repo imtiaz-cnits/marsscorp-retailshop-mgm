@@ -17,6 +17,15 @@ class BatteryBrand extends Model
         'user_id'
     ];
 
+    protected $appends = [
+        'status'
+    ];
+
+    public function getStatusAttribute()
+    {
+        return $this->attributes['status'] ?? 'Active';
+    }
+
     public function products()
     {
         return $this->hasMany(BatteryProduct::class, 'brand_id');
