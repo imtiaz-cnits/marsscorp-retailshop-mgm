@@ -60,7 +60,7 @@
           <li><a href="{{ route('battery.brands') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.brands') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-tag text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Brand List</span></a></li>
           <li><a href="{{ route('battery.categories') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.categories') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-layer-group text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Category List</span></a></li>
           <li><a href="{{ route('battery.barcode.generate') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.barcode.generate') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-barcode text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Barcode Print</span></a></li>
-          <li><a href="{{ route('battery.reports.stock-out') }}" class="sidebar-flyout-link text-red-300 {{ request()->routeIs('battery.reports.stock-out') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-triangle-exclamation text-[10px] text-red-300 w-4 text-center"></i><span>Low Stock</span></a></li>
+          <li><a href="{{ route('battery.stock-overview') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.stock-overview') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-chart-line text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Stock Overview</span></a></li>
         </ul>
       </div>
     </li>
@@ -126,8 +126,7 @@
         </div>
         <ul class="py-0.5 px-1 space-y-0.5">
           <li><a href="{{ route('battery.customers') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.customers') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-user-group text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Customer List</span></a></li>
-          <li><a href="{{ route('battery.customer.due') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.customer.due') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-file-invoice-dollar text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Customer Due</span></a></li>
-          <li><a href="{{ route('battery.customer.due.collection') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.customer.due.collection') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-hand-holding-dollar text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Due Collection (FIFO)</span></a></li>
+          <li><a href="{{ route('battery.customer.due') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.customer.due') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-file-invoice-dollar text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Customer Due List</span></a></li>
         </ul>
       </div>
     </li>
@@ -159,30 +158,14 @@
       </div>
     </li>
 
-    <!-- 9. Returns (Drilldown) -->
-    <li class="sidebar-item has-submenu relative group" data-menu-id="battery-return">
-      <button type="button" class="sidebar-drilldown-trigger w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 bg-transparent outline-none transition-all duration-200 text-start {{ $activeParent === 'battery-return' ? 'active-parent' : '' }}" style="background-color: transparent;" data-target="submenu-panel-battery-return">
-        <div class="flex items-center gap-2 min-w-0">
-          <i class="fa-solid fa-rotate-left text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
-          <span class="sidebar-label text-[13.5px] font-medium tracking-wide truncate">Returns</span>
-        </div>
-        <span class="sidebar-arrow shrink-0 w-5 h-5 rounded-md bg-white/10 flex items-center justify-center text-white/70 group-hover:text-white group-hover:bg-white/20 transition-all">
-          <i class="fa-solid fa-chevron-right text-[9px]"></i>
-        </span>
-      </button>
-      <!-- Collapsed Flyout Popover -->
-      <div class="sidebar-flyout">
-        <div class="sidebar-flyout-header flex items-center justify-between px-3 py-2 border-b border-emerald-500/25 mb-1.5">
-          <span class="text-[11px] font-bold tracking-wider text-emerald-300 uppercase flex items-center gap-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span>
-            Returns
-          </span>
-          <span class="text-[9.5px] font-semibold text-emerald-200/80 bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-400/30">Menu</span>
-        </div>
-        <ul class="py-0.5 px-1 space-y-0.5">
-          <li><a href="{{ route('battery.sales.returns') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.sales.returns') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-cart-shopping text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Sales Returns</span></a></li>
-          <li><a href="{{ route('battery.purchase.returns') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.purchase.returns') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-truck-ramp-box text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Purchase Returns</span></a></li>
-        </ul>
+    <!-- 9. Sales Return (Single Link matching Retail) -->
+    <li class="sidebar-item relative group">
+      <a href="{{ route('battery.sales.returns') }}" class="sidebar-link w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ (request()->routeIs('battery.sales.returns') || request()->routeIs('battery.purchase.returns') || request()->routeIs('battery.return.*') || request()->routeIs('battery.purchase-return.*')) ? 'active-gradient' : '' }}">
+        <i class="fa-solid fa-arrow-rotate-left text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
+        <span class="sidebar-label text-[13.5px] font-medium tracking-wide">Sales Return</span>
+      </a>
+      <div class="sidebar-mini-tooltip">
+        Sales Return
       </div>
     </li>
 
@@ -218,11 +201,12 @@
           <span class="text-[9.5px] font-semibold text-emerald-200/80 bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-400/30">Menu</span>
         </div>
         <ul class="py-0.5 px-1 space-y-0.5">
+          <li><a href="{{ route('battery.reports.daily-ledger') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.reports.daily-ledger') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-book-bookmark text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Daily Income & Expense Ledger</span></a></li>
           <li><a href="{{ route('battery.reports.sales') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.reports.sales') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-chart-line text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Sales Report</span></a></li>
-          <li><a href="{{ route('battery.reports.daily-ledger') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.reports.daily-ledger') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-book text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Daily Ledger</span></a></li>
-          <li><a href="{{ route('battery.reports.income-expense') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.reports.income-expense') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-chart-column text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Income / Expense</span></a></li>
-          <li><a href="{{ route('battery.reports.daily-receipt-payment') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.reports.daily-receipt-payment') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-receipt text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Receipt & Payment</span></a></li>
-          <li><a href="{{ route('battery.reports.stock-out') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.reports.stock-out') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-boxes-packing text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Stock-Out Report</span></a></li>
+          <li><a href="{{ route('battery.reports.income-expense') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.reports.income-expense') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-chart-column text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Income & Expense Report</span></a></li>
+          <li><a href="{{ route('battery.reports.daily-receipt-payment') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.reports.daily-receipt-payment') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-file-waveform text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Daily Receipt & Payment</span></a></li>
+          <li><a href="{{ route('battery.reports.personal-transaction') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.reports.personal-transaction') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-user-tag text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Personal Transaction Report</span></a></li>
+          <li><a href="{{ route('battery.reports.stock-out') }}" class="sidebar-flyout-link {{ request()->routeIs('battery.reports.stock-out') ? 'active-flyout-link bg-red-600 text-white' : '' }}"><i class="fa-solid fa-triangle-exclamation text-[10px] text-red-300 w-4 text-center"></i><span>Low Stock Report</span></a></li>
         </ul>
       </div>
     </li>
@@ -270,11 +254,11 @@
       <div class="sidebar-mini-tooltip">Barcode Print</div>
     </li>
     <li class="relative group">
-      <a href="{{ route('battery.reports.stock-out') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-red-200 hover:text-white hover:bg-red-600/30 font-bold transition-all duration-150 {{ request()->routeIs('battery.reports.stock-out') ? 'bg-red-600 text-white' : '' }}">
-        <i class="fa-solid fa-triangle-exclamation text-xs text-red-300 w-4 text-center"></i>
-        <span>Low Stock Products</span>
+      <a href="{{ route('battery.stock-overview') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->routeIs('battery.stock-overview') ? 'active-submenu-link' : '' }}">
+        <i class="fa-solid fa-chart-line text-xs text-emerald-300/80 w-4 text-center"></i>
+        <span>Stock Overview</span>
       </a>
-      <div class="sidebar-mini-tooltip">Low Stock Products</div>
+      <div class="sidebar-mini-tooltip">Stock Overview</div>
     </li>
   </ul>
 </div>
@@ -364,13 +348,6 @@
       </a>
       <div class="sidebar-mini-tooltip">Customer Due List</div>
     </li>
-    <li class="relative group">
-      <a href="{{ route('battery.customer.due.collection') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->routeIs('battery.customer.due.collection') ? 'active-submenu-link' : '' }}">
-        <i class="fa-solid fa-hand-holding-dollar text-xs text-emerald-300/80 w-4 text-center"></i>
-        <span>Due Collection (FIFO)</span>
-      </a>
-      <div class="sidebar-mini-tooltip">Due Collection (FIFO)</div>
-    </li>
   </ul>
 </div>
 
@@ -401,32 +378,6 @@
   </ul>
 </div>
 
-<!-- Panel 7: Battery Return Submenu Panel -->
-<div id="submenu-panel-battery-return" class="sidebar-submenu-panel sidebar-panel-scroll absolute inset-0 w-full h-full overflow-y-auto overflow-x-hidden transition-transform duration-300 ease-in-out py-2 px-3 {{ $activeParent === 'battery-return' ? 'translate-x-0 pointer-events-auto' : 'translate-x-full pointer-events-none' }}" data-parent-id="battery-return">
-  <div class="sidebar-back-wrapper relative group mb-2">
-    <button type="button" class="sidebar-back-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-emerald-100 bg-white/10 hover:bg-white/20 border border-white/15 font-semibold text-sm transition-all duration-200 shadow-sm" data-target="main">
-      <i class="fa-solid fa-chevron-left text-xs text-emerald-300"></i>
-      <span class="truncate">Returns</span>
-    </button>
-    <div class="sidebar-mini-tooltip">Main Menu</div>
-  </div>
-  <ul class="space-y-1">
-    <li class="relative group">
-      <a href="{{ route('battery.sales.returns') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->routeIs('battery.sales.returns') ? 'active-submenu-link' : '' }}">
-        <i class="fa-solid fa-cart-shopping text-xs text-emerald-300/80 w-4 text-center"></i>
-        <span>Sales Returns</span>
-      </a>
-      <div class="sidebar-mini-tooltip">Sales Returns</div>
-    </li>
-    <li class="relative group">
-      <a href="{{ route('battery.purchase.returns') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->routeIs('battery.purchase.returns') ? 'active-submenu-link' : '' }}">
-        <i class="fa-solid fa-truck-ramp-box text-xs text-emerald-300/80 w-4 text-center"></i>
-        <span>Purchase Returns</span>
-      </a>
-      <div class="sidebar-mini-tooltip">Purchase Returns</div>
-    </li>
-  </ul>
-</div>
 
 <!-- Panel 8: Battery Report Submenu Panel -->
 <div id="submenu-panel-battery-report" class="sidebar-submenu-panel sidebar-panel-scroll absolute inset-0 w-full h-full overflow-y-auto overflow-x-hidden transition-transform duration-300 ease-in-out py-2 px-3 {{ $activeParent === 'battery-report' ? 'translate-x-0 pointer-events-auto' : 'translate-x-full pointer-events-none' }}" data-parent-id="battery-report">
@@ -439,6 +390,13 @@
   </div>
   <ul class="space-y-1">
     <li class="relative group">
+      <a href="{{ route('battery.reports.daily-ledger') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->routeIs('battery.reports.daily-ledger') ? 'active-submenu-link' : '' }}">
+        <i class="fa-solid fa-book-bookmark text-xs text-emerald-300/80 w-4 text-center"></i>
+        <span>Daily Income & Expense Ledger</span>
+      </a>
+      <div class="sidebar-mini-tooltip">Daily Ledger Report</div>
+    </li>
+    <li class="relative group">
       <a href="{{ route('battery.reports.sales') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->routeIs('battery.reports.sales') ? 'active-submenu-link' : '' }}">
         <i class="fa-solid fa-chart-line text-xs text-emerald-300/80 w-4 text-center"></i>
         <span>Sales Report</span>
@@ -446,32 +404,32 @@
       <div class="sidebar-mini-tooltip">Sales Report</div>
     </li>
     <li class="relative group">
-      <a href="{{ route('battery.reports.daily-ledger') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->routeIs('battery.reports.daily-ledger') ? 'active-submenu-link' : '' }}">
-        <i class="fa-solid fa-book text-xs text-emerald-300/80 w-4 text-center"></i>
-        <span>Daily Ledger</span>
-      </a>
-      <div class="sidebar-mini-tooltip">Daily Ledger</div>
-    </li>
-    <li class="relative group">
       <a href="{{ route('battery.reports.income-expense') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->routeIs('battery.reports.income-expense') ? 'active-submenu-link' : '' }}">
         <i class="fa-solid fa-chart-column text-xs text-emerald-300/80 w-4 text-center"></i>
-        <span>Income / Expense</span>
+        <span>Income & Expense Report</span>
       </a>
-      <div class="sidebar-mini-tooltip">Income / Expense</div>
+      <div class="sidebar-mini-tooltip">Income & Expense Report</div>
     </li>
     <li class="relative group">
       <a href="{{ route('battery.reports.daily-receipt-payment') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->routeIs('battery.reports.daily-receipt-payment') ? 'active-submenu-link' : '' }}">
-        <i class="fa-solid fa-receipt text-xs text-emerald-300/80 w-4 text-center"></i>
-        <span>Daily Receipt &amp; Payment</span>
+        <i class="fa-solid fa-file-waveform text-xs text-emerald-300/80 w-4 text-center"></i>
+        <span>Daily Receipt & Payment</span>
       </a>
-      <div class="sidebar-mini-tooltip">Daily Receipt &amp; Payment</div>
+      <div class="sidebar-mini-tooltip">Daily Receipt & Payment</div>
+    </li>
+    <li class="relative group">
+      <a href="{{ route('battery.reports.personal-transaction') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->routeIs('battery.reports.personal-transaction') ? 'active-submenu-link' : '' }}">
+        <i class="fa-solid fa-user-tag text-xs text-emerald-300/80 w-4 text-center"></i>
+        <span>Personal Transaction Report</span>
+      </a>
+      <div class="sidebar-mini-tooltip">Personal Transaction Report</div>
     </li>
     <li class="relative group">
       <a href="{{ route('battery.reports.stock-out') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-red-200 hover:text-white hover:bg-red-600/30 font-bold transition-all duration-150 {{ request()->routeIs('battery.reports.stock-out') ? 'bg-red-600 text-white' : '' }}">
-        <i class="fa-solid fa-boxes-packing text-xs text-red-300 w-4 text-center"></i>
-        <span>Stock-Out Report</span>
+        <i class="fa-solid fa-triangle-exclamation text-xs text-red-300 w-4 text-center"></i>
+        <span>Low Stock Report</span>
       </a>
-      <div class="sidebar-mini-tooltip">Stock-Out Report</div>
+      <div class="sidebar-mini-tooltip">Low Stock Report</div>
     </li>
   </ul>
 </div>

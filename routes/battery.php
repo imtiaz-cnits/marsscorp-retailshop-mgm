@@ -31,6 +31,7 @@ Route::prefix('battery')->name('battery.')->group(function () {
 
     // Catalog Management
     Route::view('/products', 'battery.product.product-page')->name('products');
+    Route::view('/stock-overview', 'battery.stock-overview.stock-overview-page')->name('stock-overview');
     Route::view('/brands', 'battery.brand.brand-page')->name('brands');
     Route::view('/categories', 'battery.category.category-page')->name('categories');
     Route::view('/sub-categories', 'battery.category.sub-category-page')->name('sub-categories');
@@ -70,6 +71,7 @@ Route::prefix('battery')->name('battery.')->group(function () {
     Route::view('/reports/daily-ledger', 'battery.report.daily-ledger-report')->name('reports.daily-ledger');
     Route::view('/reports/income-expense', 'battery.report.income-expense-report')->name('reports.income-expense');
     Route::view('/reports/daily-receipt-payment', 'battery.report.daily-receipt-payment-report')->name('reports.daily-receipt-payment');
+    Route::view('/reports/personal-transaction', 'battery.report.personal-transaction-report')->name('reports.personal-transaction');
     Route::view('/reports/stock-out', 'battery.report.stock-out-report')->name('reports.stock-out');
 
 });

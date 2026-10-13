@@ -132,7 +132,7 @@
                 </button>
               </div>
               <div class="profile-wrapper">
-                <button type="button" class="btn header-item user text-start d-flex align-items-center"
+                <button type="button" class="btn header-item user text-start d-flex align-items-center p-0"
                   id="page-header-user-dropdown-v" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <img class="rounded-circle header-profile-user" src="assets/img/navbar-profile-logo.png"
                     alt="Header Avatar" />

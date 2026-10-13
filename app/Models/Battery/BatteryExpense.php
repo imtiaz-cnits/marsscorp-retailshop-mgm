@@ -29,4 +29,9 @@ class BatteryExpense extends Model
     {
         return $this->belongsTo(\App\Models\User::class, 'user_id');
     }
+
+    public function staff()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'staff_id');
+    }
 }

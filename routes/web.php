@@ -65,6 +65,7 @@ Route::view('/supplier-due-collection-page', 'pages.back-end-page.supplier-due-c
 Route::view('/supplier-due-page', 'pages.back-end-page.supplier-due-page');
 Route::view('/admin-dashboard-Purchase', 'pages.back-end-page.purchase-page');
 Route::view('/admin-dashboard-product', 'pages.back-end-page.product-page');
+Route::view('/admin-dashboard-stock-overview', 'backend.stock-overview.stock-overview-page')->name('retail.stock-overview');
 Route::view('/admin-dashboard-barcode-genarate', 'backend.barcode-genarate.barcode-print');
 Route::view('/admin-dashboard-product-barcode', 'backend.product-barcode-print.barcode-print');
 Route::view('/admin-dashboard-warehouse', 'pages.back-end-page.warehouse-page');

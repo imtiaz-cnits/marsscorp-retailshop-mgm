@@ -20,6 +20,7 @@ use App\Http\Controllers\Battery\BatteryPurchaseReturnController;
 use App\Http\Controllers\Battery\BatteryOpeningBalanceController;
 use App\Http\Controllers\Battery\BatteryDashboardController;
 use App\Http\Controllers\Battery\BatteryReportController;
+use App\Http\Controllers\Battery\BatteryStockOverviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +69,8 @@ Route::prefix('battery')->middleware('auth:sanctum')->name('battery.api.')->grou
     Route::post('/update-product', [BatteryProductController::class, 'ProductUpdate'])->name('product.update');
     Route::post('/delete-product', [BatteryProductController::class, 'ProductDelete'])->name('product.delete');
     Route::get('/stock-out-product-list', [BatteryProductController::class, 'ProductStockOut'])->name('product.stock-out');
+    Route::get('/stock-overview-data', [BatteryStockOverviewController::class, 'BatteryStockOverviewData'])->name('stock-overview.data');
+    Route::post('/stock-adjust', [BatteryStockOverviewController::class, 'BatteryStockAdjust'])->name('stock-overview.adjust');
 
     // Suppliers & Supplier Dues
     Route::get('/supplier-list', [BatterySupplierController::class, 'SupplierList'])->name('supplier.list');
@@ -130,6 +133,7 @@ Route::prefix('battery')->middleware('auth:sanctum')->name('battery.api.')->grou
     Route::post('/expense-by-id', [BatteryExpenseController::class, 'ExpenseByID'])->name('expense.by-id');
     Route::post('/update-expense', [BatteryExpenseController::class, 'ExpenseUpdate'])->name('expense.update');
     Route::post('/delete-expense', [BatteryExpenseController::class, 'ExpenseDelete'])->name('expense.delete');
+    Route::get('/staff-list', [BatteryExpenseController::class, 'StaffList'])->name('staff.list');
 
     // Returns (Sales Return & Purchase Return)
     Route::get('/return-product-list', [BatteryProductReturnController::class, 'ReturnProductList'])->name('return.list');
@@ -156,5 +160,6 @@ Route::prefix('battery')->middleware('auth:sanctum')->name('battery.api.')->grou
     Route::get('/daily-receipt-payment-report', [BatteryReportController::class, 'DailyReceiptPaymentReport'])->name('report.daily-receipt');
     Route::get('/income-expense-report-list', [BatteryReportController::class, 'AllSummeryReport'])->name('report.income-expense');
     Route::get('/daily-ledger-report-list', [BatteryReportController::class, 'DailyLedgerReportList'])->name('report.daily-ledger');
+    Route::get('/personal-investor-transaction-report-list', [BatteryReportController::class, 'PersonalInvestorTransactionReport'])->name('report.personal-transaction');
 
 });

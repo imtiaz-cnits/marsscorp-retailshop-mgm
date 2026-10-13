@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title', 'Income & Expense Report - MARSS CORPORATION')
 @section('content')
 
@@ -66,18 +66,51 @@
         }
     }
 
-    /* â”€â”€ Export Button Styles â”€â”€ */
-    .export-btn { display:inline-flex; align-items:center; gap:5px; height:32px; padding:0 12px; border-radius:8px; font-size:11.5px; font-weight:700; cursor:pointer; border:1.5px solid transparent; transition:all 0.15s; white-space:nowrap; }
-    .export-btn--copy  { background:#f1f5f9; color:#475569; border-color:#cbd5e1; }
-    .export-btn--copy:hover  { background:#e2e8f0; border-color:#94a3b8; }
-    .export-btn--csv   { background:#ecfdf5; color:#065f46; border-color:#a7f3d0; }
-    .export-btn--csv:hover   { background:#d1fae5; border-color:#34d399; }
-    .export-btn--excel { background:#f0fdf4; color:#15803d; border-color:#bbf7d0; }
-    .export-btn--excel:hover { background:#dcfce7; border-color:#4ade80; }
-    .export-btn--pdf   { background:#fff1f2; color:#be123c; border-color:#fecaca; }
-    .export-btn--pdf:hover   { background:#ffe4e6; border-color:#f87171; }
-    .export-btn--print { background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe; }
-    .export-btn--print:hover { background:#dbeafe; border-color:#60a5fa; }
+    /* ── Export Button Styles with Anti-White Hover Protection ── */
+    .export-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        height: 32px !important;
+        padding: 0 12px !important;
+        border-radius: 8px !important;
+        font-size: 11.5px !important;
+        font-weight: 700 !important;
+        cursor: pointer !important;
+        border: 1.5px solid transparent !important;
+        transition: all 0.15s ease !important;
+        white-space: nowrap !important;
+        text-decoration: none !important;
+    }
+    .export-btn svg, .export-btn i { pointer-events: none; flex-shrink: 0; }
+
+    .export-btn--copy  { background: #f1f5f9 !important; color: #475569 !important; border-color: #cbd5e1 !important; }
+    .export-btn--copy:hover, .export-btn--copy:focus  { background: #e2e8f0 !important; border-color: #94a3b8 !important; color: #1e293b !important; }
+
+    .export-btn--csv   { background: #ecfdf5 !important; color: #065f46 !important; border-color: #a7f3d0 !important; }
+    .export-btn--csv:hover, .export-btn--csv:focus   { background: #d1fae5 !important; border-color: #34d399 !important; color: #065f46 !important; }
+
+    .export-btn--excel { background: #f0fdf4 !important; color: #15803d !important; border-color: #bbf7d0 !important; }
+    .export-btn--excel:hover, .export-btn--excel:focus { background: #dcfce7 !important; border-color: #4ade80 !important; color: #15803d !important; }
+
+    .export-btn--pdf   { background: #fff1f2 !important; color: #be123c !important; border-color: #fecaca !important; }
+    .export-btn--pdf:hover, .export-btn--pdf:focus   { background: #ffe4e6 !important; border-color: #f87171 !important; color: #be123c !important; }
+
+    .export-btn--print { background: #eff6ff !important; color: #1d4ed8 !important; border-color: #bfdbfe !important; }
+    .export-btn--print:hover, .export-btn--print:focus { background: #dbeafe !important; border-color: #60a5fa !important; color: #1d4ed8 !important; }
+
+    /* Light mode anti-white hover rules for controls & buttons */
+    .custom-select-btn:hover { background-color: #f8fafc !important; border-color: #10b981 !important; }
+    .filter-field-input:hover { border-color: #10b981 !important; }
+    #paginationContainer button:hover { background-color: #e2e8f0 !important; color: #0f172a !important; border-color: #94a3b8 !important; }
+
+    /* Centered modal rules */
+    .modal-dialog {
+        display: flex !important;
+        align-items: center !important;
+        min-height: calc(100% - 3.5rem) !important;
+        margin: 1.75rem auto !important;
+    }
 
     /* â”€â”€ Top Filter Grid â”€â”€
        Desktop (1024px+): 1 row 4 columns (Start Date, End Date, Show, Quick Filter)

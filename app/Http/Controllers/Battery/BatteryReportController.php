@@ -17,6 +17,7 @@ use App\Models\Battery\BatteryExpenseType;
 use App\Models\Battery\BatteryOpeningBalance;
 use App\Models\Battery\BatteryProductReturn;
 use App\Models\Battery\BatterySupplier;
+use App\Models\Invest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -396,4 +397,56 @@ class BatteryReportController extends Controller
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
     }
+
+    public function PersonalInvestorTransactionReport(Request $request)
+    {
+        try {
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+
+            if (!$startDate || !$endDate) {
+                return response()->json(['status' => 'fail', 'message' => 'Start and End dates are required']);
+            }
+
+            $startDay = Carbon::parse($startDate)->toDateString();
+            $endDay   = Carbon::parse($endDate)->toDateString();
+
+            // Battery Expenses of type 'Personal'
+            $expenseQuery = BatteryExpense::query()
+                ->whereHas('expenseType', function ($query) {
+                    $query->where('type_name', 'like', '%Personal%');
+                })
+                ->whereBetween(DB::raw("DATE(COALESCE(NULLIF(battery_expenses.date, ''), battery_expenses.created_at))"), [$startDay, $endDay]);
+
+            $ExpenseData = $expenseQuery->with('expenseType')->get();
+            $ExpenseData->map(function ($expense) {
+                $expense->type_name = $expense->expenseType->type_name ?? 'Personal';
+                return $expense;
+            });
+
+            // Invest Data
+            $investQuery = Invest::query()
+                ->whereBetween('date', [$startDay, $endDay]);
+
+            $InvestData = $investQuery->with('investor_infos')->get();
+            $InvestData->map(function ($invest) {
+                $invest->name = $invest->investor_infos->name ?? 'N/A';
+                return $invest;
+            });
+
+            $ExpenceAmount = $ExpenseData->sum('expense_amount');
+            $InvestAmount = $InvestData->sum('invest_amount');
+
+            return response()->json([
+                'status' => 'success',
+                'ExpenseData' => $ExpenseData,
+                'InvestData' => $InvestData,
+                'ExpenceAmount' => $ExpenceAmount,
+                'InvestAmount' => $InvestAmount,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
+    }
 }
+

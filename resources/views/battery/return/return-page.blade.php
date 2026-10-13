@@ -1,15 +1,19 @@
 @extends('layouts.dashboard-sidenav')
-@section('title', 'Battery Sales Returns - MARSS CORPORATION')
+@section('title', 'Return Management - MARSS CORPORATION')
 @section('content')
 
-<!-- Main Content Start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<!-- Sales & Purchase Return Management Section Start -->
 <div class="main-content">
-    <div class="page-content min-h-[calc(100vh-70px)] flex flex-col justify-between">
+    <div class="page-content min-h-screen flex flex-col justify-between">
         <div class="data-table flex-grow">
+            
             <div class="card bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm overflow-hidden mb-4 transition-colors">
                 <div class="card-body product-card-body p-4 sm:p-6 md:p-10">
-                    
-                    <!-- 1. Top Section -->
+
+                    <!-- 1. Top Section: Page Title & New Return Button (Fixed 38px) -->
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
                         <div class="flex items-center gap-2.5">
                             <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 flex items-center justify-center border border-emerald-100 dark:border-slate-800 shadow-sm flex-shrink-0">
@@ -19,383 +23,1404 @@
                                 </svg>
                             </div>
                             <div>
-                                <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white tracking-tight leading-none m-0 p-0">Battery Sales Returns</h1>
-                                <small class="text-slate-500 dark:text-slate-400 text-xs">Customer battery returns, stock restoration, and refund adjustments</small>
+                                <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white tracking-tight leading-none m-0 p-0">Return Management</h1>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-0">MARSS CORPORATION - Sales & Purchase Return Management</p>
                             </div>
                         </div>
 
-                        <!-- Right Controls -->
+                        <!-- Right Controls: + New Return Button (Fixed 38px) -->
                         <div class="flex items-center flex-wrap gap-2">
-                            <a href="{{ route('battery.purchase.returns') }}" class="inline-flex items-center gap-1.5 px-3.5 h-[38px] min-h-[38px] max-h-[38px] bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 transition-all shadow-sm">
-                                <i class="fa-solid fa-truck-arrow-right"></i>
-                                <span>Purchase Returns</span>
-                            </a>
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#salesReturnModal" class="inline-flex items-center gap-1.5 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150">
-                                <i class="fa-solid fa-plus text-xs"></i>
-                                <span>Process Return</span>
+                            <button id="mainNewReturnBtn" onclick="triggerNewReturnModal()" type="button" class="inline-flex items-center gap-1.5 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150">
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span>New Sales Return</span>
                             </button>
                         </div>
                     </div>
 
-                    <!-- 2. Controls & Filter Row -->
-                    <div class="controls-row-wrapper mb-4 w-full">
-                        <div class="search-input-wrapper unified-ui-border h-[38px] flex items-center bg-white dark:bg-slate-800/90 rounded-xl shadow-sm transition-all focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20">
-                            <svg class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0 mr-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                            <input type="text" id="searchInput" style="border: none !important; outline: none !important; box-shadow: none !important; width: 100% !important; padding-left: 4px !important; padding-right: 4px !important;" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0 focus:border-0 focus:outline-none" placeholder="Search by invoice number, customer or product..." />
-                        </div>
+                    <!-- 2. Mode Toggle Nav Tabs (Fixed 38px height) -->
+                    <div class="flex items-center gap-2 mb-4">
+                        <button id="tabSalesReturnBtn" onclick="switchReturnTab('sales')" type="button" class="inline-flex items-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150">
+                            <i class="fa-solid fa-cart-shopping text-xs"></i>
+                            <span>Sales Return</span>
+                        </button>
+                        <button id="tabPurchaseReturnBtn" onclick="switchReturnTab('purchase')" type="button" class="inline-flex items-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-[0.98] text-sm font-semibold rounded-xl shadow-sm transition-all duration-150">
+                            <i class="fa-solid fa-truck-ramp-box text-xs"></i>
+                            <span>Purchase Return</span>
+                        </button>
+                    </div>
 
-                        <div class="entries-wrapper unified-ui-border flex items-center gap-1.5 bg-white dark:bg-slate-800/90 px-3 h-[38px] rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 shadow-sm transition-all hover:border-emerald-500">
-                            <span class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider whitespace-nowrap">SHOW:</span>
-                            <select id="entries" class="bg-transparent border-0 text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-400 focus:outline-none cursor-pointer py-1 pr-1 text-end">
-                                <option value="15" selected>15</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
+                    <!-- 3. Quick Search Box (Fixed 38px inputs/buttons) -->
+                    <div id="searchCardBox" class="rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 p-3.5 sm:p-4 mb-4 transition-colors" style="border-left: 4px solid #15803d !important;">
+                        <h5 id="searchCardTitle" class="text-sm sm:text-base font-bold text-slate-800 dark:text-white mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass text-emerald-600"></i> Quick Invoice Search & Process Return
+                        </h5>
+                        <p id="searchCardDesc" class="text-xs text-slate-500 dark:text-slate-400 mb-2.5">Search invoice number to process sales return:</p>
+                        
+                        <div class="flex flex-row items-stretch gap-2.5">
+                            <div class="search-input-wrapper unified-ui-border flex-1 min-w-0 min-h-[38px] flex items-center px-3 py-2 sm:py-0 sm:h-[38px] bg-white dark:bg-slate-800/90 rounded-xl shadow-sm transition-all focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20">
+                                <input type="text" id="quickInvoiceSearchInput" style="border: none !important; outline: none !important; box-shadow: none !important;" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0" placeholder="Enter invoice number (e.g. #InvID00001)..." onkeydown="if(event.key==='Enter') triggerQuickReturnSearch()" />
+                            </div>
+                            <button id="searchCardSubmitBtn" onclick="triggerQuickReturnSearch()" type="button" class="inline-flex items-center justify-center gap-1.5 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150 flex-shrink-0 whitespace-nowrap">
+                                <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
+                                <span>Search & Return</span>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- 3. Desktop Table -->
-                    <div class="table-responsive unified-ui-border hidden md:block w-full max-w-full overflow-x-auto rounded-2xl shadow-sm bg-white dark:bg-slate-900 mb-4">
-                        <table class="w-full text-left border-collapse" id="returnsTable">
+                    <!-- 4. History Controls Row: Title + Search & Entries -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5 sm:gap-3 mb-4">
+                        <div class="flex items-center gap-2">
+                            <h5 id="historyTableTitle" class="text-base sm:text-lg font-bold text-slate-800 dark:text-white tracking-tight leading-none m-0 p-0 flex items-center gap-2">
+                                <i class="fa-solid fa-clock-rotate-left text-emerald-600"></i> Sales Return History
+                            </h5>
+                            <span id="returnRecordCountBadge" class="display-info-box font-bold text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-slate-800 text-xs">0 Records</span>
+                        </div>
+
+                        <!-- Search Bar + Show Entry Side-by-Side -->
+                        <div class="flex items-center gap-2 sm:gap-2.5 w-full md:w-auto">
+                            <!-- Search Bar -->
+                            <div class="search-input-wrapper unified-ui-border flex-1 md:w-[260px] lg:w-[300px] h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm transition-all focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20">
+                                <svg class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0 mr-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                <input type="text" id="historySearchInput" style="border: none !important; outline: none !important; box-shadow: none !important;" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0 leading-normal focus:ring-0" placeholder="Filter returns..." />
+                            </div>
+
+                            <!-- Entries Selector: 15 default -->
+                            <div class="entries-wrapper unified-ui-border flex items-center gap-1 bg-white dark:bg-slate-800/90 px-3 h-[38px] rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 shadow-sm transition-all hover:border-emerald-500 flex-shrink-0">
+                                <span class="text-slate-400 dark:text-slate-400 text-[11px] uppercase tracking-wider font-bold">Show:</span>
+                                <select id="entries" class="bg-transparent border-0 text-xs font-bold text-emerald-700 dark:text-emerald-400 focus:outline-none cursor-pointer py-1 pr-1">
+                                    <option value="15" selected class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">15</option>
+                                    <option value="50" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">50</option>
+                                    <option value="100" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">100</option>
+                                    <option value="200" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">200</option>
+                                    <option value="500" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">500</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Desktop Table (SL left, Refund Amount right) -->
+                    <div class="table-responsive unified-ui-border hidden md:block w-full max-w-full overflow-x-auto rounded-2xl shadow-sm bg-white dark:bg-slate-900">
+                        <table id="printTable" class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-[#15803d] text-white text-xs font-semibold uppercase tracking-wider">
-                                    <th class="p-[10px] text-center w-[50px] rounded-tl-2xl whitespace-nowrap">#</th>
-                                    <th class="p-[10px] text-start whitespace-nowrap">Return Date</th>
-                                    <th class="p-[10px] text-start whitespace-nowrap">Invoice No</th>
-                                    <th class="p-[10px] text-start whitespace-nowrap">Customer</th>
+                                    <th class="p-[10px] text-center w-[40px] rounded-tl-2xl whitespace-nowrap">SL</th>
+                                    <th class="p-[10px] text-start w-[120px] whitespace-nowrap">Return Date</th>
+                                    <th id="thInvoiceNo" class="p-[10px] text-start w-[130px] whitespace-nowrap">Invoice No</th>
+                                    <th id="thPartyName" class="p-[10px] text-start whitespace-nowrap">Customer Name</th>
                                     <th class="p-[10px] text-start whitespace-nowrap">Returned Product</th>
-                                    <th class="p-[10px] text-center whitespace-nowrap">Qty</th>
-                                    <th class="p-[10px] text-end whitespace-nowrap">Return Amount</th>
-                                    <th class="p-[10px] text-center w-[90px] rounded-tr-2xl whitespace-nowrap">Action</th>
+                                    <th class="p-[10px] text-center w-[90px] whitespace-nowrap">Qty</th>
+                                    <th class="p-[10px] text-end w-[140px] rounded-tr-2xl whitespace-nowrap">Refund Amount</th>
                                 </tr>
                             </thead>
-                            <tbody id="returnsTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
+                            <tbody id="tableList" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm text-slate-700 dark:text-slate-200"></tbody>
+                            <tfoot class="bg-slate-50/90 dark:bg-slate-800/70 text-slate-800 dark:text-slate-100 font-bold border-t-2 border-emerald-600/30 dark:border-emerald-600/20 text-xs sm:text-sm">
                                 <tr>
-                                    <td colspan="8" class="text-center py-6 text-slate-400">Loading battery sales returns...</td>
+                                    <td colspan="5" class="p-[10px] text-end font-bold text-slate-600 dark:text-slate-300">Total Returned Refund Value:</td>
+                                    <td id="tfootTotalQty" class="p-[10px] text-center font-bold text-slate-800 dark:text-slate-100 whitespace-nowrap">0 pcs</td>
+                                    <td id="tfootTotalAmount" class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap">৳ 0.00</td>
                                 </tr>
-                            </tbody>
+                            </tfoot>
                         </table>
                     </div>
 
-                    <!-- 4. Mobile Card Container -->
+                    <!-- Mobile Card List View (< 768px) -->
                     <div id="mobileCardList" class="block md:hidden mb-3 space-y-3"></div>
 
-                    <!-- 5. Modern Pagination & Info Footer -->
+                    <!-- Modern Smart Pagination and Display Info Footer -->
                     <div class="flex flex-col sm:flex-row items-center justify-between pt-4 mt-4 border-t border-slate-200 dark:border-slate-800 gap-3">
-                        <div id="display-info" class="text-xs text-slate-500 dark:text-slate-400"></div>
+                        <div id="display-info"></div>
                         <div id="pagination" class="flex items-center gap-1 sm:gap-1.5 flex-nowrap justify-center max-w-full overflow-x-auto pb-1"></div>
                     </div>
 
                 </div>
             </div>
+
         </div>
+
+        <!-- Sticky Bottom Copyright Section -->
+        <div class="copyright sticky bottom-0 z-10 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 py-3 text-center shadow-[0_-4px_12px_rgba(0,0,0,0.03)]">
+            <footer class="footer text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
+                &copy; {{ date('Y') }} MARSS CORPORATION | Software By: <a href="https://www.codenextit.com" target="_blank" class="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 font-bold hover:underline transition-colors">CodeNext IT</a>
+            </footer>
+        </div>
+
     </div>
 </div>
+<!-- Sales & Purchase Return Management Section End -->
 
-<!-- Process Return Modal -->
-<div class="modal fade" id="salesReturnModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content rounded-2xl border-0 shadow-lg overflow-hidden bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">
-            <div class="modal-header px-4 py-3 border-0" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important; color: #ffffff !important;">
-                <h5 class="modal-title font-bold text-base flex items-center gap-2 text-white m-0">
-                    <i class="fa-solid fa-arrow-rotate-left text-white"></i> Process Battery Sales Return
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4 space-y-4">
-                <!-- Search Invoice -->
-                <div class="flex gap-2">
-                    <input type="text" id="returnSearchInvoice" placeholder="Enter Invoice / Order No (e.g. #INV-0001)" class="form-control rounded-xl text-sm dark:bg-slate-800 dark:border-slate-700 dark:text-white h-[42px]">
-                    <button type="button" onclick="searchInvoiceToReturn()" class="inline-flex items-center gap-1.5 px-4 h-[42px] bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex-shrink-0">
-                        <i class="fa-solid fa-magnifying-glass"></i> Search
-                    </button>
+<!-- Sales & Purchase Return Processing Modal -->
+<div class="modal fade" id="processReturnModal" tabindex="-1" aria-labelledby="processReturnModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Sticky Top Green Header -->
+            <div id="modalHeaderBox" class="modal-header">
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.2); color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+                            <polyline points="1 4 1 10 7 10"></polyline>
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                        </svg>
+                    </div>
+                    <h5 class="modal-title m-0 text-white fw-bold" id="processReturnModalLabel" style="font-size: 16px; color: #ffffff !important;">
+                        <span id="modalHeaderTitle">Sales Return Processing</span>
+                    </h5>
                 </div>
+                <!-- Circular Red Close Button with White Icon -->
+                <button type="button" class="custom-modal-close-btn d-flex align-items-center justify-content-center border-0 shadow-sm" data-bs-dismiss="modal" aria-label="Close" style="position: relative !important; top: auto !important; right: auto !important; width: 26px !important; height: 26px !important; min-width: 26px !important; min-height: 26px !important; border-radius: 50% !important; background-color: #ef4444 !important; color: #ffffff !important; cursor: pointer !important; transition: all 0.2s ease; padding: 0 !important; margin: 0 !important; flex-shrink: 0 !important;" title="Close">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
 
-                <!-- Invoice Details Box -->
-                <div id="invoiceResultBox" class="p-3 bg-emerald-50/50 dark:bg-slate-800/60 rounded-xl border border-emerald-100 dark:border-slate-700 text-xs hidden space-y-3">
-                    <div class="flex justify-between items-center border-b pb-2 border-slate-200 dark:border-slate-700">
-                        <div>Invoice: <strong id="invOrderNo" class="font-mono text-emerald-700 font-bold"></strong></div>
-                        <div>Date: <span id="invDate"></span></div>
-                        <div>Customer: <strong id="invCustName"></strong> (<span id="invCustMobile"></span>)</div>
-                    </div>
+            <!-- Scrollable Modal Body (strictly left aligned, internal scroll) -->
+            <div class="modal-body custom-scrollbar text-start" style="text-align: left !important;">
 
-                    <!-- Items Table -->
-                    <div class="overflow-x-auto">
-                        <span class="font-bold text-slate-700 dark:text-slate-300 uppercase block mb-1">Invoice Items:</span>
-                        <table class="w-full text-xs">
-                            <thead>
-                                <tr class="text-slate-500 font-bold border-b border-slate-200 dark:border-slate-700">
-                                    <th class="p-1.5">Product</th>
-                                    <th class="p-1.5 text-center">Billed Qty</th>
-                                    <th class="p-1.5 text-end">Price</th>
-                                    <th class="p-1.5 text-center w-28">Return Qty</th>
-                                </tr>
-                            </thead>
-                            <tbody id="invoiceItemsTbody" class="divide-y divide-slate-200 dark:divide-slate-700"></tbody>
-                        </table>
-                    </div>
-
-                    <div class="pt-2 flex flex-col sm:flex-row justify-between items-center gap-3 border-t border-slate-200 dark:border-slate-700">
-                        <div class="flex items-center gap-2">
-                            <label class="font-bold whitespace-nowrap">Return Date:</label>
-                            <input type="date" id="returnDateInput" value="{{ date('Y-m-d') }}" class="form-control form-control-sm rounded-lg text-xs w-36 h-[34px]">
+                <!-- Search Bar inside Modal -->
+                <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 p-3 mb-3 text-start">
+                    <label id="modalSearchLabel" class="custom-modal-label text-start" style="margin-top: 0 !important;">Search Invoice Number</label>
+                    <div class="flex items-center gap-2 mt-1.5">
+                        <div class="search-input-wrapper unified-ui-border flex-1 h-[38px] flex items-center px-3 bg-white dark:bg-slate-700/60 rounded-xl shadow-sm focus-within:border-emerald-600">
+                            <input type="text" id="modalInvoiceSearchInput" style="border: none !important; outline: none !important; box-shadow: none !important;" class="w-full h-full bg-transparent border-0 outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 m-0" placeholder="e.g. #InvID00001 or 1" onkeydown="if(event.key==='Enter') searchInvoiceInModal()" />
                         </div>
-                        <button type="button" onclick="submitSalesReturn()" class="inline-flex items-center justify-center px-4 h-[36px] bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-all">
-                            Confirm Return
+                        <button id="modalSearchBtn" onclick="searchInvoiceInModal()" type="button" class="px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-sm transition-all flex-shrink-0">
+                            <i class="fa-solid fa-magnifying-glass me-1"></i> Search
                         </button>
                     </div>
                 </div>
 
+                <!-- Invoice / Purchase Details Summary Card (Initially Hidden) -->
+                <div id="invoiceSummaryCard" class="d-none mb-3 p-3 bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-slate-800 rounded-2xl text-start">
+                    <div class="row g-2 text-slate-800 dark:text-slate-100">
+                        <div class="col-md-6 col-12">
+                            <span id="summaryNoLabel" class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider block">INVOICE / ORDER NO:</span>
+                            <h5 id="modalOrderNo" class="font-bold text-emerald-700 dark:text-emerald-400 text-sm mb-1 font-mono">#InvID00001</h5>
+                            <span id="summaryPartyLabel" class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider block">CUSTOMER NAME:</span>
+                            <span id="modalCustomerName" class="font-bold text-slate-800 dark:text-slate-100 text-xs sm:text-sm block">Customer Name</span>
+                        </div>
+                        <div class="col-md-6 col-12 text-md-end">
+                            <span class="text-slate-500 dark:text-slate-400 text-xs block"><span id="summaryDateLabel">Sale Date</span>: <strong id="modalInvoiceDate" class="text-slate-800 dark:text-slate-100">01 Jan 2026</strong></span>
+                            <span class="text-slate-500 dark:text-slate-400 text-xs block">Sub Total: <strong id="modalSubTotal" class="text-slate-800 dark:text-slate-100">৳ 0.00</strong></span>
+                            <span class="text-slate-500 dark:text-slate-400 text-xs block">Paid: <strong id="modalPaidAmount" class="text-emerald-600 font-bold">৳ 0.00</strong> | Due: <strong id="modalDueAmount" class="text-rose-600 font-bold">৳ 0.00</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Return Products Table (Initially Hidden) -->
+                <div id="returnItemsContainer" class="d-none text-start">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="font-bold text-slate-800 dark:text-slate-100 mb-0 text-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-square-check text-emerald-600"></i> Select items to return:
+                        </h6>
+                        <span class="badge bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-semibold" style="font-size: 10px;">Check item and enter quantity</span>
+                    </div>
+
+                    <div class="table-responsive unified-ui-border rounded-xl shadow-sm bg-white dark:bg-slate-900 mb-3">
+                        <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                            <thead>
+                                <tr class="bg-[#15803d] text-white text-[11px] font-semibold uppercase tracking-wider">
+                                    <th class="p-2.5 text-center w-[40px]">
+                                        <input type="checkbox" id="selectAllReturnItems" class="cursor-pointer" onchange="toggleSelectAllReturnItems(this)" title="Select All Items" />
+                                    </th>
+                                    <th class="p-2.5 text-start">PRODUCT NAME</th>
+                                    <th class="p-2.5 text-center w-[90px]">QUANTITY</th>
+                                    <th class="p-2.5 text-end w-[110px]">UNIT PRICE</th>
+                                    <th class="p-2.5 text-center w-[110px]">RETURN QTY</th>
+                                    <th class="p-2.5 text-end w-[120px] pe-3">REFUND TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="returnItemsTbody" class="divide-y divide-slate-100 dark:divide-slate-800">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                            <tfoot class="font-bold border-t border-slate-200 dark:border-slate-700" style="background-color: #f8fafc;">
+                                <tr>
+                                    <td colspan="5" class="p-2.5 text-end text-xs uppercase text-slate-600">TOTAL REFUND AMOUNT:</td>
+                                    <td id="totalRefundText" class="p-2.5 text-end pe-3 font-extrabold text-rose-600 dark:text-rose-400">৳ 0.00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Return Date & Return Note (2 Columns strictly matching Retail) -->
+                    <div class="row g-2.5 text-start">
+                        <div class="col-md-6 col-12 text-start">
+                            <label class="custom-modal-label text-start">Return Date <span class="text-danger">*</span></label>
+                            <input type="text" id="modalReturnDate" class="custom-modal-input text-start" placeholder="YYYY-MM-DD" autocomplete="off" />
+                        </div>
+                        <div class="col-md-6 col-12 text-start">
+                            <label class="custom-modal-label text-start">Return Reason / Note</label>
+                            <input type="text" id="modalReturnNote" class="custom-modal-input text-start" placeholder="Optional return note..." />
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <div class="modal-footer border-t border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-end">
-                <button type="button" class="btn px-4 text-white font-semibold" style="background-color: #dc2626 !important; border-radius: 8px !important; height: 38px;" data-bs-dismiss="modal">Close</button>
+
+            <!-- Sticky Bottom Footer with Red Cancel & Green Save Buttons (Strict 38px height) -->
+            <div class="modal-footer d-flex align-items-center justify-content-end gap-2 flex-shrink-0">
+                <button type="button" class="btn fw-semibold px-4 shadow-sm" data-bs-dismiss="modal" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; border-radius: 8px !important; font-size: 13.5px !important; background-color: #dc2626 !important; color: #ffffff !important; border: none !important; cursor: pointer; transition: opacity 0.2s;">
+                    Cancel
+                </button>
+                <button type="button" id="submitReturnBtn" onclick="submitReturnForm()" class="btn text-white fw-bold px-4 shadow-sm d-none" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; border-radius: 8px !important; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important; border: none !important; font-size: 13.5px !important; cursor: pointer;">
+                    <i class="fa-solid fa-check me-1"></i> Process Return
+                </button>
             </div>
+
         </div>
     </div>
 </div>
 
 <style>
-    .unified-ui-border {
-        border: 1px solid #cbd5e1 !important;
+    .product-card-body {
+        padding: 10px !important;
     }
-    .dark .unified-ui-border {
-        border: 1px solid #334155 !important;
-    }
-    .controls-row-wrapper {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-    @media (min-width: 640px) {
-        .controls-row-wrapper {
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
+    @media (min-width: 768px) {
+        .product-card-body {
+            padding: 16px !important;
         }
     }
-    .search-input-wrapper {
-        width: 100%;
-        max-width: 360px;
+
+    .unified-ui-border {
+        border: 1.5px solid #cbd5e1 !important;
+    }
+
+    .search-input-wrapper:focus-within {
+        border-color: #15803d !important;
+        box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.25) !important;
+    }
+
+    #quickInvoiceSearchInput,
+    #quickInvoiceSearchInput:focus,
+    #historySearchInput,
+    #historySearchInput:focus,
+    body[light-mode="dark"] #quickInvoiceSearchInput,
+    body[light-mode="dark"] #historySearchInput {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+
+    #printTable thead th {
+        white-space: nowrap !important;
+        padding: 10px !important;
+    }
+    #printTable tbody td,
+    #printTable tfoot td {
+        padding: 10px !important;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.25rem 0.65rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .data-table {
+        background: transparent !important;
+    }
+
+    /* Dark Mode */
+    body[light-mode="dark"] .card,
+    body[data-layout-mode="dark"] .card,
+    html.dark .card,
+    body.dark-mode .card,
+    body.dark .card {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .card-body,
+    body[data-layout-mode="dark"] .card-body,
+    html.dark .card-body,
+    body.dark-mode .card-body,
+    body.dark .card-body {
+        background-color: #0f172a !important;
+    }
+    body[light-mode="dark"] .page-content,
+    body[data-layout-mode="dark"] .page-content,
+    html.dark .page-content {
+        background-color: #0b0f19 !important;
+    }
+    body[light-mode="dark"] .table-responsive,
+    body[data-layout-mode="dark"] .table-responsive,
+    html.dark .table-responsive {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .unified-ui-border,
+    body[data-layout-mode="dark"] .unified-ui-border,
+    html.dark .unified-ui-border {
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #printTable,
+    body[light-mode="dark"] #printTable th,
+    body[light-mode="dark"] #printTable td,
+    body[light-mode="dark"] #printTable tr,
+    body[light-mode="dark"] #printTable tfoot {
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #printTable tbody tr:hover {
+        background-color: rgba(30, 41, 59, 0.6) !important;
+    }
+
+    body[light-mode="dark"] #quickInvoiceSearchInput,
+    body[light-mode="dark"] #historySearchInput,
+    body[light-mode="dark"] .search-input-wrapper,
+    body[data-layout-mode="dark"] .search-input-wrapper,
+    html.dark .search-input-wrapper,
+    body.dark-mode .search-input-wrapper,
+    body.dark .search-input-wrapper {
+        border-color: #334155 !important;
+        background-color: rgba(30, 41, 59, 0.9) !important;
+    }
+    body[light-mode="dark"] .entries-wrapper,
+    body[data-layout-mode="dark"] .entries-wrapper,
+    html.dark .entries-wrapper,
+    body.dark-mode .entries-wrapper,
+    body.dark .entries-wrapper {
+        border-color: #334155 !important;
+        background-color: rgba(30, 41, 59, 0.9) !important;
+    }
+    body[light-mode="dark"] #searchCardBox,
+    body[data-layout-mode="dark"] #searchCardBox,
+    html.dark #searchCardBox,
+    body.dark-mode #searchCardBox,
+    body.dark #searchCardBox {
+        background-color: rgba(30, 41, 59, 0.4) !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #tabPurchaseReturnBtn,
+    body[data-layout-mode="dark"] #tabPurchaseReturnBtn,
+    html.dark #tabPurchaseReturnBtn,
+    body.dark-mode #tabPurchaseReturnBtn,
+    body.dark #tabPurchaseReturnBtn {
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .return-mobile-card,
+    body[data-layout-mode="dark"] .return-mobile-card,
+    html.dark .return-mobile-card,
+    body[light-mode="dark"] #display-info .display-info-box,
+    body[data-layout-mode="dark"] #display-info .display-info-box,
+    html.dark #display-info .display-info-box {
+        border-color: #334155 !important;
+    }
+
+    /* Pagination */
+    .custom-pagination-btn {
+        min-width: 32px;
+        height: 32px;
+        padding: 0 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        background-color: #ffffff;
+        color: #334155;
+        border: 1.5px solid #cbd5e1;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        user-select: none;
+    }
+    .custom-pagination-btn:hover:not(:disabled) {
+        background-color: #f1f5f9;
+        border-color: #94a3b8;
+        color: #0f172a;
+    }
+    .custom-pagination-btn.active {
+        background-color: #15803d !important;
+        border-color: #15803d !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 4px rgba(21, 128, 61, 0.25) !important;
+    }
+    .custom-pagination-btn:disabled,
+    .custom-pagination-btn.disabled {
+        opacity: 0.45;
+        cursor: not-allowed !important;
+        pointer-events: none;
+    }
+    .custom-pagination-btn.pagination-nav-btn {
+        font-weight: 600;
         padding: 0 12px;
+    }
+
+    body[light-mode="dark"] .custom-pagination-btn,
+    body[data-layout-mode="dark"] .custom-pagination-btn,
+    html.dark .custom-pagination-btn,
+    body.dark-mode .custom-pagination-btn,
+    body.dark .custom-pagination-btn {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #cbd5e1 !important;
+    }
+    body[light-mode="dark"] .custom-pagination-btn:hover:not(:disabled),
+    body[data-layout-mode="dark"] .custom-pagination-btn:hover:not(:disabled),
+    html.dark .custom-pagination-btn:hover:not(:disabled),
+    body.dark-mode .custom-pagination-btn:hover:not(:disabled),
+    body.dark .custom-pagination-btn:hover:not(:disabled) {
+        background-color: #334155 !important;
+        border-color: #475569 !important;
+        color: #ffffff !important;
+    }
+    body[light-mode="dark"] .custom-pagination-btn.active,
+    body[data-layout-mode="dark"] .custom-pagination-btn.active,
+    html.dark .custom-pagination-btn.active,
+    body.dark-mode .custom-pagination-btn.active,
+    body.dark .custom-pagination-btn.active {
+        background-color: #15803d !important;
+        border-color: #15803d !important;
+        color: #ffffff !important;
+    }
+
+    @media (max-width: 768px) {
+        .page-content {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+            padding-top: 76px !important;
+            padding-bottom: 8px !important;
+        }
+        .card-body {
+            padding: 10px 8px !important;
+        }
+        #pagination {
+            gap: 4px !important;
+            flex-wrap: nowrap !important;
+            justify-content: center !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+        }
+        .custom-pagination-btn {
+            min-width: 28px !important;
+            height: 28px !important;
+            padding: 0 6px !important;
+            font-size: 11px !important;
+            border-radius: 6px !important;
+        }
+        .custom-pagination-btn.pagination-nav-btn {
+            padding: 0 6px !important;
+            font-size: 10.5px !important;
+        }
+    }
+
+    /* Modal Container & Strict Center Alignment */
+    #processReturnModal.modal {
+        background: rgba(15, 23, 42, 0.6) !important;
+        backdrop-filter: blur(4px) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
+        z-index: 1055 !important;
+    }
+    #processReturnModal.modal.show {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    #processReturnModal .modal-dialog {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        max-width: 820px !important;
+        width: 95% !important;
+        margin: auto !important;
+        max-height: 92vh !important;
+        height: auto !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    #processReturnModal .modal-content {
+        border-radius: 16px !important;
+        overflow: hidden !important;
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        max-height: 92vh !important;
+        width: 100% !important;
+    }
+
+    #processReturnModal .modal-header {
+        background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important;
+        color: #ffffff !important;
+        padding: 12px 20px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        position: relative !important;
+        flex-shrink: 0 !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+    }
+
+    #processReturnModal .modal-body {
+        padding: 16px 20px !important;
+        overflow-y: auto !important;
+        max-height: calc(92vh - 125px) !important;
+        background-color: #ffffff !important;
+        text-align: left !important;
+    }
+
+    #processReturnModal .modal-footer {
+        padding: 10px 20px !important;
+        background-color: #f8fafc !important;
+        border-top: 1px solid #e2e8f0 !important;
+        position: relative !important;
+        flex-shrink: 0 !important;
+    }
+
+    .custom-modal-label {
+        display: block !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        margin-top: 6px !important;
+        margin-bottom: 4px !important;
+        text-align: left !important;
+    }
+
+    .custom-modal-input {
+        width: 100% !important;
+        height: 42px !important;
+        padding: 0 14px !important;
+        font-size: 13.5px !important;
+        color: #0f172a !important;
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        outline: none !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+        box-sizing: border-box !important;
+        text-align: left !important;
+    }
+    .custom-modal-input:focus {
+        border-color: #15803d !important;
+        box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.2) !important;
+    }
+
+    /* Dark Mode Modal */
+    body[light-mode="dark"] #processReturnModal .modal-content,
+    body[data-layout-mode="dark"] #processReturnModal .modal-content,
+    html.dark #processReturnModal .modal-content,
+    body.dark-mode #processReturnModal .modal-content,
+    body.dark #processReturnModal .modal-content {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #processReturnModal .modal-body,
+    body[data-layout-mode="dark"] #processReturnModal .modal-body,
+    html.dark #processReturnModal .modal-body,
+    body.dark-mode #processReturnModal .modal-body,
+    body.dark #processReturnModal .modal-body {
+        background-color: #0f172a !important;
+    }
+    body[light-mode="dark"] #processReturnModal .modal-footer,
+    body[data-layout-mode="dark"] #processReturnModal .modal-footer,
+    html.dark #processReturnModal .modal-footer,
+    body.dark-mode #processReturnModal .modal-footer,
+    body.dark #processReturnModal .modal-footer {
+        background-color: #1e293b !important;
+        border-top-color: #334155 !important;
+    }
+    body[light-mode="dark"] #processReturnModal .custom-modal-label,
+    body[data-layout-mode="dark"] #processReturnModal .custom-modal-label,
+    html.dark #processReturnModal .custom-modal-label,
+    body.dark-mode #processReturnModal .custom-modal-label,
+    body.dark #processReturnModal .custom-modal-label {
+        color: #cbd5e1 !important;
+    }
+    body[light-mode="dark"] #processReturnModal .custom-modal-input,
+    body[data-layout-mode="dark"] #processReturnModal .custom-modal-input,
+    html.dark #processReturnModal .custom-modal-input,
+    body.dark-mode #processReturnModal .custom-modal-input,
+    body.dark #processReturnModal .custom-modal-input {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+    body[light-mode="dark"] #processReturnModal .modal-body > div:first-child {
+        background-color: rgba(30, 41, 59, 0.6) !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #processReturnModal .search-input-wrapper {
+        background-color: rgba(51, 65, 85, 0.6) !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #processReturnModal tfoot {
+        background-color: rgba(30, 41, 59, 0.6) !important;
+        border-color: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+    body[light-mode="dark"] #processReturnModal tfoot td {
+        color: #f1f5f9 !important;
+    }
+
+    /* Flatpickr Calendar Styling */
+    .flatpickr-calendar {
+        z-index: 99999999 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15), 0 8px 10px -6px rgba(0,0,0,0.1) !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+    .flatpickr-monthDropdown-months {
+        pointer-events: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        cursor: default !important;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        font-weight: 600;
+    }
+    body[data-layout-mode="dark"] .flatpickr-calendar,
+    body[light-mode="dark"] .flatpickr-calendar,
+    html.dark .flatpickr-calendar,
+    body.dark-mode .flatpickr-calendar,
+    body.dark .flatpickr-calendar {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+    body[data-layout-mode="dark"] .flatpickr-months,
+    body[light-mode="dark"] .flatpickr-months,
+    html.dark .flatpickr-months,
+    body[data-layout-mode="dark"] .flatpickr-month,
+    body[light-mode="dark"] .flatpickr-month,
+    html.dark .flatpickr-month {
+        background: #0f172a !important;
+        color: #f1f5f9 !important;
+        fill: #f1f5f9 !important;
+    }
+    body[data-layout-mode="dark"] .flatpickr-current-month,
+    body[light-mode="dark"] .flatpickr-current-month,
+    html.dark .flatpickr-current-month {
+        color: #f1f5f9 !important;
+    }
+    body[data-layout-mode="dark"] .flatpickr-day,
+    body[light-mode="dark"] .flatpickr-day,
+    html.dark .flatpickr-day {
+        color: #e2e8f0 !important;
+    }
+    body[data-layout-mode="dark"] .flatpickr-day:hover,
+    body[light-mode="dark"] .flatpickr-day:hover,
+    html.dark .flatpickr-day:hover {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+    }
+    body[data-layout-mode="dark"] .flatpickr-day.today,
+    body[light-mode="dark"] .flatpickr-day.today,
+    html.dark .flatpickr-day.today {
+        border-color: #10b981 !important;
+        color: #10b981 !important;
+    }
+    body[data-layout-mode="dark"] .flatpickr-day.selected,
+    body[light-mode="dark"] .flatpickr-day.selected,
+    html.dark .flatpickr-day.selected {
+        background: #15803d !important;
+        border-color: #15803d !important;
+        color: #ffffff !important;
     }
 </style>
 
 <script>
-    let rawReturns = [];
-    let currentInvoiceOrder = null;
+    let activeReturnTab = 'sales'; // 'sales' or 'purchase'
+    let rawReturnList = [];
     let currentPage = 1;
     let pageSize = 15;
+    let currentReturnOrderData = null;
+    window.returnDatepicker = null;
 
-    document.addEventListener("DOMContentLoaded", function() {
-        getBatterySalesReturns();
-        $('#searchInput').on('input', function() { currentPage = 1; renderReturns(); });
-        $('#entries').on('change', function() { pageSize = parseInt(this.value) || 15; currentPage = 1; renderReturns(); });
+    document.addEventListener("DOMContentLoaded", () => {
+        fetchActiveReturnList();
+
+        $("#historySearchInput").on("keyup search input", function () {
+            currentPage = 1;
+            renderPaginatedReturnList();
+        });
+
+        $("#entries").on("change", function () {
+            pageSize = parseInt($(this).val()) || 15;
+            currentPage = 1;
+            renderPaginatedReturnList();
+        });
+
+        // Initialize flatpickr on modal show
+        $('#processReturnModal').on('shown.bs.modal', function () {
+            initReturnDatepicker();
+        });
     });
 
-    async function getBatterySalesReturns() {
-        try {
-            if (typeof showLoader === 'function') showLoader();
-            const res = await axios.get("/api/battery/return-product-list", HeaderToken());
-            if (typeof hideLoader === 'function') hideLoader();
-
-            if (res.data && res.data.status === 'success') {
-                rawReturns = res.data.ProductReturnData || [];
-                renderReturns();
-            } else {
-                rawReturns = [];
-                renderReturns();
-            }
-        } catch (e) {
-            if (typeof hideLoader === 'function') hideLoader();
-            console.error(e);
-            errorToast("Failed to load battery returns");
+    function initReturnDatepicker() {
+        const dateInput = document.getElementById('modalReturnDate');
+        if (dateInput && typeof flatpickr !== 'undefined') {
+            if (window.returnDatepicker) window.returnDatepicker.destroy();
+            window.returnDatepicker = flatpickr(dateInput, {
+                dateFormat: "Y-m-d",
+                defaultDate: new Date(),
+                allowInput: true,
+                clickOpens: true,
+                disableMobile: true,
+                onOpen: function() {
+                    $(document).off('focusin.bs.modal');
+                }
+            });
         }
     }
 
-    function renderReturns() {
-        const search = ($('#searchInput').val() || '').toLowerCase().trim();
-        const filtered = rawReturns.filter(r => {
-            const no = (r.order_no || '').toLowerCase();
-            const c = (r.customer_name || '').toLowerCase();
-            const p = (r.product_name || '').toLowerCase();
-            return no.includes(search) || c.includes(search) || p.includes(search);
+    function switchReturnTab(tab) {
+        activeReturnTab = tab;
+        const salesBtn = document.getElementById('tabSalesReturnBtn');
+        const purchaseBtn = document.getElementById('tabPurchaseReturnBtn');
+        const mainNewBtn = document.getElementById('mainNewReturnBtn');
+
+        const searchCardBox = document.getElementById('searchCardBox');
+        const searchTitle = document.getElementById('searchCardTitle');
+        const searchDesc = document.getElementById('searchCardDesc');
+        const searchInput = document.getElementById('quickInvoiceSearchInput');
+
+        const historyTitle = document.getElementById('historyTableTitle');
+        const thInvoiceNo = document.getElementById('thInvoiceNo');
+        const thPartyName = document.getElementById('thPartyName');
+
+        if (tab === 'purchase') {
+            salesBtn.className = 'inline-flex items-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-[0.98] text-sm font-semibold rounded-xl shadow-sm transition-all duration-150';
+            purchaseBtn.className = 'inline-flex items-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150';
+            
+            mainNewBtn.innerHTML = `
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>New Purchase Return</span>
+            `;
+
+            searchCardBox.style.borderLeft = '5px solid #0d9488 !important';
+            searchTitle.innerHTML = `<i class="fa-solid fa-magnifying-glass text-teal-600"></i> Quick Purchase Memo Search & Process Return`;
+            searchDesc.innerText = `Search purchase memo number to process return to supplier:`;
+            searchInput.placeholder = `Enter purchase memo number (e.g. #PurID00001)...`;
+
+            historyTitle.innerHTML = `<i class="fa-solid fa-truck-ramp-box text-emerald-600"></i> Purchase Return History`;
+            thInvoiceNo.innerText = 'Purchase Memo No';
+            thPartyName.innerText = 'Supplier Name';
+        } else {
+            salesBtn.className = 'inline-flex items-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150';
+            purchaseBtn.className = 'inline-flex items-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-[0.98] text-sm font-semibold rounded-xl shadow-sm transition-all duration-150';
+
+            mainNewBtn.innerHTML = `
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>New Sales Return</span>
+            `;
+
+            searchCardBox.style.borderLeft = '5px solid #15803d !important';
+            searchTitle.innerHTML = `<i class="fa-solid fa-magnifying-glass text-emerald-600"></i> Quick Invoice Search & Process Return`;
+            searchDesc.innerText = `Search invoice number to process sales return:`;
+            searchInput.placeholder = `Enter invoice number (e.g. #InvID00001)...`;
+
+            historyTitle.innerHTML = `<i class="fa-solid fa-clock-rotate-left text-emerald-600"></i> Sales Return History`;
+            thInvoiceNo.innerText = 'Invoice No';
+            thPartyName.innerText = 'Customer Name';
+        }
+
+        searchInput.value = '';
+        $("#historySearchInput").val('');
+        currentPage = 1;
+        fetchActiveReturnList();
+    }
+
+    function triggerNewReturnModal() {
+        openReturnModal('', activeReturnTab);
+    }
+
+    function triggerQuickReturnSearch() {
+        const val = document.getElementById('quickInvoiceSearchInput').value.trim();
+        if (!val) {
+            if (typeof errorToast === 'function') {
+                errorToast(activeReturnTab === 'purchase' ? 'Please enter a purchase memo number' : 'Please enter an invoice number');
+            } else {
+                alert(activeReturnTab === 'purchase' ? 'Please enter a purchase memo number' : 'Please enter an invoice number');
+            }
+            return;
+        }
+        openReturnModal(val, activeReturnTab);
+    }
+
+    async function fetchActiveReturnList() {
+        try {
+            if (typeof showLoader === "function") showLoader();
+
+            let url = activeReturnTab === 'purchase' ? '/api/battery/purchase-return-list' : '/api/battery/return-product-list';
+            const res = await axios.get(url, HeaderToken());
+            if (typeof hideLoader === "function") hideLoader();
+
+            if (res.data && res.data.status === 'success') {
+                rawReturnList = (activeReturnTab === 'purchase' ? res.data.PurchaseReturnData : res.data.ProductReturnData) || [];
+                renderPaginatedReturnList();
+            } else {
+                document.getElementById("tableList").innerHTML = `<tr><td colspan="7" class="text-center py-6 text-rose-500 font-semibold">Failed to load return history</td></tr>`;
+            }
+        } catch (e) {
+            if (typeof hideLoader === "function") hideLoader();
+            console.error("Fetch Return List Error:", e);
+        }
+    }
+
+    function renderPaginatedReturnList() {
+        if (!rawReturnList) return;
+
+        let searchVal = ($("#historySearchInput").val() || "").toLowerCase().trim();
+
+        // 1. Filter
+        let filtered = rawReturnList.filter(item => {
+            const refNo = (activeReturnTab === 'purchase' ? item.purchase_id : item.order_no) || '';
+            const partyName = (activeReturnTab === 'purchase' ? item.supplier_name : item.customer_name) || '';
+            const product = item.product_name || '';
+            const date = item.date || '';
+
+            return !searchVal || 
+                   refNo.toLowerCase().includes(searchVal) || 
+                   partyName.toLowerCase().includes(searchVal) || 
+                   product.toLowerCase().includes(searchVal) ||
+                   date.toLowerCase().includes(searchVal);
         });
 
-        const total = filtered.length;
-        const totalPages = Math.ceil(total / pageSize) || 1;
-        if (currentPage > totalPages) currentPage = 1;
+        // 2. New data top-a dekhabe
+        filtered.sort((a, b) => (b.id || 0) - (a.id || 0));
 
-        const start = (currentPage - 1) * pageSize;
-        const pageItems = filtered.slice(start, start + pageSize);
+        // Total sum calculations
+        let sumQty = 0;
+        let sumAmount = 0;
+        filtered.forEach(item => {
+            sumQty += parseInt(item.quantity) || 0;
+            sumAmount += parseFloat(item.amount) || 0;
+        });
+        document.getElementById('tfootTotalQty').innerText = `${sumQty} pcs`;
+        document.getElementById('tfootTotalAmount').innerText = `৳ ${formatMoney(sumAmount)}`;
+        document.getElementById('returnRecordCountBadge').innerText = `${filtered.length} Records`;
 
-        const tbody = document.getElementById('returnsTableBody');
-        const mobileContainer = document.getElementById('mobileCardList');
-        tbody.innerHTML = '';
-        mobileContainer.innerHTML = '';
+        // 3. Pagination Calculations
+        let totalItems = filtered.length;
+        let totalPages = Math.ceil(totalItems / pageSize) || 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        let startIndex = (currentPage - 1) * pageSize;
+        let endIndex = Math.min(startIndex + pageSize, totalItems);
+        let pageItems = filtered.slice(startIndex, endIndex);
+
+        let tableList = $("#tableList");
+        let mobileCardList = $("#mobileCardList");
+
+        tableList.empty();
+        mobileCardList.empty();
 
         if (pageItems.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400">No sales return records found.</td></tr>`;
-            mobileContainer.innerHTML = `<div class="p-6 text-center text-slate-400 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">No sales return records found.</div>`;
+            tableList.html(`<tr><td colspan="7" class="text-center text-rose-500 p-8 font-semibold"><svg class="w-6 h-6 mx-auto mb-2 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>No ${activeReturnTab === 'purchase' ? 'purchase' : 'sales'} returns found.</td></tr>`);
+            mobileCardList.html(`<div class="p-6 text-center text-rose-500 font-semibold bg-white dark:bg-slate-800 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm">No ${activeReturnTab === 'purchase' ? 'purchase' : 'sales'} returns found.</div>`);
         } else {
-            pageItems.forEach((r, idx) => {
-                const sl = start + idx + 1;
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                        <td class="p-[10px] text-center text-slate-400 font-medium">${sl}</td>
-                        <td class="p-[10px] font-mono text-xs text-slate-600 dark:text-slate-300">${r.date}</td>
-                        <td class="p-[10px] font-mono text-xs font-bold text-emerald-700 dark:text-emerald-400">${r.order_no}</td>
-                        <td class="p-[10px] font-semibold text-slate-800 dark:text-slate-100">${r.customer_name}</td>
-                        <td class="p-[10px] text-slate-700 dark:text-slate-200">${r.product_name}</td>
-                        <td class="p-[10px] text-center font-bold">${r.quantity}</td>
-                        <td class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400">৳ ${parseFloat(r.amount || 0).toLocaleString()}</td>
-                        <td class="p-[10px] text-center whitespace-nowrap">
-                            <a href="/battery/return/${r.id}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/50 transition-all shadow-sm" title="View Return Details">
-                                <i class="fa-solid fa-eye text-xs"></i>
-                            </a>
-                        </td>
+            pageItems.forEach(function (item, idx) {
+                let realIndex = startIndex + idx;
+                const qty = parseInt(item.quantity) || 0;
+                const amount = parseFloat(item.amount) || 0;
+                const refNo = (activeReturnTab === 'purchase' ? item.purchase_id : item.order_no) || 'N/A';
+                const partyName = (activeReturnTab === 'purchase' ? item.supplier_name : item.customer_name) || 'N/A';
+
+                // Desktop Table Row
+                let row = `
+                    <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800">
+                        <td class="p-[10px] text-center font-semibold text-slate-400 dark:text-slate-500">${realIndex + 1}</td>
+                        <td class="p-[10px] text-start whitespace-nowrap font-medium text-slate-700 dark:text-slate-300"><i class="fa-regular fa-calendar-check text-emerald-600 me-1"></i> ${formatReturnDate(item.date)}</td>
+                        <td class="p-[10px] text-start whitespace-nowrap"><span class="badge bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-slate-800 font-mono font-bold">${refNo}</span></td>
+                        <td class="p-[10px] text-start font-bold text-slate-800 dark:text-slate-100">${partyName}</td>
+                        <td class="p-[10px] text-start font-medium text-slate-600 dark:text-slate-300">${item.product_name || '-'}</td>
+                        <td class="p-[10px] text-center whitespace-nowrap"><span class="badge bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-bold">${qty} pcs</span></td>
+                        <td class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap">৳ ${formatMoney(amount)}</td>
                     </tr>
                 `;
+                tableList.append(row);
 
-                mobileContainer.innerHTML += `
-                    <div class="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
-                        <div class="flex items-center justify-between">
-                            <span class="font-mono text-xs font-bold text-emerald-700">${r.order_no}</span>
-                            <span class="text-xs font-bold text-rose-600">৳ ${parseFloat(r.amount || 0).toLocaleString()}</span>
+                // Mobile Card View
+                let mobileCard = `
+                    <div class="return-mobile-card unified-ui-border rounded-2xl p-3.5 bg-white dark:bg-slate-800/90 shadow-sm transition-all mb-3">
+                        <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="badge bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold" style="font-size: 10px;">#${realIndex + 1}</span>
+                                <span class="badge bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-slate-800 font-mono font-bold" style="font-size: 10px;">
+                                    ${refNo}
+                                </span>
+                            </div>
+                            <span class="badge bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-semibold" style="font-size: 10px;">
+                                <i class="fa-regular fa-calendar-check me-1"></i>${formatReturnDate(item.date)}
+                            </span>
                         </div>
-                        <div class="font-bold text-slate-800 dark:text-white">${r.customer_name}</div>
-                        <div class="text-xs text-slate-600 dark:text-slate-300">${r.product_name} (Qty: ${r.quantity})</div>
-                        <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
-                            <span class="text-xs text-slate-400">Date: ${r.date}</span>
-                            <a href="/battery/return/${r.id}" class="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline">
-                                <i class="fa-solid fa-eye text-[10px]"></i> View Details
-                            </a>
+
+                        <div class="mb-2">
+                            <h6 class="font-bold text-slate-800 dark:text-slate-100 mb-0.5 text-sm leading-snug">${partyName}</h6>
+                            <div class="text-xs text-slate-500 dark:text-slate-400">
+                                <span>Product: <strong>${item.product_name || '-'}</strong></span>
+                            </div>
                         </div>
-                    </div>
-                `;
+
+                        <div class="grid grid-cols-2 gap-2 bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-xl my-2 text-center items-center border border-slate-100 dark:border-slate-800">
+                            <div class="border-r border-slate-300 dark:border-slate-800 text-start px-2">
+                                <span class="text-slate-400 block text-[9px] font-bold uppercase tracking-wider">Quantity</span>
+                                <span class="font-bold text-slate-800 dark:text-slate-100 text-sm">${qty} pcs</span>
+                            </div>
+                            <div class="text-start px-2">
+                                <span class="text-slate-400 block text-[9px] font-bold uppercase tracking-wider">Refund Amount</span>
+                                <span class="font-bold text-rose-600 dark:text-rose-400 text-sm">৳ ${formatMoney(amount)}</span>
+                            </div>
+                        </div>
+                    </div>`;
+                mobileCardList.append(mobileCard);
             });
         }
 
-        document.getElementById('display-info').innerHTML = total > 0
-            ? `Showing <strong>${start + 1}–${Math.min(start + pageSize, total)}</strong> of <strong>${total}</strong> returns`
-            : `0 returns found`;
+        // 4. Update Display Info & Pagination UI
+        let fromCount = totalItems > 0 ? startIndex + 1 : 0;
+        let toCount = endIndex;
+        $("#display-info").html(`
+            <div class="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                <span>Showing</span>
+                <span class="display-info-box font-bold text-slate-800 dark:text-slate-100 px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-800">${fromCount} – ${toCount}</span>
+                <span>of</span>
+                <span class="display-info-box font-bold text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-slate-800">${totalItems}</span>
+                <span>returns</span>
+            </div>
+        `);
 
-        renderPagination(totalPages);
+        renderPaginationControls(totalPages);
     }
 
-    function renderPagination(totalPages) {
-        const p = document.getElementById('pagination');
-        p.innerHTML = '';
+    function renderPaginationControls(totalPages) {
+        let pagContainer = $("#pagination");
+        pagContainer.empty();
+
         if (totalPages <= 1) return;
 
-        const btnClass = "h-8 min-w-[32px] px-2 rounded-lg text-xs font-semibold border flex items-center justify-center ";
-        p.innerHTML += `<button onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="${btnClass} ${currentPage === 1 ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-100'}">‹</button>`;
-        for (let i = 1; i <= totalPages; i++) {
-            if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-                p.innerHTML += `<button onclick="goPage(${i})" class="${btnClass} ${i === currentPage ? 'bg-emerald-700 text-white border-emerald-700' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-100'}">${i}</button>`;
-            } else if (i === currentPage - 2 || i === currentPage + 2) {
-                p.innerHTML += `<span class="px-1 text-slate-400">…</span>`;
+        // Prev Button
+        let prevDisabled = currentPage === 1 ? 'disabled' : '';
+        let prevBtn = `<button type="button" class="custom-pagination-btn pagination-nav-btn ${prevDisabled}" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">
+            <svg class="w-3 h-3 me-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Prev
+        </button>`;
+        pagContainer.append(prevBtn);
+
+        // Smart Page Numbers
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+
+        if (startPage > 1) {
+            pagContainer.append(`<button type="button" class="custom-pagination-btn" onclick="goToPage(1)">1</button>`);
+            if (startPage > 2) {
+                pagContainer.append(`<span class="px-1 text-slate-400 font-bold">...</span>`);
             }
         }
-        p.innerHTML += `<button onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="${btnClass} ${currentPage === totalPages ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-100'}">›</button>`;
+
+        for (let p = startPage; p <= endPage; p++) {
+            let activeClass = (p === currentPage) ? 'active' : '';
+            let pageBtn = `<button type="button" class="custom-pagination-btn ${activeClass}" onclick="goToPage(${p})">${p}</button>`;
+            pagContainer.append(pageBtn);
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                pagContainer.append(`<span class="px-1 text-slate-400 font-bold">...</span>`);
+            }
+            pagContainer.append(`<button type="button" class="custom-pagination-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`);
+        }
+
+        // Next Button
+        let nextDisabled = currentPage === totalPages ? 'disabled' : '';
+        let nextBtn = `<button type="button" class="custom-pagination-btn pagination-nav-btn ${nextDisabled}" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">
+            Next <svg class="w-3 h-3 ms-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>`;
+        pagContainer.append(nextBtn);
     }
 
-    function goPage(page) { currentPage = page; renderReturns(); }
+    function goToPage(page) {
+        currentPage = page;
+        renderPaginatedReturnList();
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
 
-    async function searchInvoiceToReturn() {
-        const orderNo = $('#returnSearchInvoice').val().trim();
-        if (!orderNo) {
-            errorToast('Please enter an invoice number');
+    function formatReturnDate(dateString) {
+        if (!dateString) return 'N/A';
+        const options = { year: 'numeric', month: 'short', day: '2-digit' };
+        return new Date(dateString).toLocaleDateString('en-US', options);
+    }
+
+    function formatMoney(amount) {
+        if (amount === null || isNaN(amount)) return "0.00";
+        return parseFloat(amount).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
+
+    // Modal Operations
+    function openReturnModal(orderNo = '', mode = 'sales') {
+        currentReturnMode = mode;
+        currentReturnOrderData = null;
+
+        const headerBox = document.getElementById('modalHeaderBox');
+        const headerTitle = document.getElementById('modalHeaderTitle');
+        const searchLabel = document.getElementById('modalSearchLabel');
+
+        if (mode === 'purchase') {
+            headerTitle.innerText = 'Purchase Return Processing';
+            headerBox.style.background = 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)';
+            searchLabel.innerText = 'Search Purchase Memo / Invoice';
+            document.getElementById('modalInvoiceSearchInput').placeholder = 'e.g. #PurID00001 or 1';
+            document.getElementById('summaryNoLabel').innerText = 'PURCHASE NO:';
+            document.getElementById('summaryPartyLabel').innerText = 'SUPPLIER NAME:';
+            document.getElementById('summaryDateLabel').innerText = 'Purchase Date';
+        } else {
+            headerTitle.innerText = 'Sales Return Processing';
+            headerBox.style.background = 'linear-gradient(135deg, #15803d 0%, #16a34a 100%)';
+            searchLabel.innerText = 'Search Invoice Number';
+            document.getElementById('modalInvoiceSearchInput').placeholder = 'e.g. #InvID00001 or 1';
+            document.getElementById('summaryNoLabel').innerText = 'INVOICE / ORDER NO:';
+            document.getElementById('summaryPartyLabel').innerText = 'CUSTOMER NAME:';
+            document.getElementById('summaryDateLabel').innerText = 'Sale Date';
+        }
+
+        document.getElementById('modalInvoiceSearchInput').value = orderNo;
+        document.getElementById('invoiceSummaryCard').classList.add('d-none');
+        document.getElementById('returnItemsContainer').classList.add('d-none');
+        document.getElementById('submitReturnBtn').classList.add('d-none');
+        document.getElementById('returnItemsTbody').innerHTML = '';
+        if (document.getElementById('selectAllReturnItems')) {
+            document.getElementById('selectAllReturnItems').checked = false;
+        }
+
+        // Set today's date via flatpickr if available
+        if (window.returnDatepicker) {
+            window.returnDatepicker.setDate(new Date(), true);
+        } else {
+            document.getElementById('modalReturnDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        $('#processReturnModal').modal('show');
+
+        if (orderNo) {
+            searchInvoiceInModal();
+        }
+    }
+
+    async function searchInvoiceInModal() {
+        const queryNo = document.getElementById('modalInvoiceSearchInput').value.trim();
+        if (!queryNo) {
+            if (typeof errorToast === 'function') {
+                errorToast(currentReturnMode === 'purchase' ? 'Please enter a purchase memo number' : 'Please enter an invoice number');
+            } else {
+                alert(currentReturnMode === 'purchase' ? 'Please enter a purchase memo number' : 'Please enter an invoice number');
+            }
             return;
         }
 
         try {
-            if (typeof showLoader === 'function') showLoader();
-            const res = await axios.get(`/api/battery/search-invoice-for-return?order_no=${encodeURIComponent(orderNo)}`, HeaderToken());
-            if (typeof hideLoader === 'function') hideLoader();
+            if (typeof showLoader === "function") showLoader();
 
-            if (res.data && res.data.status === 'success' && res.data.order) {
-                currentInvoiceOrder = res.data.order;
-                $('#invOrderNo').text(currentInvoiceOrder.order_no);
-                $('#invDate').text(currentInvoiceOrder.invoice_date);
-                $('#invCustName').text(currentInvoiceOrder.customer_name);
-                $('#invCustMobile').text(currentInvoiceOrder.customer_mobile);
-
-                const tbody = document.getElementById('invoiceItemsTbody');
-                tbody.innerHTML = '';
-
-                (currentInvoiceOrder.items || []).forEach(item => {
-                    tbody.innerHTML += `
-                        <tr class="item-return-row" data-detail-id="${item.order_detail_id}" data-prod-id="${item.product_id}" data-max-qty="${item.quantity}">
-                            <td class="p-1.5 font-semibold">${item.product_name}</td>
-                            <td class="p-1.5 text-center font-bold">${item.quantity}</td>
-                            <td class="p-1.5 text-end">৳ ${parseFloat(item.unit_price || 0).toLocaleString()}</td>
-                            <td class="p-1.5 text-center">
-                                <input type="number" min="0" max="${item.quantity}" value="0" class="form-control form-control-sm text-center return-qty-input rounded-lg w-20 mx-auto">
-                            </td>
-                        </tr>
-                    `;
-                });
-
-                $('#invoiceResultBox').removeClass('hidden');
+            let url = '';
+            if (currentReturnMode === 'purchase') {
+                url = `/api/battery/search-purchase-for-return?purchase_no=${encodeURIComponent(queryNo)}`;
             } else {
-                errorToast(res.data?.message || 'Invoice not found');
-                $('#invoiceResultBox').addClass('hidden');
+                url = `/api/battery/search-invoice-for-return?order_no=${encodeURIComponent(queryNo)}`;
             }
-        } catch (err) {
-            if (typeof hideLoader === 'function') hideLoader();
-            errorToast('Error finding invoice');
+
+            const res = await axios.get(url, HeaderToken());
+            if (typeof hideLoader === "function") hideLoader();
+
+            if (res.data && res.data.status === 'success') {
+                if (currentReturnMode === 'purchase') {
+                    const purchase = res.data.purchase;
+                    currentReturnOrderData = purchase;
+
+                    document.getElementById('modalOrderNo').innerText = purchase.purchase_id;
+                    document.getElementById('modalCustomerName').innerText = `${purchase.supplier_name} (${purchase.supplier_mobile})`;
+                    document.getElementById('modalInvoiceDate').innerText = purchase.date;
+                    document.getElementById('modalSubTotal').innerText = '৳ ' + formatMoney(purchase.grand_subtotal);
+                    document.getElementById('modalPaidAmount').innerText = '৳ ' + formatMoney(purchase.paid_amount);
+                    document.getElementById('modalDueAmount').innerText = '৳ ' + formatMoney(purchase.due_amount);
+
+                    renderReturnItems(purchase.items);
+                } else {
+                    const order = res.data.order;
+                    currentReturnOrderData = order;
+
+                    document.getElementById('modalOrderNo').innerText = order.order_no;
+                    document.getElementById('modalCustomerName').innerText = `${order.customer_name} (${order.customer_mobile})`;
+                    document.getElementById('modalInvoiceDate').innerText = order.invoice_date;
+                    document.getElementById('modalSubTotal').innerText = '৳ ' + formatMoney(order.sub_total);
+                    document.getElementById('modalPaidAmount').innerText = '৳ ' + formatMoney(order.paid_amount);
+                    document.getElementById('modalDueAmount').innerText = '৳ ' + formatMoney(order.due_amount);
+
+                    renderReturnItems(order.items);
+                }
+
+                document.getElementById('invoiceSummaryCard').classList.remove('d-none');
+                document.getElementById('returnItemsContainer').classList.remove('d-none');
+                document.getElementById('submitReturnBtn').classList.remove('d-none');
+            } else {
+                if (typeof errorToast === 'function') {
+                    errorToast(res.data.message || (currentReturnMode === 'purchase' ? 'Purchase memo not found' : 'Invoice not found'));
+                } else {
+                    alert(res.data.message || (currentReturnMode === 'purchase' ? 'Purchase memo not found' : 'Invoice not found'));
+                }
+            }
+        } catch (e) {
+            if (typeof hideLoader === "function") hideLoader();
+            console.error('Invoice Search Error:', e);
+            if (typeof errorToast === 'function') errorToast('Failed to search invoice');
+            else alert('Failed to search invoice');
         }
     }
 
-    async function submitSalesReturn() {
-        if (!currentInvoiceOrder) return;
+    function renderReturnItems(items) {
+        const tbody = document.getElementById('returnItemsTbody');
+        tbody.innerHTML = '';
 
-        const returnItems = [];
-        document.querySelectorAll('#invoiceItemsTbody tr.item-return-row').forEach(row => {
-            const detailId = row.getAttribute('data-detail-id');
-            const prodId = row.getAttribute('data-prod-id');
-            const qty = parseInt(row.querySelector('.return-qty-input').value) || 0;
-            if (qty > 0) {
-                returnItems.push({
-                    order_detail_id: detailId,
-                    product_id: prodId,
-                    quantity: qty
-                });
+        if (!items || items.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-3 text-slate-400">No items found</td></tr>`;
+            return;
+        }
+
+        items.forEach((item, idx) => {
+            const detailId = currentReturnMode === 'purchase' ? item.purchase_order_detail_id : item.order_detail_id;
+            const codeBadge = item.product_code ? `<span class="badge bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-mono" style="font-size: 10px;">${item.product_code}</span>` : '';
+            const row = `
+                <tr data-detail-id="${detailId}" data-product-id="${item.product_id}" data-unit-price="${item.unit_price}" class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                    <td class="p-2.5 text-center">
+                        <input type="checkbox" class="cursor-pointer item-select-checkbox" onchange="onItemCheckboxChange(this)" />
+                    </td>
+                    <td class="p-2.5">
+                        <div class="font-bold text-slate-800 dark:text-slate-100">${item.product_name}</div>
+                        ${codeBadge}
+                    </td>
+                    <td class="p-2.5 text-center font-bold text-slate-700 dark:text-slate-200">${item.quantity} pcs</td>
+                    <td class="p-2.5 text-end font-semibold text-slate-700 dark:text-slate-200">৳ ${formatMoney(item.unit_price)}</td>
+                    <td class="p-2.5 text-center">
+                        <input type="number" class="custom-modal-input text-center font-bold return-qty-input" style="height: 34px !important; padding: 0 6px !important;"
+                               min="1" max="${item.quantity}" value="0" disabled
+                               oninput="onQtyInputChange(this)" onblur="onQtyInputBlur(this)" />
+                    </td>
+                    <td class="p-2.5 text-end pe-3 font-bold text-rose-600 dark:text-rose-400 refund-item-total">৳ 0.00</td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+
+        recalculateTotalRefund();
+    }
+
+    function onItemCheckboxChange(chk) {
+        const tr = chk.closest('tr');
+        const qtyInput = tr.querySelector('.return-qty-input');
+        const maxQty = parseInt(qtyInput.getAttribute('max')) || 1;
+
+        if (chk.checked) {
+            tr.classList.add('bg-emerald-50/50', 'dark:bg-emerald-950/20');
+            qtyInput.disabled = false;
+            let val = parseInt(qtyInput.value) || 0;
+            if (val <= 0) {
+                qtyInput.value = 1;
+            } else if (val > maxQty) {
+                qtyInput.value = maxQty;
+            }
+            setTimeout(() => {
+                qtyInput.focus();
+                qtyInput.select();
+            }, 50);
+        } else {
+            tr.classList.remove('bg-emerald-50/50', 'dark:bg-emerald-950/20');
+            qtyInput.value = 0;
+            qtyInput.disabled = true;
+        }
+        recalculateTotalRefund();
+    }
+
+    function onQtyInputChange(input) {
+        const tr = input.closest('tr');
+        const chk = tr.querySelector('.item-select-checkbox');
+        const maxQty = parseInt(input.getAttribute('max')) || 1;
+
+        if (input.value !== '') {
+            let val = parseInt(input.value);
+            if (isNaN(val)) val = 0;
+
+            if (val > maxQty) {
+                input.value = maxQty;
+            }
+
+            if (val > 0 && !chk.checked) {
+                chk.checked = true;
+                tr.classList.add('bg-emerald-50/50', 'dark:bg-emerald-950/20');
+                input.disabled = false;
+            }
+        }
+
+        recalculateTotalRefund();
+    }
+
+    function onQtyInputBlur(input) {
+        const tr = input.closest('tr');
+        const chk = tr.querySelector('.item-select-checkbox');
+        const maxQty = parseInt(input.getAttribute('max')) || 1;
+
+        let val = parseInt(input.value);
+        if (isNaN(val) || val <= 0) {
+            if (chk.checked) {
+                input.value = 1;
+            } else {
+                input.value = 0;
+            }
+        } else if (val > maxQty) {
+            input.value = maxQty;
+        }
+        recalculateTotalRefund();
+    }
+
+    function toggleSelectAllReturnItems(headerChk) {
+        const checkboxes = document.querySelectorAll('.item-select-checkbox');
+        checkboxes.forEach(chk => {
+            chk.checked = headerChk.checked;
+            onItemCheckboxChange(chk);
+        });
+    }
+
+    function recalculateTotalRefund() {
+        let grandTotalRefund = 0;
+        const rows = document.querySelectorAll('#returnItemsTbody tr');
+
+        rows.forEach(row => {
+            const chk = row.querySelector('.item-select-checkbox');
+            const unitPrice = parseFloat(row.getAttribute('data-unit-price')) || 0;
+            const qtyInput = row.querySelector('.return-qty-input');
+            const itemTotalTd = row.querySelector('.refund-item-total');
+
+            let qty = 0;
+            if (chk && chk.checked) {
+                qty = parseInt(qtyInput.value) || 0;
+                const maxQty = parseInt(qtyInput.getAttribute('max')) || 0;
+                if (qty > maxQty) qty = maxQty;
+            }
+
+            const itemRefund = qty * unitPrice;
+            if (itemTotalTd) itemTotalTd.innerText = '৳ ' + formatMoney(itemRefund);
+            grandTotalRefund += itemRefund;
+        });
+
+        const totalEl = document.getElementById('totalRefundText');
+        if (totalEl) totalEl.innerText = '৳ ' + formatMoney(grandTotalRefund);
+    }
+
+    async function submitReturnForm() {
+        if (!currentReturnOrderData) {
+            if (typeof errorToast === 'function') errorToast('No record loaded');
+            else alert('No record loaded');
+            return;
+        }
+
+        const returnDate = document.getElementById('modalReturnDate').value;
+        if (!returnDate) {
+            if (typeof errorToast === 'function') errorToast('Please select a return date');
+            else alert('Please select a return date');
+            return;
+        }
+
+        const returnedProducts = [];
+        const rows = document.querySelectorAll('#returnItemsTbody tr');
+
+        rows.forEach(row => {
+            const chk = row.querySelector('.item-select-checkbox');
+            if (chk && chk.checked) {
+                const detailId = row.getAttribute('data-detail-id');
+                const productId = row.getAttribute('data-product-id');
+                const qtyInput = row.querySelector('.return-qty-input');
+                const qty = parseInt(qtyInput.value) || 0;
+
+                if (qty > 0) {
+                    if (currentReturnMode === 'purchase') {
+                        returnedProducts.push({
+                            purchase_order_detail_id: detailId,
+                            product_id: productId,
+                            quantity: qty
+                        });
+                    } else {
+                        returnedProducts.push({
+                            order_detail_id: detailId,
+                            product_id: productId,
+                            quantity: qty
+                        });
+                    }
+                }
             }
         });
 
-        if (returnItems.length === 0) {
-            errorToast('Please enter at least 1 returned item quantity');
+        if (returnedProducts.length === 0) {
+            if (typeof errorToast === 'function') {
+                errorToast('Please select at least one product and enter a return quantity greater than 0.');
+            } else {
+                alert('Please select at least one product and enter a return quantity greater than 0.');
+            }
             return;
         }
 
-        const payload = {
-            order_id: currentInvoiceOrder.id,
-            customer_id: currentInvoiceOrder.customer_id,
-            date: $('#returnDateInput').val() || '{{ date("Y-m-d") }}',
-            products: returnItems
-        };
+        let payload = {};
+        let apiUrl = '';
+
+        if (currentReturnMode === 'purchase') {
+            apiUrl = '/api/battery/create-purchase-return';
+            payload = {
+                purchase_id: currentReturnOrderData.id,
+                supplier_id: currentReturnOrderData.supplier_id,
+                date: returnDate,
+                products: returnedProducts
+            };
+        } else {
+            apiUrl = '/api/battery/create-return-product';
+            payload = {
+                order_id: currentReturnOrderData.id,
+                customer_id: currentReturnOrderData.customer_id,
+                date: returnDate,
+                products: returnedProducts
+            };
+        }
 
         try {
-            if (typeof showLoader === 'function') showLoader();
-            const res = await axios.post('/api/battery/create-return-product', payload, HeaderToken());
-            if (typeof hideLoader === 'function') hideLoader();
+            if (typeof showLoader === "function") showLoader();
+            const res = await axios.post(apiUrl, payload, HeaderToken());
+            if (typeof hideLoader === "function") hideLoader();
 
             if (res.data && res.data.status === 'success') {
-                successToast(res.data.message || 'Sales return recorded');
-                $('#salesReturnModal').modal('hide');
-                $('#invoiceResultBox').addClass('hidden');
-                $('#returnSearchInvoice').val('');
-                getBatterySalesReturns();
+                if (typeof successToast === "function") successToast(res.data.message || 'Return processed successfully');
+                else alert('Return processed successfully');
+
+                $('#processReturnModal').modal('hide');
+                fetchActiveReturnList();
             } else {
-                errorToast(res.data.message || 'Return failed');
+                if (typeof errorToast === 'function') errorToast(res.data.message || 'Failed to process return');
+                else alert(res.data.message || 'Failed to process return');
             }
-        } catch (err) {
-            if (typeof hideLoader === 'function') hideLoader();
-            errorToast(err.response?.data?.message || 'Error processing sales return');
+
+        } catch (e) {
+            if (typeof hideLoader === "function") hideLoader();
+            console.error('Return Submit Error:', e);
+            if (typeof errorToast === 'function') errorToast(e.response?.data?.message || 'Error processing return');
+            else alert(e.response?.data?.message || 'Error processing return');
         }
     }
 </script>

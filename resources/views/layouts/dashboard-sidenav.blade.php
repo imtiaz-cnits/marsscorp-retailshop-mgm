@@ -315,7 +315,19 @@
     body[data-sidebar-size="sm"] .vertical-menu .navbar-brand-box {
       width: 70px !important;
       padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
       justify-content: center !important;
+    }
+
+    body[data-sidebar-size="sm"] .vertical-menu .navbar-brand-box a.logo {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
 
     body[data-sidebar-size="sm"] .vertical-menu .navbar-brand-box .logo-lg {
@@ -327,6 +339,17 @@
       align-items: center !important;
       justify-content: center !important;
       margin: 0 auto !important;
+      width: 100% !important;
+    }
+
+    body[data-sidebar-size="sm"] .vertical-menu .navbar-brand-box .logo-sm img {
+      width: 36px !important;
+      height: 36px !important;
+      max-width: 36px !important;
+      max-height: 36px !important;
+      object-fit: contain !important;
+      margin: 0 auto !important;
+      display: block !important;
     }
 
     /* Modern Sliding Drilldown Sidebar Styles */
@@ -776,6 +799,25 @@
       background: #0b0f19 !important;
       border-bottom: 1px solid #1e293b !important;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    /* Dark Mode Navbar Brand Box / Logo Box Background (Same dark color as Navbar Header #0b0f19) */
+    body[light-mode="dark"] .vertical-menu .navbar-brand-box,
+    body[data-layout-mode="dark"] .vertical-menu .navbar-brand-box,
+    html.dark .vertical-menu .navbar-brand-box,
+    body.dark-mode .vertical-menu .navbar-brand-box,
+    body[data-sidebar="dark"] .vertical-menu .navbar-brand-box,
+    body[data-topbar="dark"] .vertical-menu .navbar-brand-box,
+    body[light-mode="dark"] .navbar-brand-box,
+    body[data-layout-mode="dark"] .navbar-brand-box,
+    html.dark .navbar-brand-box,
+    body.dark-mode .navbar-brand-box,
+    body[data-sidebar="dark"] .navbar-brand-box,
+    body[data-topbar="dark"] .navbar-brand-box {
+      background-color: #0b101bff !important;
+      background: #0b101bff !important;
+      border-bottom: 1px solid #1e293b !important;
+      box-shadow: none !important;
     }
 
     /* Card & Card Header Dark Mode Styling */
@@ -1594,7 +1636,7 @@
         </div>
 
         <div class="dropdown d-inline-block">
-          <button type="button" class="btn header-item user text-start d-flex align-items-center"
+          <button type="button" class="btn header-item user text-start d-flex align-items-center p-0"
             id="page-header-user-dropdown-v" data-bs-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false">
             <img class="rounded-circle header-profile-user"
@@ -1784,7 +1826,7 @@
     
     <!-- Collapsed Sidebar Icon (Small Mode) -->
     <span class="logo-sm">
-      <img src="{{ asset('backend/assets/img/marss-corporation-icon.svg') }}" alt="MARSS CORPORATION Icon" width="100" height="100" style="border-radius: 8px; object-fit: contain;" />
+      <img src="{{ asset('backend/assets/icons/favicon.svg') }}" alt="MARSS CORPORATION" width="36" height="36" style="border-radius: 6px; object-fit: contain; margin: 0 auto;" />
     </span>
     
     <!-- Expanded Sidebar Icon (Large Mode) -->
@@ -1802,7 +1844,7 @@
     @php
       $activeParent = null;
       if ($isBattery) {
-          if (request()->routeIs('battery.products') || request()->routeIs('battery.brands') || request()->routeIs('battery.categories') || request()->routeIs('battery.sub-categories') || request()->routeIs('battery.units') || request()->routeIs('battery.barcode*') || request()->routeIs('battery.reports.stock-out')) {
+          if (request()->routeIs('battery.products') || request()->routeIs('battery.stock-overview') || request()->routeIs('battery.brands') || request()->routeIs('battery.categories') || request()->routeIs('battery.sub-categories') || request()->routeIs('battery.units') || request()->routeIs('battery.barcode*')) {
               $activeParent = 'battery-product';
           } elseif (request()->routeIs('battery.suppliers') || request()->routeIs('battery.supplier.*')) {
               $activeParent = 'battery-supplier';
@@ -1812,13 +1854,13 @@
               $activeParent = 'battery-customer';
           } elseif (request()->routeIs('battery.expenses') || request()->routeIs('battery.expense.*')) {
               $activeParent = 'battery-expense';
-          } elseif (request()->routeIs('battery.sales.returns') || request()->routeIs('battery.purchase.returns')) {
-              $activeParent = 'battery-return';
+          } elseif (request()->routeIs('battery.sales.returns') || request()->routeIs('battery.purchase.returns') || request()->routeIs('battery.return.*') || request()->routeIs('battery.purchase-return.*')) {
+              $activeParent = null;
           } elseif (request()->routeIs('battery.reports.*')) {
               $activeParent = 'battery-report';
           }
       } else {
-          if (request()->is('admin-dashboard-product*') || request()->is('admin-dashboard-brand*') || request()->is('admin-dashboard-category*') || request()->is('admin-dashboard-barcode-genarate*')) {
+          if (request()->is('admin-dashboard-product*') || request()->is('admin-dashboard-stock-overview*') || request()->is('admin-dashboard-brand*') || request()->is('admin-dashboard-category*') || request()->is('admin-dashboard-barcode-genarate*')) {
               $activeParent = 'product';
           } elseif (request()->is('admin-dashboard-supplier*') || request()->is('supplier-due-page*') || request()->is('supplier-due-collection-page*')) {
               $activeParent = 'supplier';
@@ -1908,7 +1950,7 @@
                 <li><a href="{{ url('admin-dashboard-brand') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-brand') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-tag text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Brand List</span></a></li>
                 <li><a href="{{ url('admin-dashboard-category') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-category') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-layer-group text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Category List</span></a></li>
                 <li><a href="{{ url('admin-dashboard-barcode-genarate') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-barcode-genarate') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-barcode text-[10px] text-emerald-300/80 w-4 text-center"></i><span>BarCode Print</span></a></li>
-                <li><a href="{{ url('admin-dashboard-stock-out') }}" class="sidebar-flyout-link text-red-300 hover:text-red-100 hover:bg-red-500/20 font-semibold"><i class="fa-solid fa-triangle-exclamation text-[10px] text-red-400 w-4 text-center"></i><span>Low Stock Products</span></a></li>
+                <li><a href="{{ url('admin-dashboard-stock-overview') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-stock-overview*') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-chart-line text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Stock Overview</span></a></li>
               </ul>
             </div>
           </li>
@@ -2132,12 +2174,12 @@
             </div>
           </li>
           <li class="relative group">
-            <a href="{{ url('admin-dashboard-stock-out') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-red-200 hover:text-white hover:bg-red-600/30 font-bold transition-all duration-150 {{ request()->is('admin-dashboard-stock-out') ? 'bg-red-600 text-white' : '' }}">
-              <i class="fa-solid fa-triangle-exclamation text-xs text-red-300 w-4 text-center"></i>
-              <span>Low Stock Products</span>
+            <a href="{{ url('admin-dashboard-stock-overview') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->is('admin-dashboard-stock-overview*') ? 'active-submenu-link' : '' }}">
+              <i class="fa-solid fa-chart-line text-xs text-emerald-300/80 w-4 text-center"></i>
+              <span>Stock Overview</span>
             </a>
             <div class="sidebar-mini-tooltip">
-              Low Stock Products
+              Stock Overview
             </div>
           </li>
         </ul>
@@ -2792,7 +2834,7 @@
           const path = window.location.pathname;
           if (path.includes('admin-dashboard-user-role') && !effective.user) {
             window.location.href = effective.pos ? '/admin-dashboard-pos' : '/admin-dashboard';
-          } else if ((path.includes('admin-dashboard-product') || path.includes('admin-dashboard-brand') || path.includes('admin-dashboard-category')) && !effective.product) {
+          } else if ((path.includes('admin-dashboard-product') || path.includes('admin-dashboard-stock-overview') || path.includes('admin-dashboard-brand') || path.includes('admin-dashboard-category')) && !effective.product) {
             window.location.href = effective.pos ? '/admin-dashboard-pos' : '/admin-dashboard';
           } else if ((path.includes('admin-dashboard-Purchase') || path.includes('admin-dashboard-supplier')) && !effective.purchase) {
             window.location.href = effective.pos ? '/admin-dashboard-pos' : '/admin-dashboard';

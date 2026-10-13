@@ -423,7 +423,7 @@
                     </div>
 
                     <!-- 2. Filter Row: 4 Columns (Desktop 1 row 4 col, Mobile 2 rows 2 col) -->
-                    <div class="top-filter-grid mb-5 no-print">
+                    <div class="top-filter-grid mb-3 no-print">
                         <!-- Column 1: Start Date (Icon on right, text starts left) -->
                         <div>
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Start Date</label>
@@ -494,7 +494,7 @@
                     </div>
 
                     <!-- 3. Summary Amount Cards: 4col desktop, 2col tab, 1col mobile -->
-                    <div class="ledger-cards-grid mb-5 no-print">
+                    <div class="ledger-cards-grid mb-3 no-print">
                         <!-- Total Inflow -->
                         <div class="ledger-stat-card ledger-stat-card--inflow">
                             <div class="flex items-center justify-between mb-1.5">

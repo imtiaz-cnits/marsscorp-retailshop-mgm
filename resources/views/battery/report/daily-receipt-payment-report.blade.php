@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title','Battery Daily Receipt & Payment Report - MARSS CORPORATION')
 @section('content')
 
@@ -8,18 +8,51 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <style>
-    /* â”€â”€ Export Button Styles â”€â”€ */
-    .export-btn { display:inline-flex; align-items:center; gap:5px; height:32px; padding:0 12px; border-radius:8px; font-size:11.5px; font-weight:700; cursor:pointer; border:1.5px solid transparent; transition:all 0.15s; white-space:nowrap; }
-    .export-btn--copy  { background:#f1f5f9; color:#475569; border-color:#cbd5e1; }
-    .export-btn--copy:hover  { background:#e2e8f0; border-color:#94a3b8; }
-    .export-btn--csv   { background:#ecfdf5; color:#065f46; border-color:#a7f3d0; }
-    .export-btn--csv:hover   { background:#d1fae5; border-color:#34d399; }
-    .export-btn--excel { background:#f0fdf4; color:#15803d; border-color:#bbf7d0; }
-    .export-btn--excel:hover { background:#dcfce7; border-color:#4ade80; }
-    .export-btn--pdf   { background:#fff1f2; color:#be123c; border-color:#fecaca; }
-    .export-btn--pdf:hover   { background:#ffe4e6; border-color:#f87171; }
-    .export-btn--print { background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe; }
-    .export-btn--print:hover { background:#dbeafe; border-color:#60a5fa; }
+    /* ── Export Button Styles with Anti-White Hover Protection ── */
+    .export-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        height: 32px !important;
+        padding: 0 12px !important;
+        border-radius: 8px !important;
+        font-size: 11.5px !important;
+        font-weight: 700 !important;
+        cursor: pointer !important;
+        border: 1.5px solid transparent !important;
+        transition: all 0.15s ease !important;
+        white-space: nowrap !important;
+        text-decoration: none !important;
+    }
+    .export-btn svg, .export-btn i { pointer-events: none; flex-shrink: 0; }
+
+    .export-btn--copy  { background: #f1f5f9 !important; color: #475569 !important; border-color: #cbd5e1 !important; }
+    .export-btn--copy:hover, .export-btn--copy:focus  { background: #e2e8f0 !important; border-color: #94a3b8 !important; color: #1e293b !important; }
+
+    .export-btn--csv   { background: #ecfdf5 !important; color: #065f46 !important; border-color: #a7f3d0 !important; }
+    .export-btn--csv:hover, .export-btn--csv:focus   { background: #d1fae5 !important; border-color: #34d399 !important; color: #065f46 !important; }
+
+    .export-btn--excel { background: #f0fdf4 !important; color: #15803d !important; border-color: #bbf7d0 !important; }
+    .export-btn--excel:hover, .export-btn--excel:focus { background: #dcfce7 !important; border-color: #4ade80 !important; color: #15803d !important; }
+
+    .export-btn--pdf   { background: #fff1f2 !important; color: #be123c !important; border-color: #fecaca !important; }
+    .export-btn--pdf:hover, .export-btn--pdf:focus   { background: #ffe4e6 !important; border-color: #f87171 !important; color: #be123c !important; }
+
+    .export-btn--print { background: #eff6ff !important; color: #1d4ed8 !important; border-color: #bfdbfe !important; }
+    .export-btn--print:hover, .export-btn--print:focus { background: #dbeafe !important; border-color: #60a5fa !important; color: #1d4ed8 !important; }
+
+    /* Light mode anti-white hover rules for controls & buttons */
+    .custom-select-btn:hover { background-color: #f8fafc !important; border-color: #10b981 !important; }
+    .filter-field-input:hover { border-color: #10b981 !important; }
+    #paginationControls button:hover { background-color: #e2e8f0 !important; color: #0f172a !important; border-color: #94a3b8 !important; }
+
+    /* Centered modal rules */
+    .modal-dialog {
+        display: flex !important;
+        align-items: center !important;
+        min-height: calc(100% - 3.5rem) !important;
+        margin: 1.75rem auto !important;
+    }
 
     /* â”€â”€ Top Filter Grid â”€â”€
        Desktop (1024px+): 1 row 4 columns (Start Date, End Date, Show, Quick Filter)
@@ -1235,7 +1268,118 @@
 
     // 5. Print
     function printReport() {
-        window.print();
+        if (!normalizedRows || normalizedRows.length === 0) {
+            showExportToast('No records to print!', '#be123c');
+            return;
+        }
+
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const periodStr = `${startDate} to ${endDate}`;
+        const salesCol = document.getElementById('cardSalesCollection').innerText;
+        const totalPay = document.getElementById('cardTotalPayments').innerText;
+        const balAmt   = document.getElementById('cardBalanceAmount').innerText;
+        const closeBal = document.getElementById('cardClosingBalance').innerText;
+
+        let rowsHtml = '';
+        let totOpen = 0, totSales = 0, totSupp = 0, totExp = 0;
+
+        normalizedRows.forEach((r, idx) => {
+            totOpen += r.opening_balance || 0;
+            totSales += r.sales_collection || 0;
+            totSupp += r.supplier_amount || 0;
+            totExp += r.expense_amount || 0;
+
+            rowsHtml += `
+                <tr>
+                    <td style="text-align:center; padding:4px; border:1px solid #cbd5e1; font-size:9.5px;">${idx + 1}</td>
+                    <td style="text-align:right; padding:4px 6px; border:1px solid #cbd5e1; font-size:9.5px;">${r.opening_balance > 0 ? '৳ ' + r.opening_balance.toFixed(2) : '-'}</td>
+                    <td style="text-align:right; padding:4px 6px; border:1px solid #cbd5e1; font-size:9.5px; font-weight:bold; color:#047857;">${r.sales_collection > 0 ? '৳ ' + r.sales_collection.toFixed(2) : '-'}</td>
+                    <td style="padding:4px 6px; border:1px solid #cbd5e1; font-size:9.5px;">${r.supplier_name !== '-' ? r.supplier_name : '-'}</td>
+                    <td style="text-align:right; padding:4px 6px; border:1px solid #cbd5e1; font-size:9.5px; font-weight:bold; color:#be123c;">${r.supplier_amount > 0 ? '৳ ' + r.supplier_amount.toFixed(2) : '-'}</td>
+                    <td style="padding:4px 6px; border:1px solid #cbd5e1; font-size:9.5px;">${r.expense_type !== '-' ? r.expense_type : '-'}</td>
+                    <td style="text-align:right; padding:4px 6px; border:1px solid #cbd5e1; font-size:9.5px; font-weight:bold; color:#be123c;">${r.expense_amount > 0 ? '৳ ' + r.expense_amount.toFixed(2) : '-'}</td>
+                </tr>
+            `;
+        });
+
+        const printWin = window.open('', '_blank');
+        printWin.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>Daily Receipt & Payment Statement - Print</title>
+                <style>
+                    @page { size: A4 portrait; margin: 10px !important; }
+                    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; padding: 4px; color: #111; background: #fff; }
+                    .report-header { text-align: center; border-bottom: 2px solid #15803d; padding-bottom: 6px; margin-bottom: 8px; }
+                    .report-header h1 { margin: 0; color: #15803d; font-size: 18px; font-weight: 800; }
+                    .report-header p { margin: 2px 0; font-size: 10px; color: #475569; }
+                    .report-header h2 { margin: 4px 0 2px 0; font-size: 13px; font-weight: 700; color: #0f172a; }
+                    .summary-bar { display: flex; justify-content: space-around; margin: 6px 0; padding: 5px 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 10px; font-weight: 700; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 9.5px; }
+                    th { background-color: #15803d !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 6px 5px; text-align: left; font-size: 9.5px; border: 1px solid #15803d; }
+                    td { border: 1px solid #cbd5e1; }
+                    tfoot td { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-weight: bold; border-top: 2px solid #15803d; padding: 6px 5px; font-size: 9.5px; }
+                    .signatures { margin-top: 40px; display: flex; justify-content: space-between; text-align: center; font-size: 10px; font-weight: 600; padding: 0 20px; }
+                    .signatures div { border-top: 1px solid #333; width: 140px; padding-top: 4px; }
+                </style>
+            </head>
+            <body>
+                <div class="report-header">
+                    <h1>MARSS CORPORATION</h1>
+                    <p>Retailer & Wholesaler | Proprietor: Md. Anisur Rahman</p>
+                    <h2>Daily Receipt & Payment Statement</h2>
+                    <p>Period: ${periodStr}</p>
+                    <div class="summary-bar">
+                        <span>Sales Collection: <strong style="color:#047857;">${salesCol}</strong></span>
+                        <span>Total Payments & Exp.: <strong style="color:#be123c;">${totalPay}</strong></span>
+                        <span>Balance Amount: <strong style="color:#0284c7;">${balAmt}</strong></span>
+                        <span>Closing Balance: <strong style="color:#4f46e5;">${closeBal}</strong></span>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align:center; width:35px;">SL</th>
+                            <th style="text-align:right;">Opening Balance</th>
+                            <th style="text-align:right;">Collection From Sales</th>
+                            <th>Payment To Supplier</th>
+                            <th style="text-align:right;">Supplier Paid</th>
+                            <th>Expense Type</th>
+                            <th style="text-align:right;">Expense Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td style="text-align:center;">Total:</td>
+                            <td style="text-align:right;">${totOpen > 0 ? '৳ ' + totOpen.toFixed(2) : '-'}</td>
+                            <td style="text-align:right; color:#047857;">৳ ${totSales.toFixed(2)}</td>
+                            <td></td>
+                            <td style="text-align:right; color:#be123c;">৳ ${totSupp.toFixed(2)}</td>
+                            <td></td>
+                            <td style="text-align:right; color:#be123c;">৳ ${totExp.toFixed(2)}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="signatures">
+                    <div>Cashier Signature</div>
+                    <div>Accountant Signature</div>
+                    <div>Owner Signature</div>
+                </div>
+            </body>
+            </html>
+        `);
+        printWin.document.close();
+        printWin.focus();
+        setTimeout(() => {
+            printWin.print();
+            printWin.close();
+        }, 350);
     }
 
     // Export Toast

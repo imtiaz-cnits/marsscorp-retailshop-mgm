@@ -171,4 +171,14 @@ class BatteryExpenseController extends Controller
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
     }
+
+    public function StaffList()
+    {
+        try {
+            $staffs = User::select('id', 'name', 'mobile', 'email', 'role')->get();
+            return response()->json(['status' => 'success', 'StaffData' => $staffs]);
+        } catch (Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
+    }
 }

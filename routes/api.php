@@ -23,6 +23,7 @@ use App\Http\Controllers\InvestorInfoController;
 use App\Http\Controllers\ProductReturnController;
 use App\Http\Controllers\ReportManagementController;
 use App\Http\Controllers\CustomerDueCollectionController;
+use App\Http\Controllers\StockOverviewController;
 use App\Http\Controllers\SupplierDueCollectionController;
 use App\Http\Controllers\OpeningBalanceController;
 use App\Http\Controllers\UserController;
@@ -90,6 +91,10 @@ Route::post("/delete-product", [ProductController::class, 'ProductDelete'])->mid
 Route::get("/unit-list", [ProductController::class, 'UnitList'])->middleware('auth:sanctum');
 
 // Product Api Route End
+
+// Retail Stock Overview API Routes
+Route::get("/retail-stock-overview-data", [StockOverviewController::class, 'RetailStockOverviewData'])->middleware('auth:sanctum');
+Route::post("/retail-stock-adjust", [StockOverviewController::class, 'RetailStockAdjust'])->middleware('auth:sanctum');
 
 
 

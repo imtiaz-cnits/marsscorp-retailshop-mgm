@@ -101,12 +101,15 @@ class BatteryCustomerController extends Controller
                 $img->move($destination, $imgName);
             }
 
+            $customerName = $request->input('customer_name') ?: $request->input('name') ?: 'Walk-in Customer';
+            $customerMobile = $request->input('mobile') ?: $request->input('phone') ?: '';
+
             $customer = BatteryCustomer::create([
                 'customer_id' => $this->generateCustomerID(),
                 'img_url' => $imgPath,
-                'customer_name' => $request->input('customer_name'),
+                'customer_name' => $customerName,
                 'address_details' => $request->input('address_details'),
-                'mobile' => $request->input('mobile'),
+                'mobile' => $customerMobile,
                 'email' => $request->input('email'),
                 'nid' => $request->input('nid'),
                 'previous_due_amount' => $request->input('previous_due_amount') ?? 0,
@@ -160,9 +163,11 @@ class BatteryCustomerController extends Controller
                 return response()->json(['status' => 'fail', 'message' => 'Customer not found.']);
             }
 
-            $customer->customer_name = $request->input('customer_name') ?? $customer->customer_name;
+            $newCustName = $request->input('customer_name') ?: $request->input('name');
+            if ($newCustName) $customer->customer_name = $newCustName;
             $customer->address_details = $request->input('address_details') ?? $customer->address_details;
-            $customer->mobile = $request->input('mobile') ?? $customer->mobile;
+            $newCustMobile = $request->input('mobile') ?: $request->input('phone');
+            if ($newCustMobile) $customer->mobile = $newCustMobile;
             $customer->email = $request->input('email') ?? $customer->email;
             $customer->nid = $request->input('nid') ?? $customer->nid;
             $customer->previous_due_amount = $request->input('previous_due_amount') ?? $customer->previous_due_amount;
