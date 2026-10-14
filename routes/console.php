@@ -19,7 +19,7 @@ Artisan::command('invoice:delete {order_no}', function () {
             ->first();
 
         if (!$order) {
-            $this->error("Invoice '{$orderNo}' not found!");
+            $this->error("Invoice '{$rawNo}' not found!");
             return;
         }
 
