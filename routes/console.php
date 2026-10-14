@@ -8,12 +8,14 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Artisan::command('invoice:delete {order_no}', function () {
-    $orderNo = $this->argument('order_no');
+    $rawNo = trim($this->argument('order_no'));
+    $withHash = str_starts_with($rawNo, '#') ? $rawNo : '#' . $rawNo;
+    $withoutHash = ltrim($rawNo, '#');
 
-    \Illuminate\Support\Facades\DB::transaction(function () use ($orderNo) {
+    \Illuminate\Support\Facades\DB::transaction(function () use ($rawNo, $withHash, $withoutHash) {
         $order = \App\Models\Order::with(['details', 'payment', 'productReturns'])
-            ->where('order_no', $orderNo)
-            ->orWhere('id', $orderNo)
+            ->whereIn('order_no', [$rawNo, $withHash, $withoutHash])
+            ->orWhere('id', $rawNo)
             ->first();
 
         if (!$order) {
