@@ -1416,7 +1416,7 @@
 
         if (pageItems.length === 0) {
             tableList.html('<tr><td colspan="8" class="text-center text-rose-500 dark:text-rose-400 p-8 font-semibold"><div class="flex flex-col items-center justify-center gap-2"><svg class="w-8 h-8 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg><span>No invoices found.</span></div></td></tr>');
-            mobileCardList.html('<div class="p-6 text-center text-rose-500 dark:text-rose-400 font-semibold bg-white dark:bg-slate-800/60 rounded-2xl unified-ui-border shadow-sm">âŒ No invoices found.</div>');
+            mobileCardList.html('<div class="p-6 text-center text-rose-500 dark:text-rose-400 font-semibold bg-white dark:bg-slate-800/60 rounded-2xl unified-ui-border shadow-sm"> No invoices found.</div>');
         } else {
             pageItems.forEach(function (item, idx) {
                 let realIndex = startIndex + idx;

@@ -451,19 +451,50 @@ public function CustomerDelete(Request $request)
 
         // Invoices with accurate effective paid & due calculations
         $invoices = Order::where('customer_id', $id)
+                        ->with(['details', 'productReturns'])
                         ->orderBy('created_at', 'desc')
                         ->get()
                         ->map(function($order) {
                             $subTotal = (float) $order->sub_total;
+                            // Fallback if sub_total in order is 0 but details exist
+                            if ($subTotal <= 0 && $order->details && $order->details->count() > 0) {
+                                $subTotal = (float) $order->details->sum(function($d) {
+                                    return (float) ($d->selling_price ?? $d->price ?? 0) * (int) ($d->quantity ?? 0);
+                                });
+                                $order->sub_total = $subTotal;
+                            }
+
                             $paidAmount = (float) $order->paid_amount;
                             $returnAdj = (float) ($order->return_adjustment_amount ?? 0);
+                            $totalReturnedAmt = (float) ($order->productReturns ? $order->productReturns->sum('amount') : 0);
+
+                            // Check if all order items were returned
+                            $allDetailsReturned = $order->details && $order->details->count() > 0 && $order->details->every(function($d) {
+                                return ($d->return_quantity ?? 0) >= $d->quantity && $d->quantity > 0;
+                            });
+
+                            $isFullyReturned = false;
+                            if ($allDetailsReturned || ($totalReturnedAmt > 0 && $subTotal > 0 && $totalReturnedAmt >= $subTotal)) {
+                                $isFullyReturned = true;
+                            }
 
                             $effectivePaid = $paidAmount + $returnAdj;
                             $dueAmount = max(0, $subTotal - $effectivePaid);
-                            $paymentStatus = ($effectivePaid >= $subTotal && $subTotal > 0) ? 'Fully Paid' : ($effectivePaid > 0 ? 'Partial Paid' : 'Unpaid');
+
+                            if ($isFullyReturned) {
+                                $paymentStatus = 'Returned';
+                            } elseif ($effectivePaid >= $subTotal && $subTotal > 0) {
+                                $paymentStatus = 'Fully Paid';
+                            } elseif ($effectivePaid > 0) {
+                                $paymentStatus = 'Partial Paid';
+                            } else {
+                                $paymentStatus = 'Unpaid';
+                            }
 
                             $order->due_amount = $dueAmount;
                             $order->return_adjustment_amount = $returnAdj;
+                            $order->returned_amount = $totalReturnedAmt;
+                            $order->is_returned = $isFullyReturned;
                             $order->payment_status = $paymentStatus;
                             return $order;
                         });

@@ -112,7 +112,7 @@ Route::view('/admin-dashboard-stock-out', 'backend.report-management.stock-out-r
 // invoice print start
 
 Route::view('/invoice-print', 'backend.invoice.invoice-print');
-Route::view('/due-invoice-print/{id}', 'backend.view-invoice.due-invoice-print');
+Route::get('/due-invoice-print/{id}', [InvoiceController::class, 'InvoiceShowDetails'])->name('invoice.due.print');
 
 
 Route::prefix('invoice')->group(function () {
@@ -194,10 +194,10 @@ Route::view('/admin-dashboard-return-list', 'pages.back-end-page.return-page');
 Route::view('/admin-dashboard-user-profile', 'backend.user-profile.user-profile-page');
 
 // কাস্টমার প্রোফাইল পেজ দেখানোর জন্য
-Route::get('/customer/profile/{id}', [App\Http\Controllers\CustomerController::class, 'CustomerProfilePage']);
+Route::get('/customer/profile/{id}', [App\Http\Controllers\CustomerController::class, 'CustomerProfilePage'])->name('customer.profile');
 
 // সাপ্লাইয়ার প্রোফাইল পেজ দেখানোর জন্য
-Route::get('/supplier/profile/{id}', [App\Http\Controllers\SupplierController::class, 'SupplierProfilePage']);
+Route::get('/supplier/profile/{id}', [App\Http\Controllers\SupplierController::class, 'SupplierProfilePage'])->name('supplier.profile');
 
 // Supplier Payment Details Update (Web fallback route to prevent 404 on live server or non-api requests)
 Route::post('/supplier-payment-details-update', [App\Http\Controllers\SupplierDueCollectionController::class, 'SupplierPaymentDetailsUpdate'])->middleware('auth:sanctum');

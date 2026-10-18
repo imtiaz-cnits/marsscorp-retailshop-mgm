@@ -158,14 +158,14 @@
       </div>
     </li>
 
-    <!-- 9. Sales Return (Single Link matching Retail) -->
+    <!-- 9. Return Management (Single Link matching Retail) -->
     <li class="sidebar-item relative group">
       <a href="{{ route('battery.sales.returns') }}" class="sidebar-link w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ (request()->routeIs('battery.sales.returns') || request()->routeIs('battery.purchase.returns') || request()->routeIs('battery.return.*') || request()->routeIs('battery.purchase-return.*')) ? 'active-gradient' : '' }}">
         <i class="fa-solid fa-arrow-rotate-left text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
-        <span class="sidebar-label text-[13.5px] font-medium tracking-wide">Sales Return</span>
+        <span class="sidebar-label text-[13.5px] font-medium tracking-wide">Return Management</span>
       </a>
       <div class="sidebar-mini-tooltip">
-        Sales Return
+        Return Management
       </div>
     </li>
 

@@ -512,6 +512,7 @@
     .cp-badge-danger  { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
     .cp-badge-teal    { background: #ccfbf1; color: #0d9488; border: 1px solid #99f6e4; }
     .cp-badge-blue    { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
+    .cp-badge-purple  { background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; }
     .cp-badge-id      { background: #f0fdf4; color: #15803d; border: 1px solid #86efac; font-family: monospace; }
 
     body[light-mode="dark"] .cp-badge-success { background: #064e3b; color: #6ee7b7; border-color: #047857; }
@@ -519,6 +520,7 @@
     body[light-mode="dark"] .cp-badge-danger  { background: #450a0a; color: #fca5a5; border-color: #7f1d1d; }
     body[light-mode="dark"] .cp-badge-teal    { background: #042f2e; color: #5eead4; border-color: #115e59; }
     body[light-mode="dark"] .cp-badge-blue    { background: #172554; color: #93c5fd; border-color: #1e40af; }
+    body[light-mode="dark"] .cp-badge-purple  { background: #3b0764; color: #d8b4fe; border-color: #6b21a8; }
     body[light-mode="dark"] .cp-badge-id      { background: #064e3b; color: #6ee7b7; border-color: #047857; }
 
     /* ─── Modal Rules (Matching Pay Supplier Due Modal) ─── */
@@ -1640,14 +1642,28 @@
 
                         let paidDisplayHtml = `৳ ${paid.toFixed(2)}`;
                         if (item.return_adjustment_amount && parseFloat(item.return_adjustment_amount) > 0) {
-                            paidDisplayHtml += `<br><span class="cp-badge cp-badge-teal text-[10px] mt-0.5">+৳${parseFloat(item.return_adjustment_amount).toFixed(2)} Adj</span>`;
+                            paidDisplayHtml += `<br><span class="cp-badge cp-badge-teal text-[10px] mt-0.5">+৳${parseFloat(item.return_adjustment_amount).toFixed(2)} Ret.Adj</span>`;
+                        } else if (item.returned_amount && parseFloat(item.returned_amount) > 0) {
+                            paidDisplayHtml += `<br><span class="cp-badge cp-badge-purple text-[10px] mt-0.5">৳${parseFloat(item.returned_amount).toFixed(2)} Returned</span>`;
                         }
 
                         let statusBadgeClass = '';
-                        let paymentStatus = '';
-                        if (dueRaw === 0 && (paid > 0 || (item.return_adjustment_amount && parseFloat(item.return_adjustment_amount) > 0))) {
+                        let paymentStatus = item.payment_status || '';
+
+                        if (paymentStatus === 'Returned' || item.is_returned || (item.returned_amount && parseFloat(item.returned_amount) > 0 && parseFloat(item.sub_total || 0) > 0 && parseFloat(item.returned_amount) >= parseFloat(item.sub_total || 0))) {
+                            statusBadgeClass = 'cp-badge-purple';
+                            paymentStatus = 'Returned';
+                        } else if (dueRaw === 0 && (paid > 0 || (item.return_adjustment_amount && parseFloat(item.return_adjustment_amount) > 0))) {
                             statusBadgeClass = 'cp-badge-success';
                             paymentStatus = 'Fully Paid';
+                        } else if (dueRaw === 0 && paid === 0) {
+                            if (item.returned_amount && parseFloat(item.returned_amount) > 0) {
+                                statusBadgeClass = 'cp-badge-purple';
+                                paymentStatus = 'Returned';
+                            } else {
+                                statusBadgeClass = 'cp-badge-success';
+                                paymentStatus = 'Fully Paid';
+                            }
                         } else if (dueRaw > 0 && paid > 0) {
                             statusBadgeClass = 'cp-badge-warning';
                             paymentStatus = 'Partial Paid';
@@ -1655,8 +1671,8 @@
                             statusBadgeClass = 'cp-badge-danger';
                             paymentStatus = 'Unpaid';
                         } else {
-                            statusBadgeClass = 'cp-badge-blue';
-                            paymentStatus = 'Unknown';
+                            statusBadgeClass = 'cp-badge-success';
+                            paymentStatus = 'Fully Paid';
                         }
 
                         let formattedDate = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(item.invoice_date || item.created_at));

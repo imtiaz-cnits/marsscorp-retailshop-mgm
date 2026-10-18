@@ -3543,7 +3543,7 @@
         function renderProducts(products, limit = 25) {
             $("#ProductCategoryWishDataItem").empty();
             if (!products || !products.length) {
-                $("#ProductCategoryWishDataItem").html('<div class="col-12 text-center text-muted p-4 fw-bold">âŒ No products found.</div>');
+                $("#ProductCategoryWishDataItem").html('<div class="col-12 text-center text-muted p-4 fw-bold"> No products found.</div>');
                 return;
             }
 

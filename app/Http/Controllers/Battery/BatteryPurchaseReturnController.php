@@ -20,23 +20,33 @@ class BatteryPurchaseReturnController extends Controller
     public function PurchaseReturnList()
     {
         try {
-            $PurchaseReturnData = BatteryPurchaseReturn::with(['supplier', 'purchase', 'product'])
+            $PurchaseReturnData = BatteryPurchaseReturn::with(['supplier', 'purchase', 'product.unit'])
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($item) {
                     $sName = $item->supplier ? ($item->supplier->name ?? $item->supplier->company) : 'N/A';
                     $pName = $item->product ? ($item->product->product_name ?? 'N/A') : 'N/A';
                     $pId = $item->purchase ? ($item->purchase->purchase_id ?? '#PurID' . str_pad($item->purchase->id, 5, '0', STR_PAD_LEFT)) : 'N/A';
+                    $purDbId = $item->purchase_id ?? ($item->purchase ? $item->purchase->id : null);
+                    $supId = $item->supplier_id ?? ($item->supplier ? $item->supplier->id : null);
+                    $sMobile = $item->supplier ? ($item->supplier->mobile ?? $item->supplier->phone ?? '') : '';
+                    $unitName = ($item->product && $item->product->unit) ? ($item->product->unit->name ?? 'pcs') : 'pcs';
 
                     return [
-                        'id'            => $item->id,
-                        'purchase_id'   => $pId,
-                        'supplier_name' => $sName,
-                        'product_name'  => $pName,
-                        'quantity'      => (int) ($item->quantity ?? 1),
-                        'amount'        => (float) $item->amount,
-                        'due_amount'    => (float) $item->due_amount,
-                        'date'          => $item->date ?? $item->created_at->format('Y-m-d'),
+                        'id'              => $item->id,
+                        'purchase_id'     => $purDbId,
+                        'purchase_db_id'  => $purDbId,
+                        'purchase_no'     => $pId,
+                        'supplier_id'     => $supId,
+                        'supplier_name'   => $sName,
+                        'supplier_mobile' => $sMobile,
+                        'product_name'    => $pName,
+                        'unit'            => $unitName,
+                        'quantity'        => (int) ($item->quantity ?? 1),
+                        'amount'          => (float) $item->amount,
+                        'due_amount'      => (float) $item->due_amount,
+                        'date'            => $item->date ?? ($item->created_at ? $item->created_at->format('Y-m-d') : null),
+                        'created_at_formatted' => $item->created_at ? $item->created_at->format('d M Y, h:i A') : '',
                     ];
                 });
 
@@ -98,7 +108,9 @@ class BatteryPurchaseReturnController extends Controller
                     }
                 }
 
-                $qty = (int) $detail->quantity;
+                $totalQty = (int) $detail->quantity;
+                $returnedQty = (int) ($detail->return_quantity ?? 0);
+                $availableQty = max(0, $totalQty - $returnedQty);
                 $costPrice = (float) $detail->cost_price;
 
                 return [
@@ -106,12 +118,16 @@ class BatteryPurchaseReturnController extends Controller
                     'product_id'               => $detail->product_id,
                     'product_name'             => $detail->product ? $detail->product->product_name : 'Product',
                     'product_code'             => $code,
-                    'quantity'                 => $qty,
+                    'quantity'                 => $availableQty,
+                    'purchased_quantity'       => $totalQty,
+                    'returned_quantity'        => $returnedQty,
                     'cost_price'               => round($costPrice, 2),
                     'unit_price'               => round($costPrice, 2),
-                    'subtotal'                 => (float) $detail->subtotal,
+                    'subtotal'                 => round($costPrice * $availableQty, 2),
                 ];
-            });
+            })->filter(function($item) {
+                return $item['quantity'] > 0;
+            })->values();
 
             return response()->json([
                 'status' => 'success',
@@ -168,11 +184,13 @@ class BatteryPurchaseReturnController extends Controller
                 $product = BatteryProduct::findOrFail($returnedItem['product_id']);
                 $returnQty = (int) $returnedItem['quantity'];
 
-                if ($returnQty > $orderDetail->quantity) {
+                $availableReturnQty = $orderDetail->quantity - ($orderDetail->return_quantity ?? 0);
+
+                if ($returnQty > $availableReturnQty) {
                     DB::rollBack();
                     return response()->json([
                         'status' => 'fail',
-                        'message' => "Return quantity for product {$product->product_name} exceeds remaining purchased quantity."
+                        'message' => "Return quantity for product {$product->product_name} exceeds remaining available quantity."
                     ], 400);
                 }
 
@@ -196,14 +214,9 @@ class BatteryPurchaseReturnController extends Controller
                     $product->decrement('quantity', $returnQty);
                 }
 
-                $orderDetail->quantity -= $returnQty;
-                $orderDetail->subtotal = $orderDetail->quantity * $unitPrice;
-
-                if ($orderDetail->quantity > 0) {
-                    $orderDetail->save();
-                } else {
-                    $orderDetail->delete();
-                }
+                // Preserve purchase detail line and track return quantity
+                $orderDetail->return_quantity = ($orderDetail->return_quantity ?? 0) + $returnQty;
+                $orderDetail->save();
 
                 $totalReturnAmount += $returnAmount;
             }

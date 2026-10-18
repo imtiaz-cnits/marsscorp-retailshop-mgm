@@ -97,7 +97,7 @@
                         </div>
                     </div>
 
-                    <!-- Desktop Table (SL left, Refund Amount right) -->
+                    <!-- Desktop Table (SL left, Action right) -->
                     <div class="table-responsive unified-ui-border hidden md:block w-full max-w-full overflow-x-auto rounded-2xl shadow-sm bg-white dark:bg-slate-900">
                         <table id="printTable" class="w-full text-left border-collapse">
                             <thead>
@@ -108,7 +108,8 @@
                                     <th id="thPartyName" class="p-[10px] text-start whitespace-nowrap">Customer Name</th>
                                     <th class="p-[10px] text-start whitespace-nowrap">Returned Product</th>
                                     <th class="p-[10px] text-center w-[90px] whitespace-nowrap">Qty</th>
-                                    <th class="p-[10px] text-end w-[140px] rounded-tr-2xl whitespace-nowrap">Refund Amount</th>
+                                    <th class="p-[10px] text-end w-[130px] whitespace-nowrap">Refund Amount</th>
+                                    <th class="p-[10px] text-center w-[110px] rounded-tr-2xl whitespace-nowrap">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="tableList" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm text-slate-700 dark:text-slate-200"></tbody>
@@ -117,6 +118,7 @@
                                     <td colspan="5" class="p-[10px] text-end font-bold text-slate-600 dark:text-slate-300">Total Returned Refund Value:</td>
                                     <td id="tfootTotalQty" class="p-[10px] text-center font-bold text-slate-800 dark:text-slate-100 whitespace-nowrap">0 pcs</td>
                                     <td id="tfootTotalAmount" class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td class="p-[10px] text-center"></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -146,6 +148,142 @@
     </div>
 </div>
 <!-- Sales & Purchase Return Management Section End -->
+
+<!-- Quick View Return Details Modal -->
+<div id="returnQuickViewModal" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered modal-lg my-3" style="max-height: 88vh;">
+        <div class="modal-content bg-white dark:bg-slate-900 border-0 rounded-2xl shadow-2xl overflow-hidden transition-colors flex flex-col" style="max-height: 88vh; border: none !important;">
+            
+            <!-- Modal Header: Sticky top, Solid Emerald #15803d, White text, Red round close button -->
+            <div class="modal-header sticky top-0 z-20 px-4 py-3 bg-emerald-700 text-white flex items-center justify-between shadow-sm border-0 flex-shrink-0" style="background-color: #15803d !important; color: #ffffff !important; border: none !important;">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-white/20 text-white flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </div>
+                    <div>
+                        <h5 class="modal-title text-base sm:text-lg font-bold text-white tracking-tight mb-0.5" id="qvReturnModalTitle" style="color: #ffffff !important;">Return Details</h5>
+                        <div class="flex items-center gap-1.5 flex-wrap text-xs" id="qvReturnHeaderBadges"></div>
+                    </div>
+                </div>
+                <!-- Red Circular Borderless Close Button with White Icon -->
+                <button type="button" class="qv-close-btn" data-bs-dismiss="modal" aria-label="Close" style="width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; max-width: 32px !important; max-height: 32px !important; border-radius: 50% !important; flex: 0 0 32px !important; padding: 0 !important; margin: 0 !important; background-color: #dc2626 !important; border: none !important; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body: Scrollable middle section -->
+            <div class="modal-body p-4 space-y-3.5 overflow-y-auto custom-scrollbar flex-1" style="max-height: calc(88vh - 120px);">
+                <!-- KPI Cards Grid: 4 columns on desktop, 2 columns on mobile -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
+                        <span class="block text-[10px] font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Return Date</span>
+                        <span id="qvStatReturnDate" class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100">-</span>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
+                        <span class="block text-[10px] font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Returned Qty</span>
+                        <span id="qvStatReturnQty" class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100">-</span>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-rose-50 dark:bg-slate-800 border border-rose-200 dark:border-slate-700 text-center">
+                        <span class="block text-[10px] font-semibold text-rose-600 dark:text-rose-400 uppercase tracking-wider mb-1">Refund Amount</span>
+                        <span id="qvStatRefundAmount" class="text-xs sm:text-sm font-bold text-rose-600 dark:text-rose-400">৳ 0.00</span>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-emerald-50 dark:bg-slate-800 border border-emerald-200 dark:border-slate-700 text-center">
+                        <span class="block text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">Due Adjustment</span>
+                        <span id="qvStatDueAmount" class="text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-300">৳ 0.00</span>
+                    </div>
+                </div>
+
+                <!-- Specification Box with Top Margin & Generous Padding -->
+                <div class="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden mt-3">
+                    <div class="bg-slate-100 dark:bg-slate-800 px-5 sm:px-6 py-2.5 border-b border-slate-200 dark:border-slate-700 font-bold text-xs text-slate-700 dark:text-slate-200 uppercase tracking-wider flex items-center justify-between flex-wrap gap-2">
+                        <span>Return Specifications</span>
+                        <span id="qvReturnTag" class="text-emerald-700 dark:text-emerald-400 font-bold"></span>
+                    </div>
+                    <div class="divide-y divide-slate-200 dark:divide-slate-700 text-xs">
+                        <div class="grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-white dark:bg-slate-800/90">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Return ID:</span>
+                            <span id="qvSpecReturnId" class="col-span-2 font-mono font-bold text-slate-800 dark:text-slate-100"></span>
+                        </div>
+                        <div class="grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50">
+                            <span id="qvSpecOrigInvoiceLabel" class="font-semibold text-slate-500 dark:text-slate-400">Original Invoice:</span>
+                            <span id="qvSpecOrigInvoice" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                        </div>
+                        <div class="grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-white dark:bg-slate-800/90">
+                            <span id="qvSpecPartyLabel" class="font-semibold text-slate-500 dark:text-slate-400">Customer Name:</span>
+                            <span id="qvSpecPartyName" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                        </div>
+                        <div class="grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Contact Mobile:</span>
+                            <span id="qvSpecPartyMobile" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                        </div>
+                        <div class="grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-white dark:bg-slate-800/90">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Returned Product:</span>
+                            <span id="qvSpecProductName" class="col-span-2 font-bold text-slate-800 dark:text-slate-100"></span>
+                        </div>
+                        <div class="grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Return Quantity:</span>
+                            <span id="qvSpecQty" class="col-span-2 font-bold text-slate-800 dark:text-slate-100"></span>
+                        </div>
+                        <div class="grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-white dark:bg-slate-800/90">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Refund Amount:</span>
+                            <span id="qvSpecRefundAmount" class="col-span-2 font-bold text-rose-600 dark:text-rose-400"></span>
+                        </div>
+                        <div class="grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-slate-50 dark:bg-slate-800/50">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Due Adjustment:</span>
+                            <span id="qvSpecDueAmount" class="col-span-2 font-bold text-emerald-600 dark:text-emerald-400"></span>
+                        </div>
+                        <div class="grid grid-cols-3 px-5 sm:px-6 py-2.5 bg-white dark:bg-slate-800/90">
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">Processed On:</span>
+                            <span id="qvSpecTimestamp" class="col-span-2 font-medium text-slate-800 dark:text-slate-200"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Returned Products Breakdown Table for Multi-Product Returns -->
+                <div id="qvItemsBreakdownWrapper" class="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden mt-3">
+                    <div class="bg-slate-100 dark:bg-slate-800 px-5 sm:px-6 py-2.5 border-b border-slate-200 dark:border-slate-700 font-bold text-xs text-slate-700 dark:text-slate-200 uppercase tracking-wider flex items-center justify-between">
+                        <span><i class="fa-solid fa-boxes-stacked text-emerald-600 me-1.5"></i> Returned Products Breakdown</span>
+                        <span id="qvItemsBreakdownBadge" class="display-info-box font-bold text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-slate-800 text-xs">0 Items</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left">
+                            <thead class="bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 font-semibold border-b border-slate-200 dark:border-slate-700 uppercase tracking-wider">
+                                <tr>
+                                    <th class="p-2.5 text-center w-10">SL</th>
+                                    <th class="p-2.5">Product Name</th>
+                                    <th class="p-2.5 text-center w-24">Return Qty</th>
+                                    <th class="p-2.5 text-end w-28">Sale Rate</th>
+                                    <th class="p-2.5 text-end w-32">Refund Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="qvItemsBreakdownTbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-200"></tbody>
+                            <tfoot class="bg-slate-50 dark:bg-slate-800/60 font-bold border-t border-slate-200 dark:border-slate-700">
+                                <tr>
+                                    <td colspan="2" class="p-2.5 text-end text-slate-600 dark:text-slate-400">Total:</td>
+                                    <td id="qvItemsBreakdownTotalQty" class="p-2.5 text-center text-slate-800 dark:text-slate-100 whitespace-nowrap">0 pcs</td>
+                                    <td></td>
+                                    <td id="qvItemsBreakdownTotalAmount" class="p-2.5 text-end text-rose-600 dark:text-rose-400 whitespace-nowrap">৳ 0.00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer: Sticky bottom, Actions + Cancel button -->
+            <div class="modal-footer sticky bottom-0 z-20 px-4 py-2.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-between flex-shrink-0">
+                <div id="qvFooterActionLinks" class="flex items-center gap-2 flex-wrap"></div>
+                <button type="button" class="px-4 h-[38px] min-h-[38px] max-h-[38px] rounded-xl bg-red-600 hover:bg-red-700 active:scale-[0.98] text-white text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center border-0" data-bs-dismiss="modal" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; background-color: #dc2626 !important; color: #ffffff !important; border: none !important;">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <style>
     .product-card-body {
@@ -297,6 +435,150 @@
         border-color: #334155 !important;
     }
 
+    /* Return Action Buttons (View, Invoice, Profile) */
+    .btn-return-action {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        min-height: 28px !important;
+        max-width: 28px !important;
+        max-height: 28px !important;
+        border-radius: 8px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: all 0.15s ease-in-out !important;
+        text-decoration: none !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    }
+    .btn-return-action:active {
+        transform: scale(0.95);
+    }
+
+    /* Light Mode */
+    .btn-return-action-view {
+        background-color: #ecfdf5 !important;
+        color: #047857 !important;
+        border: 1px solid #a7f3d0 !important;
+    }
+    .btn-return-action-view:hover {
+        background-color: #059669 !important;
+        color: #ffffff !important;
+        border-color: #059669 !important;
+    }
+    .btn-return-action-view:hover i,
+    .btn-return-action-view:hover svg {
+        color: #ffffff !important;
+    }
+
+    .btn-return-action-invoice {
+        background-color: #eff6ff !important;
+        color: #1d4ed8 !important;
+        border: 1px solid #bfdbfe !important;
+    }
+    .btn-return-action-invoice:hover {
+        background-color: #2563eb !important;
+        color: #ffffff !important;
+        border-color: #2563eb !important;
+    }
+    .btn-return-action-invoice:hover i,
+    .btn-return-action-invoice:hover svg {
+        color: #ffffff !important;
+    }
+
+    .btn-return-action-profile {
+        background-color: #faf5ff !important;
+        color: #7e22ce !important;
+        border: 1px solid #e9d5ff !important;
+    }
+    .btn-return-action-profile:hover {
+        background-color: #9333ea !important;
+        color: #ffffff !important;
+        border-color: #9333ea !important;
+    }
+    .btn-return-action-profile:hover i,
+    .btn-return-action-profile:hover svg {
+        color: #ffffff !important;
+    }
+
+    /* Dark Mode: subtle soft borders, never harsh white */
+    body[light-mode="dark"] .btn-return-action,
+    body[data-layout-mode="dark"] .btn-return-action,
+    html.dark .btn-return-action,
+    body.dark-mode .btn-return-action,
+    body.dark .btn-return-action {
+        border-color: rgba(255, 255, 255, 0.12) !important;
+    }
+
+    body[light-mode="dark"] .btn-return-action-view,
+    body[data-layout-mode="dark"] .btn-return-action-view,
+    html.dark .btn-return-action-view,
+    body.dark-mode .btn-return-action-view,
+    body.dark .btn-return-action-view {
+        background-color: rgba(6, 78, 59, 0.4) !important;
+        color: #6ee7b7 !important;
+    }
+    body[light-mode="dark"] .btn-return-action-view:hover,
+    body[data-layout-mode="dark"] .btn-return-action-view:hover,
+    html.dark .btn-return-action-view:hover,
+    body.dark-mode .btn-return-action-view:hover,
+    body.dark .btn-return-action-view:hover {
+        background-color: #059669 !important;
+        color: #ffffff !important;
+        border-color: #059669 !important;
+    }
+
+    body[light-mode="dark"] .btn-return-action-invoice,
+    body[data-layout-mode="dark"] .btn-return-action-invoice,
+    html.dark .btn-return-action-invoice,
+    body.dark-mode .btn-return-action-invoice,
+    body.dark .btn-return-action-invoice {
+        background-color: rgba(30, 58, 138, 0.4) !important;
+        color: #93c5fd !important;
+    }
+    body[light-mode="dark"] .btn-return-action-invoice:hover,
+    body[data-layout-mode="dark"] .btn-return-action-invoice:hover,
+    html.dark .btn-return-action-invoice:hover,
+    body.dark-mode .btn-return-action-invoice:hover,
+    body.dark .btn-return-action-invoice:hover {
+        background-color: #2563eb !important;
+        color: #ffffff !important;
+        border-color: #2563eb !important;
+    }
+
+    body[light-mode="dark"] .btn-return-action-profile,
+    body[data-layout-mode="dark"] .btn-return-action-profile,
+    html.dark .btn-return-action-profile,
+    body.dark-mode .btn-return-action-profile,
+    body.dark .btn-return-action-profile {
+        background-color: rgba(88, 28, 135, 0.4) !important;
+        color: #d8b4fe !important;
+    }
+    body[light-mode="dark"] .btn-return-action-profile:hover,
+    body[data-layout-mode="dark"] .btn-return-action-profile:hover,
+    html.dark .btn-return-action-profile:hover,
+    body.dark-mode .btn-return-action-profile:hover,
+    body.dark .btn-return-action-profile:hover {
+        background-color: #9333ea !important;
+        color: #ffffff !important;
+        border-color: #9333ea !important;
+    }
+
+    /* Mobile Action Buttons in Dark Mode */
+    body[light-mode="dark"] .btn-mobile-view,
+    body[data-layout-mode="dark"] .btn-mobile-view,
+    html.dark .btn-mobile-view,
+    body[light-mode="dark"] .btn-mobile-invoice,
+    body[data-layout-mode="dark"] .btn-mobile-invoice,
+    html.dark .btn-mobile-invoice,
+    body[light-mode="dark"] .btn-mobile-profile,
+    body[data-layout-mode="dark"] .btn-mobile-profile,
+    html.dark .btn-mobile-profile {
+        border-color: rgba(255, 255, 255, 0.12) !important;
+    }
+
     /* Pagination */
     .custom-pagination-btn {
         min-width: 32px;
@@ -401,6 +683,7 @@
 <script>
     let activeReturnTab = 'sales'; // 'sales' or 'purchase'
     let rawReturnList = [];
+    let currentFilteredReturns = [];
     let currentPage = 1;
     let pageSize = 15;
 
@@ -530,6 +813,7 @@
 
         // 2. New data top-a dekhabe
         filtered.sort((a, b) => (b.id || 0) - (a.id || 0));
+        currentFilteredReturns = filtered;
 
         // Total sum calculations
         let sumQty = 0;
@@ -559,26 +843,129 @@
         mobileCardList.empty();
 
         if (pageItems.length === 0) {
-            tableList.html(`<tr><td colspan="7" class="text-center text-rose-500 p-8 font-semibold"><svg class="w-6 h-6 mx-auto mb-2 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>No ${activeReturnTab === 'purchase' ? 'purchase' : 'sales'} returns found.</td></tr>`);
+            tableList.html(`<tr><td colspan="8" class="text-center text-rose-500 p-8 font-semibold"><svg class="w-6 h-6 mx-auto mb-2 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>No ${activeReturnTab === 'purchase' ? 'purchase' : 'sales'} returns found.</td></tr>`);
             mobileCardList.html(`<div class="p-6 text-center text-rose-500 font-semibold bg-white dark:bg-slate-800 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm">No ${activeReturnTab === 'purchase' ? 'purchase' : 'sales'} returns found.</div>`);
         } else {
             pageItems.forEach(function (item, idx) {
                 let realIndex = startIndex + idx;
                 const qty = parseInt(item.quantity) || 0;
+                const unit = item.unit || 'pcs';
                 const amount = parseFloat(item.amount) || 0;
                 const refNo = (activeReturnTab === 'purchase' ? item.purchase_no : item.order_no) || 'N/A';
                 const partyName = (activeReturnTab === 'purchase' ? item.supplier_name : item.customer_name) || 'N/A';
+
+                // 1. Invoice / Memo Link
+                let invoiceLinkHtml = '';
+                if (activeReturnTab === 'sales') {
+                    if (item.order_id) {
+                        invoiceLinkHtml = `
+                            <a href="/invoice/${item.order_id}" class="badge bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-slate-800 font-mono font-bold hover:bg-emerald-100 hover:text-emerald-800 dark:hover:bg-emerald-900/60 dark:hover:text-emerald-200 transition-colors inline-flex items-center gap-1 group/inv cursor-pointer" title="View original sales invoice #${refNo}">
+                                <span>${refNo}</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[9px] opacity-60 group-hover/inv:opacity-100 transition-opacity"></i>
+                            </a>
+                        `;
+                    } else {
+                        invoiceLinkHtml = `<span class="badge bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-slate-800 font-mono font-bold">${refNo}</span>`;
+                    }
+                } else {
+                    if (item.purchase_id) {
+                        invoiceLinkHtml = `
+                            <a href="/purchase-invoice/${item.purchase_id}" class="badge bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300 border border-teal-200 dark:border-slate-800 font-mono font-bold hover:bg-teal-100 hover:text-teal-800 dark:hover:bg-teal-900/60 dark:hover:text-teal-200 transition-colors inline-flex items-center gap-1 group/pur cursor-pointer" title="View original purchase memo #${refNo}">
+                                <span>${refNo}</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[9px] opacity-60 group-hover/pur:opacity-100 transition-opacity"></i>
+                            </a>
+                        `;
+                    } else {
+                        invoiceLinkHtml = `<span class="badge bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300 border border-teal-200 dark:border-slate-800 font-mono font-bold">${refNo}</span>`;
+                    }
+                }
+
+                // 2. Customer / Supplier Link
+                let partyLinkHtml = '';
+                if (activeReturnTab === 'sales') {
+                    if (item.customer_id) {
+                        partyLinkHtml = `
+                            <a href="/customer/profile/${item.customer_id}" class="font-bold text-slate-800 dark:text-slate-100 hover:text-emerald-600 dark:hover:text-emerald-400 hover:underline transition-colors inline-flex items-center gap-1 group/party" title="View customer profile">
+                                <span>${escapeHtml(partyName)}</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[9.5px] opacity-0 group-hover/party:opacity-100 text-emerald-600 transition-opacity"></i>
+                            </a>
+                        `;
+                    } else {
+                        partyLinkHtml = `<span class="font-bold text-slate-800 dark:text-slate-100">${escapeHtml(partyName)}</span>`;
+                    }
+                } else {
+                    if (item.supplier_id) {
+                        partyLinkHtml = `
+                            <a href="/supplier/profile/${item.supplier_id}" class="font-bold text-slate-800 dark:text-slate-100 hover:text-emerald-600 dark:hover:text-emerald-400 hover:underline transition-colors inline-flex items-center gap-1 group/party" title="View supplier profile">
+                                <span>${escapeHtml(partyName)}</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[9.5px] opacity-0 group-hover/party:opacity-100 text-emerald-600 transition-opacity"></i>
+                            </a>
+                        `;
+                    } else {
+                        partyLinkHtml = `<span class="font-bold text-slate-800 dark:text-slate-100">${escapeHtml(partyName)}</span>`;
+                    }
+                }
+
+                // 3. Action URLs
+                let invoiceViewUrl = activeReturnTab === 'sales' 
+                    ? (item.order_id ? `/invoice/${item.order_id}` : null)
+                    : (item.purchase_id ? `/purchase-invoice/${item.purchase_id}` : null);
+                
+                let profileViewUrl = activeReturnTab === 'sales'
+                    ? (item.customer_id ? `/customer/profile/${item.customer_id}` : null)
+                    : (item.supplier_id ? `/supplier/profile/${item.supplier_id}` : null);
+
+                // Return Reference String
+                const returnRefStr = item.return_number || (activeReturnTab === 'purchase' ? `#PurRetID${String(item.id).padStart(5, '0')}` : `#SalesRetID${String(item.id).padStart(5, '0')}`);
+                const returnBadgeHtml = `<span class="badge bg-emerald-600 hover:bg-emerald-700 text-white font-mono font-bold text-[10.5px] px-2 py-0.5 rounded shadow-sm inline-flex items-center gap-1 cursor-pointer transition-colors" onclick="openReturnQuickView(${realIndex})" title="View return details: ${returnRefStr}"><i class="fa-solid fa-receipt text-[9px]"></i>${returnRefStr}</span>`;
+
+                // Product Summary with Multi-Item Badge
+                let productDisplayHtml = '';
+                if (item.items && item.items.length > 1) {
+                    productDisplayHtml = `
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="font-medium text-slate-700 dark:text-slate-200">${escapeHtml(item.product_name || '-')}</span>
+                            <span class="badge bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold text-[10px] px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-700 cursor-pointer hover:bg-emerald-200 dark:hover:bg-emerald-900/60 transition-colors inline-flex items-center gap-1" onclick="openReturnQuickView(${realIndex})" title="Click to view all ${item.items.length} returned items">
+                                <i class="fa-solid fa-boxes-stacked text-[9px]"></i>${item.items.length} items
+                            </span>
+                        </div>
+                    `;
+                } else {
+                    productDisplayHtml = `<span class="font-medium text-slate-600 dark:text-slate-300">${escapeHtml(item.product_name || '-')}</span>`;
+                }
 
                 // Desktop Table Row
                 let row = `
                     <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800">
                         <td class="p-[10px] text-center font-semibold text-slate-400 dark:text-slate-500">${realIndex + 1}</td>
                         <td class="p-[10px] text-start whitespace-nowrap font-medium text-slate-700 dark:text-slate-300"><i class="fa-regular fa-calendar-check text-emerald-600 me-1"></i> ${formatReturnDate(item.date)}</td>
-                        <td class="p-[10px] text-start whitespace-nowrap"><span class="badge bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-slate-800 font-mono font-bold">${refNo}</span></td>
-                        <td class="p-[10px] text-start font-bold text-slate-800 dark:text-slate-100">${partyName}</td>
-                        <td class="p-[10px] text-start font-medium text-slate-600 dark:text-slate-300">${item.product_name || '-'}</td>
-                        <td class="p-[10px] text-center whitespace-nowrap"><span class="badge bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-bold">${qty} pcs</span></td>
+                        <td class="p-[10px] text-start whitespace-nowrap">
+                            <div class="flex flex-col items-start gap-1">
+                                ${returnBadgeHtml}
+                                ${invoiceLinkHtml}
+                            </div>
+                        </td>
+                        <td class="p-[10px] text-start">${partyLinkHtml}</td>
+                        <td class="p-[10px] text-start">${productDisplayHtml}</td>
+                        <td class="p-[10px] text-center whitespace-nowrap"><span class="badge bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-bold">${qty} ${unit}</span></td>
                         <td class="p-[10px] text-end font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap">৳ ${formatMoney(amount)}</td>
+                        <td class="p-[10px] text-center whitespace-nowrap">
+                            <div class="flex items-center justify-center gap-1">
+                                <button type="button" onclick="openReturnQuickView(${realIndex})" class="btn-return-action btn-return-action-view" title="Quick View Summary" aria-label="Quick View">
+                                    <i class="fa-solid fa-eye text-xs"></i>
+                                </button>
+                                ${invoiceViewUrl ? `
+                                <a href="${invoiceViewUrl}" class="btn-return-action btn-return-action-invoice" title="Open Original ${activeReturnTab === 'purchase' ? 'Purchase Memo' : 'Sales Invoice'}" aria-label="Open Invoice">
+                                    <i class="fa-solid fa-file-invoice text-xs"></i>
+                                </a>
+                                ` : ''}
+                                ${profileViewUrl ? `
+                                <a href="${profileViewUrl}" class="btn-return-action btn-return-action-profile" title="View ${activeReturnTab === 'purchase' ? 'Supplier' : 'Customer'} Profile" aria-label="View Profile">
+                                    <i class="fa-solid fa-user text-xs"></i>
+                                </a>
+                                ` : ''}
+                            </div>
+                        </td>
                     </tr>
                 `;
                 tableList.append(row);
@@ -589,9 +976,8 @@
                         <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800">
                             <div class="flex items-center gap-1.5 flex-wrap">
                                 <span class="badge bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold" style="font-size: 10px;">#${realIndex + 1}</span>
-                                <span class="badge bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-slate-800 font-mono font-bold" style="font-size: 10px;">
-                                    ${refNo}
-                                </span>
+                                ${returnBadgeHtml}
+                                ${invoiceLinkHtml}
                             </div>
                             <span class="badge bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-semibold" style="font-size: 10px;">
                                 <i class="fa-regular fa-calendar-check me-1"></i>${formatReturnDate(item.date)}
@@ -599,20 +985,42 @@
                         </div>
 
                         <div class="mb-2">
-                            <h6 class="font-bold text-slate-800 dark:text-slate-100 mb-0.5 text-sm leading-snug">${partyName}</h6>
-                            <div class="text-xs text-slate-500 dark:text-slate-400">
-                                <span>Product: <strong>${item.product_name || '-'}</strong></span>
+                            <h6 class="font-bold text-slate-800 dark:text-slate-100 mb-0.5 text-sm leading-snug">${partyLinkHtml}</h6>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                ${productDisplayHtml}
                             </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-2 bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-xl my-2 text-center items-center border border-slate-100 dark:border-slate-800">
                             <div class="border-r border-slate-300 dark:border-slate-800 text-start px-2">
                                 <span class="text-slate-400 block text-[9px] font-bold uppercase tracking-wider">Quantity</span>
-                                <span class="font-bold text-slate-800 dark:text-slate-100 text-sm">${qty} pcs</span>
+                                <span class="font-bold text-slate-800 dark:text-slate-100 text-sm">${qty} ${unit}</span>
                             </div>
                             <div class="text-start px-2">
                                 <span class="text-slate-400 block text-[9px] font-bold uppercase tracking-wider">Refund Amount</span>
                                 <span class="font-bold text-rose-600 dark:text-rose-400 text-sm">৳ ${formatMoney(amount)}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 gap-2">
+                            <span class="text-[11px] text-slate-400 font-medium">Actions:</span>
+                            <div class="flex items-center gap-1.5">
+                                <button type="button" onclick="openReturnQuickView(${realIndex})" class="btn-mobile-view px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-slate-700 hover:bg-emerald-600 hover:text-white flex items-center gap-1 transition-all cursor-pointer">
+                                    <i class="fa-solid fa-eye text-[11px]"></i>
+                                    <span>Quick View</span>
+                                </button>
+                                ${invoiceViewUrl ? `
+                                <a href="${invoiceViewUrl}" class="btn-mobile-invoice px-2.5 py-1 text-xs font-semibold rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 border border-blue-200 dark:border-slate-700 hover:bg-blue-600 hover:text-white flex items-center gap-1 transition-all">
+                                    <i class="fa-solid fa-file-invoice text-[11px]"></i>
+                                    <span>${activeReturnTab === 'purchase' ? 'Memo' : 'Invoice'}</span>
+                                </a>
+                                ` : ''}
+                                ${profileViewUrl ? `
+                                <a href="${profileViewUrl}" class="btn-mobile-profile px-2.5 py-1 text-xs font-semibold rounded-lg bg-purple-50 text-purple-700 dark:bg-purple-950/50 dark:text-purple-300 border border-purple-200 dark:border-slate-700 hover:bg-purple-600 hover:text-white flex items-center gap-1 transition-all">
+                                    <i class="fa-solid fa-user text-[11px]"></i>
+                                    <span>Profile</span>
+                                </a>
+                                ` : ''}
                             </div>
                         </div>
                     </div>`;
@@ -691,10 +1099,213 @@
         });
     }
 
+    function openReturnQuickView(realIndex) {
+        // 1. Reset all fields immediately to prevent stale data
+        $("#qvReturnModalTitle").text("Loading Return Details...");
+        $("#qvReturnHeaderBadges").empty();
+        $("#qvStatReturnDate").text("-");
+        $("#qvStatReturnQty").text("-");
+        $("#qvStatRefundAmount").text("-");
+        $("#qvStatDueAmount").text("-");
+        $("#qvReturnTag").text("");
+        
+        $("#qvSpecReturnId").text("-");
+        $("#qvSpecOrigInvoice").empty();
+        $("#qvSpecPartyName").empty();
+        $("#qvSpecPartyMobile").text("-");
+        $("#qvSpecProductName").text("-");
+        $("#qvSpecQty").text("-");
+        $("#qvSpecRefundAmount").text("-");
+        $("#qvSpecDueAmount").text("-");
+        $("#qvSpecTimestamp").text("-");
+        $("#qvFooterActionLinks").empty();
+        $("#qvItemsBreakdownTbody").empty();
+
+        let item = (currentFilteredReturns && currentFilteredReturns[realIndex]) ? currentFilteredReturns[realIndex] : rawReturnList[realIndex];
+        if (!item) return;
+
+        const isPurchase = activeReturnTab === 'purchase';
+        const returnIdStr = item.return_number || (isPurchase 
+            ? `#PurRetID${String(item.id).padStart(5, '0')}`
+            : `#SalesRetID${String(item.id).padStart(5, '0')}`);
+        const refNo = (isPurchase ? item.purchase_no : item.order_no) || 'N/A';
+        const partyName = (isPurchase ? item.supplier_name : item.customer_name) || 'N/A';
+        const partyMobile = (isPurchase ? item.supplier_mobile : item.customer_mobile) || 'N/A';
+        const qty = parseInt(item.quantity) || 0;
+        const unit = item.unit || 'pcs';
+        const amount = parseFloat(item.amount) || 0;
+        const dueAmount = parseFloat(item.due_amount) || 0;
+        const dateStr = formatReturnDate(item.date);
+        const timestampStr = item.created_at_formatted || dateStr;
+
+        $("#qvReturnModalTitle").text(isPurchase ? "Purchase Return Summary" : "Sales Return Summary");
+        $("#qvReturnTag").text(isPurchase ? "Purchase Return" : "Sales Return");
+        $("#qvSpecOrigInvoiceLabel").text(isPurchase ? "Purchase Memo:" : "Original Invoice:");
+        $("#qvSpecPartyLabel").text(isPurchase ? "Supplier Name:" : "Customer Name:");
+
+        $("#qvReturnHeaderBadges").html(`
+            <span class="badge bg-white/20 text-white font-mono text-[10px] font-bold border border-white/30">${returnIdStr}</span>
+            <span class="badge bg-emerald-500/30 text-emerald-100 text-[10px] font-semibold border border-emerald-400/30">${isPurchase ? 'Supplier Return' : 'Customer Return'}</span>
+        `);
+
+        $("#qvStatReturnDate").text(dateStr);
+        $("#qvStatReturnQty").text(`${qty} ${unit}`);
+        $("#qvStatRefundAmount").text(`৳ ${formatMoney(amount)}`);
+        $("#qvStatDueAmount").text(`৳ ${formatMoney(dueAmount)}`);
+
+        $("#qvSpecReturnId").text(returnIdStr);
+
+        // Clickable original invoice
+        let origInvHtml = '';
+        if (isPurchase) {
+            if (item.purchase_id) {
+                origInvHtml = `
+                    <a href="/purchase-invoice/${item.purchase_id}" class="badge bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300 border border-teal-200 dark:border-slate-800 font-mono font-bold hover:bg-teal-100 hover:text-teal-800 dark:hover:bg-teal-900/60 dark:hover:text-teal-200 transition-colors inline-flex items-center gap-1 cursor-pointer" title="Open Purchase Memo #${refNo}">
+                        <span>${refNo}</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                    </a>
+                `;
+            } else {
+                origInvHtml = `<span class="badge bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300 border border-teal-200 dark:border-slate-800 font-mono font-bold">${refNo}</span>`;
+            }
+        } else {
+            if (item.order_id) {
+                origInvHtml = `
+                    <a href="/invoice/${item.order_id}" class="badge bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-slate-800 font-mono font-bold hover:bg-emerald-100 hover:text-emerald-800 dark:hover:bg-emerald-900/60 dark:hover:text-emerald-200 transition-colors inline-flex items-center gap-1 cursor-pointer" title="Open Sales Invoice #${refNo}">
+                        <span>${refNo}</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                    </a>
+                `;
+            } else {
+                origInvHtml = `<span class="badge bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-slate-800 font-mono font-bold">${refNo}</span>`;
+            }
+        }
+        $("#qvSpecOrigInvoice").html(origInvHtml);
+
+        // Clickable party name
+        let partyNameHtml = '';
+        if (isPurchase) {
+            if (item.supplier_id) {
+                partyNameHtml = `
+                    <a href="/supplier/profile/${item.supplier_id}" class="font-bold text-slate-800 dark:text-slate-100 hover:text-emerald-600 dark:hover:text-emerald-400 hover:underline transition-colors inline-flex items-center gap-1" title="Open Supplier Profile">
+                        <span>${escapeHtml(partyName)}</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-emerald-600"></i>
+                    </a>
+                `;
+            } else {
+                partyNameHtml = `<span class="font-medium text-slate-800 dark:text-slate-200">${escapeHtml(partyName)}</span>`;
+            }
+        } else {
+            if (item.customer_id) {
+                partyNameHtml = `
+                    <a href="/customer/profile/${item.customer_id}" class="font-bold text-slate-800 dark:text-slate-100 hover:text-emerald-600 dark:hover:text-emerald-400 hover:underline transition-colors inline-flex items-center gap-1" title="Open Customer Profile">
+                        <span>${escapeHtml(partyName)}</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-emerald-600"></i>
+                    </a>
+                `;
+            } else {
+                partyNameHtml = `<span class="font-medium text-slate-800 dark:text-slate-200">${escapeHtml(partyName)}</span>`;
+            }
+        }
+        $("#qvSpecPartyName").html(partyNameHtml);
+
+        $("#qvSpecPartyMobile").text(partyMobile || 'N/A');
+        $("#qvSpecProductName").text(item.product_name || '-');
+        $("#qvSpecQty").text(`${qty} ${unit}`);
+        $("#qvSpecRefundAmount").text(`৳ ${formatMoney(amount)}`);
+        $("#qvSpecDueAmount").text(`৳ ${formatMoney(dueAmount)}`);
+        $("#qvSpecTimestamp").text(timestampStr);
+
+        // Populate Products Breakdown Table
+        let itemsList = item.items && item.items.length > 0 ? item.items : [{
+            product_name: item.product_name || 'Product',
+            quantity: qty,
+            unit: unit,
+            unit_price: qty > 0 ? (amount / qty) : 0,
+            amount: amount
+        }];
+
+        let tbody = $("#qvItemsBreakdownTbody");
+        tbody.empty();
+        itemsList.forEach((it, i) => {
+            let uPrice = it.unit_price ? parseFloat(it.unit_price) : (it.quantity > 0 ? (it.amount / it.quantity) : 0);
+            let lAmt = parseFloat(it.amount) || 0;
+            let tr = `
+                <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                    <td class="p-2.5 text-center text-slate-400 font-medium">${i + 1}</td>
+                    <td class="p-2.5 font-semibold text-slate-800 dark:text-slate-100">${escapeHtml(it.product_name || 'Product')}</td>
+                    <td class="p-2.5 text-center whitespace-nowrap"><span class="badge bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-bold">${it.quantity} ${it.unit || 'pcs'}</span></td>
+                    <td class="p-2.5 text-end whitespace-nowrap text-slate-700 dark:text-slate-300">৳ ${formatMoney(uPrice)}</td>
+                    <td class="p-2.5 text-end whitespace-nowrap font-bold text-rose-600 dark:text-rose-400">৳ ${formatMoney(lAmt)}</td>
+                </tr>
+            `;
+            tbody.append(tr);
+        });
+        $("#qvItemsBreakdownBadge").text(`${itemsList.length} ${itemsList.length === 1 ? 'Product' : 'Products'}`);
+        $("#qvItemsBreakdownTotalQty").text(`${qty} ${unit}`);
+        $("#qvItemsBreakdownTotalAmount").text(`৳ ${formatMoney(amount)}`);
+
+        let footerLinksHtml = '';
+        if (isPurchase) {
+            if (item.purchase_id) {
+                footerLinksHtml += `
+                    <a href="/purchase-invoice/${item.purchase_id}" class="inline-flex items-center gap-1.5 px-3.5 h-[38px] rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-700 dark:bg-teal-950/40 dark:hover:bg-teal-900/60 dark:text-teal-300 border border-teal-200 dark:border-slate-700 text-xs sm:text-sm font-semibold transition-all">
+                        <i class="fa-solid fa-file-invoice text-xs"></i>
+                        <span>Open Purchase Memo</span>
+                    </a>
+                `;
+            }
+            if (item.supplier_id) {
+                footerLinksHtml += `
+                    <a href="/supplier/profile/${item.supplier_id}" class="inline-flex items-center gap-1.5 px-3.5 h-[38px] rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:hover:bg-purple-900/60 dark:text-purple-300 border border-purple-200 dark:border-slate-700 text-xs sm:text-sm font-semibold transition-all">
+                        <i class="fa-solid fa-truck text-xs"></i>
+                        <span>Supplier Profile</span>
+                    </a>
+                `;
+            }
+        } else {
+            if (item.order_id) {
+                footerLinksHtml += `
+                    <a href="/invoice/${item.order_id}" class="inline-flex items-center gap-1.5 px-3.5 h-[38px] rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 dark:text-emerald-300 border border-emerald-200 dark:border-slate-700 text-xs sm:text-sm font-semibold transition-all">
+                        <i class="fa-solid fa-file-invoice text-xs"></i>
+                        <span>Open Invoice</span>
+                    </a>
+                `;
+            }
+            if (item.customer_id) {
+                footerLinksHtml += `
+                    <a href="/customer/profile/${item.customer_id}" class="inline-flex items-center gap-1.5 px-3.5 h-[38px] rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:hover:bg-purple-900/60 dark:text-purple-300 border border-purple-200 dark:border-slate-700 text-xs sm:text-sm font-semibold transition-all">
+                        <i class="fa-solid fa-user text-xs"></i>
+                        <span>Customer Profile</span>
+                    </a>
+                `;
+            }
+        }
+        $("#qvFooterActionLinks").html(footerLinksHtml);
+
+        const modalEl = document.getElementById('returnQuickViewModal');
+        if (modalEl && window.bootstrap) {
+            const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modalInstance.show();
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     function formatReturnDate(dateString) {
         if (!dateString) return 'N/A';
+        const d = new Date(dateString);
+        if (isNaN(d.getTime())) return dateString;
         const options = { year: 'numeric', month: 'short', day: '2-digit' };
-        return new Date(dateString).toLocaleDateString('en-US', options);
+        return d.toLocaleDateString('en-US', options);
     }
 
     function formatMoney(amount) {

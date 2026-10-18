@@ -1,0 +1,68 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        if (Schema::hasTable('order_details') && !Schema::hasColumn('order_details', 'return_quantity')) {
+            Schema::table('order_details', function (Blueprint $table) {
+                $table->integer('return_quantity')->default(0)->after('quantity');
+            });
+        }
+
+        if (Schema::hasTable('battery_order_details') && !Schema::hasColumn('battery_order_details', 'return_quantity')) {
+            Schema::table('battery_order_details', function (Blueprint $table) {
+                $table->integer('return_quantity')->default(0)->after('quantity');
+            });
+        }
+
+        if (Schema::hasTable('purchase_order_details') && !Schema::hasColumn('purchase_order_details', 'return_quantity')) {
+            Schema::table('purchase_order_details', function (Blueprint $table) {
+                $table->integer('return_quantity')->default(0)->after('quantity');
+            });
+        }
+
+        if (Schema::hasTable('battery_purchase_order_details') && !Schema::hasColumn('battery_purchase_order_details', 'return_quantity')) {
+            Schema::table('battery_purchase_order_details', function (Blueprint $table) {
+                $table->integer('return_quantity')->default(0)->after('quantity');
+            });
+        }
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        if (Schema::hasTable('order_details') && Schema::hasColumn('order_details', 'return_quantity')) {
+            Schema::table('order_details', function (Blueprint $table) {
+                $table->dropColumn('return_quantity');
+            });
+        }
+
+        if (Schema::hasTable('battery_order_details') && Schema::hasColumn('battery_order_details', 'return_quantity')) {
+            Schema::table('battery_order_details', function (Blueprint $table) {
+                $table->dropColumn('return_quantity');
+            });
+        }
+
+        if (Schema::hasTable('purchase_order_details') && Schema::hasColumn('purchase_order_details', 'return_quantity')) {
+            Schema::table('purchase_order_details', function (Blueprint $table) {
+                $table->dropColumn('return_quantity');
+            });
+        }
+
+        if (Schema::hasTable('battery_purchase_order_details') && Schema::hasColumn('battery_purchase_order_details', 'return_quantity')) {
+            Schema::table('battery_purchase_order_details', function (Blueprint $table) {
+                $table->dropColumn('return_quantity');
+            });
+        }
+    }
+};

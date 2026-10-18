@@ -292,11 +292,29 @@
     </div>
 
     @php
+    $orderDetailsList = $invoice->details ?? $invoice->orderDetails ?? [];
+    $calculatedSubTotal = 0;
+    $returnedAmount = 0;
+    foreach($orderDetailsList as $detail) {
+        $iQty = (int) ($detail->quantity ?? 0);
+        $iPrice = (float) ($detail->selling_price ?? $detail->price ?? 0);
+        $calculatedSubTotal += ($iQty * $iPrice);
+
+        $retQty = (int) ($detail->return_quantity ?? 0);
+        if ($retQty > 0) {
+            $returnedAmount += ($retQty * $iPrice);
+        }
+    }
+
     $subTotalVal = (float) ($invoice->sub_total ?? 0);
+    if ($subTotalVal <= 0 && $calculatedSubTotal > 0) {
+        $subTotalVal = $calculatedSubTotal;
+    }
     $discountVal = (float) ($invoice->discount_amount ?? 0);
-    $paidVal = (float) ($invoice->paid_amount ?? 0);
+    $paidVal = (float) ($invoice->paid_amount ?? ($invoice->payment ? $invoice->payment->paid_amount : 0));
     $dueVal = (float) ($invoice->due_amount ?? 0);
     $billTotalVal = max(0, $subTotalVal - $discountVal);
+    $netBillAfterReturn = max(0, $billTotalVal - $returnedAmount);
     @endphp
 
     <!-- Printable Invoice Container -->
@@ -331,7 +349,7 @@
                     <div class="col-7">
                         <div class="meta-line">
                             <span class="meta-label">Bill No:</span>
-                            <span class="meta-dots">{{ $invoice->order_no }}</span>
+                            <span class="meta-dots">{{ $invoice->order_no ?? ('#InvID' . str_pad($invoice->id, 5, '0', STR_PAD_LEFT)) }}</span>
                         </div>
                         <div class="meta-line">
                             <span class="meta-label">Challan No:</span>
@@ -357,7 +375,7 @@
                         </div>
                         <div class="meta-line">
                             <span class="meta-label">Mob:</span>
-                            <span class="meta-dots">{{ $invoice->customer->mobile ?? '' }}</span>
+                            <span class="meta-dots">{{ $invoice->customer->mobile ?? $invoice->customer->phone ?? '' }}</span>
                         </div>
                     </div>
                 </div>
@@ -375,16 +393,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php
-                    $orderDetailsList = $invoice->details ?? $invoice->orderDetails ?? [];
-                    @endphp
                     @foreach($orderDetailsList as $index => $detail)
+                    @php
+                    $itemQty = (int) $detail->quantity;
+                    $itemRetQty = (int) ($detail->return_quantity ?? 0);
+                    $itemPrice = (float) ($detail->selling_price ?? $detail->price ?? 0);
+                    @endphp
                     <tr>
                         <td style="text-align: center;">{{ $index + 1 }}</td>
-                        <td>{{ $detail->product->product_name ?? 'Battery Product' }}</td>
-                        <td style="text-align: right;">{{ number_format((float) ($detail->selling_price ?? $detail->price ?? 0), 2) }}</td>
-                        <td style="text-align: center;">{{ $detail->quantity }}</td>
-                        <td style="text-align: right;">{{ number_format((float) (($detail->selling_price ?? $detail->price ?? 0) * $detail->quantity), 2) }}</td>
+                        <td>
+                            <span>{{ $detail->product->product_name ?? 'Battery Product' }}</span>
+                            @if($itemRetQty >= $itemQty && $itemQty > 0)
+                                <span style="font-size: 10px; font-weight: 700; color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; padding: 1px 6px; border-radius: 4px; margin-left: 6px; display: inline-block;">Returned</span>
+                            @elseif($itemRetQty > 0)
+                                <span style="font-size: 10px; font-weight: 700; color: #ea580c; background: #fff7ed; border: 1px solid #ffedd5; padding: 1px 6px; border-radius: 4px; margin-left: 6px; display: inline-block;">Returned: {{ $itemRetQty }} pcs</span>
+                            @endif
+                        </td>
+                        <td style="text-align: right;">{{ number_format($itemPrice, 2) }}</td>
+                        <td style="text-align: center;">{{ $itemQty }}</td>
+                        <td style="text-align: right;">{{ number_format($itemPrice * $itemQty, 2) }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -404,10 +431,21 @@
                             <td class="val">{{ number_format($discountVal, 2) }}</td>
                         </tr>
                         @endif
+                        @if($returnedAmount > 0)
+                        <tr>
+                            <td class="lbl" style="color: #dc2626; font-weight: 600;">Returned Amount</td>
+                            <td class="val" style="color: #dc2626; font-weight: 600;">-{{ number_format($returnedAmount, 2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">Net Bill</td>
+                            <td class="val">{{ number_format($netBillAfterReturn, 2) }}</td>
+                        </tr>
+                        @else
                         <tr>
                             <td class="lbl">Net Amount</td>
                             <td class="val">{{ number_format($billTotalVal, 2) }}</td>
                         </tr>
+                        @endif
                         <tr>
                             <td class="lbl">Paid Amount</td>
                             <td class="val">{{ number_format($paidVal, 2) }}</td>

@@ -64,7 +64,7 @@
   <style>
     /* Vibrant Colorful Emerald Teal Mesh Gradient Theme for Sidebar */
     .vertical-menu {
-      width: 215px !important;
+      width: 240px !important;
       background: linear-gradient(165deg, #064e3b 0%, #047857 35%, #0d9488 70%, #0f766e 100%) !important;
       border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
       box-shadow: 4px 0 25px rgba(4, 120, 87, 0.25) !important;
@@ -74,14 +74,14 @@
       overflow: hidden !important;
     }
 
-    /* Desktop Main Content & Topbar offset for 215px sidebar */
+    /* Desktop Main Content & Topbar offset for 240px sidebar */
     @media (min-width: 992px) {
       .main-content {
-        margin-left: 215px !important;
+        margin-left: 240px !important;
       }
       .isvertical-topbar,
       #page-topbar {
-        left: 215px !important;
+        left: 240px !important;
       }
     }
 
@@ -2046,13 +2046,13 @@
             </div>
           </li>
 
-          <!-- 9. Sales Return (Single Link) -->
+          <!-- 9. Return Management (Single Link) -->
           <li class="sidebar-item relative group" data-perm="pos">
             <a href="{{ url('admin-dashboard-return-list') }}" class="sidebar-link w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ request()->is('admin-dashboard-return-list*') ? 'active-gradient' : '' }}">
               <i class="fa-solid fa-arrow-rotate-left text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
-              <span class="sidebar-label text-[13.5px] font-medium tracking-wide">Sales Return</span>
+              <span class="sidebar-label text-[13.5px] font-medium tracking-wide whitespace-nowrap">Return Management</span>
             </a>
-            <div class="sidebar-mini-tooltip">Sales Return</div>
+            <div class="sidebar-mini-tooltip">Return Management</div>
           </li>
 
           <!-- 10. Opening Balance (Single Link) -->

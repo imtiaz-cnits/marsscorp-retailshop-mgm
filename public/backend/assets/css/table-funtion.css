@@ -288,9 +288,7 @@ body.dark .data-table {
 }
 
 .data-table #openModalBtns:hover {
-  background: none;
-  color: var(--text-color);
-  border: 1px solid var(--text-color2);
+  background: #27a053;
 }
 
 .data-table .button-wrapper {

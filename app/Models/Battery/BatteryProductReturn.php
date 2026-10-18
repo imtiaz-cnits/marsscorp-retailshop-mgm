@@ -12,20 +12,28 @@ class BatteryProductReturn extends Model
     protected $table = 'battery_product_returns';
 
     protected $fillable = [
+        'return_number',
+        'order_id',
+        'order_detail_id',
+        'product_id',
+        'quantity',
+        'unit_price',
         'amount',
         'discount_amount',
         'due_amount',
         'date',
-        'quantity',
-        'order_id',
         'customer_id',
-        'product_id',
         'user_id'
     ];
 
     public function order()
     {
         return $this->belongsTo(BatteryOrder::class, 'order_id');
+    }
+
+    public function orderDetail()
+    {
+        return $this->belongsTo(BatteryOrderDetail::class, 'order_detail_id');
     }
 
     public function customer()
