@@ -1418,6 +1418,14 @@
                 const paidAmount = item['paid_amount'] ? parseFloat(item['paid_amount']) : 0;
                 const dueAmount = item['due_amount'] ? parseFloat(item['due_amount']) : 0;
 
+                const discountType = item['discount_type'] || 'fixed';
+                const discountRate = (item['discount_rate'] !== null && item['discount_rate'] !== undefined) ? parseFloat(item['discount_rate']) : null;
+                let discountDisplay = `৳ ${formatBdCurrency(discountAmount)}`;
+                if (discountType === 'percent' && discountRate !== null && discountRate > 0) {
+                    let cleanRate = Number.isInteger(discountRate) ? discountRate : discountRate.toFixed(2).replace(/\.?0+$/, '');
+                    discountDisplay = `${cleanRate}% (৳ ${formatBdCurrency(discountAmount)})`;
+                }
+
                 let paymentStatus = '';
                 let statusBadgeClass = '';
                 if (dueAmount === 0 && paidAmount > 0) {
@@ -1460,7 +1468,7 @@
                         </td>
                         <td class="p-[10px] text-xs">
                             <div class="text-slate-700 dark:text-slate-200">Total: <span class="font-bold text-slate-900 dark:text-white">৳ ${formatBdCurrency(subTotal)}</span></div>
-                            <div class="text-slate-500 dark:text-slate-400">Discount: ৳ ${formatBdCurrency(discountAmount)}</div>
+                            <div class="text-slate-500 dark:text-slate-400">Discount: ${discountDisplay}</div>
                             <div class="text-emerald-600 dark:text-emerald-400 font-medium">Paid: <span class="font-bold">৳ ${formatBdCurrency(paidAmount)}</span></div>
                             ${dueAmount > 0 ? `<div class="text-rose-600 dark:text-rose-400 font-bold">Due: ৳ ${formatBdCurrency(dueAmount)}</div>` : ''}
                         </td>
@@ -1541,7 +1549,7 @@
                             </div>
                             <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700">
                                 <span class="text-slate-500 dark:text-slate-400 text-xs font-semibold">Discount:</span>
-                                <span class="font-bold text-slate-600 dark:text-slate-300 text-xs">৳ ${formatBdCurrency(discountAmount)}</span>
+                                <span class="font-bold text-slate-600 dark:text-slate-300 text-xs">${discountDisplay}</span>
                             </div>
                             <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-slate-700">
                                 <span class="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">Paid:</span>

@@ -17,6 +17,8 @@ class Purchase extends Model
         'grand_subtotal',
         'delivery_charge',
         'discount_amount',
+        'discount_type',
+        'discount_rate',
         'return_adjustment_amount',
         'attach_document',
         'purchase_payable_amount',

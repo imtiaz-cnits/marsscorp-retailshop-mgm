@@ -416,8 +416,9 @@
                                         </div>
                                     </div>
                                     <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                                        <label for="purchaseDiscountInput" class="text-slate-600 dark:text-slate-300 font-semibold mb-0 cursor-pointer">
-                                            Discount:
+                                        <label for="purchaseDiscountInput" class="text-slate-600 dark:text-slate-300 font-semibold mb-0 cursor-pointer flex items-center gap-1">
+                                            <span>Discount:</span>
+                                            <span id="purchaseDiscountSummaryDisplay" class="text-[11px] font-bold text-rose-500"></span>
                                         </label>
                                         <div class="flex items-center gap-1.5">
                                             <select id="purchaseDiscountType" class="form-select h-8 px-2 py-0 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:border-emerald-600 focus:outline-none cursor-pointer" onchange="calculateDuePayment()" style="width: 58px;">
@@ -566,6 +567,17 @@
             if (discountAmount > rawSubtotal) discountAmount = rawSubtotal;
 
             let discountedSubtotal = Math.max(0, rawSubtotal - discountAmount);
+
+            let discSummaryEl = document.getElementById("purchaseDiscountSummaryDisplay");
+            if (discSummaryEl) {
+                if (discType === 'percent' && discVal > 0) {
+                    discSummaryEl.textContent = `${discVal}% (৳ ${discountAmount.toFixed(2)})`;
+                } else if (discType === 'fixed' && discVal > 0) {
+                    discSummaryEl.textContent = `৳ ${discountAmount.toFixed(2)}`;
+                } else {
+                    discSummaryEl.textContent = '';
+                }
+            }
 
             // Dynamically show Grand Subtotal after discount deduction
             let subTotalEl = document.getElementById("totalSubTotal");
@@ -1309,8 +1321,9 @@
         let discNumVal = parseFloat(document.getElementById('purchaseDiscountInput')?.value) || 0;
         let discAmountVal = (discTypeVal === 'percent') ? (rawSubVal * discNumVal / 100) : discNumVal;
         if (discAmountVal < 0) discAmountVal = 0;
-        if (discAmountVal > rawSubVal) discAmountVal = rawSubVal;
         formData.append('discount_amount', discAmountVal || 0);
+        formData.append('discount_type', discTypeVal);
+        formData.append('discount_rate', discTypeVal === 'percent' ? discNumVal : '');
 
         formData.append('return_adjustment_amount', parseFloat(document.getElementById('returnAdjustmentAmount').value) || 0);
         formData.append('payment_method', selectedMethod);

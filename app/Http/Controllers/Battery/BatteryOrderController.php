@@ -30,7 +30,7 @@ class BatteryOrderController extends Controller
             $user_id = Auth::id();
             $orderNo = $request->order_no ?? $this->generateOrderNumber();
 
-            $order = BatteryOrder::create([
+            $orderData = [
                 'customer_id' => $request->customer_id,
                 'order_no' => $orderNo,
                 'sub_total' => $request->sub_total,
@@ -43,7 +43,15 @@ class BatteryOrderController extends Controller
                 'order_note' => $request->order_note,
                 'invoice_date' => $request->invoice_date ?? now()->format('Y-m-d'),
                 'user_id' => $user_id,
-            ]);
+            ];
+            if (Schema::hasColumn('battery_orders', 'discount_type')) {
+                $orderData['discount_type'] = $request->input('discount_type', 'fixed');
+            }
+            if (Schema::hasColumn('battery_orders', 'discount_rate')) {
+                $orderData['discount_rate'] = $request->filled('discount_rate') ? (float) $request->discount_rate : null;
+            }
+
+            $order = BatteryOrder::create($orderData);
 
             $products = is_array($request->products) ? $request->products : json_decode($request->products, true);
             if (is_array($products)) {

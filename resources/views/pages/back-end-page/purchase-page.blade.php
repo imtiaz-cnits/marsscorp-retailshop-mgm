@@ -7,5 +7,6 @@
     @include('backend.product.product-create')
     @include('backend.purchase.purchase-due-print')
     @include('backend.purchase.purchase-update')
+    @include('backend.purchase.purchase-split-modal')
     @include('backend.purchase.purchase-delete')
 @endsection

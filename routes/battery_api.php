@@ -94,6 +94,7 @@ Route::prefix('battery')->middleware('auth:sanctum')->name('battery.api.')->grou
     Route::post('/delete-purchases', [BatteryPurchaseController::class, 'PurchasesDelete'])->name('purchase.delete');
     Route::post('/purchase-payment-details-by-id', [BatteryPurchaseController::class, 'getPaymentDetailsById'])->name('purchase.payment-details-by-id');
     Route::post('/update-purchase-payment', [BatteryPurchaseController::class, 'updatePaymentDetails'])->name('purchase.update-payment');
+    Route::post('/split-purchase', [BatteryPurchaseController::class, 'PurchaseSplitInvoice'])->name('purchase.split');
 
     // POS & Orders
     Route::post('/create-order', [BatteryOrderController::class, 'OrderCreate'])->name('order.create');

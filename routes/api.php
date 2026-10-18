@@ -129,6 +129,7 @@ Route::post("/delete-purchases", [PurchasesController::class, 'PurchasesDelete']
 
 Route::post('/purchase-payment-details-by-id', [PurchasesController::class, 'getPaymentDetailsById'])->middleware('auth:sanctum');
 Route::post('/update-purchase-payment', [PurchasesController::class, 'updatePaymentDetails'])->middleware('auth:sanctum');
+Route::post('/split-purchase', [PurchasesController::class, 'PurchaseSplitInvoice'])->middleware('auth:sanctum');
 
 // order details api Route Start
 

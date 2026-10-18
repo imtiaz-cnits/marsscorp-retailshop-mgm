@@ -225,6 +225,13 @@ class OrderController extends Controller
                 $orderData['return_adjustment_amount'] = (float) ($request->return_adjustment_amount ?? 0);
             }
 
+            if (Schema::hasColumn('orders', 'discount_type')) {
+                $orderData['discount_type'] = $request->input('discount_type', 'fixed');
+            }
+            if (Schema::hasColumn('orders', 'discount_rate')) {
+                $orderData['discount_rate'] = $request->filled('discount_rate') ? (float) $request->discount_rate : null;
+            }
+
             // Create Order
             $order = Order::create($orderData);
 

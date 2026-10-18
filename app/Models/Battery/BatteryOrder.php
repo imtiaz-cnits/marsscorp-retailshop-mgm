@@ -17,6 +17,8 @@ class BatteryOrder extends Model
         'delivery_charge',
         'paid_amount',
         'discount_amount',
+        'discount_type',
+        'discount_rate',
         'due_amount',
         'previous_due_amount',
         'return_adjustment_amount',

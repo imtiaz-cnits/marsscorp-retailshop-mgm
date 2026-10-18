@@ -13,6 +13,7 @@ use App\Models\PurchasePaymentDetails;
 use App\Models\Supplier;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Validator;
 
 class PurchasesController extends Controller
 {
@@ -49,30 +50,34 @@ class PurchasesController extends Controller
 public function PurchaseShowDetails($id)
 {
     // Fetch purchase invoice data with related supplier, order details, and payment details
-    $purchaseinvoicedata = Purchase::with(['supplier', 'orderDetails', 'paymentDetails'])->findOrFail($id);
+    $purchaseinvoicedata = Purchase::with(['supplier', 'orderDetails.product', 'paymentDetails'])->findOrFail($id);
 
     // Calculate Subtotal from Order Details
-    $subTotal = $purchaseinvoicedata->orderDetails->sum(function ($orderDetail) {
-        return $orderDetail->cost_price * $orderDetail->quantity;
+    $subTotal = (float) $purchaseinvoicedata->orderDetails->sum(function ($orderDetail) {
+        return (float) ($orderDetail->cost_price ?? 0) * (float) ($orderDetail->quantity ?? 1);
     });
 
     $deliveryCharge = (float) ($purchaseinvoicedata->delivery_charge ?? 0);
+    $discountAmount = (float) ($purchaseinvoicedata->discount_amount ?? 0);
+    $discountType = $purchaseinvoicedata->discount_type ?? 'fixed';
+    $discountRate = $purchaseinvoicedata->discount_rate !== null ? (float) $purchaseinvoicedata->discount_rate : null;
 
     // Calculate Paid Amount from Payment Details
-    $paidAmount = $purchaseinvoicedata->paymentDetails->sum('paid_amount');
+    $paidAmount = (float) ($purchaseinvoicedata->paymentDetails ? $purchaseinvoicedata->paymentDetails->sum('paid_amount') : $purchaseinvoicedata->paid_amount);
 
-    // Fetch payment status (get the first status found)
-    $paymentDetailsStatus = $purchaseinvoicedata->paymentDetails->pluck('payment_status')->first();
+    // Fetch payment status
+    $paymentDetailsStatus = $purchaseinvoicedata->paymentDetails->pluck('payment_status')->first() ?? ($paidAmount >= ($subTotal - $discountAmount + $deliveryCharge) ? 'Fully Paid' : ($paidAmount > 0 ? 'Partial Paid' : 'Unpaid'));
 
-    // Previous due amount from the current purchase (stored in DB)
-    $PreviousDueAmount = $purchaseinvoicedata->supplier->purchase_payable_amount;
+    // Previous due amount from supplier record
+    $PreviousDueAmount = (float) ($purchaseinvoicedata->supplier->purchase_payable_amount ?? 0);
 
-    // Calculate Due Amount (including delivery charge)
-    $dueAmount = ($subTotal + $deliveryCharge) - $paidAmount;
-    $supplierDueAmount = $purchaseinvoicedata->supplier->sum('purchase_payable_amount');
-    $purchaseDueAmount = Purchase::sum('due_amount');
+    // Calculate Net Total & Due Amount
+    $netTotal = max(0, $subTotal - $discountAmount + $deliveryCharge);
+    $dueAmount = max(0, $netTotal - $paidAmount);
+    $supplierDueAmount = $PreviousDueAmount;
+    $purchaseDueAmount = (float) Purchase::where('supplier_id', $purchaseinvoicedata->supplier_id)->sum('due_amount');
 
-    // NEW: Calculate total due from all purchases
+    // Total due from all purchases
     $totalDueFromAllPurchases = $supplierDueAmount + $purchaseDueAmount;
 
     // Return view with all variables
@@ -82,6 +87,10 @@ public function PurchaseShowDetails($id)
         'PreviousDueAmount',
         'subTotal',
         'deliveryCharge',
+        'discountAmount',
+        'discountType',
+        'discountRate',
+        'netTotal',
         'paidAmount',
         'dueAmount',
         'totalDueFromAllPurchases'
@@ -231,6 +240,8 @@ public function PurchasesList()
                 'grand_subtotal'    => $grandTotal,
                 'delivery_charge'   => $deliveryCharge,
                 'discount_amount'   => $discountAmount,
+                'discount_type'     => $purchase->discount_type ?? 'fixed',
+                'discount_rate'     => $purchase->discount_rate !== null ? (float) $purchase->discount_rate : null,
                 'paid_amount'       => $totalPaid,
                 'due_amount'        => $dueAmount,
                 'payment_method'    => $paymentMethod,
@@ -336,6 +347,14 @@ public function PurchasesList()
 
             if (Schema::hasColumn('purchases', 'discount_amount')) {
                 $purchaseData['discount_amount'] = (float) ($request->discount_amount ?? 0);
+            }
+
+            if (Schema::hasColumn('purchases', 'discount_type')) {
+                $purchaseData['discount_type'] = $request->input('discount_type', 'fixed');
+            }
+
+            if (Schema::hasColumn('purchases', 'discount_rate')) {
+                $purchaseData['discount_rate'] = $request->filled('discount_rate') ? (float) $request->discount_rate : null;
             }
 
             if (Schema::hasColumn('purchases', 'return_adjustment_amount')) {
@@ -708,6 +727,12 @@ public function updatePaymentDetails(Request $request)
             if ($request->filled('discount_amount')) {
                 $updateData['discount_amount'] = (float) $request->discount_amount;
             }
+            if ($request->filled('discount_type')) {
+                $updateData['discount_type'] = $request->input('discount_type');
+            }
+            if ($request->has('discount_rate')) {
+                $updateData['discount_rate'] = $request->filled('discount_rate') ? (float) $request->discount_rate : null;
+            }
 
             $purchase->update($updateData);
 
@@ -733,6 +758,226 @@ public function updatePaymentDetails(Request $request)
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function PurchaseSplitInvoice(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'purchase_id'              => 'required|integer|exists:purchases,id',
+            'detail_ids'               => 'required|array|min:1',
+            'detail_ids.*'             => 'required|integer|exists:purchase_order_details,id',
+            'new_discount_type'        => 'nullable|string|in:fixed,percent',
+            'new_discount_rate'        => 'nullable|numeric|min:0|max:100',
+            'new_discount_amount'      => 'nullable|numeric|min:0',
+            'original_discount_type'   => 'nullable|string|in:fixed,percent',
+            'original_discount_rate'   => 'nullable|numeric|min:0|max:100',
+            'original_discount_amount' => 'nullable|numeric|min:0',
+            'referance_no'             => 'nullable|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => 'fail',
+                'message' => $validator->errors()->first(),
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $sourcePurchase = Purchase::with(['orderDetails', 'paymentDetails', 'supplier'])
+                ->where('id', $request->purchase_id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $allDetails = $sourcePurchase->orderDetails;
+            $selectedDetailIds = array_unique($request->detail_ids);
+
+            // Validation: Ensure all selected IDs belong to this purchase
+            $validIds = $allDetails->pluck('id')->all();
+            foreach ($selectedDetailIds as $sId) {
+                if (!in_array($sId, $validIds)) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status'  => 'fail',
+                        'message' => "Line item ID #{$sId} does not belong to purchase {$sourcePurchase->purchase_id}."
+                    ], 422);
+                }
+            }
+
+            // Cannot split all items
+            if (count($selectedDetailIds) >= $allDetails->count()) {
+                DB::rollBack();
+                return response()->json([
+                    'status'  => 'fail',
+                    'message' => 'Cannot split all items into a new invoice. At least one line item must remain in the source purchase.'
+                ], 422);
+            }
+
+            $selectedDetails = $allDetails->whereIn('id', $selectedDetailIds);
+            $remainingDetails = $allDetails->whereNotIn('id', $selectedDetailIds);
+
+            // 1. Calculate Subtotals (Preserve exact cost_price and quantities)
+            $newSubtotal = (float) $selectedDetails->sum(function ($d) {
+                return (float) ($d->cost_price ?? 0) * (float) ($d->quantity ?? 1);
+            });
+
+            $remainingSubtotal = (float) $remainingDetails->sum(function ($d) {
+                return (float) ($d->cost_price ?? 0) * (float) ($d->quantity ?? 1);
+            });
+
+            // 2. New Invoice Discount Calculation
+            $newDiscountType = $request->input('new_discount_type', 'fixed');
+            $newDiscountRate = $request->filled('new_discount_rate') ? (float) $request->new_discount_rate : null;
+            $newDiscountAmount = 0.00;
+
+            if ($newDiscountType === 'percent' && $newDiscountRate !== null) {
+                $newDiscountAmount = round(($newSubtotal * $newDiscountRate) / 100, 2);
+            } else {
+                $newDiscountAmount = round((float) $request->input('new_discount_amount', 0), 2);
+            }
+            $newDiscountAmount = min($newSubtotal, max(0, $newDiscountAmount));
+            $newNetPayable = max(0, $newSubtotal - $newDiscountAmount);
+
+            // 3. Remaining (Source) Invoice Discount Calculation
+            if ($request->filled('original_discount_type')) {
+                $origDiscountType = $request->input('original_discount_type');
+                $origDiscountRate = $request->filled('original_discount_rate') ? (float) $request->original_discount_rate : null;
+                if ($origDiscountType === 'percent' && $origDiscountRate !== null) {
+                    $remainingDiscountAmount = round(($remainingSubtotal * $origDiscountRate) / 100, 2);
+                } else {
+                    $remainingDiscountAmount = round((float) $request->input('original_discount_amount', 0), 2);
+                }
+            } else {
+                // Preserve verified configuration of source purchase
+                $origDiscountType = $sourcePurchase->discount_type ?? 'fixed';
+                $origDiscountRate = $sourcePurchase->discount_rate !== null ? (float) $sourcePurchase->discount_rate : null;
+                if ($origDiscountType === 'percent' && $origDiscountRate !== null) {
+                    $remainingDiscountAmount = round(($remainingSubtotal * $origDiscountRate) / 100, 2);
+                } else {
+                    $prevFixed = (float) ($sourcePurchase->discount_amount ?? 0);
+                    if ($sourcePurchase->grand_subtotal > 0 && $prevFixed > 0) {
+                        $remainingDiscountAmount = round($prevFixed * ($remainingSubtotal / $sourcePurchase->grand_subtotal), 2);
+                    } else {
+                        $remainingDiscountAmount = 0.00;
+                    }
+                }
+            }
+            $remainingDiscountAmount = min($remainingSubtotal, max(0, $remainingDiscountAmount));
+            $sourceDelivery = (float) ($sourcePurchase->delivery_charge ?? 0);
+            $remainingNetPayable = max(0, ($remainingSubtotal - $remainingDiscountAmount) + $sourceDelivery);
+
+            // 4. Authoritative Payment Allocation
+            $historicalPaid = (float) ($sourcePurchase->paymentDetails ? $sourcePurchase->paymentDetails->sum('paid_amount') : $sourcePurchase->paid_amount);
+            $combinedPayable = $remainingNetPayable + $newNetPayable;
+
+            if ($combinedPayable <= 0) {
+                $newPaid = 0.00;
+                $remainingPaid = 0.00;
+            } elseif ($historicalPaid >= $combinedPayable) {
+                // Fully covered - both invoices will be settled
+                $newPaid = $newNetPayable;
+                $remainingPaid = $remainingNetPayable;
+                $excessPaid = round($historicalPaid - $combinedPayable, 2);
+                if ($excessPaid > 0) {
+                    // Retain excess payment in the source invoice payment records to strictly preserve total paid history
+                    $remainingPaid = round($remainingPaid + $excessPaid, 2);
+                }
+            } else {
+                // Proportionally distribute paid amount
+                $newPaid = round($historicalPaid * ($newNetPayable / $combinedPayable), 2);
+                $remainingPaid = max(0, round($historicalPaid - $newPaid, 2));
+            }
+
+            $newDue = max(0, round($newNetPayable - $newPaid, 2));
+            $remainingDue = max(0, round($remainingNetPayable - $remainingPaid, 2));
+
+            $newStatus = ($newDue <= 0 && $newNetPayable > 0) ? 'Fully Paid' : ($newPaid > 0 ? 'Partial Paid' : 'Unpaid');
+            $remainingStatus = ($remainingDue <= 0 && $remainingNetPayable > 0) ? 'Fully Paid' : ($remainingPaid > 0 ? 'Partial Paid' : 'Unpaid');
+
+            // 5. Generate New Purchase ID & Reference
+            $newPurchaseId = $this->generatePurchasesID();
+            $newRef = $request->input('referance_no') 
+                ?: ($sourcePurchase->referance_no ? $sourcePurchase->referance_no . '-SPLIT' : 'SPLIT-' . time());
+
+            // 6. Create New Purchase Record
+            $newPurchase = Purchase::create([
+                'purchase_id'              => $newPurchaseId,
+                'referance_no'             => $newRef,
+                'date'                     => $sourcePurchase->date,
+                'grand_subtotal'           => $newSubtotal,
+                'delivery_charge'          => 0.00,
+                'discount_amount'          => $newDiscountAmount,
+                'discount_type'            => $newDiscountType,
+                'discount_rate'            => $newDiscountRate,
+                'paid_amount'              => $newPaid,
+                'due_amount'               => $newDue,
+                'purchase_payable_amount'  => $newDue,
+                'return_adjustment_amount' => 0.00,
+                'attach_document'          => $sourcePurchase->attach_document,
+                'supplier_id'              => $sourcePurchase->supplier_id,
+                'user_id'                  => Auth::id() ?? $sourcePurchase->user_id,
+            ]);
+
+            // 7. Reassign Selected Line Items (Zero stock modifications!)
+            PurchaseOrderDetails::whereIn('id', $selectedDetailIds)
+                ->update(['purchase_id' => $newPurchase->id]);
+
+            // 8. Update Source Purchase Record
+            $sourcePurchase->update([
+                'grand_subtotal'          => $remainingSubtotal,
+                'discount_amount'         => $remainingDiscountAmount,
+                'discount_type'           => $origDiscountType,
+                'discount_rate'           => $origDiscountRate,
+                'paid_amount'             => $remainingPaid,
+                'due_amount'              => $remainingDue,
+                'purchase_payable_amount' => $remainingDue,
+            ]);
+
+            // 9. Allocate Payment Details Records
+            $firstPayment = $sourcePurchase->paymentDetails->first();
+            $paymentMethod = $firstPayment ? $firstPayment->payment_method : 'Bank';
+            $sourceTrx = $firstPayment ? $firstPayment->transaction_id : null;
+            $dueDate = $firstPayment ? $firstPayment->purchase_due_collection_date : $sourcePurchase->date;
+
+            if ($newPaid > 0) {
+                PurchasePaymentDetails::create([
+                    'purchases_id'                 => $newPurchase->id,
+                    'paid_amount'                  => $newPaid,
+                    'discount_amount'              => 0.00,
+                    'payment_method'               => $paymentMethod,
+                    'transaction_id'               => $sourceTrx ? "Allocated from {$sourcePurchase->purchase_id} ({$sourceTrx})" : "Allocated from {$sourcePurchase->purchase_id}",
+                    'payment_status'               => $newStatus,
+                    'purchase_due_collection_date' => $dueDate,
+                    'user_id'                      => Auth::id() ?? $sourcePurchase->user_id,
+                ]);
+            }
+
+            if ($firstPayment) {
+                $firstPayment->update([
+                    'paid_amount'    => $remainingPaid,
+                    'payment_status' => $remainingStatus,
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status'          => 'success',
+                'message'         => "Successfully split " . count($selectedDetailIds) . " items into new invoice {$newPurchaseId}.",
+                'source_purchase' => $sourcePurchase->fresh(['orderDetails.product', 'paymentDetails']),
+                'new_purchase'    => $newPurchase->fresh(['orderDetails.product', 'paymentDetails']),
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Purchase Split Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return response()->json([
+                'status'  => 'fail',
+                'message' => 'Failed to split purchase invoice: ' . $e->getMessage()
+            ], 500);
         }
     }
 

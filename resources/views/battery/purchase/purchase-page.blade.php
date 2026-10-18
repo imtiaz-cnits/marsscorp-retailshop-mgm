@@ -400,8 +400,9 @@
                                         </div>
                                     </div>
                                     <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                                        <label for="purchaseDiscountInput" class="text-slate-600 dark:text-slate-300 font-semibold mb-0 cursor-pointer">
-                                            Discount:
+                                        <label for="purchaseDiscountInput" class="text-slate-600 dark:text-slate-300 font-semibold mb-0 cursor-pointer flex items-center gap-1">
+                                            <span>Discount:</span>
+                                            <span id="purchaseDiscountSummaryDisplay" class="text-[11px] font-bold text-rose-500"></span>
                                         </label>
                                         <div class="flex items-center gap-1.5">
                                             <select id="purchaseDiscountType" class="form-select h-8 px-2 py-0 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:border-emerald-600 focus:outline-none cursor-pointer" onchange="calculateDuePayment()" style="width: 58px;">
@@ -629,6 +630,9 @@
         </div>
     </div>
 </div>
+
+<!-- Battery Purchase Split Invoice Modal -->
+@include('battery.purchase.purchase-split-modal')
 
 <!-- ======================================================== -->
 <!-- SUB-MODAL: Add New Supplier (Matching Image 4 Exactly) -->
@@ -2434,6 +2438,7 @@
         $('#purchaseAddBrandModal').appendTo('body');
         $('#purchaseAddCategoryModal').appendTo('body');
         $('#purchaseAddSubCategoryModal').appendTo('body');
+        $('#batteryPurchaseSplitModal').appendTo('body');
 
         $("#searchInput").on("keyup search input", function () {
             currentPage = 1;
@@ -2651,6 +2656,12 @@
                                             <span>Return</span>
                                         </a>
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40 font-medium" href="javascript:void(0)" onclick="openBatterySplitPurchaseModal(${item.id})">
+                                            <i class="fa-solid fa-code-fork w-4 text-center"></i>
+                                            <span>Split Invoice</span>
+                                        </a>
+                                    </li>
                                     <li><hr class="dropdown-divider my-1 border-slate-200 dark:border-slate-700"></li>
                                     <li>
                                         <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-medium" href="javascript:void(0)" onclick="openDeletePurchaseModal(${item.id})">
@@ -2727,6 +2738,9 @@
                                 <a href="/battery/purchase-return/${item.id}" class="w-[32px] h-[32px] rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-600 border border-indigo-200 flex items-center justify-center transition-all shadow-sm" title="Purchase Return">
                                     <i class="fa-solid fa-rotate-left text-xs"></i>
                                 </a>
+                                <button onclick="openBatterySplitPurchaseModal(${item.id})" class="w-[32px] h-[32px] rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-600 border border-purple-200 flex items-center justify-center transition-all shadow-sm" title="Split Purchase">
+                                    <i class="fa-solid fa-code-fork text-xs"></i>
+                                </button>
                                 <button onclick="openDeletePurchaseModal(${item.id})" class="w-[32px] h-[32px] rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 flex items-center justify-center transition-all shadow-sm" title="Delete Purchase">
                                     <i class="fa-solid fa-trash text-xs"></i>
                                 </button>
@@ -3703,6 +3717,17 @@
 
         let discountedSubtotal = Math.max(0, rawSubtotal - discountAmount);
 
+        let discSummaryEl = document.getElementById("purchaseDiscountSummaryDisplay");
+        if (discSummaryEl) {
+            if (discType === 'percent' && discVal > 0) {
+                discSummaryEl.textContent = `${discVal}% (৳ ${discountAmount.toFixed(2)})`;
+            } else if (discType === 'fixed' && discVal > 0) {
+                discSummaryEl.textContent = `৳ ${discountAmount.toFixed(2)}`;
+            } else {
+                discSummaryEl.textContent = '';
+            }
+        }
+
         let subTotalEl = document.getElementById("totalSubTotal");
         if (subTotalEl) {
             if (discountAmount > 0) {
@@ -4202,8 +4227,9 @@
         let discNumVal = parseFloat(document.getElementById('purchaseDiscountInput')?.value) || 0;
         let discAmountVal = (discTypeVal === 'percent') ? (rawSubVal * discNumVal / 100) : discNumVal;
         if (discAmountVal < 0) discAmountVal = 0;
-        if (discAmountVal > rawSubVal) discAmountVal = rawSubVal;
         formData.append('discount_amount', discAmountVal || 0);
+        formData.append('discount_type', discTypeVal);
+        formData.append('discount_rate', discTypeVal === 'percent' ? discNumVal : '');
 
         formData.append('return_adjustment_amount', parseFloat(document.getElementById('returnAdjustmentAmount')?.value) || 0);
         formData.append('payment_method', selectedMethod);

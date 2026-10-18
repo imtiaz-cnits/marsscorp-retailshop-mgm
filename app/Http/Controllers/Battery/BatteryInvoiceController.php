@@ -29,7 +29,7 @@ class BatteryInvoiceController extends Controller
                 'productReturns',
                 'user:id,name'
             ])->select([
-                'id', 'order_no', 'sub_total', 'discount_amount', 'paid_amount',
+                'id', 'order_no', 'sub_total', 'discount_amount', 'discount_type', 'discount_rate', 'paid_amount',
                 'due_amount', 'customer_id', 'user_id', 'invoice_date'
             ]);
 
@@ -152,6 +152,8 @@ class BatteryInvoiceController extends Controller
                     'sub_total' => $order->sub_total,
                     'paid_amount' => $order->paid_amount,
                     'discount_amount' => $order->discount_amount,
+                    'discount_type' => $order->discount_type,
+                    'discount_rate' => $order->discount_rate,
                     'due_amount' => $order->due_amount,
                     'order_note' => $order->order_note,
                     'customer_id' => $order->customer_id,
@@ -232,6 +234,13 @@ class BatteryInvoiceController extends Controller
             $order->due_amount = $dueAmount;
             $order->order_note = $request->input('order_note');
 
+            if ($request->filled('discount_type')) {
+                $order->discount_type = $request->input('discount_type');
+            }
+            if ($request->has('discount_rate')) {
+                $order->discount_rate = $request->filled('discount_rate') ? (float)$request->input('discount_rate') : null;
+            }
+
             if ($request->filled('customer_id')) {
                 $order->customer_id = $request->input('customer_id');
             }
@@ -278,7 +287,7 @@ class BatteryInvoiceController extends Controller
             $endDate = $request->query('end_date');
 
             $query = BatteryOrder::with('customer:id,customer_name,customer_id,mobile', 'productReturns')
-                ->select(['id', 'order_no', 'sub_total', 'discount_amount', 'paid_amount', 'due_amount', 'customer_id', 'created_at']);
+                ->select(['id', 'order_no', 'sub_total', 'discount_amount', 'discount_type', 'discount_rate', 'paid_amount', 'due_amount', 'customer_id', 'created_at']);
 
             if ($startDate && $endDate) {
                 $startDate = Carbon::parse($startDate)->startOfDay();

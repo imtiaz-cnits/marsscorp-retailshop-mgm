@@ -4652,6 +4652,8 @@
                 formData.append('invoice_date', Invoicedate);
                 formData.append('paid_amount', paidAmount);
                 formData.append('discount_amount', discountAmount);
+                formData.append('discount_type', discountType === 'percent' ? 'percent' : 'fixed');
+                formData.append('discount_rate', discountType === 'percent' ? discountInputVal : '');
                 formData.append('due_amount', dueAmount);
                 formData.append('previous_due_amount', totalPreviousDueAmount);
                 formData.append('transaction_id', transactionId);

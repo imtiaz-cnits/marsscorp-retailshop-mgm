@@ -501,7 +501,7 @@
                             <td class="val" id="sub_total">0.00</td>
                         </tr>
                         <tr id="discountRow">
-                            <td class="lbl">Discount</td>
+                            <td class="lbl" id="discount_label">Discount</td>
                             <td class="val" id="discount_amount">0.00</td>
                         </tr>
                         <tr>
@@ -669,6 +669,14 @@
                         document.getElementById('discountRow').style.display = 'none';
                     } else {
                         document.getElementById('discountRow').style.display = 'table-row';
+                        let discountType = invoiceData.discount_type || 'fixed';
+                        let discountRate = parseFloat(invoiceData.discount_rate) || 0;
+                        let discountLbl = 'Discount:';
+                        if (discountType === 'percent' && discountRate > 0) {
+                            discountLbl = `Discount (${discountRate}%):`;
+                        }
+                        let lblEl = document.getElementById('discount_label');
+                        if (lblEl) lblEl.innerText = discountLbl;
                     }
 
                     // Dynamic delivery charge row: hide if 0, show if > 0

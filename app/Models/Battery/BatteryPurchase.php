@@ -18,6 +18,8 @@ class BatteryPurchase extends Model
         'due_amount',
         'delivery_charge',
         'discount_amount',
+        'discount_type',
+        'discount_rate',
         'return_adjustment_amount',
         'referance_no',
         'date',

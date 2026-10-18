@@ -637,9 +637,15 @@
                         </tr>
                         @endforeach
                     </tbody>
+                    @php
+                        $hasDiscount = ($discountAmount ?? 0) > 0;
+                        $hasDelivery = ($deliveryCharge ?? 0) > 0;
+                        $summaryRowCount = 6 + ($hasDiscount ? 2 : 0) + ($hasDelivery ? 1 : 0);
+                        $cleanRate = ($discountRate !== null && $discountRate > 0) ? (rtrim(rtrim(number_format((float)$discountRate, 2), '0'), '.')) : null;
+                    @endphp
                     <tbody id="order_summary" class="break-inside-avoid">
                         <tr>
-                            <td colspan="2" rowspan="{{ ($deliveryCharge ?? 0) > 0 ? '7' : '6' }}" id="payment_status" class="full-paid">
+                            <td colspan="2" rowspan="{{ $summaryRowCount }}" id="payment_status" class="full-paid">
                                 {{ $paymentDetailsStatus ?? 'Not Available' }}
                             </td>
                         </tr>
@@ -647,7 +653,19 @@
                             <td colspan="2" class="amount_text" style="text-align: right">Sub Total:</td>
                             <td class="amount" id="sub_total" style="text-align: right">৳ {{ number_format((float)($subTotal ?? 0), 2) }}</td>
                         </tr>
-                        @if(($deliveryCharge ?? 0) > 0)
+                        @if($hasDiscount)
+                        <tr>
+                            <td colspan="2" class="amount_text" style="text-align: right">
+                                {{ ($discountType === 'percent' && $cleanRate) ? "Discount ({$cleanRate}%):" : "Discount:" }}
+                            </td>
+                            <td class="amount" id="discount_amount" style="text-align: right">-৳ {{ number_format((float)$discountAmount, 2) }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="amount_text" style="text-align: right">Net Total:</td>
+                            <td class="amount" id="net_total" style="text-align: right">৳ {{ number_format((float)($netTotal ?? max(0, $subTotal - $discountAmount + ($deliveryCharge ?? 0))), 2) }}</td>
+                        </tr>
+                        @endif
+                        @if($hasDelivery)
                         <tr>
                             <td colspan="2" class="amount_text" style="text-align: right">Delivery & Transport Charge:</td>
                             <td class="amount" style="text-align: right">৳ {{ number_format((float)($deliveryCharge ?? 0), 2) }}</td>
@@ -663,11 +681,11 @@
                         </tr>
                         <tr>
                             <td colspan="2" class="amount_text" style="text-align: right">Previous Due Amount:</td>
-                            <td id="due_amount" class="amount" style="text-align: right">৳ {{ number_format((float)($PreviousDueAmount ?? 0), 2) }}</td>
+                            <td id="previous_due_amount" class="amount" style="text-align: right">৳ {{ number_format((float)($PreviousDueAmount ?? 0), 2) }}</td>
                         </tr>
                         <tr>
                             <td colspan="2" class="amount_text" style="text-align: right">Total Due Amount:</td>
-                            <td id="due_amount" class="amount" style="text-align: right">৳ {{ number_format((float)($PreviousDueAmount ?? 0) + (float)($dueAmount ?? 0), 2) }}</td>
+                            <td id="total_due_amount" class="amount" style="text-align: right">৳ {{ number_format((float)($PreviousDueAmount ?? 0) + (float)($dueAmount ?? 0), 2) }}</td>
                         </tr>
                     </tbody>
                 </table>

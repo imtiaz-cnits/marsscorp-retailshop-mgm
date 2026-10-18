@@ -71,6 +71,8 @@ class InvoiceController extends Controller
                 'order_note'          => $order->order_note,
                 'sub_total'           => $order->sub_total,
                 'discount_amount'     => $order->discount_amount,
+                'discount_type'       => $order->discount_type,
+                'discount_rate'       => $order->discount_rate,
                 'delivery_charge'     => (float) ($order->delivery_charge ?? 0),
                 'paid_amount'         => $order->paid_amount,
                 'due_amount'          => $order->due_amount,
@@ -157,7 +159,7 @@ public function InvoiceOrderDuePaymentDetails(Request $request)
 
         // Build the query with date filtering if both dates are provided
         $query = Order::with('customer:id,customer_name,customer_id,mobile', 'productReturns') // Include returns and customer details
-            ->select(['id', 'order_no', 'sub_total', 'discount_amount', 'paid_amount', 'due_amount', 'customer_id', 'created_at']);
+            ->select(['id', 'order_no', 'sub_total', 'discount_amount', 'discount_type', 'discount_rate', 'paid_amount', 'due_amount', 'customer_id', 'created_at']);
 
         // Apply date filters if both dates are provided and are in valid format
         if ($startDate && $endDate) {
@@ -242,7 +244,7 @@ public function InvoiceOrderPaymentDetails(Request $request)
             'productReturns',
             'user:id,name' // Load the user's name
         ])->select([
-            'id', 'order_no', 'sub_total', 'discount_amount', 'paid_amount',
+            'id', 'order_no', 'sub_total', 'discount_amount', 'discount_type', 'discount_rate', 'paid_amount',
             'due_amount', 'customer_id', 'user_id', 'invoice_date'
         ]);
 
@@ -519,6 +521,8 @@ public function getInvoiceFullDetailsById(Request $request)
                 'sub_total' => $order->sub_total,
                 'paid_amount' => $order->paid_amount,
                 'discount_amount' => $order->discount_amount,
+                'discount_type' => $order->discount_type,
+                'discount_rate' => $order->discount_rate,
                 'due_amount' => $order->due_amount,
                 'order_note' => $order->order_note,
                 'customer_id' => $order->customer_id,
@@ -603,6 +607,13 @@ public function updateInvoiceDetails(Request $request)
         $order->paid_amount = $paidAmount;
         $order->due_amount = $dueAmount;
         $order->order_note = $request->input('order_note');
+
+        if ($request->filled('discount_type')) {
+            $order->discount_type = $request->input('discount_type');
+        }
+        if ($request->has('discount_rate')) {
+            $order->discount_rate = $request->filled('discount_rate') ? (float)$request->input('discount_rate') : null;
+        }
 
         if ($request->filled('customer_id')) {
             $order->customer_id = $request->input('customer_id');

@@ -1094,9 +1094,15 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60 font-medium" href="javascript:void(0)" onclick="viewPurchaseInvoice(${item.id})">
-                                            <i class="fa-solid fa-rotate-left text-indigo-500 w-4 text-center"></i>
+                                        <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-indigo-500 hover:bg-slate-100 dark:hover:bg-slate-700/60 font-medium" href="javascript:void(0)" onclick="viewPurchaseInvoice(${item.id})">
+                                            <i class="fa-solid fa-rotate-left w-4 text-center"></i>
                                             <span>Return</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40 font-medium" href="javascript:void(0)" onclick="openSplitPurchaseModal(${item.id})">
+                                            <i class="fa-solid fa-code-fork w-4 text-center"></i>
+                                            <span>Split Invoice</span>
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider my-1 border-slate-200 dark:border-slate-700"></li>
@@ -1175,6 +1181,9 @@
                                 </a>
                                 <button onclick="viewPurchaseInvoice(${item.id})" class="action-btn-return w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all duration-150 shadow-sm" title="Purchase Return">
                                     <i class="fa-solid fa-rotate-left text-xs"></i>
+                                </button>
+                                <button onclick="openSplitPurchaseModal(${item.id})" class="action-btn-return w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all duration-150 shadow-sm text-purple-600 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40" title="Split Purchase">
+                                    <i class="fa-solid fa-code-fork text-xs"></i>
                                 </button>
                                 <a href="#" data-id="${item.id}" class="custom-delete-modal-btn action-btn-delete w-[32px] h-[32px] rounded-lg flex items-center justify-center transition-all duration-150 shadow-sm" data-bs-toggle="modal" data-bs-target="#confirmationModal" title="Delete Purchase">
                                     <i class="fa-solid fa-trash text-xs"></i>
