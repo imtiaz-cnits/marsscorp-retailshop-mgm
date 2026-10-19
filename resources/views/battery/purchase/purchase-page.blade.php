@@ -634,6 +634,44 @@
 <!-- Battery Purchase Split Invoice Modal -->
 @include('battery.purchase.purchase-split-modal')
 
+<!-- Root-level Action Dropdown Menu for Battery Purchase (Escapes table overflow clipping) -->
+<div id="batteryPurchaseRootDropdown" class="battery-root-dropdown shadow-2xl border border-slate-200 dark:border-slate-700 rounded-xl p-1 bg-white dark:bg-slate-800 text-xs" style="display: none; position: fixed !important; z-index: 999999999 !important; min-width: 150px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.2);">
+    <ul class="list-unstyled mb-0 space-y-0.5" style="margin: 0; padding: 0; list-style: none;">
+        <li>
+            <a class="rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60 font-medium cursor-pointer" href="javascript:void(0)" id="batteryPadViewMemo">
+                <i class="fa-solid fa-eye text-emerald-600 dark:text-emerald-400 w-4 text-center"></i>
+                <span>View Memo</span>
+            </a>
+        </li>
+        <li>
+            <a class="rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60 font-medium cursor-pointer" href="javascript:void(0)" id="batteryPadEdit">
+                <i class="fa-solid fa-pen-to-square text-amber-500 w-4 text-center"></i>
+                <span>Edit</span>
+            </a>
+        </li>
+        <li>
+            <a class="rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-indigo-500 hover:bg-slate-100 dark:hover:bg-slate-700/60 font-medium cursor-pointer" href="javascript:void(0)" id="batteryPadReturn">
+                <i class="fa-solid fa-rotate-left text-indigo-500 w-4 text-center"></i>
+                <span>Return</span>
+            </a>
+        </li>
+        <li>
+            <a class="rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40 font-medium cursor-pointer" href="javascript:void(0)" id="batteryPadSplit">
+                <i class="fa-solid fa-code-fork w-4 text-center"></i>
+                <span>Split Invoice</span>
+            </a>
+        </li>
+        <li><hr class="my-1 border-slate-200 dark:border-slate-700" style="margin: 4px 0; border: 0; border-top: 1px solid #e2e8f0;"></li>
+        <li>
+            <a class="rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-medium cursor-pointer" href="javascript:void(0)" id="batteryPadDelete">
+                <i class="fa-solid fa-trash w-4 text-center"></i>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
 <!-- ======================================================== -->
 <!-- SUB-MODAL: Add New Supplier (Matching Image 4 Exactly) -->
 <!-- ======================================================== -->
@@ -2439,6 +2477,7 @@
         $('#purchaseAddCategoryModal').appendTo('body');
         $('#purchaseAddSubCategoryModal').appendTo('body');
         $('#batteryPurchaseSplitModal').appendTo('body');
+        $('#batteryPurchaseRootDropdown').appendTo('body');
 
         $("#searchInput").on("keyup search input", function () {
             currentPage = 1;
@@ -2633,44 +2672,9 @@
                             </span>
                         </td>
                         <td class="py-2 px-[5px] text-center">
-                            <div class="dropdown ${isLastRow ? 'dropup' : ''} inline-block position-relative">
-                                <button class="w-[26px] h-[26px] rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center shadow-sm transition-all duration-150 mx-auto cursor-pointer" type="button" data-bs-toggle="dropdown" data-bs-display="static" data-bs-boundary="viewport" aria-expanded="false">
-                                    <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end shadow-xl border border-slate-200 dark:border-slate-700 rounded-xl p-1 bg-white dark:bg-slate-800 text-xs" style="min-width: 145px; z-index: 99999;">
-                                    <li>
-                                        <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60 font-medium" href="/battery/purchase-invoice/${item.id}">
-                                            <i class="fa-solid fa-eye text-emerald-600 dark:text-emerald-400 w-4 text-center"></i>
-                                            <span>View Memo</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60 font-medium edit-link" href="javascript:void(0)" onclick="openEditPurchaseModal(${item.id})">
-                                            <i class="fa-solid fa-pen-to-square text-amber-500 w-4 text-center"></i>
-                                            <span>Edit</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60 font-medium" href="/battery/purchase-return/${item.id}">
-                                            <i class="fa-solid fa-rotate-left text-indigo-500 w-4 text-center"></i>
-                                            <span>Return</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40 font-medium" href="javascript:void(0)" onclick="openBatterySplitPurchaseModal(${item.id})">
-                                            <i class="fa-solid fa-code-fork w-4 text-center"></i>
-                                            <span>Split Invoice</span>
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider my-1 border-slate-200 dark:border-slate-700"></li>
-                                    <li>
-                                        <a class="dropdown-item rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-medium" href="javascript:void(0)" onclick="openDeletePurchaseModal(${item.id})">
-                                            <i class="fa-solid fa-trash w-4 text-center"></i>
-                                            <span>Delete</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                            <button class="w-[26px] h-[26px] rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center shadow-sm transition-all duration-150 mx-auto battery-purchase-action-btn cursor-pointer" type="button" onclick="openBatteryPurchaseDropdown(event, '${item.id}')" title="Actions">
+                                <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
+                            </button>
                         </td>
                     </tr>`;
                 tbody.append(row);
@@ -4526,6 +4530,114 @@
             errorToast(err.response?.data?.message || 'Error deleting purchase');
         }
     }
+
+    // ── Battery Purchase Root Dropdown Controller ──
+    function openBatteryPurchaseDropdown(event, id) {
+        event.stopPropagation();
+        let menu = document.getElementById('batteryPurchaseRootDropdown');
+        if (!menu) return;
+
+        if (menu.style.display === 'block' && menu.getAttribute('data-active-id') === String(id)) {
+            closeBatteryPurchaseDropdown();
+            return;
+        }
+
+        if (menu.parentElement !== document.body) {
+            document.body.appendChild(menu);
+        }
+
+        menu.setAttribute('data-active-id', String(id));
+
+        // 1. View Memo
+        document.getElementById('batteryPadViewMemo').onclick = function() {
+            closeBatteryPurchaseDropdown();
+            window.location.href = `/battery/purchase-invoice/${id}`;
+        };
+
+        // 2. Edit
+        document.getElementById('batteryPadEdit').onclick = function() {
+            closeBatteryPurchaseDropdown();
+            openEditPurchaseModal(id);
+        };
+
+        // 3. Return
+        document.getElementById('batteryPadReturn').onclick = function() {
+            closeBatteryPurchaseDropdown();
+            window.location.href = `/battery/purchase-return/${id}`;
+        };
+
+        // 4. Split Invoice
+        document.getElementById('batteryPadSplit').onclick = function() {
+            closeBatteryPurchaseDropdown();
+            openBatterySplitPurchaseModal(id);
+        };
+
+        // 5. Delete
+        document.getElementById('batteryPadDelete').onclick = function() {
+            closeBatteryPurchaseDropdown();
+            openDeletePurchaseModal(id);
+        };
+
+        // Positioning relative to button
+        const btn = event.currentTarget;
+        const rect = btn.getBoundingClientRect();
+
+        menu.style.visibility = 'hidden';
+        menu.style.display = 'block';
+
+        const menuWidth = menu.offsetWidth || 150;
+        const menuHeight = menu.offsetHeight || 190;
+        const windowHeight = window.innerHeight;
+        const spaceBelow = windowHeight - rect.bottom;
+        const spaceAbove = rect.top;
+
+        // Default: Open DOWNWARDS
+        let top = rect.bottom + 4;
+
+        // Only flip UPWARDS if space below is genuinely insufficient (< menuHeight + 8)
+        // AND there is plenty of safe clearance above (rect.top > menuHeight + 220px, so it never touches or enters the table header/filter area)
+        if (spaceBelow < (menuHeight + 8) && spaceAbove > (menuHeight + 220)) {
+            top = rect.top - menuHeight - 4;
+        } else if (top + menuHeight > windowHeight) {
+            // If opening downwards slightly exceeds viewport bottom, clamp without jumping into the header
+            top = Math.max(140, windowHeight - menuHeight - 8);
+        }
+
+        let left = rect.right - menuWidth;
+        if (left < 10) left = 10;
+        if (left + menuWidth > window.innerWidth - 10) {
+            left = window.innerWidth - menuWidth - 10;
+        }
+
+        menu.style.top = `${top}px`;
+        menu.style.left = `${left}px`;
+        menu.style.visibility = 'visible';
+    }
+
+    function closeBatteryPurchaseDropdown() {
+        let menu = document.getElementById('batteryPurchaseRootDropdown');
+        if (menu) {
+            menu.style.display = 'none';
+            menu.removeAttribute('data-active-id');
+        }
+    }
+
+    window.addEventListener('click', function(e) {
+        let menu = document.getElementById('batteryPurchaseRootDropdown');
+        if (menu && menu.style.display === 'block') {
+            if (!menu.contains(e.target) && !e.target.closest('.battery-purchase-action-btn')) {
+                closeBatteryPurchaseDropdown();
+            }
+        }
+    });
+
+    window.addEventListener('scroll', function() {
+        closeBatteryPurchaseDropdown();
+    }, true);
+
+    window.addEventListener('resize', function() {
+        closeBatteryPurchaseDropdown();
+    });
 </script>
 
 @endsection

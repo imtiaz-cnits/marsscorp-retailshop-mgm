@@ -1728,7 +1728,15 @@
         $("#qvInvoiceCreatedBy").text(invoice.user?.name || 'System');
         $("#qvInvoiceDate").text(dateFormatted);
         $("#qvInvoiceSubTotal").text(`৳ ${formatBdCurrency(subTotal)}`);
-        $("#qvInvoiceDiscount").text(`৳ ${formatBdCurrency(discountAmount)}`);
+
+        const discountType = invoice.discount_type || 'fixed';
+        const discountRate = (invoice.discount_rate !== null && invoice.discount_rate !== undefined) ? parseFloat(invoice.discount_rate) : null;
+        let discountDisplay = `৳ ${formatBdCurrency(discountAmount)}`;
+        if (discountType === 'percent' && discountRate !== null && discountRate > 0) {
+            let cleanRate = Number.isInteger(discountRate) ? discountRate : discountRate.toFixed(2).replace(/\.?0+$/, '');
+            discountDisplay = `${cleanRate}% (৳ ${formatBdCurrency(discountAmount)})`;
+        }
+        $("#qvInvoiceDiscount").text(discountDisplay);
         $("#qvInvoicePaid").text(`৳ ${formatBdCurrency(paidAmount)}`);
         $("#qvInvoiceDue").text(`৳ ${formatBdCurrency(dueAmount)}`);
 

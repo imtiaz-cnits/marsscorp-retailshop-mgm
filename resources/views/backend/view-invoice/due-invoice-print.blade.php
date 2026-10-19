@@ -370,6 +370,9 @@
         $subTotalVal = $calculatedSubTotal;
     }
     $discountVal = (float) ($invoice->discount_amount ?? 0);
+    $discountType = $invoice->discount_type ?? 'fixed';
+    $discountRate = ($invoice->discount_rate !== null && $invoice->discount_rate !== '') ? (float) $invoice->discount_rate : null;
+    $cleanRate = ($discountRate !== null && $discountRate > 0) ? (rtrim(rtrim(number_format((float)$discountRate, 2), '0'), '.')) : null;
     $paidVal = (float) ($invoice->paid_amount ?? ($invoice->payment ? $invoice->payment->paid_amount : 0));
     $dueVal = (float) ($invoice->due_amount ?? 0);
     $billTotalVal = max(0, $subTotalVal - $discountVal);
@@ -486,7 +489,7 @@
                         </tr>
                         @if($discountVal > 0)
                         <tr>
-                            <td class="lbl">Discount</td>
+                            <td class="lbl">{{ ($discountType === 'percent' && $cleanRate) ? "Discount ({$cleanRate}%):" : "Discount" }}</td>
                             <td class="val">{{ number_format($discountVal, 2) }}</td>
                         </tr>
                         @endif
