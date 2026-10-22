@@ -553,8 +553,11 @@ public function getPaymentDetailsById(Request $request)
             ->findOrFail($request->id);
 
         $totalPaid = $purchase->paymentDetails->sum('paid_amount') ?? 0;
-        $grandTotal = (float) $purchase->grand_subtotal;
-        $dueAmount = max(0, $grandTotal - $totalPaid);
+        $grandTotal = (float) ($purchase->grand_subtotal ?? 0);
+        $deliveryCharge = (float) ($purchase->delivery_charge ?? 0);
+        $discountAmount = (float) ($purchase->discount_amount ?? 0);
+        $netTotal = max(0, ($grandTotal - $discountAmount) + $deliveryCharge);
+        $dueAmount = max(0, $netTotal - $totalPaid);
 
         return response()->json([
             'status'       => 'success',
@@ -638,7 +641,11 @@ public function updatePaymentDetails(Request $request)
 
         $currentPaid = $purchase->paymentDetails->sum('paid_amount') ?? 0;
         $newPaid     = $currentPaid + $request->paid_amount;
-        $newDue      = max(0, $purchase->grand_subtotal - $newPaid);
+        $grandTotal  = (float) ($purchase->grand_subtotal ?? 0);
+        $deliveryCharge = (float) ($purchase->delivery_charge ?? 0);
+        $discountAmount = (float) ($purchase->discount_amount ?? 0);
+        $netTotal    = max(0, ($grandTotal - $discountAmount) + $deliveryCharge);
+        $newDue      = max(0, $netTotal - $newPaid);
 
         // শুধু created_at এর তারিখটা নিয়ে purchase_due_collection_date এ ঢুকাবে
         $todayDate = Carbon::today()->format('Y-m-d'); // শুধু তারিখ, টাইম না
@@ -744,20 +751,135 @@ public function updatePaymentDetails(Request $request)
 
     public function PurchasesDelete(Request $request)
     {
+        $request->validate([
+            'id' => 'required'
+        ]);
+
+        $purchase_id = $request->input('id');
+
+        DB::beginTransaction();
         try {
-            $purchase_id = $request->input('id');
+            // 1. Find and lock purchase
+            $purchase = Purchase::where('id', $purchase_id)
+                ->orWhere('purchase_id', $purchase_id)
+                ->lockForUpdate()
+                ->first();
 
-            DB::beginTransaction();
+            if (!$purchase) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'পারচেজ রেকর্ডটি খুঁজে পাওয়া যায়নি বা ইতিমধ্যে ডিলিট করা হয়েছে।'
+                ], 404);
+            }
 
-            PurchaseOrderDetails::where('purchase_id', $purchase_id)->delete();
-            PurchasePaymentDetails::where('purchases_id', $purchase_id)->delete();
-            Purchase::where('id', $purchase_id)->delete();
+            // 2. Check for existing purchase returns
+            $hasReturns = DB::table('purchase_returns')->where('purchase_id', $purchase->id)->exists();
+            if ($hasReturns) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'এই পারচেজ ইনভয়েসের বিপরীতে রিটার্ন এন্ট্রি রয়েছে, তাই ডিলিট করা সম্ভব নয়। রিটার্ন রেকর্ড আগে সামঞ্জস্য করতে হবে।'
+                ], 422);
+            }
+
+            // 3. Load purchase line items
+            $orderDetails = PurchaseOrderDetails::where('purchase_id', $purchase->id)->get();
+
+            // Group required quantities by product_id
+            $qtyByProduct = [];
+            foreach ($orderDetails as $item) {
+                $pid = $item->product_id;
+                $qtyByProduct[$pid] = ($qtyByProduct[$pid] ?? 0) + (int) $item->quantity;
+            }
+
+            // 4. Pre-check: Validate that current stock is sufficient for every product (prevent negative stock)
+            foreach ($qtyByProduct as $productId => $qtyToReverse) {
+                $product = Product::lockForUpdate()->find($productId);
+                if (!$product) {
+                    continue;
+                }
+
+                if ($product->quantity < $qtyToReverse) {
+                    DB::rollBack();
+                    $name = $product->product_name ?? ('পণ্য #' . $productId);
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => "পণ্য '{$name}' ইতিমধ্যে বিক্রি বা ব্যবহার হয়ে গেছে (বর্তমান স্টক: {$product->quantity}, পারচেজ পরিমাণ: {$qtyToReverse})। স্টক নেগেটিভ হওয়া রোধে এই পারচেজ ডিলিট করা সম্ভব নয়।"
+                    ], 422);
+                }
+            }
+
+            // 5. Reverse product stock & recalculate cost price
+            foreach ($orderDetails as $item) {
+                $product = Product::lockForUpdate()->find($item->product_id);
+                if (!$product) {
+                    continue;
+                }
+
+                $qtyToReverse = (int) $item->quantity;
+                $purchaseCost = (float) $item->cost_price;
+                $currentQty = (int) $product->quantity;
+                $currentCost = (float) $product->cost_price;
+
+                $newQty = max(0, $currentQty - $qtyToReverse);
+
+                // Find previous or latest other purchase for this product
+                $previousPurchase = PurchaseOrderDetails::where('product_id', $product->id)
+                    ->where('purchase_id', '!=', $purchase->id)
+                    ->latest('id')
+                    ->first();
+
+                if ($newQty > 0) {
+                    $currentTotalValue = $currentCost * $currentQty;
+                    $purchasedValue = $purchaseCost * $qtyToReverse;
+                    $remainingValue = $currentTotalValue - $purchasedValue;
+
+                    if ($remainingValue > 0) {
+                        $product->cost_price = round($remainingValue / $newQty, 2);
+                    } elseif ($previousPurchase) {
+                        $product->cost_price = round((float) $previousPurchase->cost_price, 2);
+                    }
+                } else {
+                    // Stock is 0; restore previous purchase cost price if available
+                    if ($previousPurchase) {
+                        $product->cost_price = round((float) $previousPurchase->cost_price, 2);
+                    }
+                }
+
+                $product->quantity = $newQty;
+                $product->save();
+            }
+
+            // 6. Delete payment details first (due to foreign key constraint to purchase_order_details)
+            PurchasePaymentDetails::where('purchases_id', $purchase->id)->delete();
+
+            // 7. Delete purchase order details
+            PurchaseOrderDetails::where('purchase_id', $purchase->id)->delete();
+
+            // 8. Delete attached document file if exists
+            if (!empty($purchase->attach_document)) {
+                $docPath = public_path($purchase->attach_document);
+                if (file_exists($docPath) && is_file($docPath)) {
+                    @unlink($docPath);
+                }
+            }
+
+            // 9. Delete purchase record
+            $purchase->delete();
 
             DB::commit();
-            return response()->json(['status' => 'success', 'message' => 'Purchase deleted successfully']);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'পারচেজ এবং সম্পর্কিত স্টক ও পেমেন্ট রেকর্ড সফলভাবে রিভার্স ও ডিলিট করা হয়েছে।'
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'পারচেজ ডিলিট করতে সমস্যা হয়েছে: ' . $e->getMessage()
+            ], 500);
         }
     }
 

@@ -133,7 +133,7 @@
         } catch (e) {
             hideLoader();
             console.error(e);
-            errorToast("An error occurred. Please try again.");
+            errorToast(e.response && e.response.data && e.response.data.message ? e.response.data.message : "An error occurred. Please try again.");
         }
     }
 </script>

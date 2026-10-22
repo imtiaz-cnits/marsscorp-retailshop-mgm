@@ -306,12 +306,16 @@ class BatteryCustomerController extends Controller
                         $isFullyReturned = true;
                     }
 
+                    $discountAmount = (float) ($order->discount_amount ?? 0);
+                    $deliveryCharge = (float) ($order->delivery_charge ?? 0);
+                    $effectiveOrderTotal = max(0, ($subTotal - $discountAmount) + $deliveryCharge);
+
                     $effectivePaid = $paidAmount + $returnAdj;
-                    $dueAmount = max(0, $subTotal - $effectivePaid);
+                    $dueAmount = max(0, $effectiveOrderTotal - $effectivePaid);
 
                     if ($isFullyReturned) {
                         $paymentStatus = 'Returned';
-                    } elseif ($effectivePaid >= $subTotal && $subTotal > 0) {
+                    } elseif ($effectivePaid >= $effectiveOrderTotal && $effectiveOrderTotal > 0) {
                         $paymentStatus = 'Fully Paid';
                     } elseif ($effectivePaid > 0) {
                         $paymentStatus = 'Partial Paid';
@@ -319,6 +323,7 @@ class BatteryCustomerController extends Controller
                         $paymentStatus = 'Unpaid';
                     }
 
+                    $order->effective_total = $effectiveOrderTotal;
                     $order->due_amount = $dueAmount;
                     $order->return_adjustment_amount = $returnAdj;
                     $order->returned_amount = $totalReturnedAmt;
@@ -375,7 +380,9 @@ class BatteryCustomerController extends Controller
                 });
 
             // 4. Summary metrics
-            $totalBilled = (float) $invoices->sum('sub_total');
+            $totalBilled = (float) $invoices->sum(function($inv) {
+                return $inv->effective_total ?? max(0, ((float)$inv->sub_total - (float)($inv->discount_amount ?? 0)) + (float)($inv->delivery_charge ?? 0));
+            });
             $totalInvoiceDue = (float) $invoices->sum('due_amount');
             $customerPreviousDue = (float) ($customer->previous_due_amount ?? 0);
 

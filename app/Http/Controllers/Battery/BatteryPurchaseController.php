@@ -581,38 +581,127 @@ class BatteryPurchaseController extends Controller
 
     public function PurchasesDelete(Request $request)
     {
+        $request->validate(['id' => 'required']);
+        $purchase_id = $request->input('id');
+
+        DB::beginTransaction();
         try {
-            $request->validate(['id' => 'required']);
-            $purchase = BatteryPurchase::find($request->input('id'));
+            $purchase = BatteryPurchase::where('id', $purchase_id)
+                ->orWhere('purchase_id', $purchase_id)
+                ->lockForUpdate()
+                ->first();
 
             if (!$purchase) {
-                return response()->json(['status' => 'fail', 'message' => 'Purchase not found']);
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'পারচেজ রেকর্ডটি খুঁজে পাওয়া যায়নি বা ইতিমধ্যে ডিলিট করা হয়েছে।'
+                ], 404);
             }
 
             $hasReturns = DB::table('battery_purchase_returns')->where('purchase_id', $purchase->id)->exists();
             if ($hasReturns) {
+                DB::rollBack();
                 return response()->json([
                     'status' => 'fail',
-                    'message' => 'এই পারচেজ ইনভয়েসের বিপরীতে রিটার্ন এন্ট্রি রয়েছে, তাই ডিলিট করা সম্ভব নয়।'
-                ]);
+                    'message' => 'এই পারচেজ ইনভয়েসের বিপরীতে রিটার্ন এন্ট্রি রয়েছে, তাই ডিলিট করা সম্ভব নয়। রিটার্ন রেকর্ড আগে সামঞ্জস্য করতে হবে।'
+                ], 422);
             }
 
-            // Restore product stock
-            $details = BatteryPurchaseOrderDetail::where('purchase_id', $purchase->id)->get();
-            foreach ($details as $d) {
-                $product = BatteryProduct::find($d->product_id);
-                if ($product) {
-                    $product->decrement('quantity', $d->quantity);
+            $orderDetails = BatteryPurchaseOrderDetail::where('purchase_id', $purchase->id)->get();
+
+            // Group required quantities by product_id
+            $qtyByProduct = [];
+            foreach ($orderDetails as $item) {
+                $pid = $item->product_id;
+                $qtyByProduct[$pid] = ($qtyByProduct[$pid] ?? 0) + (int) $item->quantity;
+            }
+
+            // Pre-check stock: prevent negative stock
+            foreach ($qtyByProduct as $productId => $qtyToReverse) {
+                $product = BatteryProduct::lockForUpdate()->find($productId);
+                if (!$product) {
+                    continue;
+                }
+
+                if ($product->quantity < $qtyToReverse) {
+                    DB::rollBack();
+                    $name = $product->product_name ?? ('ব্যাটারি পণ্য #' . $productId);
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => "ব্যাটারি পণ্য '{$name}' ইতিমধ্যে বিক্রি বা ব্যবহার হয়ে গেছে (বর্তমান স্টক: {$product->quantity}, পারচেজ পরিমাণ: {$qtyToReverse})। স্টক নেগেটিভ হওয়া রোধে এই পারচেজ ডিলিট করা সম্ভব নয়।"
+                    ], 422);
                 }
             }
 
-            BatteryPurchaseOrderDetail::where('purchase_id', $purchase->id)->delete();
+            // Reverse product stock and recalculate cost price
+            foreach ($orderDetails as $item) {
+                $product = BatteryProduct::lockForUpdate()->find($item->product_id);
+                if (!$product) {
+                    continue;
+                }
+
+                $qtyToReverse = (int) $item->quantity;
+                $purchaseCost = (float) $item->cost_price;
+                $currentQty = (int) $product->quantity;
+                $currentCost = (float) $product->cost_price;
+
+                $newQty = max(0, $currentQty - $qtyToReverse);
+
+                $previousPurchase = BatteryPurchaseOrderDetail::where('product_id', $product->id)
+                    ->where('purchase_id', '!=', $purchase->id)
+                    ->latest('id')
+                    ->first();
+
+                if ($newQty > 0) {
+                    $currentTotalValue = $currentCost * $currentQty;
+                    $purchasedValue = $purchaseCost * $qtyToReverse;
+                    $remainingValue = $currentTotalValue - $purchasedValue;
+
+                    if ($remainingValue > 0) {
+                        $product->cost_price = round($remainingValue / $newQty, 2);
+                    } elseif ($previousPurchase) {
+                        $product->cost_price = round((float) $previousPurchase->cost_price, 2);
+                    }
+                } else {
+                    if ($previousPurchase) {
+                        $product->cost_price = round((float) $previousPurchase->cost_price, 2);
+                    }
+                }
+
+                $product->quantity = $newQty;
+                $product->save();
+            }
+
+            // Delete payment details
             BatteryPurchasePaymentDetail::where('purchases_id', $purchase->id)->delete();
+
+            // Delete order details
+            BatteryPurchaseOrderDetail::where('purchase_id', $purchase->id)->delete();
+
+            // Delete attached document file if exists
+            if (!empty($purchase->attach_document)) {
+                $docPath = public_path($purchase->attach_document);
+                if (file_exists($docPath) && is_file($docPath)) {
+                    @unlink($docPath);
+                }
+            }
+
+            // Delete purchase record
             $purchase->delete();
 
-            return response()->json(['status' => 'success', 'message' => 'Purchase deleted successfully']);
-        } catch (Exception $e) {
-            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'পারচেজ এবং সম্পর্কিত স্টক ও পেমেন্ট রেকর্ড সফলভাবে রিভার্স ও ডিলিট করা হয়েছে।'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'পারচেজ ডিলিট করতে সমস্যা হয়েছে: ' . $e->getMessage()
+            ], 500);
         }
     }
 

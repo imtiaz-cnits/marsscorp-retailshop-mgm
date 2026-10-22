@@ -68,6 +68,161 @@ html.dark .stock-filter-btn {
 }
 
 @media print { .export-btn, .stock-filter-btn, .search-clean-box, .entries-clean-box, #paginationWrapper, .adjust-action-col { display: none !important; } }
+
+    /* ── Custom Sort Component Styles (Matching Custom Entries & Universal Design) ── */
+    .custom-sort-component {
+        position: relative;
+        display: inline-block;
+        user-select: none;
+    }
+    .custom-sort-standalone {
+        height: 38px;
+        min-width: 170px;
+    }
+    @media (min-width: 640px) {
+        .custom-sort-standalone {
+            height: 40px;
+            min-width: 185px;
+        }
+    }
+    .custom-sort-trigger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        height: 100%;
+        width: 100%;
+        cursor: pointer;
+        padding: 0 12px;
+        border-radius: 12px;
+        border: 1.5px solid #cbd5e1;
+        background: #ffffff;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        transition: all 0.15s ease;
+    }
+    .custom-sort-trigger:hover {
+        border-color: #10b981;
+    }
+    .custom-sort-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        min-width: 195px;
+        background-color: #ffffff;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        z-index: 9999 !important;
+        padding: 4px;
+        overflow: hidden;
+    }
+    .custom-sort-component.is-open .custom-sort-menu {
+        display: block !important;
+        animation: customSortFadeIn 0.15s ease-out forwards;
+    }
+    .custom-sort-component.is-open .sort-chevron-icon {
+        transform: rotate(180deg);
+    }
+    @keyframes customSortFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-4px) scale(0.97);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    .custom-sort-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        max-height: 260px;
+        overflow-y: auto;
+    }
+    .custom-sort-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 8px 12px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #334155;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        white-space: nowrap;
+    }
+    .custom-sort-item:hover {
+        background-color: #f1f5f9;
+        color: #15803d;
+    }
+    .custom-sort-item.active {
+        background-color: #f0fdf4;
+        color: #15803d;
+        font-weight: 700;
+    }
+
+    /* Dark Mode Support for Custom Sort Dropdown */
+    body[light-mode="dark"] .custom-sort-trigger,
+    body[data-layout-mode="dark"] .custom-sort-trigger,
+    html.dark .custom-sort-trigger,
+    body.dark .custom-sort-trigger,
+    body.dark-mode .custom-sort-trigger,
+    [data-theme="dark"] .custom-sort-trigger {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f1f5f9 !important;
+        box-shadow: none !important;
+    }
+    body[light-mode="dark"] .custom-sort-trigger:hover,
+    body[data-layout-mode="dark"] .custom-sort-trigger:hover,
+    html.dark .custom-sort-trigger:hover,
+    body.dark .custom-sort-trigger:hover,
+    body.dark-mode .custom-sort-trigger:hover,
+    [data-theme="dark"] .custom-sort-trigger:hover {
+        border-color: #059669 !important;
+    }
+    body[light-mode="dark"] .custom-sort-menu,
+    body[data-layout-mode="dark"] .custom-sort-menu,
+    html.dark .custom-sort-menu,
+    body.dark .custom-sort-menu,
+    body.dark-mode .custom-sort-menu,
+    [data-theme="dark"] .custom-sort-menu {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
+    }
+    body[light-mode="dark"] .custom-sort-item,
+    body[data-layout-mode="dark"] .custom-sort-item,
+    html.dark .custom-sort-item,
+    body.dark .custom-sort-item,
+    body.dark-mode .custom-sort-item,
+    [data-theme="dark"] .custom-sort-item {
+        color: #cbd5e1 !important;
+        background-color: transparent !important;
+    }
+    body[light-mode="dark"] .custom-sort-item:hover,
+    body[data-layout-mode="dark"] .custom-sort-item:hover,
+    html.dark .custom-sort-item:hover,
+    body.dark .custom-sort-item:hover,
+    body.dark-mode .custom-sort-item:hover,
+    [data-theme="dark"] .custom-sort-item:hover {
+        background-color: #334155 !important;
+        color: #4ade80 !important;
+    }
+    body[light-mode="dark"] .custom-sort-item.active,
+    body[data-layout-mode="dark"] .custom-sort-item.active,
+    html.dark .custom-sort-item.active,
+    body.dark .custom-sort-item.active,
+    body.dark-mode .custom-sort-item.active,
+    [data-theme="dark"] .custom-sort-item.active {
+        background-color: rgba(34, 197, 94, 0.15) !important;
+        color: #4ade80 !important;
+    }
+
 </style>
 
 <!-- Hero Main Content Start -->
@@ -138,6 +293,49 @@ html.dark .stock-filter-btn {
                                 </svg>
                                 <input type="text" id="searchInput" class="search-clean-input w-full h-full bg-transparent text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400" placeholder="Search product or barcode..." />
                             </div>
+                                                        <!-- Sort Dropdown (Single Clean Universal Component) -->
+                            <div class="shrink-0 flex items-center">
+                                <div class="custom-sort-component custom-sort-standalone" id="stockSortWrapper">
+                                    <div class="custom-sort-trigger" id="stockSortTrigger" onclick="toggleStockSortMenu(event)" title="Sort Products">
+                                        <div class="flex items-center gap-1.5 overflow-hidden">
+                                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">SORT:</span>
+                                            <span class="custom-sort-value text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-400 truncate max-w-[110px] sm:max-w-[130px]" id="stockSortSelectedText">Category (A-Z)</span>
+                                        </div>
+                                        <svg class="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400 sort-chevron-icon transition-transform duration-200 shrink-0" id="stockSortChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </div>
+                                    <div class="custom-sort-menu shadow-xl" id="stockSortMenu">
+                                        <div class="custom-sort-list">
+                                            <div class="custom-sort-item active" data-sort="category_asc" onclick="selectStockSort('category_asc', 'Category (A-Z)')">
+                                                <span>Category (A-Z)</span>
+                                                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            </div>
+                                            <div class="custom-sort-item" data-sort="name_asc" onclick="selectStockSort('name_asc', 'Alphabet (A - Z)')">
+                                                <span>Alphabet (A - Z)</span>
+                                                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            </div>
+                                            <div class="custom-sort-item" data-sort="name_desc" onclick="selectStockSort('name_desc', 'Alphabet (Z - A)')">
+                                                <span>Alphabet (Z - A)</span>
+                                                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            </div>
+                                            <div class="custom-sort-item" data-sort="stock_asc" onclick="selectStockSort('stock_asc', 'Stock: Low to High')">
+                                                <span>Stock: Low to High</span>
+                                                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            </div>
+                                            <div class="custom-sort-item" data-sort="stock_desc" onclick="selectStockSort('stock_desc', 'Stock: High to Low')">
+                                                <span>Stock: High to Low</span>
+                                                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            </div>
+                                            <div class="custom-sort-item" data-sort="default" onclick="selectStockSort('default', 'Default (Newest)')">
+                                                <span>Default (Newest)</span>
+                                                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Entries (Single Clean Universal Component) -->
                             <div class="shrink-0 flex items-center">
                                 <select id="entries">
@@ -690,7 +888,69 @@ html.dark .stock-filter-btn {
 <script>
     let allProductData = [];
     let currentFilter  = 'all'; // 'all' | 'low' | 'out'
+    let currentSort    = 'category_asc'; // 'category_asc' | 'name_asc' | 'name_desc' | 'stock_asc' | 'stock_desc' | 'default'
     let currentPage    = 1;
+
+    function getItemCategoryName(item) {
+        if (!item) return '';
+        if (item.category_name) return item.category_name;
+        if (item.category) {
+            return item.category.category_name || item.category.name || '';
+        }
+        return '';
+    }
+
+    function toggleStockSortMenu(e) {
+        e.stopPropagation();
+        const wrapper = document.getElementById('stockSortWrapper');
+        if (!wrapper) return;
+        const isOpen = wrapper.classList.contains('is-open');
+        document.querySelectorAll('.custom-sort-component.is-open').forEach(w => w.classList.remove('is-open'));
+        if (!isOpen) {
+            const menu = document.getElementById('stockSortMenu');
+            const trigger = document.getElementById('stockSortTrigger');
+            if (trigger && menu) {
+                const rect = trigger.getBoundingClientRect();
+                const spaceBelow = window.innerHeight - rect.bottom;
+                if (spaceBelow < 260 && rect.top > spaceBelow) {
+                    menu.style.top = 'auto';
+                    menu.style.bottom = 'calc(100% + 6px)';
+                } else {
+                    menu.style.top = 'calc(100% + 6px)';
+                    menu.style.bottom = 'auto';
+                }
+            }
+            wrapper.classList.add('is-open');
+        }
+    }
+
+    function selectStockSort(sortKey, label) {
+        currentSort = sortKey;
+        const textEl = document.getElementById('stockSortSelectedText');
+        if (textEl) textEl.textContent = label;
+
+        const wrapper = document.getElementById('stockSortWrapper');
+        if (wrapper) {
+            wrapper.querySelectorAll('.custom-sort-item').forEach(item => {
+                const isMatch = item.getAttribute('data-sort') === sortKey;
+                item.classList.toggle('active', isMatch);
+                const checkIcon = item.querySelector('.sort-check-icon');
+                if (checkIcon) {
+                    checkIcon.classList.toggle('hidden', !isMatch);
+                }
+            });
+            wrapper.classList.remove('is-open');
+        }
+        currentPage = 1;
+        renderTable();
+    }
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#stockSortWrapper')) {
+            const wrapper = document.getElementById('stockSortWrapper');
+            if (wrapper) wrapper.classList.remove('is-open');
+        }
+    });
 
     // ── BD currency separator (1,00,000.00) ──
     function bdFormat(amount) {
@@ -801,7 +1061,7 @@ html.dark .stock-filter-btn {
     function getFilteredList() {
         const search = (document.getElementById("searchInput").value || '').toLowerCase().trim();
 
-        return allProductData.filter(item => {
+        let list = allProductData.filter(item => {
             const qty = parseFloat(item.quantity || 0);
 
             // Filter Tab
@@ -815,13 +1075,46 @@ html.dark .stock-filter-btn {
             if (search) {
                 const name = (item.product_name || '').toLowerCase();
                 const code = (formatProductCode(item.barcode_display || item.barcode || item.product_code) || '').toLowerCase();
-                const cat  = (item.category_name || (item.category && item.category.category_name) || '').toLowerCase();
+                const cat  = getItemCategoryName(item).toLowerCase();
                 const idStr = String(item.id);
                 return name.includes(search) || code.includes(search) || cat.includes(search) || idStr === search;
             }
 
             return true;
         });
+
+        // Apply Dynamic Sort Order
+        if (currentSort === 'category_asc') {
+            list.sort((a, b) => {
+                const catA = getItemCategoryName(a).toLowerCase();
+                const catB = getItemCategoryName(b).toLowerCase();
+                const cmp = catA.localeCompare(catB, undefined, { sensitivity: 'base' });
+                if (cmp !== 0) return cmp;
+                const nameA = (a.product_name || '').toLowerCase();
+                const nameB = (b.product_name || '').toLowerCase();
+                return nameA.localeCompare(nameB, undefined, { sensitivity: 'base' });
+            });
+        } else if (currentSort === 'name_asc') {
+            list.sort((a, b) => {
+                const nameA = (a.product_name || '').toLowerCase();
+                const nameB = (b.product_name || '').toLowerCase();
+                return nameA.localeCompare(nameB, undefined, { sensitivity: 'base' });
+            });
+        } else if (currentSort === 'name_desc') {
+            list.sort((a, b) => {
+                const nameA = (a.product_name || '').toLowerCase();
+                const nameB = (b.product_name || '').toLowerCase();
+                return nameB.localeCompare(nameA, undefined, { sensitivity: 'base' });
+            });
+        } else if (currentSort === 'stock_asc') {
+            list.sort((a, b) => (parseFloat(a.quantity || 0)) - (parseFloat(b.quantity || 0)));
+        } else if (currentSort === 'stock_desc') {
+            list.sort((a, b) => (parseFloat(b.quantity || 0)) - (parseFloat(a.quantity || 0)));
+        } else if (currentSort === 'default') {
+            list.sort((a, b) => (parseInt(b.id || 0)) - (parseInt(a.id || 0)));
+        }
+
+        return list;
     }
 
     function renderTable() {

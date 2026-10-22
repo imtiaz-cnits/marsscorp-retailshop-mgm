@@ -214,9 +214,9 @@ class BatterySupplierController extends Controller
                     $discountAmount = (float) ($purchase->discount_amount ?? 0);
                     $returnAdj = (float) ($purchase->return_adjustment_amount ?? 0);
 
-                    $effectiveGrandTotal = max(0, ($grandTotal - $discountAmount) + $deliveryCharge);
-                    $effectivePaid = $totalPaid + $returnAdj;
-                    $dueAmount = max(0, $effectiveGrandTotal - $effectivePaid);
+                    $effectiveGrandTotal = round(max(0, ($grandTotal - $discountAmount) + $deliveryCharge), 2);
+                    $effectivePaid = round($totalPaid + $returnAdj, 2);
+                    $dueAmount = round(max(0, $effectiveGrandTotal - $effectivePaid), 2);
                     $paymentStatus = ($effectivePaid >= $effectiveGrandTotal && $effectiveGrandTotal > 0) ? 'Fully Paid' : ($effectivePaid > 0 ? 'Partial Paid' : 'Unpaid');
 
                     $barcodes = $purchase->orderDetails->flatMap(function ($detail) {
@@ -323,15 +323,15 @@ class BatterySupplierController extends Controller
             });
 
             $totalPurchasesCount = $purchases->count();
-            $totalPurchasesAmount = (float) $purchases->sum('grand_subtotal');
-            $totalPurchaseDue = (float) $purchases->sum('due_amount');
-            $supplierPreviousDue = (float) ($supplier->purchase_payable_amount ?? 0);
-            $totalReturnsAmount = (float) $returns->sum('amount');
-            $totalReturnsAdjusted = (float) $purchases->sum('return_adjustment_amount');
-            $availableReturnCredit = max(0, $totalReturnsAmount - $totalReturnsAdjusted);
+            $totalPurchasesAmount = round((float) $purchases->sum('effective_grand_total'), 2);
+            $totalPurchaseDue = round((float) $purchases->sum('due_amount'), 2);
+            $supplierPreviousDue = round((float) ($supplier->purchase_payable_amount ?? 0), 2);
+            $totalReturnsAmount = round((float) $returns->sum('amount'), 2);
+            $totalReturnsAdjusted = round((float) $purchases->sum('return_adjustment_amount'), 2);
+            $availableReturnCredit = round(max(0, $totalReturnsAmount - $totalReturnsAdjusted), 2);
 
-            $totalDueAmount = max(0, $supplierPreviousDue + $totalPurchaseDue - $availableReturnCredit);
-            $totalPaidAmount = (float) $initialPurchasePayments->sum('paid_amount') + (float) $dueCollections->sum('paid_amount');
+            $totalDueAmount = round(max(0, $supplierPreviousDue + $totalPurchaseDue - $availableReturnCredit), 2);
+            $totalPaidAmount = round((float) $initialPurchasePayments->sum('paid_amount') + (float) $dueCollections->sum('paid_amount'), 2);
 
             return response()->json([
                 'status'       => 'success',
