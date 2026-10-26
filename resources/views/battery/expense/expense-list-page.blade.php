@@ -237,13 +237,13 @@
                             <h6 class="fw-bold text-slate-800 dark:text-slate-100 mb-0 text-sm d-flex align-items-center gap-2">
                                 <i class="fa-solid fa-list-check text-emerald-600"></i> Select Expense Type and Enter Amount:
                             </h6>
-                            <small class="text-slate-500 dark:text-slate-400 text-xs">
-                                <i class="fa-solid fa-circle-info text-indigo-500 me-1"></i> Select staff when paying salary
-                            </small>
+                            <span class="badge bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-slate-800 px-2.5 py-1 fw-bold text-xs" id="selectedItemsCounter">
+                                0 Selected
+                            </span>
                         </div>
 
-                        <div id="ExpenseTypesContainer" class="expense-types-grid" style="max-height: 380px; overflow-y: auto;">
-                            <div class="text-center py-4 text-slate-400" style="grid-column: 1 / -1;">
+                        <div id="ExpenseTypesContainer">
+                            <div class="text-center py-4 text-slate-400">
                                 <i class="fa-solid fa-circle-notch fa-spin me-2"></i> Loading expense types...
                             </div>
                         </div>
@@ -254,7 +254,7 @@
 
             <!-- Sticky Bottom Footer with Red Cancel & Green Save Buttons (Strict 38px height) -->
             <div class="modal-footer d-flex align-items-center justify-content-end gap-2 flex-shrink-0">
-                <button type="button" onclick="closeExpenseModal()" class="btn fw-semibold px-4 shadow-sm" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; border-radius: 8px !important; font-size: 13.5px !important; background-color: #dc2626 !important; color: #ffffff !important; border: none !important; cursor: pointer; transition: opacity 0.2s;">
+                <button type="button" data-bs-dismiss="modal" onclick="closeExpenseModal()" class="btn fw-semibold px-4 shadow-sm" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; border-radius: 8px !important; font-size: 13.5px !important; background-color: #dc2626 !important; color: #ffffff !important; border: none !important; cursor: pointer; transition: opacity 0.2s;">
                     Cancel
                 </button>
                 <button type="button" onclick="SaveExpense(event)" class="btn text-white fw-bold px-4 shadow-sm" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; border-radius: 8px !important; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important; border: none !important; font-size: 13.5px !important; cursor: pointer;">
@@ -349,6 +349,73 @@
     </div>
 </div>
 <!-- Quick Add New Staff Sub-Modal End -->
+
+<!-- Item Expense Details Sub-Modal Start (Retail 1:1 Design) -->
+<div class="newbrand" id="itemExpenseDetailsModal" style="z-index: 9999995;">
+    <div class="newbrand-content shadow-lg border-0" style="border-radius: 16px; width: 95%; max-width: 580px; padding: 22px 24px;">
+        <div class="d-flex align-items-center justify-content-between mb-3.5 pb-2 border-bottom border-slate-100 dark:border-slate-800">
+            <h5 class="fw-bold text-slate-800 dark:text-slate-100 mb-0 d-flex align-items-center gap-2" style="font-size: 16px;">
+                <i class="fa-solid fa-pen-to-square text-emerald-600"></i>
+                <span id="itemDetailsModalTypeName">Expense Details</span>
+            </h5>
+            <button type="button" class="custom-modal-close-btn d-flex align-items-center justify-content-center border-0 shadow-sm" onclick="closeItemDetailsModal()" aria-label="Close" style="width: 26px !important; height: 26px !important; min-width: 26px !important; min-height: 26px !important; border-radius: 50% !important; background-color: #ef4444 !important; color: #ffffff !important; cursor: pointer !important; padding: 0 !important; margin: 0 !important;" title="Close">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <form id="itemDetailsForm" onsubmit="return saveItemDetailsModal(event)">
+            <input type="hidden" id="modalActiveTypeId" value="" />
+
+            <!-- General Expense Fields Container -->
+            <div id="modalGeneralExpenseFields">
+                <div class="row g-3 mb-3 text-start" style="text-align: left !important;">
+                    <div class="col-12 col-md-6 text-start" style="text-align: left !important;">
+                        <label for="modalExpenseAmount" class="custom-modal-label text-start">Amount (৳) <span class="text-danger">*</span></label>
+                        <input type="number" step="any" min="0.01" id="modalExpenseAmount" class="custom-modal-input text-start fw-bold text-rose-600" placeholder="0.00" style="font-size: 15px;" />
+                    </div>
+                    <div class="col-12 col-md-6 text-start" style="text-align: left !important;">
+                        <label for="modalExpenseDetails" class="custom-modal-label text-start">Details / Note</label>
+                        <input type="text" id="modalExpenseDetails" class="custom-modal-input text-start" placeholder="Enter expense details..." />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salary Expense Fields Container -->
+            <div id="modalSalaryExpenseFields" class="d-none">
+                <!-- Row 1: Select Staff (1 row full width) -->
+                <div class="row g-2.5 mb-2.5 text-start" style="text-align: left !important;">
+                    <div class="col-12 text-start" style="text-align: left !important;">
+                        <label for="modalSalaryStaff" class="custom-modal-label text-start" style="text-align: left !important;">Select Staff <span class="text-danger">*</span></label>
+                        <select id="modalSalaryStaff" class="custom-modal-input text-start" style="text-align: left !important; cursor: pointer;">
+                            <option value="">-- Select Staff --</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Row 2: Amount & Details / Note (1 row 2 columns) -->
+                <div class="row g-2.5 mb-3 text-start" style="text-align: left !important;">
+                    <div class="col-6 text-start" style="text-align: left !important;">
+                        <label for="modalSalaryAmount" class="custom-modal-label text-start" style="text-align: left !important;">Amount (৳) <span class="text-danger">*</span></label>
+                        <input type="number" step="any" min="0.01" id="modalSalaryAmount" class="custom-modal-input text-start fw-bold text-rose-600" placeholder="0.00" style="font-size: 15px; text-align: left !important;" />
+                    </div>
+                    <div class="col-6 text-start" style="text-align: left !important;">
+                        <label for="modalSalaryDetails" class="custom-modal-label text-start" style="text-align: left !important;">Details / Note</label>
+                        <input type="text" id="modalSalaryDetails" class="custom-modal-input text-start" placeholder="Monthly Salary" style="text-align: left !important;" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="d-flex justify-content-end gap-2 pt-2 border-top border-slate-100 dark:border-slate-800">
+                <button type="button" class="btn text-white px-4 fw-semibold shadow-sm" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; border-radius: 8px !important; font-size: 13.5px !important; background-color: #dc2626 !important; border: none !important; cursor: pointer;" onclick="closeItemDetailsModal()">Cancel</button>
+                <button type="submit" class="btn text-white px-4 fw-bold shadow-sm" style="height: 38px !important; min-height: 38px !important; max-height: 38px !important; border-radius: 8px !important; font-size: 13.5px !important; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important; border: none !important; cursor: pointer;">Save Details</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Item Expense Details Sub-Modal End -->
 
 <!-- Edit Expense Modal Start (Retail 1:1 Design) -->
 <div class="modal fade" id="updateExpenseModal" tabindex="-1" aria-labelledby="updateExpenseModalLabel" aria-hidden="true" data-bs-backdrop="static">
@@ -834,27 +901,49 @@
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         }
     }
-    .expense-item-card {
+    .available-expense-card {
         border: 1.5px solid #e2e8f0;
         border-radius: 8px;
         background-color: #ffffff;
-        padding: 6px 10px;
+        padding: 7px 10px;
         transition: all 0.15s ease;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
         min-height: 38px;
+        cursor: pointer;
+        user-select: none;
     }
-    .expense-item-card:hover {
-        border-color: #cbd5e1;
-        background-color: #f8fafc;
-    }
-    .expense-item-card.is-checked {
-        grid-column: 1 / -1;
+    .available-expense-card:hover {
         border-color: #10b981 !important;
         background-color: #f0fdf4 !important;
-        box-shadow: 0 2px 6px rgba(16, 185, 129, 0.1) !important;
-        padding: 10px 14px;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(16, 185, 129, 0.12);
+    }
+    .available-expense-card .click-indicator-icon {
+        color: #10b981;
+        font-size: 11px;
+        opacity: 0.8;
+        transition: all 0.15s ease;
+    }
+    .available-expense-card:hover .click-indicator-icon {
+        opacity: 1;
+        transform: scale(1.15);
+    }
+
+    .selected-expense-item {
+        border: 1.5px solid #10b981 !important;
+        border-radius: 10px;
+        background-color: #f0fdf4 !important;
+        padding: 8px 12px;
+        transition: all 0.15s ease;
+        box-shadow: 0 1px 3px rgba(16, 185, 129, 0.1);
+        cursor: pointer;
+    }
+    .selected-expense-item:hover {
+        background-color: #dcfce7 !important;
+        box-shadow: 0 3px 8px rgba(16, 185, 129, 0.18);
     }
 
     /* Flatpickr Calendar Styling */
@@ -1131,27 +1220,250 @@
         background-color: rgba(15, 23, 42, 0.6) !important;
         border-color: #334155 !important;
     }
-    body[data-layout-mode="dark"] .expense-item-card,
-    body[light-mode="dark"] .expense-item-card,
-    html.dark .expense-item-card,
-    body.dark-mode .expense-item-card,
-    body.dark .expense-item-card {
+    body[data-layout-mode="dark"] .available-expense-card,
+    body[light-mode="dark"] .available-expense-card,
+    html.dark .available-expense-card,
+    body.dark-mode .available-expense-card,
+    body.dark .available-expense-card {
         background-color: #1e293b !important;
         border-color: #334155 !important;
         color: #f8fafc !important;
     }
-    body[data-layout-mode="dark"] .expense-item-card label,
-    body[light-mode="dark"] .expense-item-card label,
-    html.dark .expense-item-card label {
+    body[data-layout-mode="dark"] .available-expense-card:hover,
+    body[light-mode="dark"] .available-expense-card:hover,
+    html.dark .available-expense-card:hover,
+    body.dark-mode .available-expense-card:hover,
+    body.dark .available-expense-card:hover {
+        background-color: rgba(16, 185, 129, 0.15) !important;
+        border-color: #10b981 !important;
+    }
+    body[data-layout-mode="dark"] .available-expense-card span,
+    body[light-mode="dark"] .available-expense-card span,
+    html.dark .available-expense-card span {
         color: #f8fafc !important;
     }
-    body[data-layout-mode="dark"] .expense-item-card.is-checked,
-    body[light-mode="dark"] .expense-item-card.is-checked,
-    html.dark .expense-item-card.is-checked,
-    body.dark-mode .expense-item-card.is-checked,
-    body.dark .expense-item-card.is-checked {
+
+    body[data-layout-mode="dark"] .selected-expense-item,
+    body[light-mode="dark"] .selected-expense-item,
+    html.dark .selected-expense-item,
+    body.dark-mode .selected-expense-item,
+    body.dark .selected-expense-item {
+        background-color: rgba(6, 78, 59, 0.25) !important;
         border-color: #10b981 !important;
-        background-color: rgba(6, 78, 59, 0.3) !important;
+    }
+    body[data-layout-mode="dark"] .selected-expense-item:hover,
+    body[light-mode="dark"] .selected-expense-item:hover,
+    html.dark .selected-expense-item:hover {
+        background-color: rgba(6, 78, 59, 0.4) !important;
+    }
+
+    /* Unified UI Border & Table Dark Mode Overrides (Matching other battery pages) */
+    body[light-mode="dark"] .unified-ui-border,
+    body[data-layout-mode="dark"] .unified-ui-border,
+    html.dark .unified-ui-border,
+    body.dark-mode .unified-ui-border,
+    body.dark .unified-ui-border {
+        border-color: #334155 !important;
+    }
+    body[data-layout-mode="dark"] #printTable,
+    body[data-layout-mode="dark"] #printTable th,
+    body[data-layout-mode="dark"] #printTable td,
+    body[data-layout-mode="dark"] #printTable tr,
+    body[light-mode="dark"] #printTable,
+    body[light-mode="dark"] #printTable th,
+    body[light-mode="dark"] #printTable td,
+    body[light-mode="dark"] #printTable tr,
+    html.dark #printTable th,
+    html.dark #printTable td {
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .card,
+    body[data-layout-mode="dark"] .card,
+    html.dark .card,
+    body.dark-mode .card,
+    body.dark .card {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .search-input-wrapper,
+    body[data-layout-mode="dark"] .search-input-wrapper,
+    html.dark .search-input-wrapper {
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .entries-wrapper,
+    body[data-layout-mode="dark"] .entries-wrapper,
+    html.dark .entries-wrapper {
+        border-color: #334155 !important;
+    }
+
+    /* Staff Tag Badge styling with Dark Mode support (prevents white tag in dark mode) */
+    .staff-tag-badge {
+        font-size: 9px !important;
+        font-weight: 700 !important;
+        padding: 2px 6px !important;
+        border-radius: 6px !important;
+        background-color: #eef2ff !important;
+        color: #4338ca !important;
+        border: 1px solid #c7d2fe !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        line-height: normal !important;
+    }
+    body[data-layout-mode="dark"] .staff-tag-badge,
+    body[light-mode="dark"] .staff-tag-badge,
+    html.dark .staff-tag-badge,
+    body.dark-mode .staff-tag-badge,
+    body.dark .staff-tag-badge {
+        background-color: rgba(99, 102, 241, 0.22) !important;
+        color: #a5b4fc !important;
+        border-color: rgba(99, 102, 241, 0.45) !important;
+    }
+    body[data-layout-mode="dark"] .available-expense-card .badge,
+    body[light-mode="dark"] .available-expense-card .badge,
+    html.dark .available-expense-card .badge,
+    body.dark-mode .available-expense-card .badge,
+    body.dark .available-expense-card .badge,
+    body[data-layout-mode="dark"] .selected-expense-item .badge,
+    body[light-mode="dark"] .selected-expense-item .badge,
+    html.dark .selected-expense-item .badge,
+    body.dark-mode .selected-expense-item .badge,
+    body.dark .selected-expense-item .badge {
+        background-color: rgba(99, 102, 241, 0.22) !important;
+        color: #a5b4fc !important;
+        border-color: rgba(99, 102, 241, 0.45) !important;
+    }
+
+    body[data-layout-mode="dark"] .modal-salary-row,
+    body[light-mode="dark"] .modal-salary-row,
+    html.dark .modal-salary-row {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+    }
+
+    /* Custom Search Filter Dropdown (Select2) in Item Expense Details Modal */
+    #itemExpenseDetailsModal .select2-container {
+        width: 100% !important;
+        display: block !important;
+    }
+    #itemExpenseDetailsModal .select2-container--default .select2-selection--single {
+        height: 42px !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        padding: 0 10px !important;
+        background-color: #ffffff !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+    }
+    #itemExpenseDetailsModal .select2-container--default .select2-selection--single:focus,
+    #itemExpenseDetailsModal .select2-container--default.select2-container--open .select2-selection--single {
+        border-color: #15803d !important;
+        box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.2) !important;
+    }
+    #itemExpenseDetailsModal .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 40px !important;
+        color: #0f172a !important;
+        font-size: 13.5px !important;
+        font-weight: 500 !important;
+        padding-left: 2px !important;
+        padding-right: 20px !important;
+    }
+    #itemExpenseDetailsModal .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #94a3b8 !important;
+    }
+    #itemExpenseDetailsModal .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 40px !important;
+        right: 10px !important;
+    }
+    .select2-dropdown {
+        z-index: 9999999 !important;
+        border-radius: 10px !important;
+        border: 1.5px solid #cbd5e1 !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15) !important;
+        overflow: hidden !important;
+        background-color: #ffffff !important;
+    }
+    .select2-container--default .select2-search--dropdown {
+        padding: 8px 10px !important;
+    }
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        padding: 6px 12px !important;
+        outline: none !important;
+        font-size: 13px !important;
+        width: 100% !important;
+        color: #0f172a !important;
+        background-color: #ffffff !important;
+    }
+    .select2-container--default .select2-search--dropdown .select2-search__field:focus {
+        border-color: #15803d !important;
+        box-shadow: 0 0 0 2px rgba(21, 128, 61, 0.2) !important;
+    }
+    .select2-container--default .select2-results__option {
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+        color: #334155 !important;
+    }
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #15803d !important;
+        color: #ffffff !important;
+    }
+    .select2-container--default .select2-results__option[aria-selected=true] {
+        background-color: #ecfdf5 !important;
+        color: #065f46 !important;
+        font-weight: 600 !important;
+    }
+
+    /* Dark Mode Select2 Styles */
+    body[light-mode="dark"] #itemExpenseDetailsModal .select2-container--default .select2-selection--single,
+    html.dark #itemExpenseDetailsModal .select2-container--default .select2-selection--single,
+    body[data-layout-mode="dark"] #itemExpenseDetailsModal .select2-container--default .select2-selection--single,
+    body.dark #itemExpenseDetailsModal .select2-container--default .select2-selection--single {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] #itemExpenseDetailsModal .select2-container--default .select2-selection--single .select2-selection__rendered,
+    html.dark #itemExpenseDetailsModal .select2-container--default .select2-selection--single .select2-selection__rendered,
+    body[data-layout-mode="dark"] #itemExpenseDetailsModal .select2-container--default .select2-selection--single .select2-selection__rendered,
+    body.dark #itemExpenseDetailsModal .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #f8fafc !important;
+    }
+    body[light-mode="dark"] .select2-dropdown,
+    html.dark .select2-dropdown,
+    body[data-layout-mode="dark"] .select2-dropdown,
+    body.dark .select2-dropdown {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+    body[light-mode="dark"] .select2-container--default .select2-search--dropdown .select2-search__field,
+    html.dark .select2-container--default .select2-search--dropdown .select2-search__field,
+    body[data-layout-mode="dark"] .select2-container--default .select2-search--dropdown .select2-search__field,
+    body.dark .select2-container--default .select2-search--dropdown .select2-search__field {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f8fafc !important;
+    }
+    body[light-mode="dark"] .select2-container--default .select2-results__option,
+    html.dark .select2-container--default .select2-results__option,
+    body[data-layout-mode="dark"] .select2-container--default .select2-results__option,
+    body.dark .select2-container--default .select2-results__option {
+        color: #cbd5e1 !important;
+    }
+    body[light-mode="dark"] .select2-container--default .select2-results__option[aria-selected=true],
+    html.dark .select2-container--default .select2-results__option[aria-selected=true],
+    body[data-layout-mode="dark"] .select2-container--default .select2-results__option[aria-selected=true],
+    body.dark .select2-container--default .select2-results__option[aria-selected=true] {
+        background-color: rgba(16, 185, 129, 0.2) !important;
+        color: #34d399 !important;
+    }
+    body[light-mode="dark"] .select2-container--default .select2-results__option--highlighted[aria-selected],
+    html.dark .select2-container--default .select2-results__option--highlighted[aria-selected],
+    body[data-layout-mode="dark"] .select2-container--default .select2-results__option--highlighted[aria-selected],
+    body.dark .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #15803d !important;
+        color: #ffffff !important;
     }
 
     /* Flatpickr Dark Mode */
@@ -1331,7 +1643,7 @@
 
     $(document).ready(function () {
         $("#entries").val("15");
-        $('#createExpenseModal, #updateExpenseModal, #expenseDeleteModal, #addBrandModal, #addStaffQuickModal').appendTo('body');
+        $('#createExpenseModal, #updateExpenseModal, #expenseDeleteModal, #addBrandModal, #addStaffQuickModal, #itemExpenseDetailsModal').appendTo('body');
         initExpenseDatePickers();
         getExpenseList();
         loadExpenseTypesAndStaff();
@@ -1518,20 +1830,49 @@
     }
 
     // ── Create Modal Helpers ──
+    let selectedExpenseData = {}; // keyed by type_id: { type_id, type_name, is_salary, amount, details, is_saved, staff_rows: [] }
+    let activeEditingTypeId = null;
+
     function openExpenseModal() {
+        const dateInput = document.getElementById('ExpenseDate');
+        const today = new Date().toISOString().split('T')[0];
+        if (dateInput && !dateInput.value) {
+            dateInput.value = today;
+        }
+        initExpenseDatePickers();
+
+        if (globalExpenseTypes.length === 0) {
+            loadExpenseTypesAndStaff();
+        }
+
         const modalEl = document.getElementById('createExpenseModal');
         if (modalEl) {
-            let modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-            modalInstance.show();
+            try {
+                let modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                modalInstance.show();
+                return;
+            } catch(e) {
+                if (typeof $ !== 'undefined') $('#createExpenseModal').modal('show');
+            }
         }
     }
 
     function closeExpenseModal() {
-        const modalEl = document.getElementById('createExpenseModal');
-        if (modalEl) {
-            let modalInstance = bootstrap.Modal.getInstance(modalEl);
-            if (modalInstance) modalInstance.hide();
+        try {
+            const modalEl = document.getElementById('createExpenseModal');
+            if (modalEl) {
+                let modalInstance = bootstrap.Modal.getInstance(modalEl);
+                if (modalInstance) modalInstance.hide();
+            }
+        } catch(e) {
+            console.warn("Bootstrap modal hide error:", e);
         }
+        if (typeof $ !== 'undefined') {
+            $('#createExpenseModal').modal('hide');
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open').css({ 'overflow': '', 'padding-right': '' });
+        }
+        resetExpenseForm();
     }
 
     function isSalaryTypeName(typeName) {
@@ -1546,166 +1887,362 @@
         if (!container) return;
 
         if (globalExpenseTypes.length === 0) {
-            container.innerHTML = `<div class="text-slate-400 py-3 text-center" style="grid-column: 1 / -1;">No expense types found. Click "+ Create New Type" above.</div>`;
+            container.innerHTML = `<div class="text-slate-400 py-3 text-center">No expense types found. Click "+ Create New Type" above.</div>`;
             return;
         }
 
-        let html = '';
-        globalExpenseTypes.forEach(type => {
-            const isSalary = isSalaryTypeName(type.type_name);
-            
-            html += `
-                <div class="expense-item-card transition-all" id="type-row-${type.id}">
-                    <div class="d-flex align-items-center justify-content-between gap-2">
-                        <div class="form-check mb-0 d-flex align-items-center gap-2 p-0">
-                            <input class="form-check-input type-checkbox m-0" type="checkbox" value="${type.id}" id="chk-${type.id}" onchange="toggleTypeInputs(${type.id})" style="transform: scale(1.1); cursor: pointer;" />
-                            <label class="form-check-label fw-bold text-slate-800 dark:text-slate-100 mb-0" for="chk-${type.id}" style="cursor: pointer; font-size: 13px;">
-                                ${type.type_name} ${isSalary ? '<span class="badge bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200 dark:border-slate-800 ms-1" style="font-size: 9.5px; padding: 2px 4px;">👨‍💼 Staff Salary</span>' : ''}
-                            </label>
-                        </div>
-                    </div>
+        const selectedKeys = Object.keys(selectedExpenseData).filter(k => selectedExpenseData[k] && selectedExpenseData[k].is_saved);
+        const counterBadge = document.getElementById('selectedItemsCounter');
+        if (counterBadge) {
+            counterBadge.innerText = `${selectedKeys.length} Selected`;
+        }
 
-                    <!-- Expandable Inputs when Checked -->
-                    <div class="type-input-group mt-2 d-none pt-2 border-t border-slate-200 dark:border-slate-800" id="input-group-${type.id}">
-                        ${isSalary ? `
-                        <div class="salary-rows-wrapper" id="salary-wrapper-${type.id}">
-                            <div class="salary-rows-list d-flex flex-column gap-2" id="salary-rows-list-${type.id}">
-                                <div class="row g-2 align-items-center salary-row" id="salary-row-${type.id}-0">
-                                    <div class="col-md-5">
-                                        <label class="custom-modal-label">Select Staff <span class="text-danger">*</span></label>
-                                        <div class="input-group input-group-sm">
-                                            <button class="btn btn-success text-white fw-bold" type="button" onclick="addSalaryRow(${type.id})" title="Add more staff">
-                                                <i class="fa-solid fa-plus"></i>
-                                            </button>
-                                            <select class="form-select staff-select" id="staff-${type.id}-0" style="height: 38px;">
-                                                <option value="">-- Select Staff --</option>
-                                                ${globalStaffList.map(s => `<option value="${s.id}">${s.name} (${s.mobile || 'Staff'})</option>`).join('')}
-                                            </select>
-                                            <button class="btn btn-outline-primary" type="button" onclick="openStaffQuickModal()" title="Add New Staff">
-                                                <i class="fa-solid fa-user-plus"></i>
-                                            </button>
-                                        </div>
+        let selectedHtml = '';
+        if (selectedKeys.length > 0) {
+            selectedHtml += `
+                <div class="selected-expenses-section mb-3">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-xs fw-bold text-emerald-700 dark:text-emerald-400 text-uppercase tracking-wider">
+                            <i class="fa-solid fa-circle-check me-1"></i> Selected Items (${selectedKeys.length}):
+                        </span>
+                        <small class="text-slate-400 text-xs">
+                            <i class="fa-solid fa-pen text-emerald-600 me-1"></i> Click card to edit amount/details
+                        </small>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+            `;
+
+            selectedKeys.forEach(typeId => {
+                const item = selectedExpenseData[typeId];
+                let summaryText = '';
+                let totalAmount = 0;
+
+                if (item.is_salary) {
+                    const st = globalStaffList.find(s => s.id == (item.staff_id || (item.staff_rows && item.staff_rows[0]?.staff_id)));
+                    const staffName = st ? st.name : (item.staff_name || 'Staff');
+                    totalAmount = parseFloat(item.amount) || 0;
+                    summaryText = `Staff: ${staffName}${item.details ? ' • Note: ' + item.details : ''}`;
+                } else {
+                    totalAmount = parseFloat(item.amount) || 0;
+                    summaryText = item.details ? `Note: ${item.details}` : 'No details entered';
+                }
+
+                selectedHtml += `
+                    <div class="selected-expense-item" onclick="openItemDetailsModal(${item.type_id})">
+                        <div class="d-flex align-items-center justify-content-between gap-2">
+                            <div class="d-flex align-items-center gap-2.5 flex-grow-1 min-w-0">
+                                <span class="d-flex align-items-center justify-content-center rounded-circle bg-emerald-600 text-white flex-shrink-0" style="width: 24px; height: 24px; font-size: 11px;">
+                                    <i class="fa-solid fa-check"></i>
+                                </span>
+                                <div class="min-w-0">
+                                    <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                        <span class="fw-bold text-slate-800 dark:text-slate-100 text-sm">${item.type_name}</span>
+                                        ${item.is_salary ? '<span class="staff-tag-badge">👨‍💼 Staff Salary</span>' : ''}
                                     </div>
-                                    <div class="col-md-3">
-                                        <label class="custom-modal-label">Amount (৳) <span class="text-danger">*</span></label>
-                                        <input type="number" step="any" class="form-control amount-input fw-bold text-rose-600" id="amount-${type.id}-0" placeholder="0.00" style="height: 38px;" />
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="custom-modal-label">Details / Note</label>
-                                        <input type="text" class="form-control details-input" id="details-${type.id}-0" placeholder="Monthly Salary / Advance" style="height: 38px;" />
-                                    </div>
-                                    <div class="col-md-1 text-end pt-3">
-                                        <button type="button" class="btn btn-sm btn-outline-danger remove-salary-row-btn d-none" onclick="removeSalaryRow(${type.id}, 0)" title="Remove" style="height: 36px; width: 36px;">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
+                                    <div class="text-xs text-slate-500 dark:text-slate-400 text-truncate" style="max-width: 320px;">
+                                        ${summaryText}
                                     </div>
                                 </div>
                             </div>
-                            <div class="mt-2.5">
-                                <button type="button" class="btn btn-sm btn-outline-success fw-bold px-3 py-1.5" onclick="addSalaryRow(${type.id})" style="border-radius: 8px;">
-                                    <i class="fa-solid fa-plus-circle me-1"></i> + Add More Staff
+                            <div class="d-flex align-items-center gap-2 flex-shrink-0" onclick="event.stopPropagation()">
+                                <span class="badge bg-white dark:bg-slate-800 text-rose-600 dark:text-rose-400 border border-slate-200 dark:border-slate-700 fw-bold px-2.5 py-1.5 text-xs shadow-xs">
+                                    ৳ ${formatBdCurrency(totalAmount)}
+                                </span>
+                                <button type="button" class="btn btn-sm btn-outline-success d-inline-flex align-items-center justify-content-center p-0 rounded-circle" style="width: 28px; height: 28px;" title="Click to Edit" onclick="openItemDetailsModal(${item.type_id})">
+                                    <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center p-0 rounded-circle" style="width: 28px; height: 28px;" title="Remove / Unselect" onclick="unselectExpenseItem(${item.type_id})">
+                                    <i class="fa-solid fa-xmark text-xs"></i>
                                 </button>
                             </div>
                         </div>
-                        ` : `
-                        <div class="row g-2">
-                            <div class="col-md-6">
-                                <label class="custom-modal-label">Amount (৳) <span class="text-danger">*</span></label>
-                                <input type="number" step="any" class="form-control amount-input fw-bold text-rose-600" id="amount-${type.id}" placeholder="0.00" style="height: 38px;" />
-                            </div>
-                            <div class="col-md-6">
-                                <label class="custom-modal-label">Details / Note</label>
-                                <input type="text" class="form-control details-input" id="details-${type.id}" placeholder="Enter expense details..." style="height: 38px;" />
-                            </div>
-                        </div>
-                        `}
+                    </div>
+                `;
+            });
+
+            selectedHtml += `
                     </div>
                 </div>
             `;
-        });
-
-        container.innerHTML = html;
-    }
-
-    function toggleTypeInputs(typeId) {
-        const chk = document.getElementById(`chk-${typeId}`);
-        const group = document.getElementById(`input-group-${typeId}`);
-        const row = document.getElementById(`type-row-${typeId}`);
-
-        if (chk && chk.checked) {
-            group.classList.remove('d-none');
-            row.classList.add('is-checked');
-        } else {
-            group.classList.add('d-none');
-            row.classList.remove('is-checked');
         }
-    }
 
-    function addSalaryRow(typeId) {
-        if (!salaryRowCounters[typeId]) salaryRowCounters[typeId] = 1;
-        const rowIndex = salaryRowCounters[typeId]++;
-
-        const listContainer = document.getElementById(`salary-rows-list-${typeId}`);
-        if (!listContainer) return;
-
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'row g-2 align-items-center salary-row mt-2 pt-2 border-t border-slate-200 dark:border-slate-800';
-        rowDiv.id = `salary-row-${typeId}-${rowIndex}`;
-
-        const staffOptionsHtml = globalStaffList.map(s => `<option value="${s.id}">${s.name} (${s.mobile || 'Staff'})</option>`).join('');
-
-        rowDiv.innerHTML = `
-            <div class="col-md-5">
-                <div class="input-group input-group-sm">
-                    <button class="btn btn-success text-white fw-bold" type="button" onclick="addSalaryRow(${typeId})" title="Add more staff">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                    <select class="form-select staff-select" id="staff-${typeId}-${rowIndex}" style="height: 38px;">
-                        <option value="">-- Select Staff --</option>
-                        ${staffOptionsHtml}
-                    </select>
-                    <button class="btn btn-outline-primary" type="button" onclick="openStaffQuickModal()" title="Add New Staff">
-                        <i class="fa-solid fa-user-plus"></i>
-                    </button>
+        // Available items — All types always remain visible (never blank / empty)
+        let availableHtml = `
+            <div class="available-expenses-section">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-xs fw-bold text-slate-600 dark:text-slate-400 text-uppercase tracking-wider">
+                        Available Expense Types:
+                    </span>
+                    <small class="text-slate-400 text-xs">
+                        <i class="fa-solid fa-arrow-pointer text-emerald-600 me-1"></i> Click card to enter amount
+                    </small>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <input type="number" step="any" class="form-control amount-input fw-bold text-rose-600" id="amount-${typeId}-${rowIndex}" placeholder="Amount (৳)" style="height: 38px;" />
-            </div>
-            <div class="col-md-3">
-                <input type="text" class="form-control details-input" id="details-${typeId}-${rowIndex}" placeholder="Monthly Salary / Advance" style="height: 38px;" />
-            </div>
-            <div class="col-md-1 text-end">
-                <button type="button" class="btn btn-sm btn-outline-danger remove-salary-row-btn" onclick="removeSalaryRow(${typeId}, ${rowIndex})" title="Remove" style="height: 36px; width: 36px;">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
+                <div class="expense-types-grid">
+        `;
+
+        if (globalExpenseTypes.length === 0) {
+            availableHtml += `<div class="text-slate-400 py-2 text-center text-xs" style="grid-column: 1 / -1;">No expense types found. Click "+ Create New Type" above.</div>`;
+        } else {
+            globalExpenseTypes.forEach(type => {
+                const isSalary = isSalaryTypeName(type.type_name);
+                const isSelected = selectedKeys.includes(String(type.id));
+                const activeCardClass = isSelected ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/30 dark:border-emerald-600/60' : '';
+                const checkIcon = isSelected 
+                    ? `<i class="fa-solid fa-square-check text-emerald-600 dark:text-emerald-400 text-xs flex-shrink-0"></i>`
+                    : `<i class="fa-regular fa-square text-slate-400 text-xs flex-shrink-0"></i>`;
+
+                availableHtml += `
+                    <div class="available-expense-card ${activeCardClass}" onclick="selectAndOpenItemModal(${type.id})" title="${isSelected ? 'Click to edit amount' : 'Click to select and enter amount'}">
+                        <div class="d-flex align-items-center gap-2 min-w-0">
+                            ${checkIcon}
+                            <span class="text-slate-700 dark:text-slate-200 fw-semibold text-xs text-truncate">
+                                ${type.type_name}
+                            </span>
+                            ${isSalary ? '<span class="staff-tag-badge">Staff</span>' : ''}
+                        </div>
+                        <span class="click-indicator-icon flex-shrink-0" title="${isSelected ? 'Edit' : 'Select'}">
+                            <i class="${isSelected ? 'fa-solid fa-pen' : 'fa-solid fa-arrow-up-right-from-square'}"></i>
+                        </span>
+                    </div>
+                `;
+            });
+        }
+
+        availableHtml += `
+                </div>
             </div>
         `;
 
-        listContainer.appendChild(rowDiv);
-        updateRemoveButtons(typeId);
+        container.innerHTML = selectedHtml + availableHtml;
     }
 
-    function removeSalaryRow(typeId, rowIndex) {
-        const row = document.getElementById(`salary-row-${typeId}-${rowIndex}`);
-        if (row) row.remove();
-        updateRemoveButtons(typeId);
+    function selectAndOpenItemModal(typeId) {
+        const typeObj = globalExpenseTypes.find(t => t.id == typeId);
+        if (!typeObj) return;
+
+        const isSalary = isSalaryTypeName(typeObj.type_name);
+        if (!selectedExpenseData[typeId]) {
+            selectedExpenseData[typeId] = {
+                type_id: typeId,
+                type_name: typeObj.type_name,
+                is_salary: isSalary,
+                staff_id: '',
+                amount: '',
+                details: '',
+                is_saved: false
+            };
+        }
+        openItemDetailsModal(typeId);
     }
 
-    function updateRemoveButtons(typeId) {
-        const listContainer = document.getElementById(`salary-rows-list-${typeId}`);
-        if (!listContainer) return;
-        const rows = listContainer.querySelectorAll('.salary-row');
-        rows.forEach(r => {
-            const btn = r.querySelector('.remove-salary-row-btn');
-            if (btn) {
-                if (rows.length > 1) {
-                    btn.classList.remove('d-none');
-                } else {
-                    btn.classList.add('d-none');
+    function openItemDetailsModal(typeId) {
+        const typeObj = globalExpenseTypes.find(t => t.id == typeId);
+        if (!typeObj) return;
+
+        activeEditingTypeId = typeId;
+        const isSalary = isSalaryTypeName(typeObj.type_name);
+
+        if (!selectedExpenseData[typeId]) {
+            selectedExpenseData[typeId] = {
+                type_id: typeId,
+                type_name: typeObj.type_name,
+                is_salary: isSalary,
+                staff_id: '',
+                amount: '',
+                details: '',
+                is_saved: false
+            };
+        }
+
+        const item = selectedExpenseData[typeId];
+
+        const titleEl = document.getElementById('itemDetailsModalTypeName');
+        if (titleEl) {
+            titleEl.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400">${item.type_name}</span> - Details`;
+        }
+
+        const activeInput = document.getElementById('modalActiveTypeId');
+        if (activeInput) activeInput.value = typeId;
+
+        const genContainer = document.getElementById('modalGeneralExpenseFields');
+        const salContainer = document.getElementById('modalSalaryExpenseFields');
+
+        if (isSalary) {
+            if (genContainer) genContainer.classList.add('d-none');
+            if (salContainer) salContainer.classList.remove('d-none');
+
+            // Populate Staff Dropdown with Select2
+            const staffSelect = $('#modalSalaryStaff');
+            if (staffSelect.length) {
+                if (staffSelect.data('select2')) {
+                    staffSelect.select2('destroy');
+                }
+                const currentStaffId = item.staff_id || (item.staff_rows && item.staff_rows[0]?.staff_id) || '';
+                let optionsHtml = '<option value="">-- Select Staff --</option>' + globalStaffList.map(s => 
+                    `<option value="${s.id}" ${currentStaffId == s.id ? 'selected' : ''}>${s.name} (${s.mobile || 'Staff'})</option>`
+                ).join('');
+                staffSelect.html(optionsHtml);
+                if (typeof $.fn.select2 !== 'undefined') {
+                    staffSelect.select2({
+                        dropdownParent: $('#itemExpenseDetailsModal'),
+                        placeholder: '-- Select Staff --',
+                        width: '100%',
+                        allowClear: false
+                    });
+                }
+                if (currentStaffId) {
+                    staffSelect.val(currentStaffId).trigger('change.select2');
                 }
             }
-        });
+
+            const salAmt = document.getElementById('modalSalaryAmount');
+            const salDet = document.getElementById('modalSalaryDetails');
+            if (salAmt) salAmt.value = item.amount || (item.staff_rows && item.staff_rows[0]?.amount) || '';
+            if (salDet) salDet.value = item.details || (item.staff_rows && item.staff_rows[0]?.details) || '';
+        } else {
+            if (genContainer) genContainer.classList.remove('d-none');
+            if (salContainer) salContainer.classList.add('d-none');
+
+            const amtInput = document.getElementById('modalExpenseAmount');
+            const detInput = document.getElementById('modalExpenseDetails');
+            if (amtInput) amtInput.value = item.amount || '';
+            if (detInput) detInput.value = item.details || '';
+        }
+
+        const modal = document.getElementById('itemExpenseDetailsModal');
+        if (modal) {
+            modal.classList.add('show');
+            modal.style.display = 'flex';
+            modal.style.opacity = '1';
+            modal.style.visibility = 'visible';
+            modal.style.zIndex = '9999995';
+
+            setTimeout(() => {
+                if (isSalary) {
+                    const staffVal = $('#modalSalaryStaff').val();
+                    if (!staffVal && typeof $.fn.select2 !== 'undefined') {
+                        $('#modalSalaryStaff').select2('open');
+                    } else {
+                        const salAmt = document.getElementById('modalSalaryAmount');
+                        if (salAmt) salAmt.focus();
+                    }
+                } else {
+                    const amtInput = document.getElementById('modalExpenseAmount');
+                    if (amtInput) amtInput.focus();
+                }
+            }, 100);
+        }
+    }
+
+    function refreshModalStaffDropdowns() {
+        if (activeEditingTypeId && selectedExpenseData[activeEditingTypeId]?.is_salary) {
+            const staffSelect = $('#modalSalaryStaff');
+            if (staffSelect.length) {
+                const curVal = staffSelect.val();
+                if (staffSelect.data('select2')) {
+                    staffSelect.select2('destroy');
+                }
+                staffSelect.html('<option value="">-- Select Staff --</option>' + globalStaffList.map(s => 
+                    `<option value="${s.id}" ${curVal == s.id ? 'selected' : ''}>${s.name} (${s.mobile || 'Staff'})</option>`
+                ).join(''));
+                if (typeof $.fn.select2 !== 'undefined') {
+                    staffSelect.select2({
+                        dropdownParent: $('#itemExpenseDetailsModal'),
+                        placeholder: '-- Select Staff --',
+                        width: '100%',
+                        allowClear: false
+                    });
+                }
+                if (curVal) {
+                    staffSelect.val(curVal).trigger('change.select2');
+                }
+            }
+        }
+    }
+
+    function saveItemDetailsModal(event) {
+        if (event && typeof event.preventDefault === 'function') event.preventDefault();
+        if (!activeEditingTypeId || !selectedExpenseData[activeEditingTypeId]) return false;
+
+        const item = selectedExpenseData[activeEditingTypeId];
+
+        if (item.is_salary) {
+            const staffId = $('#modalSalaryStaff').val() || '';
+            const amtInput = document.getElementById('modalSalaryAmount');
+            const detInput = document.getElementById('modalSalaryDetails');
+
+            const amt = parseFloat(amtInput ? amtInput.value : 0);
+            const details = detInput ? detInput.value.trim() : '';
+
+            if (!staffId) {
+                errorToast("Please select staff!");
+                if (typeof $.fn.select2 !== 'undefined') $('#modalSalaryStaff').select2('open');
+                return false;
+            }
+            if (isNaN(amt) || amt <= 0) {
+                errorToast("Please enter a valid salary amount!");
+                if (amtInput) amtInput.focus();
+                return false;
+            }
+
+            const staffObj = globalStaffList.find(s => s.id == staffId);
+            item.staff_id = staffId;
+            item.staff_name = staffObj ? staffObj.name : 'Staff';
+            item.amount = amt;
+            item.details = details;
+            item.staff_rows = [{ staff_id: staffId, amount: amt, details: details }];
+            item.is_saved = true;
+        } else {
+            const amtInput = document.getElementById('modalExpenseAmount');
+            const detInput = document.getElementById('modalExpenseDetails');
+
+            const amt = parseFloat(amtInput ? amtInput.value : 0);
+            const details = detInput ? detInput.value.trim() : '';
+
+            if (isNaN(amt) || amt <= 0) {
+                errorToast("Please enter a valid expense amount!");
+                if (amtInput) amtInput.focus();
+                return false;
+            }
+
+            item.amount = amt;
+            item.details = details;
+            item.is_saved = true;
+        }
+
+        closeItemDetailsModal(true);
+        renderExpenseTypeCheckboxes();
+        return false;
+    }
+
+    function closeItemDetailsModal(saved = false) {
+        if (!saved && activeEditingTypeId && selectedExpenseData[activeEditingTypeId]) {
+            if (!selectedExpenseData[activeEditingTypeId].is_saved) {
+                delete selectedExpenseData[activeEditingTypeId];
+            }
+        }
+
+        if (typeof $.fn.select2 !== 'undefined' && $('#modalSalaryStaff').data('select2')) {
+            $('#modalSalaryStaff').select2('close');
+        }
+
+        const modal = document.getElementById('itemExpenseDetailsModal');
+        if (modal) {
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+            modal.style.opacity = '0';
+            modal.style.visibility = 'hidden';
+        }
+
+        activeEditingTypeId = null;
+        renderExpenseTypeCheckboxes();
+    }
+
+    function unselectExpenseItem(typeId) {
+        if (selectedExpenseData[typeId]) {
+            delete selectedExpenseData[typeId];
+            renderExpenseTypeCheckboxes();
+        }
     }
 
     // ── Sub-Modals: New Type & New Staff ──
@@ -1799,6 +2336,7 @@
                 document.getElementById('QuickStaffEmail').value = '';
                 closeStaffQuickModal();
                 await loadExpenseTypesAndStaff();
+                refreshModalStaffDropdowns();
             } else {
                 errorToast(res.data.message || "Failed to create staff");
             }
@@ -1818,73 +2356,55 @@
                 return false;
             }
 
-            const checkedItems = [];
-            const checkboxes = document.querySelectorAll('.type-checkbox:checked');
-
-            if (checkboxes.length === 0) {
-                errorToast("Please select at least one expense type!");
+            const selectedKeys = Object.keys(selectedExpenseData).filter(k => selectedExpenseData[k] && selectedExpenseData[k].is_saved);
+            if (selectedKeys.length === 0) {
+                errorToast("Please select at least one expense type and enter amount!");
                 return false;
             }
 
+            const checkedItems = [];
             let isValid = true;
 
-            checkboxes.forEach(chk => {
-                const typeId = chk.value;
-                const salaryWrapper = document.getElementById(`salary-wrapper-${typeId}`);
+            for (const typeId of selectedKeys) {
+                const item = selectedExpenseData[typeId];
+                if (item.is_salary) {
+                    const staffId = item.staff_id || (item.staff_rows && item.staff_rows[0]?.staff_id);
+                    const amt = parseFloat(item.amount || (item.staff_rows && item.staff_rows[0]?.amount));
+                    const details = item.details || (item.staff_rows && item.staff_rows[0]?.details) || '';
 
-                if (salaryWrapper) {
-                    const rows = salaryWrapper.querySelectorAll('.salary-row');
-                    rows.forEach(r => {
-                        const staffEl = r.querySelector('.staff-select');
-                        const amountEl = r.querySelector('.amount-input');
-                        const detailsEl = r.querySelector('.details-input');
-
-                        const amount = amountEl ? parseFloat(amountEl.value) : 0;
-                        const details = detailsEl ? detailsEl.value.trim() : '';
-                        const staffId = staffEl ? staffEl.value : null;
-
-                        if (!amount || amount <= 0) {
-                            errorToast("Please enter amount for the selected staff!");
-                            isValid = false;
-                            return;
-                        }
-
-                        if (!staffId) {
-                            errorToast("Staff selection is required for salary!");
-                            isValid = false;
-                            return;
-                        }
-
-                        checkedItems.push({
-                            expense_type_id: typeId,
-                            staff_id: staffId,
-                            expense_amount: amount,
-                            expense_details: details,
-                            date: expenseDate
-                        });
+                    if (!staffId) {
+                        errorToast(`Staff selection is required for ${item.type_name}!`);
+                        isValid = false;
+                        break;
+                    }
+                    if (isNaN(amt) || amt <= 0) {
+                        errorToast(`Please enter valid amount for ${item.type_name}!`);
+                        isValid = false;
+                        break;
+                    }
+                    checkedItems.push({
+                        expense_type_id: typeId,
+                        staff_id: staffId,
+                        expense_amount: amt,
+                        expense_details: details,
+                        date: expenseDate
                     });
                 } else {
-                    const amountEl = document.getElementById(`amount-${typeId}`);
-                    const detailsEl = document.getElementById(`details-${typeId}`);
-
-                    const amount = amountEl ? parseFloat(amountEl.value) : 0;
-                    const details = detailsEl ? detailsEl.value.trim() : '';
-
-                    if (!amount || amount <= 0) {
-                        errorToast("Please enter amount for the selected expense!");
+                    const amount = parseFloat(item.amount);
+                    if (isNaN(amount) || amount <= 0) {
+                        errorToast(`Please enter amount for ${item.type_name}!`);
                         isValid = false;
-                        return;
+                        break;
                     }
-
                     checkedItems.push({
                         expense_type_id: typeId,
                         staff_id: null,
                         expense_amount: amount,
-                        expense_details: details,
+                        expense_details: item.details || '',
                         date: expenseDate
                     });
                 }
-            });
+            }
 
             if (!isValid || checkedItems.length === 0) return false;
 
@@ -1895,6 +2415,7 @@
 
             if (res.data.status === "success") {
                 successToast(res.data.message);
+                resetExpenseForm();
                 closeExpenseModal();
                 await getExpenseList();
             } else {
@@ -1905,6 +2426,19 @@
             console.error(e);
             unauthorized(e.response?.status || 500);
         }
+    }
+
+    function resetExpenseForm() {
+        const form = document.getElementById('expenseForm');
+        if (form) form.reset();
+
+        selectedExpenseData = {};
+        activeEditingTypeId = null;
+        renderExpenseTypeCheckboxes();
+
+        const today = new Date().toISOString().split('T')[0];
+        const dateInput = document.getElementById('ExpenseDate');
+        if (dateInput) dateInput.value = today;
     }
 
     // ── Update Expense ──
