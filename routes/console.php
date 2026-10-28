@@ -7,89 +7,164 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-Artisan::command('invoice:delete {order_no}', function () {
+Artisan::command('invoice:delete {order_no} {--dry-run : Simulate invoice deletion without database changes} {--force : Force deletion without interactive confirmation}', function () {
     $rawNo = trim($this->argument('order_no'));
+    $dryRun = $this->option('dry-run');
+    $force = $this->option('force');
+
     $withHash = str_starts_with($rawNo, '#') ? $rawNo : '#' . $rawNo;
     $withoutHash = ltrim($rawNo, '#');
 
-    \Illuminate\Support\Facades\DB::transaction(function () use ($rawNo, $withHash, $withoutHash) {
+    $this->info("=============================================================");
+    $this->info("             Invoice Deletion & Reversal Tool                ");
+    $this->info("=============================================================");
+    if ($dryRun) {
+        $this->warn("MODE: DRY RUN (Simulation only - Database will NOT be modified)\n");
+    } else {
+        $this->alert("MODE: LIVE DELETION\n");
+    }
+
+    \Illuminate\Support\Facades\DB::beginTransaction();
+
+    try {
         $order = \App\Models\Order::with(['details', 'payment', 'productReturns'])
             ->whereIn('order_no', [$rawNo, $withHash, $withoutHash])
             ->orWhere('id', $rawNo)
             ->first();
 
         if (!$order) {
-            $this->error("Invoice '{$rawNo}' not found!");
+            \Illuminate\Support\Facades\DB::rollBack();
+            $this->error("Invoice '{$rawNo}' not found in database!");
             return;
         }
 
         $orderId = $order->id;
         $orderNumber = $order->order_no;
         $customerId = $order->customer_id;
-        $dueAmount = $order->due_amount;
-        $paidAmount = $order->paid_amount;
+        $dueAmount = (float) $order->due_amount;
+        $paidAmount = (float) $order->paid_amount;
+        $subTotal = (float) $order->sub_total;
 
-        $this->info("Found Invoice {$orderNumber} (ID: {$orderId}):");
-        $this->line("- Customer ID: {$customerId}");
-        $this->line("- Subtotal: {$order->sub_total}, Paid: {$paidAmount}, Due: {$dueAmount}");
+        $customer = $customerId ? \App\Models\Customer::find($customerId) : null;
+        $customerName = $customer ? ($customer->customer_name ?? $customer->name) : 'N/A';
+
+        $this->info("Target Invoice Details:");
+        $this->line("  • Invoice No: {$orderNumber} (ID: {$orderId})");
+        $this->line("  • Customer  : {$customerName} (ID: {$customerId})");
+        $this->line("  • Financials: Subtotal = {$subTotal}, Paid = {$paidAmount}, Due = {$dueAmount}");
 
         // 1. Revert product stocks (accounting for any prior returns already restored to inventory)
-        $this->info("\nRestoring product stocks...");
+        $this->info("\n[1/5] Product Stock Reconciliation:");
         if ($order->details->isEmpty()) {
-            $this->line("  - No order items found (or items were previously fully returned). Product stocks unchanged.");
+            $associatedReturns = \App\Models\ProductReturn::where('order_id', $orderId)->get();
+            if ($associatedReturns->isNotEmpty()) {
+                $this->line("  - No active order line items found (lines were fully returned under legacy return logic).");
+                foreach ($associatedReturns as $ret) {
+                    $p = \App\Models\Product::find($ret->product_id);
+                    $pName = $p ? $p->product_name : "Product #{$ret->product_id}";
+                    $this->line("  - Return Record #{$ret->id}: {$ret->quantity}x {$pName} was previously returned to inventory.");
+                    $this->line("    => Net stock movement for this invoice was 0. Current stock remains unchanged.");
+                }
+            } else {
+                $this->line("  - No items found in order_details. Product stocks remain unchanged.");
+            }
         } else {
             foreach ($order->details as $detail) {
                 $product = \App\Models\Product::find($detail->product_id);
                 if ($product) {
-                    $returnedQty = \App\Models\ProductReturn::where('order_id', $orderId)
+                    $returnedQty = (float) \App\Models\ProductReturn::where('order_id', $orderId)
                         ->where('product_id', $detail->product_id)
                         ->sum('quantity');
-                    $netRestoreQty = max(0, (float)$detail->quantity - (float)$returnedQty);
+                    $netRestoreQty = max(0, (float)$detail->quantity - $returnedQty);
                     if ($netRestoreQty > 0) {
                         $oldQty = $product->quantity;
-                        $product->increment('quantity', $netRestoreQty);
-                        $newQty = $product->fresh()->quantity;
+                        if (!$dryRun) {
+                            $product->increment('quantity', $netRestoreQty);
+                        }
+                        $newQty = $oldQty + $netRestoreQty;
                         $this->line("  ✓ Product #{$product->id} ({$product->product_name}): Stock {$oldQty} -> {$newQty} (+{$netRestoreQty})");
                     } else {
-                        $this->line("  - Product #{$product->id} ({$product->product_name}): Stock unchanged (items were already returned to inventory).");
+                        $this->line("  - Product #{$product->id} ({$product->product_name}): Stock unchanged (All {$detail->quantity} item(s) were already returned to inventory).");
                     }
                 }
             }
         }
 
         // 2. Delete associated product returns
+        $this->info("\n[2/5] Product Returns Cleanup:");
         $returnCount = \App\Models\ProductReturn::where('order_id', $orderId)->count();
         if ($returnCount > 0) {
-            \App\Models\ProductReturn::where('order_id', $orderId)->delete();
-            $this->line("  ✓ Deleted {$returnCount} product return record(s).");
+            if (!$dryRun) {
+                \App\Models\ProductReturn::where('order_id', $orderId)->delete();
+            }
+            $this->line("  ✓ Removed {$returnCount} associated product return record(s).");
+        } else {
+            $this->line("  - No associated product returns found.");
         }
 
         // 3. Delete associated payments
+        $this->info("\n[3/5] Payment & Daily Ledger Reversal:");
         $paymentCount = \App\Models\OrderPaymentDetails::where('order_id', $orderId)->count();
         if ($paymentCount > 0) {
-            \App\Models\OrderPaymentDetails::where('order_id', $orderId)->delete();
-            $this->line("  ✓ Deleted {$paymentCount} payment detail record(s) (Total Paid: {$paidAmount}).");
+            $totalPaymentSum = (float) \App\Models\OrderPaymentDetails::where('order_id', $orderId)->sum('paid_amount');
+            if (!$dryRun) {
+                \App\Models\OrderPaymentDetails::where('order_id', $orderId)->delete();
+            }
+            $this->line("  ✓ Removed {$paymentCount} payment record(s) totaling ৳{$totalPaymentSum}.");
+            $this->line("    => Dynamic daily receipt & sales ledger collections automatically reversed.");
+        } else {
+            $this->line("  - No payment records found.");
         }
 
         // 4. Delete order details
+        $this->info("\n[4/5] Order Item Details Removal:");
         $detailCount = \App\Models\OrderDetails::where('order_id', $orderId)->count();
-        \App\Models\OrderDetails::where('order_id', $orderId)->delete();
-        $this->line("  ✓ Deleted {$detailCount} order item(s).");
+        if (!$dryRun) {
+            \App\Models\OrderDetails::where('order_id', $orderId)->delete();
+        }
+        $this->line("  ✓ Removed {$detailCount} order item detail row(s).");
 
         // 5. Delete order
-        $order->delete();
-        $this->info("\n✓ Invoice {$orderNumber} (ID: {$orderId}) deleted successfully from database!");
-
-        // 6. Check updated customer due
-        if ($customerId) {
-            $customer = \App\Models\Customer::find($customerId);
-            if ($customer) {
-                $remDue = \App\Models\Order::where('customer_id', $customerId)->sum('due_amount');
-                $totalDue = ($customer->previous_due_amount ?? 0) + $remDue;
-                $this->info("Customer '{$customer->customer_name}' remaining total due is now: {$totalDue} (Previous: {$customer->previous_due_amount}, Orders Due: {$remDue})");
-            }
+        $this->info("\n[5/5] Primary Invoice Removal:");
+        if (!$dryRun) {
+            $order->delete();
         }
-    });
+        $this->line("  ✓ Order record #{$orderNumber} (ID: {$orderId}) removed.");
+
+        // Check customer due impact
+        if ($customer) {
+            $prevDue = (float) ($customer->previous_due_amount ?? 0);
+            $remOrdersDue = (float) \App\Models\Order::where('customer_id', $customerId)
+                ->where('id', '!=', $orderId)
+                ->sum('due_amount');
+            $newTotalDue = $prevDue + $remOrdersDue;
+            $this->info("\nCustomer Due Recalculation:");
+            $this->line("  • Customer: {$customerName}");
+            $this->line("  • Opening/Previous Due: ৳{$prevDue}");
+            $this->line("  • Remaining Orders Due: ৳{$remOrdersDue}");
+            $this->line("  • Resulting Total Due : ৳{$newTotalDue}");
+        }
+
+        if ($dryRun) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            $this->warn("\n[DRY RUN COMPLETE] No changes were committed to the database.");
+            $this->info("To execute this deletion permanently on this environment, run:");
+            $this->info("  php artisan invoice:delete \"{$rawNo}\" --force");
+        } else {
+            if (!$force && !$this->confirm("\nAre you sure you want to permanently delete Invoice {$orderNumber} and all associated records?")) {
+                \Illuminate\Support\Facades\DB::rollBack();
+                $this->warn("\nOperation cancelled by user. No changes were saved.");
+                return;
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+            $this->info("\n✓ [SUCCESS] Invoice {$orderNumber} (ID: {$orderId}) deleted successfully from database!");
+        }
+
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\DB::rollBack();
+        $this->error("\n[ERROR] Invoice deletion failed: " . $e->getMessage());
+    }
 })->purpose('Safely delete an invoice, restore product stock, and remove all relationships by invoice number or ID');
 
 Artisan::command('purchase:reconcile-shahin-alam {--dry-run : Simulate changes without saving} {--force : Apply changes without confirmation}', function () {
