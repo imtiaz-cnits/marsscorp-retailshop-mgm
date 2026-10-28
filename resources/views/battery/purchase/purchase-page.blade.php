@@ -193,7 +193,7 @@
 <!-- ======================================================== -->
 <!-- MODAL: Purchase Product Modal (Matching Retail Exact Design) -->
 <!-- ======================================================== -->
-<div class="modal fade" id="purchaseCreateModal" tabindex="-1" aria-labelledby="purchaseCreateModalLabel" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="purchaseCreateModal" data-bs-focus="false" aria-labelledby="purchaseCreateModalLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-xl" style="padding: 0 !important;">
         <div class="modal-content" style="padding: 0 !important;">
             <!-- Sticky Green Header with White Text & Red Close Icon -->
@@ -526,13 +526,13 @@
 <!-- ======================================================== -->
 <!-- MODAL: Edit Battery Purchase Modal (Matching Retail Exact Design & Image 5) -->
 <!-- ======================================================== -->
-<section class="modal fade" id="purchaseUpdateModal" tabindex="-1" aria-labelledby="purchaseUpdateModalLabel" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 650px;">
-        <div class="modal-content rounded-2xl border-0 shadow-2xl overflow-hidden bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+<section class="modal fade" id="purchaseUpdateModal" data-bs-focus="false" aria-labelledby="purchaseUpdateModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-xl" style="padding: 0 !important;">
+        <div class="modal-content" style="padding: 0 !important;">
             <!-- Sticky Green Header with White Text & Red Close Icon -->
-            <div style="background-color: #15803d; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; position: sticky; top: 0; z-index: 10;">
+            <div style="background-color: #15803d; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; position: sticky; top: 0; z-index: 20; border-top-left-radius: 16px; border-top-right-radius: 16px;">
                 <h2 style="font-size: 18px; font-weight: 700; color: #ffffff; margin: 0; padding: 0; line-height: 1.2; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-pen-to-square text-sm"></i>
+                    <i class="fa-solid fa-pen-to-square text-white text-base"></i>
                     <span>Update Purchase</span>
                 </h2>
                 <button type="button" class="close-btn close" data-bs-dismiss="modal" aria-label="Close" style="position: static !important; width: 28px; height: 28px; min-width: 28px; min-height: 28px; border-radius: 50%; background-color: #dc2626; color: #ffffff; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: all 0.15s ease; margin: 0; padding: 0;" title="Close">
@@ -540,70 +540,280 @@
                 </button>
             </div>
 
-            <!-- Form Body -->
-            <div class="modal-body p-4 sm:p-5" style="text-align: left;">
-                <form onsubmit="return saveEditBatteryPurchase(event)" id="editPurchaseForm">
-                    <input type="hidden" id="editPurchaseId">
+            <form onsubmit="return saveEditBatteryPurchase(event)" id="batteryPurchaseUpdateForm" style="display: flex; flex-direction: column; flex: 1 1 auto; overflow: hidden; margin: 0;">
+                <input type="hidden" id="editPurchaseId" value="" />
 
+                <!-- Scrollable Body Content -->
+                <div class="purchase-modal-body p-4 sm:p-5" style="overflow-y: auto; flex: 1 1 auto; max-height: calc(90vh - 130px); text-align: left;">
+                    
+                    <!-- Top Info Cards: Supplier & Invoice Details -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-lg-6">
+                            <div class="purchase-clean-card rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 p-4 h-100">
+                                <h5 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-3 text-left">
+                                    <i class="fa-solid fa-truck-field text-emerald-600 dark:text-emerald-400"></i>
+                                    <span>Supplier Information</span>
+                                </h5>
+                                <div class="flex items-center gap-2">
+                                    <div class="relative flex-grow" id="batteryUpdateSearchableSupplierWrapper">
+                                        <input type="text" id="batteryUpdateSupplierSearchInput" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" placeholder="Search or Select Supplier *" autocomplete="off" />
+                                        <input type="hidden" id="batteryUpdateSupplierSelect" value="none">
+                                        <div id="batteryUpdateSupplierDropdownList" class="dropdown-menu shadow-xl w-full p-0 overflow-auto rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800" style="max-height: 250px; display: none; position: absolute; z-index: 1050; top: 100%; left: 0;"></div>
+                                    </div>
+                                    <button type="button" class="inline-flex items-center gap-1 px-3 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 flex-shrink-0 cursor-pointer" onclick="openSupplierCreateModal()">
+                                        <i class="fa-solid fa-plus text-xs"></i>
+                                        <span>New</span>
+                                    </button>
+                                </div>
+
+                                <div id="batteryUpdateSupplierCreditNotice" class="mt-3 d-none">
+                                    <div class="p-2.5 rounded-xl flex justify-between items-center bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40">
+                                        <span id="batteryUpdateSupplierCreditBadge" class="font-bold text-xs text-slate-800 dark:text-white">
+                                            <i class="fa-solid fa-gift me-1 text-emerald-600 dark:text-emerald-400"></i> Return Credit Available: <strong>৳ 0.00</strong>
+                                        </span>
+                                        <label class="flex items-center gap-2 mb-0 px-2 py-1 bg-white dark:bg-slate-800 rounded-lg border border-emerald-300 dark:border-emerald-700 shadow-sm cursor-pointer">
+                                            <input type="checkbox" id="batteryUpdateUseReturnCreditCheckboxBanner" onchange="syncBatteryUpdateReturnCreditCheckbox(this.checked)" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer">
+                                            <span class="font-bold text-xs text-emerald-700 dark:text-emerald-400">Adjust Return Credit</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="purchase-clean-card rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 p-4 h-100">
+                                <h5 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-3 text-left">
+                                    <i class="fa-solid fa-file-invoice text-emerald-600 dark:text-emerald-400"></i>
+                                    <span>Invoice & Voucher Details</span>
+                                </h5>
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Ref / Invoice No <span class="text-rose-500">*</span></label>
+                                        <input type="text" placeholder="Reference No *" id="UpdateReferanceNo" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" required />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Purchase Date <span class="text-rose-500">*</span></label>
+                                        <input type="text" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" id="UpdatePurchaseDate" placeholder="DD-MM-YYYY" autocomplete="off" required style="cursor: pointer;" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Payable Balance</label>
+                                        <input type="text" readonly placeholder="Payable Amount" id="UpdatePurchasePayableAmount" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/80 text-emerald-700 dark:text-emerald-400 text-xs font-bold" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-0 text-left">Attach Invoice Doc</label>
+                                            <span id="batteryUpdateCurrentDocLink" class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400"></span>
+                                        </div>
+                                        <input type="file" id="UpdateAttachDocument" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Search & Scanner Box -->
+                    <div class="purchase-clean-card rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 p-4 mb-3">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2 flex justify-between items-center text-left">
+                            <span><i class="fa-solid fa-barcode text-emerald-600 dark:text-emerald-400 me-1"></i> Scan Barcode or Select Product <span class="text-rose-500">*</span></span>
+                            <span class="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold"><i class="fa-solid fa-bolt me-1"></i> Auto-Cart Enabled</span>
+                        </label>
+                        <div class="flex items-center gap-2">
+                            <div class="flex-grow relative">
+                                <input type="text" id="batteryUpdateProductInputData" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" placeholder="Scan barcode or type product name/code (Auto-adds to list)..." autocomplete="off" />
+                                <ul id="batteryUpdateProductDropdown" class="list-group absolute w-full shadow-xl rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 mt-1" style="z-index: 1050; max-height: 280px; overflow-y: auto; display: none;"></ul>
+                            </div>
+                            <button type="button" class="inline-flex items-center gap-1 px-3 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 flex-shrink-0 cursor-pointer" onclick="openProductCreateModal()" title="Add New Product">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                                <span>New</span>
+                            </button>
+                            <button type="button" class="inline-flex items-center gap-1.5 px-4 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 flex-shrink-0 cursor-pointer" onclick="openBatteryUpdatePurchaseCameraScanner()">
+                                <i class="fa-solid fa-camera text-xs"></i>
+                                <span>Scan Camera</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cart Item Table -->
+                    <div class="table-container rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden mb-3 bg-white dark:bg-slate-900 shadow-sm">
+                        <table class="responsive-table w-full text-left border-collapse text-xs">
+                            <thead class="bg-[#15803d] text-white text-xs font-semibold uppercase tracking-wider">
+                                <tr>
+                                    <th class="p-2.5">Product Name</th>
+                                    <th class="p-2.5">Barcodes</th>
+                                    <th class="p-2.5 text-center" style="width: 130px;">Qty</th>
+                                    <th class="p-2.5 text-end" style="width: 130px;">Cost Price (৳)</th>
+                                    <th class="p-2.5 text-end" style="width: 130px;">Sub Total</th>
+                                    <th class="p-2.5 text-center" style="width: 60px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="batteryUpdateOrderTableBody">
+                                <!-- Dynamic Items Loaded Here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Bottom Summary & Payment Details Card -->
                     <div class="row g-3">
-                        <div class="col-md-6 mb-2">
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Reference No</label>
-                            <input type="text" class="form-control" placeholder="Enter Reference No" id="UpdateReferanceNo" />
-                        </div>
-                        <div class="col-md-6 mb-2">
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Date <span class="text-rose-500">*</span></label>
-                            <input type="text" class="form-control" id="UpdatePurchaseDate" placeholder="DD-MM-YYYY" autocomplete="off" required style="cursor: pointer;" />
-                        </div>
+                        <div class="col-lg-6">
+                            <div class="purchase-clean-card rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 p-4 h-100">
+                                <h5 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-3 text-left">
+                                    <i class="fa-solid fa-credit-card text-emerald-600 dark:text-emerald-400"></i>
+                                    <span>Payment Method & Details</span>
+                                </h5>
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Payment Method</label>
+                                        <select class="form-select modern-select-dropdown w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-semibold focus:border-emerald-600 focus:outline-none transition-all" id="batteryUpdatePaymentMethod" onchange="handleBatteryUpdatePaymentMethodChange(this.value)" style="cursor: pointer;">
+                                            <option value="Cash" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">Cash</option>
+                                            <option value="Bkash" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">Bkash</option>
+                                            <option value="Nagad" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">Nagad</option>
+                                            <option value="Rocket" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">Rocket</option>
+                                            <option value="Bank" class="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200">Bank</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Paid Amount (৳)</label>
+                                        <input type="number" step="any" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-bold" id="batteryUpdatePaidAmount" value="0" />
+                                    </div>
 
-                        <div class="col-md-6 mb-2">
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Grand Total (৳) <span class="text-rose-500">*</span></label>
-                            <input type="number" step="any" class="form-control font-bold" placeholder="Grand Subtotal" id="UpdateGrandSubtotal" required />
-                        </div>
-                        <div class="col-md-6 mb-2">
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Delivery & Transport Charge (৳)</label>
-                            <input type="number" step="any" min="0" class="form-control font-bold" placeholder="Delivery & Transport Charge" id="UpdateDeliveryCharge" value="0" />
-                        </div>
-                        <div class="col-md-6 mb-2">
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Paid Amount (৳)</label>
-                            <input type="number" step="any" class="form-control font-bold text-emerald-600 dark:text-emerald-400" placeholder="Paid Amount" id="UpdatePaidAmount" />
-                        </div>
-                        <div class="col-md-6 mb-2">
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Due Amount (৳)</label>
-                            <input type="number" step="any" class="form-control font-bold text-rose-600 dark:text-rose-400 bg-slate-50 dark:bg-slate-800/60" placeholder="Due Amount" id="UpdateDueAmount" readonly />
-                        </div>
+                                    <!-- Mobile Banking Fields (Bkash / Nagad / Rocket) -->
+                                    <div class="col-12 mt-1" id="batteryUpdateMobileBankingFields" style="display: none;">
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100/70 dark:bg-slate-800/60">
+                                            <div class="row g-2">
+                                                <div class="col-md-6">
+                                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Payment Number</label>
+                                                    <input type="text" id="batteryUpdatePaymentNumber" class="form-control w-full h-[36px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" placeholder="e.g. 017xxxxxxxx" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Transaction ID</label>
+                                                    <input type="text" id="batteryUpdateTransactionIdInput" class="form-control w-full h-[36px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" placeholder="e.g. TRX12345678" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                        <div class="col-md-6 mb-2">
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Supplier</label>
-                            <!-- Searchable Supplier Dropdown for Update Modal -->
-                            <div class="relative" id="updateSearchableSupplierWrapper">
-                                <input type="text" id="updateSupplierSearchInput" class="form-control w-full" placeholder="Search or Select Supplier..." autocomplete="off" style="cursor: pointer;" />
-                                <input type="hidden" id="UpdateSupplierSelect" value="" />
-                                <div id="updateSupplierDropdownList" class="dropdown-menu shadow-xl w-full p-0 overflow-auto rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800" style="max-height: 220px; display: none; position: absolute; z-index: 1070; top: 100%; left: 0;"></div>
+                                    <!-- Bank Banking Fields (Bank) -->
+                                    <div class="col-12 mt-1" id="batteryUpdateBankBankingFields" style="display: none;">
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100/70 dark:bg-slate-800/60">
+                                            <div class="row g-2">
+                                                <div class="col-md-6">
+                                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Bank Name</label>
+                                                    <input type="text" id="batteryUpdateBankNameInput" class="form-control w-full h-[36px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" placeholder="e.g. Islami Bank / DBBL" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 text-left">Bank / Account Number</label>
+                                                    <input type="text" id="batteryUpdateBankNumberInput" class="form-control w-full h-[36px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" placeholder="e.g. 2050xxxxxxxx" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="col-md-6 mb-2">
-                            <div class="flex items-center justify-between mb-1">
-                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-0 text-left">Attach Invoice Doc</label>
-                                <span id="currentDocLink" class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400"></span>
+                        <div class="col-lg-6">
+                            <div class="purchase-clean-card rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 p-4">
+                                <div class="space-y-2 text-xs">
+                                    <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                                        <span class="text-slate-500 dark:text-slate-400 font-semibold">Total Quantity:</span>
+                                        <span class="font-bold text-slate-800 dark:text-white text-sm" id="batteryUpdateTotalQuantity">0.00</span>
+                                    </div>
+                                    <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                                        <span class="text-slate-500 dark:text-slate-400 font-semibold">Grand Subtotal:</span>
+                                        <span class="font-bold text-slate-800 dark:text-white text-sm">৳ <span id="batteryUpdateTotalSubTotal">0.00</span></span>
+                                        <input type="hidden" id="batteryUpdateGrandSubtotal" value="0.00" />
+                                    </div>
+                                    <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                                        <label for="batteryUpdateDeliveryCharge" class="text-slate-600 dark:text-slate-300 font-semibold mb-0 cursor-pointer">
+                                            Delivery & Transport Charge:
+                                        </label>
+                                        <div class="flex items-center gap-1">
+                                            <span class="text-slate-400 font-bold text-xs">৳</span>
+                                            <input type="number" step="any" min="0" class="form-control w-28 h-8 text-end font-bold rounded-lg text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:border-emerald-600 focus:outline-none" id="batteryUpdateDeliveryCharge" value="0" placeholder="0.00" oninput="calculateBatteryUpdateDuePayment()" />
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                                        <label for="batteryUpdatePurchaseDiscountInput" class="text-slate-600 dark:text-slate-300 font-semibold mb-0 cursor-pointer flex items-center gap-1">
+                                            <span>Discount:</span>
+                                            <span id="batteryUpdatePurchaseDiscountSummaryDisplay" class="text-[11px] font-bold text-rose-500"></span>
+                                        </label>
+                                        <div class="flex items-center gap-1.5">
+                                            <select id="batteryUpdatePurchaseDiscountType" class="form-select h-8 px-2 py-0 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:border-emerald-600 focus:outline-none cursor-pointer" onchange="calculateBatteryUpdateDuePayment()" style="width: 58px;">
+                                                <option value="fixed">৳</option>
+                                                <option value="percent">%</option>
+                                            </select>
+                                            <input type="number" step="any" min="0" class="form-control w-28 h-8 text-end font-bold rounded-lg text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:border-emerald-600 focus:outline-none" id="batteryUpdatePurchaseDiscountInput" value="0" placeholder="0.00" oninput="calculateBatteryUpdateDuePayment()" />
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center py-1" style="display: none;">
+                                        <label class="inline-flex items-center gap-2 cursor-pointer mb-0">
+                                            <input type="checkbox" id="batteryUpdateUseReturnCreditCheckbox" onchange="syncBatteryUpdateReturnCreditCheckbox(this.checked)" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer">
+                                            <span class="font-bold text-xs text-emerald-700 dark:text-emerald-400">Return Credit Adj</span>
+                                        </label>
+                                        <input type="number" step="0.01" min="0" class="form-control w-28 h-8 text-end font-bold rounded-lg text-xs" id="batteryUpdateReturnAdjustmentAmount" value="0.00" disabled oninput="calculateBatteryUpdateDuePayment()" />
+                                    </div>
+                                    <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-800 text-white dark:bg-slate-950 my-2">
+                                        <span class="font-bold text-xs">Net Payable:</span>
+                                        <span class="font-bold text-base text-emerald-400">৳ <span id="batteryUpdateNetPayableDisplay">0.00</span></span>
+                                        <input type="hidden" id="batteryUpdateNetPayableAmount" value="0.00" />
+                                    </div>
+                                    <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                                        <span class="text-slate-500 dark:text-slate-400 font-semibold">Due Amount:</span>
+                                        <span class="font-bold text-rose-600 dark:text-rose-400 text-sm">৳ <input type="text" id="batteryUpdateDueAmount" value="0.00" readonly class="border-0 bg-transparent text-rose-600 dark:text-rose-400 font-bold text-end" style="width: 90px;" /></span>
+                                    </div>
+                                    <div class="flex justify-between items-center py-1">
+                                        <span class="text-slate-500 dark:text-slate-400 font-semibold">Payment Status:</span>
+                                        <span id="batteryUpdatePaymentStatusDisplay" class="partial-payment-status">Unpaid</span>
+                                    </div>
+                                </div>
                             </div>
-                            <input type="file" id="UpdateAttachDocument" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs" />
                         </div>
                     </div>
+                </div>
 
-                    <!-- Cancel button red with white text, Update button emerald with white text -->
-                    <div class="modal-footer-wrap flex items-center justify-end gap-2 mt-4 pt-3 border-t border-slate-200 dark:border-slate-800">
-                        <button type="button" class="px-4 h-[38px] rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all shadow-sm border-0 cursor-pointer" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="inline-flex items-center gap-1.5 px-5 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 cursor-pointer">
-                            <i class="fa-solid fa-check text-xs"></i>
-                            <span>Update Purchase</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <!-- Sticky Bottom Modal Footer -->
+                <div class="purchase-modal-footer bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between gap-3 flex-shrink-0" style="position: sticky; bottom: 0; z-index: 20;">
+                    <button type="button" class="px-5 h-[38px] rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all shadow-sm border-0 cursor-pointer" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="flex-grow sm:flex-grow-0 sm:min-w-[240px] h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl shadow transition-all duration-150 flex items-center justify-center gap-2 border-0 cursor-pointer">
+                        <i class="fa-solid fa-check text-sm"></i>
+                        <span>Update Purchase</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </section>
+
+<!-- Camera Scanner Modal for Battery Purchase Update -->
+<div class="modal fade" id="batteryUpdatePurchaseCameraScanModal" tabindex="-1" aria-hidden="true" style="z-index: 1070;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header bg-dark text-white border-0 py-3">
+                <h5 class="modal-title fs-6 fw-bold">
+                    <i class="fa-solid fa-barcode text-success me-2"></i> Battery Barcode Scanner (Update Purchase)
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" onclick="stopBatteryUpdatePurchaseCameraScanner()"></button>
+            </div>
+            <div class="modal-body p-3 text-center bg-light">
+                <div id="batteryUpdatePurchaseCameraScannerStatus" class="alert alert-info py-2 small mb-3">
+                    <i class="fa-solid fa-circle-notch fa-spin me-1"></i> Starting camera... Hold barcode in front of camera.
+                </div>
+
+                <div id="batteryUpdatePurchaseReader" style="width: 100%; min-height: 250px; background: #000; border-radius: 12px; overflow: hidden; margin: 0 auto;"></div>
+
+                <div class="d-flex justify-content-between align-items-center mt-3 px-1">
+                    <span id="batteryUpdatePurchaseLastScannedText" class="badge bg-dark text-wrap p-2" style="font-size: 13px;">Scanned: -</span>
+                    <button type="button" class="btn btn-outline-dark btn-sm rounded-pill" onclick="switchBatteryUpdatePurchaseCamera()">
+                        <i class="fa-solid fa-camera-rotate me-1"></i> Switch Camera
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer bg-light border-0 py-2">
+                <button type="button" class="btn btn-secondary btn-sm w-100 rounded-pill" data-bs-dismiss="modal" onclick="stopBatteryUpdatePurchaseCameraScanner()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- ======================================================== -->
 <!-- MODAL: Delete Confirmation Modal (Compact & Clean Design) -->
@@ -675,7 +885,7 @@
 <!-- ======================================================== -->
 <!-- SUB-MODAL: Add New Supplier (Matching Image 4 Exactly) -->
 <!-- ======================================================== -->
-<div class="purchase-submodal" id="purchaseSupplierCreateModal">
+<div class="purchase-submodal" id="purchaseSupplierCreateModal" style="display: none;">
     <div class="purchase-submodal-content" style="width: 650px; max-width: 95%; max-height: 90vh; border-radius: 16px; background: #ffffff; padding: 0; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); display: flex; flex-direction: column; text-align: left;">
         <!-- Sticky Green Header with Truck Icon & Red Close Button -->
         <div style="background-color: #15803d; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; position: sticky; top: 0; z-index: 10; border-top-left-radius: 16px; border-top-right-radius: 16px;">
@@ -762,7 +972,7 @@
 <!-- ======================================================== -->
 <!-- SUB-MODAL: Add New Product (Matching Image 5 Exactly) -->
 <!-- ======================================================== -->
-<div class="purchase-submodal" id="purchaseProductCreateModal">
+<div class="purchase-submodal" id="purchaseProductCreateModal" style="display: none;">
     <div class="purchase-submodal-content" style="width: 750px; max-width: 95%; max-height: 90vh; border-radius: 16px; background: #ffffff; padding: 0; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); display: flex; flex-direction: column; text-align: left;">
         <!-- Header: Green Gradient with Cart Icon & Red Close Button -->
         <div style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; position: sticky; top: 0; z-index: 10; border-top-left-radius: 16px; border-top-right-radius: 16px;">
@@ -941,7 +1151,7 @@
 </div>
 
 <!-- Add Product modal to Add New Brand Modal Start (Matching Image 2) -->
-<div class="newbrand" id="purchaseAddBrandModal">
+<div class="newbrand" id="purchaseAddBrandModal" style="display: none;">
     <div class="newbrand-content">
         <div class="newmodal-header">
             <h3>Add New Brand</h3>
@@ -990,7 +1200,7 @@
 <!-- Add Product modal to New Brand Modal End -->
 
 <!-- Add Product modal to New Category Modal Start (Matching Image 3) -->
-<div class="newcategory" id="purchaseAddCategoryModal">
+<div class="newcategory" id="purchaseAddCategoryModal" style="display: none;">
     <div class="newcategory-content">
         <div class="newmodal-header">
             <h3>Add New Category</h3>
@@ -1039,7 +1249,7 @@
 <!-- Add Product modal to New Category Modal End -->
 
 <!-- Add Product modal to New Sub-Category Modal Start (Matching Image 4) -->
-<div class="newcategory" id="purchaseAddSubCategoryModal">
+<div class="newcategory" id="purchaseAddSubCategoryModal" style="display: none;">
     <div class="newcategory-content">
         <div class="newmodal-header">
             <h3>Add New Sub-Category</h3>
@@ -1337,14 +1547,16 @@
     /* ========================================================
        Purchase Product Modal Styling Matching Retail Exactly
        ======================================================== */
-    #purchaseCreateModal .modal-dialog {
+    #purchaseCreateModal .modal-dialog,
+    #purchaseUpdateModal .modal-dialog {
         max-width: 1080px !important;
         width: 95% !important;
         margin: 1.75rem auto !important;
         padding: 0 !important;
     }
 
-    #purchaseCreateModal .modal-content {
+    #purchaseCreateModal .modal-content,
+    #purchaseUpdateModal .modal-content {
         border-radius: 16px !important;
         border: none !important;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
@@ -1361,7 +1573,13 @@
     body[data-layout-mode="dark"] #purchaseCreateModal .modal-content,
     html.dark #purchaseCreateModal .modal-content,
     body.dark #purchaseCreateModal .modal-content,
-    body.dark-mode #purchaseCreateModal .modal-content {
+    body.dark-mode #purchaseCreateModal .modal-content,
+    body[light-mode="dark"] #purchaseUpdateModal .modal-content,
+    html[light-mode="dark"] #purchaseUpdateModal .modal-content,
+    body[data-layout-mode="dark"] #purchaseUpdateModal .modal-content,
+    html.dark #purchaseUpdateModal .modal-content,
+    body.dark #purchaseUpdateModal .modal-content,
+    body.dark-mode #purchaseUpdateModal .modal-content {
         background-color: #0f172a !important;
         color: #f8fafc !important;
     }
@@ -1369,21 +1587,32 @@
     body[light-mode="dark"] #purchaseCreateModal .purchase-modal-body,
     html[light-mode="dark"] #purchaseCreateModal .purchase-modal-body,
     html.dark #purchaseCreateModal .purchase-modal-body,
-    body.dark #purchaseCreateModal .purchase-modal-body {
+    body.dark #purchaseCreateModal .purchase-modal-body,
+    body[light-mode="dark"] #purchaseUpdateModal .purchase-modal-body,
+    html[light-mode="dark"] #purchaseUpdateModal .purchase-modal-body,
+    html.dark #purchaseUpdateModal .purchase-modal-body,
+    body.dark #purchaseUpdateModal .purchase-modal-body {
         background-color: #0f172a !important;
     }
 
     body[light-mode="dark"] #purchaseCreateModal .purchase-modal-footer,
     html[light-mode="dark"] #purchaseCreateModal .purchase-modal-footer,
     html.dark #purchaseCreateModal .purchase-modal-footer,
-    body.dark #purchaseCreateModal .purchase-modal-footer {
+    body.dark #purchaseCreateModal .purchase-modal-footer,
+    body[light-mode="dark"] #purchaseUpdateModal .purchase-modal-footer,
+    html[light-mode="dark"] #purchaseUpdateModal .purchase-modal-footer,
+    html.dark #purchaseUpdateModal .purchase-modal-footer,
+    body.dark #purchaseUpdateModal .purchase-modal-footer {
         background-color: #0f172a !important;
         border-top-color: #334155 !important;
     }
 
     body[light-mode="dark"] #purchaseCreateModal .purchase-clean-card,
     html.dark #purchaseCreateModal .purchase-clean-card,
-    body.dark #purchaseCreateModal .purchase-clean-card {
+    body.dark #purchaseCreateModal .purchase-clean-card,
+    body[light-mode="dark"] #purchaseUpdateModal .purchase-clean-card,
+    html.dark #purchaseUpdateModal .purchase-clean-card,
+    body.dark #purchaseUpdateModal .purchase-clean-card {
         background-color: #1e293b !important;
         border-color: #334155 !important;
     }
@@ -1391,7 +1620,11 @@
     body[light-mode="dark"] #purchaseCreateModal .form-control,
     body[light-mode="dark"] #purchaseCreateModal .form-select,
     html.dark #purchaseCreateModal .form-control,
-    html.dark #purchaseCreateModal .form-select {
+    html.dark #purchaseCreateModal .form-select,
+    body[light-mode="dark"] #purchaseUpdateModal .form-control,
+    body[light-mode="dark"] #purchaseUpdateModal .form-select,
+    html.dark #purchaseUpdateModal .form-control,
+    html.dark #purchaseUpdateModal .form-select {
         background-color: #0f172a !important;
         border-color: #334155 !important;
         color: #ffffff !important;
@@ -1399,33 +1632,46 @@
 
     body[light-mode="dark"] #supplierDropdownList,
     html.dark #supplierDropdownList,
-    body.dark #supplierDropdownList {
+    body.dark #supplierDropdownList,
+    body[light-mode="dark"] #batteryUpdateSupplierDropdownList,
+    html.dark #batteryUpdateSupplierDropdownList,
+    body.dark #batteryUpdateSupplierDropdownList {
         background-color: #1e293b !important;
         border-color: #334155 !important;
     }
 
     body[light-mode="dark"] #supplierDropdownList .supplier-select-item:hover,
     html.dark #supplierDropdownList .supplier-select-item:hover,
-    body.dark #supplierDropdownList .supplier-select-item:hover {
+    body.dark #supplierDropdownList .supplier-select-item:hover,
+    body[light-mode="dark"] #batteryUpdateSupplierDropdownList .battery-update-supplier-item:hover,
+    html.dark #batteryUpdateSupplierDropdownList .battery-update-supplier-item:hover,
+    body.dark #batteryUpdateSupplierDropdownList .battery-update-supplier-item:hover {
         background-color: #0f172a !important;
     }
 
     body[light-mode="dark"] #purchaseCreateModal .table-container,
     html.dark #purchaseCreateModal .table-container,
-    body.dark #purchaseCreateModal .table-container {
+    body.dark #purchaseCreateModal .table-container,
+    body[light-mode="dark"] #purchaseUpdateModal .table-container,
+    html.dark #purchaseUpdateModal .table-container,
+    body.dark #purchaseUpdateModal .table-container {
         background-color: #1e293b !important;
         border-color: #334155 !important;
     }
 
     body[light-mode="dark"] #purchaseCreateModal .responsive-table th,
-    html.dark #purchaseCreateModal .responsive-table th {
+    html.dark #purchaseCreateModal .responsive-table th,
+    body[light-mode="dark"] #purchaseUpdateModal .responsive-table th,
+    html.dark #purchaseUpdateModal .responsive-table th {
         background-color: #0f172a !important;
         color: #ffffff !important;
         border-color: #334155 !important;
     }
 
     body[light-mode="dark"] #purchaseCreateModal .responsive-table td,
-    html.dark #purchaseCreateModal .responsive-table td {
+    html.dark #purchaseCreateModal .responsive-table td,
+    body[light-mode="dark"] #purchaseUpdateModal .responsive-table td,
+    html.dark #purchaseUpdateModal .responsive-table td {
         border-color: #334155 !important;
         color: #ffffff !important;
     }
@@ -1441,30 +1687,39 @@
         -moz-appearance: none !important;
     }
 
-    #productDropdown:empty {
+    #productDropdown:empty,
+    #batteryUpdateProductDropdown:empty {
         display: none !important;
     }
 
-    #productDropdown .list-group-item {
+    #productDropdown .list-group-item,
+    #batteryUpdateProductDropdown .list-group-item {
         padding: 8px 12px;
         transition: all 0.15s ease;
         border-color: #e2e8f0;
     }
 
-    #productDropdown .list-group-item:hover {
+    #productDropdown .list-group-item:hover,
+    #batteryUpdateProductDropdown .list-group-item:hover {
         background-color: #f1f5f9 !important;
     }
 
     body[light-mode="dark"] #productDropdown,
     html.dark #productDropdown,
-    body.dark #productDropdown {
+    body.dark #productDropdown,
+    body[light-mode="dark"] #batteryUpdateProductDropdown,
+    html.dark #batteryUpdateProductDropdown,
+    body.dark #batteryUpdateProductDropdown {
         background-color: #1e293b !important;
         border-color: #334155 !important;
     }
 
     body[light-mode="dark"] #productDropdown .list-group-item,
     html.dark #productDropdown .list-group-item,
-    body.dark #productDropdown .list-group-item {
+    body.dark #productDropdown .list-group-item,
+    body[light-mode="dark"] #batteryUpdateProductDropdown .list-group-item,
+    html.dark #batteryUpdateProductDropdown .list-group-item,
+    body.dark #batteryUpdateProductDropdown .list-group-item {
         background-color: #1e293b !important;
         border-color: #334155 !important;
         color: #f8fafc !important;
@@ -1472,7 +1727,10 @@
 
     body[light-mode="dark"] #productDropdown .list-group-item:hover,
     html.dark #productDropdown .list-group-item:hover,
-    body.dark #productDropdown .list-group-item:hover {
+    body.dark #productDropdown .list-group-item:hover,
+    body[light-mode="dark"] #batteryUpdateProductDropdown .list-group-item:hover,
+    html.dark #batteryUpdateProductDropdown .list-group-item:hover,
+    body.dark #batteryUpdateProductDropdown .list-group-item:hover {
         background-color: #0f172a !important;
     }
 
@@ -1599,7 +1857,7 @@
         margin: 0 !important;
         padding: 15px !important;
         background: rgba(0, 0, 0, 0.65) !important;
-        display: none;
+        display: none !important;
         align-items: center !important;
         justify-content: center !important;
         z-index: 1070 !important;
@@ -1791,7 +2049,7 @@
         margin: 0 !important;
         padding: 0 !important;
         background: rgba(15, 23, 42, 0.75) !important;
-        display: none;
+        display: none !important;
         justify-content: center !important;
         align-items: center !important;
         z-index: 100000000 !important;
@@ -1807,6 +2065,25 @@
         opacity: 1 !important;
         visibility: visible !important;
         z-index: 100000000 !important;
+    }
+
+    /* Ensure all inputs and selects in all purchase modals & sub-modals can be clicked and typed into smoothly */
+    .purchase-submodal input,
+    .purchase-submodal select,
+    .purchase-submodal textarea,
+    .newbrand input,
+    .newbrand select,
+    .newcategory input,
+    .newcategory select,
+    #purchaseCreateModal input,
+    #purchaseCreateModal select,
+    #purchaseUpdateModal input,
+    #purchaseUpdateModal select,
+    .custom-searchable-select input,
+    .custom-subcategory-select input {
+        pointer-events: auto !important;
+        user-select: text !important;
+        -webkit-user-select: text !important;
     }
     .newbrand-content,
     .newcategory-content,
@@ -2451,9 +2728,28 @@
         });
 
         $('#purchaseUpdateModal').on('shown.bs.modal', function () {
-            initUpdateDatePicker();
-            setupUpdateSupplierSearch();
+            initBatteryUpdateDatePicker();
+            setupBatteryUpdateSupplierSearch();
+            setupBatteryUpdateProductSearchAndCart();
         });
+
+        // Prevent Bootstrap modal focus-trap from stealing focus when typing in sub-modals, dropdowns or nested inputs
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            if (bootstrap.Modal.Default) bootstrap.Modal.Default.focus = false;
+        }
+        if (typeof $.fn !== 'undefined' && $.fn.modal && $.fn.modal.Constructor) {
+            if ($.fn.modal.Constructor.Default) $.fn.modal.Constructor.Default.focus = false;
+            if ($.fn.modal.Constructor.prototype._enforceFocus) {
+                $.fn.modal.Constructor.prototype._enforceFocus = function () {};
+            }
+        }
+        document.addEventListener('focusin', function (e) {
+            if (e.target && e.target.closest && e.target.closest(
+                '#purchaseProductCreateModal, #purchaseSupplierCreateModal, #purchaseAddBrandModal, #purchaseAddCategoryModal, #purchaseAddSubCategoryModal, .purchase-submodal, .newbrand, .newcategory, .custom-searchable-select, .custom-subcategory-select'
+            )) {
+                e.stopImmediatePropagation();
+            }
+        }, true);
 
         // Global outside click listener for custom dropdowns
         document.addEventListener("click", function(e) {
@@ -2470,6 +2766,7 @@
         $('#confirmationModal').appendTo('body');
         $('#purchaseCreateModal').appendTo('body');
         $('#purchaseUpdateModal').appendTo('body');
+        $('#batteryUpdatePurchaseCameraScanModal').appendTo('body');
         $('#purchaseCameraScanModal').appendTo('body');
         $('#purchaseSupplierCreateModal').appendTo('body');
         $('#purchaseProductCreateModal').appendTo('body');
@@ -2869,8 +3166,9 @@
             modal.style.setProperty('display', 'flex', 'important');
             setTimeout(() => {
                 modal.classList.add('show');
-                document.getElementById('purchaseSupplierName')?.focus();
-            }, 20);
+                const inp = document.getElementById('purchaseSupplierName');
+                if (inp) { inp.focus(); }
+            }, 30);
         }
     }
 
@@ -2968,8 +3266,9 @@
             loadProductModalDropdowns();
             setTimeout(() => {
                 modal.classList.add('show');
-                document.getElementById('modalProductName')?.focus();
-            }, 20);
+                const inp = document.getElementById('modalProductName');
+                if (inp) { inp.focus(); }
+            }, 30);
         }
     }
 
@@ -3418,7 +3717,11 @@
         if (m) {
             if (m.parentNode !== document.body) document.body.appendChild(m);
             m.style.setProperty('display', 'flex', 'important');
-            setTimeout(() => { m.classList.add('show'); $('#quickBrandName').focus(); }, 20);
+            setTimeout(() => {
+                m.classList.add('show');
+                const inp = document.getElementById('quickBrandName');
+                if (inp) { inp.focus(); }
+            }, 30);
         }
     }
     function closeBrandSubModal() {
@@ -3473,7 +3776,11 @@
         if (m) {
             if (m.parentNode !== document.body) document.body.appendChild(m);
             m.style.setProperty('display', 'flex', 'important');
-            setTimeout(() => { m.classList.add('show'); $('#quickCategoryName').focus(); }, 20);
+            setTimeout(() => {
+                m.classList.add('show');
+                const inp = document.getElementById('quickCategoryName');
+                if (inp) { inp.focus(); }
+            }, 30);
         }
     }
     function closeCategorySubModal() {
@@ -3534,7 +3841,11 @@
                 selectSubCategoryCategoryOption(currCatId, catName);
             }
             m.style.setProperty('display', 'flex', 'important');
-            setTimeout(() => { m.classList.add('show'); $('#quickSubCategoryName').focus(); }, 20);
+            setTimeout(() => {
+                m.classList.add('show');
+                const inp = document.getElementById('quickSubCategoryName');
+                if (inp) { inp.focus(); }
+            }, 30);
         }
     }
     function closeSubCategorySubModal() {
@@ -4278,16 +4589,23 @@
     // ==========================================
     // EDIT PURCHASE WORKFLOW (Matching Image 5 & Retail Exact Logic)
     // ==========================================
-    let updatePurchaseDatepicker = null;
-    let updateAllSuppliersData = [];
+    let batteryUpdatePurchaseDatepicker = null;
+    let batteryUpdateAllSuppliersData = [];
+    let batteryUpdateBarcodeLists = {};
+    let batteryUpdateDebounceTimer = null;
+    let batteryUpdateAvailableSupplierCredit = 0;
+    let batteryUpdatePurchaseRawSubtotal = 0;
+    let batteryUpdateHtml5QrCode = null;
+    let batteryUpdateLastScannedCode = null;
+    let batteryUpdateFacingMode = "environment";
 
-    function initUpdateDatePicker() {
+    function initBatteryUpdateDatePicker() {
         const dateInput = document.getElementById("UpdatePurchaseDate");
         if (dateInput && typeof flatpickr !== "undefined") {
-            if (updatePurchaseDatepicker) {
-                try { updatePurchaseDatepicker.destroy(); } catch (e) {}
+            if (batteryUpdatePurchaseDatepicker) {
+                try { batteryUpdatePurchaseDatepicker.destroy(); } catch (e) {}
             }
-            updatePurchaseDatepicker = flatpickr(dateInput, {
+            batteryUpdatePurchaseDatepicker = flatpickr(dateInput, {
                 dateFormat: "d-m-Y",
                 allowInput: true,
                 clickOpens: true,
@@ -4296,8 +4614,132 @@
         }
     }
 
-    function renderUpdateSupplierDropdownItems(suppliers) {
-        const listContainer = document.getElementById("updateSupplierDropdownList");
+    function syncBatteryUpdateReturnCreditCheckbox(isChecked) {
+        const tableCb = document.getElementById("batteryUpdateUseReturnCreditCheckbox");
+        const bannerCb = document.getElementById("batteryUpdateUseReturnCreditCheckboxBanner");
+        if (tableCb) tableCb.checked = isChecked;
+        if (bannerCb) bannerCb.checked = isChecked;
+
+        toggleBatteryUpdateReturnCreditAdjustment();
+    }
+
+    function toggleBatteryUpdateReturnCreditAdjustment() {
+        const checkbox = document.getElementById("batteryUpdateUseReturnCreditCheckbox");
+        const returnAdjInput = document.getElementById("batteryUpdateReturnAdjustmentAmount");
+        const maxCredit = parseFloat(batteryUpdateAvailableSupplierCredit || 0);
+
+        if (checkbox && checkbox.checked) {
+            returnAdjInput.disabled = false;
+            returnAdjInput.style.backgroundColor = "#ffffff";
+            returnAdjInput.setAttribute("max", maxCredit);
+            returnAdjInput.value = maxCredit > 0 ? maxCredit.toFixed(2) : "0.00";
+        } else {
+            returnAdjInput.value = "0.00";
+            returnAdjInput.disabled = true;
+            returnAdjInput.style.backgroundColor = "#f1f5f9";
+        }
+
+        calculateBatteryUpdateDuePayment();
+    }
+
+    function handleBatteryUpdatePaymentMethodChange(method) {
+        const mobileFields = document.getElementById('batteryUpdateMobileBankingFields');
+        const bankFields = document.getElementById('batteryUpdateBankBankingFields');
+
+        if (['Bkash', 'Nagad', 'Rocket'].includes(method)) {
+            if (mobileFields) mobileFields.style.display = 'block';
+            if (bankFields) bankFields.style.display = 'none';
+        } else if (method === 'Bank') {
+            if (mobileFields) mobileFields.style.display = 'none';
+            if (bankFields) bankFields.style.display = 'block';
+        } else {
+            if (mobileFields) mobileFields.style.display = 'none';
+            if (bankFields) bankFields.style.display = 'none';
+        }
+    }
+
+    function calculateBatteryUpdateDuePayment() {
+        const grandSubtotalInput = document.getElementById("batteryUpdateGrandSubtotal");
+        const deliveryInput = document.getElementById("batteryUpdateDeliveryCharge");
+        const discountInput = document.getElementById("batteryUpdatePurchaseDiscountInput");
+        const discountTypeSelect = document.getElementById("batteryUpdatePurchaseDiscountType");
+        const discountSummaryDisplay = document.getElementById("batteryUpdatePurchaseDiscountSummaryDisplay");
+        const netPayableInput = document.getElementById("batteryUpdateNetPayableAmount");
+        const netDisplay = document.getElementById("batteryUpdateNetPayableDisplay");
+        const returnAdjInput = document.getElementById("batteryUpdateReturnAdjustmentAmount");
+        const checkbox = document.getElementById("batteryUpdateUseReturnCreditCheckbox");
+        const paidAmountInput = document.getElementById("batteryUpdatePaidAmount");
+        const dueAmountInput = document.getElementById("batteryUpdateDueAmount");
+        const paymentStatusDisplay = document.getElementById("batteryUpdatePaymentStatusDisplay");
+
+        let rawSubtotal = batteryUpdatePurchaseRawSubtotal || parseFloat(grandSubtotalInput?.value) || 0;
+        let delivery = parseFloat(deliveryInput?.value) || 0;
+        let discountNum = parseFloat(discountInput?.value) || 0;
+        let discountType = discountTypeSelect ? discountTypeSelect.value : 'fixed';
+
+        let discountAmount = (discountType === 'percent') ? (rawSubtotal * discountNum / 100) : discountNum;
+        if (discountAmount > rawSubtotal) discountAmount = rawSubtotal;
+        if (discountAmount < 0) discountAmount = 0;
+
+        if (discountSummaryDisplay) {
+            discountSummaryDisplay.textContent = (discountAmount > 0)
+                ? (discountType === 'percent' ? `(-৳${discountAmount.toFixed(2)})` : '')
+                : '';
+        }
+
+        let totalWithDelivery = Math.max(0, (rawSubtotal - discountAmount) + delivery);
+        let returnAdj = 0;
+        if (checkbox && checkbox.checked) {
+            let maxCredit = parseFloat(batteryUpdateAvailableSupplierCredit || 0);
+            returnAdj = parseFloat(returnAdjInput?.value) || 0;
+
+            if (returnAdj > maxCredit) {
+                returnAdj = maxCredit;
+                returnAdjInput.value = maxCredit.toFixed(2);
+            }
+            if (returnAdj > totalWithDelivery) {
+                returnAdj = totalWithDelivery;
+                returnAdjInput.value = totalWithDelivery.toFixed(2);
+            }
+        } else {
+            if (returnAdjInput) returnAdjInput.value = "0.00";
+        }
+
+        let netPayable = Math.max(0, totalWithDelivery - returnAdj);
+        if (netPayableInput) netPayableInput.value = netPayable.toFixed(2);
+        if (netDisplay) netDisplay.textContent = netPayable.toFixed(2);
+
+        let paidAmount = parseFloat(paidAmountInput?.value) || 0;
+        let dueAmount = Math.max(0, netPayable - paidAmount);
+
+        if (dueAmountInput) dueAmountInput.value = dueAmount.toFixed(2);
+
+        if (paymentStatusDisplay) {
+            if (paidAmount === 0 && netPayable > 0) {
+                paymentStatusDisplay.textContent = "Unpaid";
+                paymentStatusDisplay.className = "partial-payment-status bg-danger text-white";
+            } else if (paidAmount < netPayable) {
+                paymentStatusDisplay.textContent = "Partial Paid";
+                paymentStatusDisplay.className = "partial-payment-status";
+            } else {
+                paymentStatusDisplay.textContent = "Fully Paid";
+                paymentStatusDisplay.className = "fully-paid-status";
+            }
+        }
+    }
+
+    async function loadBatteryUpdateSuppliersDropdown() {
+        try {
+            let res = await axios.get("/api/battery/supplier-list", HeaderToken());
+            batteryUpdateAllSuppliersData = res.data.SupplierData || res.data.data || [];
+            renderBatteryUpdateSupplierDropdownItems(batteryUpdateAllSuppliersData);
+        } catch (e) {
+            console.error("Error loading battery suppliers:", e);
+        }
+    }
+
+    function renderBatteryUpdateSupplierDropdownItems(suppliers) {
+        const listContainer = document.getElementById("batteryUpdateSupplierDropdownList");
         if (!listContainer) return;
 
         if (!suppliers || suppliers.length === 0) {
@@ -4306,59 +4748,101 @@
         }
 
         let html = suppliers.map(s => {
+            const creditVal = parseFloat(s.return_credit_balance || 0);
+            const creditLabel = creditVal > 0 ? `<span class="badge bg-teal ms-1" style="background:#0d9488;">🎁 ৳${creditVal.toFixed(2)}</span>` : '';
+            const payable = parseFloat(s.purchase_payable_amount || 0);
+            const payableLabel = payable > 0 ? `<span class="badge bg-danger ms-1">Due: ৳${payable.toFixed(2)}</span>` : '';
+            const suppIdBadge = s.supplier_id ? `<span class="badge bg-emerald-50 text-emerald-700 border border-emerald-200 me-1 font-mono">${s.supplier_id}</span>` : '';
+
             return `
-                <div class="dropdown-item px-3.5 py-2 border-b border-slate-100 dark:border-slate-800 update-supplier-item hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                <div class="dropdown-item px-3.5 py-2 border-b border-slate-100 dark:border-slate-800 battery-update-supplier-item hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                      data-id="${s.id}"
                      data-name="${s.name}"
+                     data-payable="${payable}"
+                     data-credit="${creditVal}"
                      style="cursor: pointer;">
                      <div class="font-bold text-slate-800 dark:text-slate-100 text-xs flex items-center justify-between">
-                         <span>${s.name} ${s.company ? `<span class="text-[11px] font-normal text-slate-500 dark:text-slate-400">(${s.company})</span>` : ''}</span>
-                         <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">${s.supplier_id || ''}</span>
+                         <span>${suppIdBadge} ${s.name} ${s.company ? `<span class="text-[11px] font-normal text-slate-500 dark:text-slate-400">(${s.company})</span>` : ''}</span>
+                         <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">${s.mobile || ''}</span>
                      </div>
+                     <div class="text-[11px] text-slate-400 mt-0.5">${payableLabel} ${creditLabel}</div>
                 </div>
             `;
         }).join('');
 
         listContainer.innerHTML = html;
 
-        listContainer.querySelectorAll('.update-supplier-item').forEach(item => {
+        listContainer.querySelectorAll('.battery-update-supplier-item').forEach(item => {
             item.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
                 const name = this.getAttribute('data-name');
+                const payable = this.getAttribute('data-payable');
+                const credit = parseFloat(this.getAttribute('data-credit')) || 0;
 
-                document.getElementById("UpdateSupplierSelect").value = id;
-                document.getElementById("updateSupplierSearchInput").value = name;
+                selectBatteryUpdateSupplierItem({
+                    id,
+                    name,
+                    payable,
+                    credit
+                });
                 listContainer.style.display = 'none';
             });
         });
     }
 
-    function setupUpdateSupplierSearch() {
-        const suppInput = document.getElementById("updateSupplierSearchInput");
-        const suppList = document.getElementById("updateSupplierDropdownList");
+    function selectBatteryUpdateSupplierItem(s) {
+        document.getElementById("batteryUpdateSupplierSelect").value = s.id;
+        document.getElementById("batteryUpdateSupplierSearchInput").value = s.name;
+        document.getElementById("UpdatePurchasePayableAmount").value = s.payable || 0;
+
+        batteryUpdateAvailableSupplierCredit = s.credit || 0;
+
+        const creditNotice = document.getElementById("batteryUpdateSupplierCreditNotice");
+        const creditBadge = document.getElementById("batteryUpdateSupplierCreditBadge");
+        const returnAdjInput = document.getElementById("batteryUpdateReturnAdjustmentAmount");
+
+        if (typeof syncBatteryUpdateReturnCreditCheckbox === 'function') {
+            syncBatteryUpdateReturnCreditCheckbox(false);
+        }
+
+        if (s.credit > 0) {
+            creditBadge.innerHTML = `<i class="fa-solid fa-gift me-1" style="color: #0d9488;"></i> Return Credit Available: <strong>৳ ${s.credit.toFixed(2)}</strong>`;
+            creditNotice.classList.remove("d-none");
+            if (returnAdjInput) returnAdjInput.setAttribute("max", s.credit);
+        } else {
+            creditNotice.classList.add("d-none");
+            if (returnAdjInput) returnAdjInput.setAttribute("max", "0");
+        }
+
+        calculateBatteryUpdateDuePayment();
+    }
+
+    function setupBatteryUpdateSupplierSearch() {
+        const suppInput = document.getElementById("batteryUpdateSupplierSearchInput");
+        const suppList = document.getElementById("batteryUpdateSupplierDropdownList");
 
         if (suppInput && suppList) {
             suppInput.onfocus = function() {
                 suppList.style.display = "block";
-                renderUpdateSupplierDropdownItems(updateAllSuppliersData);
+                renderBatteryUpdateSupplierDropdownItems(batteryUpdateAllSuppliersData);
             };
 
             suppInput.oninput = function() {
                 const query = this.value.toLowerCase().trim();
                 suppList.style.display = "block";
 
-                const filtered = updateAllSuppliersData.filter(s =>
+                const filtered = batteryUpdateAllSuppliersData.filter(s =>
                     (s.name && s.name.toLowerCase().includes(query)) ||
                     (s.mobile && s.mobile.toLowerCase().includes(query)) ||
                     (s.company && s.company.toLowerCase().includes(query)) ||
                     (s.supplier_id && s.supplier_id.toLowerCase().includes(query))
                 );
 
-                renderUpdateSupplierDropdownItems(filtered);
+                renderBatteryUpdateSupplierDropdownItems(filtered);
             };
 
             document.addEventListener("click", function(e) {
-                const wrapper = document.getElementById("updateSearchableSupplierWrapper");
+                const wrapper = document.getElementById("batteryUpdateSearchableSupplierWrapper");
                 if (wrapper && !wrapper.contains(e.target)) {
                     suppList.style.display = "none";
                 }
@@ -4366,25 +4850,351 @@
         }
     }
 
-    function recalculateUpdateDue() {
-        let g = parseFloat($('#UpdateGrandSubtotal').val()) || 0;
-        let del = parseFloat($('#UpdateDeliveryCharge').val()) || 0;
-        let p = parseFloat($('#UpdatePaidAmount').val()) || 0;
-        let due = Math.max(0, (g + del) - p);
-        $('#UpdateDueAmount').val(due.toFixed(2));
+    function addBatteryUpdateProductToTable(product, specificBarcode = null, initialQty = 1, initialCost = null) {
+        const tableBody = document.getElementById("batteryUpdateOrderTableBody");
+        const existingRow = document.querySelector(`#batteryUpdateOrderTableBody tr[data-product-id="${product.id}"]`);
+
+        if (existingRow && !initialCost) {
+            const qtyInput = existingRow.querySelector(".quantity");
+            qtyInput.value = parseInt(qtyInput.value) + 1;
+
+            if (specificBarcode) {
+                appendBarcodeToBatteryUpdateRow(existingRow, product.id, specificBarcode);
+            }
+
+            updateBatteryUpdateRowSubtotal(existingRow);
+            updateBatteryUpdateTotals();
+            return;
+        }
+
+        let initialBarcode = specificBarcode || '';
+        if (!initialBarcode) {
+            if (Array.isArray(product.all_codes) && product.all_codes.length > 0) {
+                initialBarcode = product.all_codes[0];
+            } else if (product.product_code) {
+                if (Array.isArray(product.product_code)) {
+                    initialBarcode = product.product_code.join(', ');
+                } else {
+                    try {
+                        const parsed = JSON.parse(product.product_code);
+                        initialBarcode = Array.isArray(parsed) ? parsed.join(', ') : product.product_code;
+                    } catch(e) {
+                        initialBarcode = product.product_code;
+                    }
+                }
+            }
+        }
+
+        const barcodeArr = initialBarcode ? initialBarcode.split(',').map(b => b.trim()).filter(Boolean) : [];
+        batteryUpdateBarcodeLists[product.id] = barcodeArr;
+
+        const row = document.createElement("tr");
+        row.setAttribute("data-product-id", product.id);
+        row.className = "hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors";
+
+        const productName = product.name || product.product_name || 'Product';
+        const costPrice = initialCost !== null ? parseFloat(initialCost) : (parseFloat(product.cost_price) || 0);
+        const subtotal = initialQty * costPrice;
+
+        row.innerHTML = `
+            <td class="p-2.5 font-bold text-slate-800 dark:text-slate-100">
+                <span class="product-id-val d-none">${product.id}</span>
+                <span>${productName}</span>
+                <div class="text-[11px] text-slate-400 font-normal">ID: ${product.product_id || product.id}</div>
+            </td>
+            <td class="p-2.5">
+                <div class="d-flex align-items-center gap-1">
+                    <input type="text" class="form-control form-control-sm battery-update-row-barcode" style="font-size: 11px; width: 140px;" value="${initialBarcode}" readonly />
+                    <button type="button" class="btn btn-sm btn-outline-secondary px-1.5 py-0.5" onclick="promptBatteryUpdateAddBarcode(this, ${product.id})" title="Add Barcode">
+                        <i class="fa-solid fa-plus text-[10px]"></i>
+                    </button>
+                </div>
+            </td>
+            <td class="p-2.5 text-center">
+                <input type="number" class="form-control form-control-sm quantity text-center font-bold" min="1" value="${initialQty}" style="width: 70px; margin: 0 auto;" oninput="updateBatteryUpdateRowSubtotal(this.closest('tr')); updateBatteryUpdateTotals();" />
+            </td>
+            <td class="p-2.5 text-end">
+                <input type="number" step="any" class="form-control form-control-sm cost-price text-end font-bold" value="${costPrice}" style="width: 90px; margin-left: auto;" oninput="updateBatteryUpdateRowSubtotal(this.closest('tr')); updateBatteryUpdateTotals();" />
+            </td>
+            <td class="p-2.5 text-end font-bold text-slate-800 dark:text-white subtotal">৳ ${subtotal.toFixed(2)}</td>
+            <td class="p-2.5 text-center">
+                <button type="button" class="btn btn-sm btn-outline-danger p-1 rounded-lg" onclick="removeBatteryUpdateProductRow(this)" title="Remove">
+                    <i class="fa-solid fa-trash text-xs"></i>
+                </button>
+            </td>
+        `;
+
+        tableBody.appendChild(row);
+        updateBatteryUpdateTotals();
+    }
+
+    function appendBarcodeToBatteryUpdateRow(row, productId, barcode) {
+        if (!batteryUpdateBarcodeLists[productId]) batteryUpdateBarcodeLists[productId] = [];
+        if (!batteryUpdateBarcodeLists[productId].includes(barcode)) {
+            batteryUpdateBarcodeLists[productId].push(barcode);
+            const input = row.querySelector(".battery-update-row-barcode");
+            if (input) input.value = batteryUpdateBarcodeLists[productId].join(', ');
+        }
+    }
+
+    function promptBatteryUpdateAddBarcode(btn, productId) {
+        const barcode = prompt("Enter additional barcode for this product:");
+        if (barcode && barcode.trim()) {
+            const row = btn.closest("tr");
+            appendBarcodeToBatteryUpdateRow(row, productId, barcode.trim());
+        }
+    }
+
+    function updateBatteryUpdateRowSubtotal(row) {
+        const qty = parseInt(row.querySelector(".quantity").value) || 0;
+        const price = parseFloat(row.querySelector(".cost-price").value) || 0;
+        const subtotal = qty * price;
+        row.querySelector(".subtotal").innerText = `৳ ${subtotal.toFixed(2)}`;
+    }
+
+    function removeBatteryUpdateProductRow(btn) {
+        const row = btn.closest("tr");
+        const productId = row.getAttribute("data-product-id");
+        delete batteryUpdateBarcodeLists[productId];
+        row.remove();
+        updateBatteryUpdateTotals();
+    }
+
+    function updateBatteryUpdateTotals() {
+        let totalQty = 0;
+        let totalSub = 0;
+
+        document.querySelectorAll("#batteryUpdateOrderTableBody tr").forEach(row => {
+            const qty = parseInt(row.querySelector(".quantity").value) || 0;
+            const price = parseFloat(row.querySelector(".cost-price").value) || 0;
+            totalQty += qty;
+            totalSub += qty * price;
+        });
+
+        batteryUpdatePurchaseRawSubtotal = totalSub;
+        const totalQtyEl = document.getElementById("batteryUpdateTotalQuantity");
+        const totalSubEl = document.getElementById("batteryUpdateTotalSubTotal");
+        const grandSubEl = document.getElementById("batteryUpdateGrandSubtotal");
+
+        if (totalQtyEl) totalQtyEl.innerText = totalQty;
+        if (totalSubEl) totalSubEl.innerText = totalSub.toFixed(2);
+        if (grandSubEl) grandSubEl.value = totalSub.toFixed(2);
+
+        calculateBatteryUpdateDuePayment();
+    }
+
+    function setupBatteryUpdateProductSearchAndCart() {
+        const productInput = document.getElementById("batteryUpdateProductInputData");
+        const productDropdown = document.getElementById("batteryUpdateProductDropdown");
+
+        if (productInput) {
+            productInput.addEventListener("keydown", function(e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    const code = this.value.trim();
+                    if (code) processBatteryUpdateBarcodeOrSearchDirect(code);
+                }
+            });
+
+            productInput.addEventListener("focus", function() {
+                if (this.value.trim() && productDropdown && productDropdown.children.length > 0) {
+                    productDropdown.style.display = "block";
+                }
+            });
+
+            productInput.addEventListener("input", function() {
+                clearTimeout(batteryUpdateDebounceTimer);
+                const query = this.value.trim();
+
+                if (!query) {
+                    if (productDropdown) {
+                        productDropdown.style.display = "none";
+                        productDropdown.innerHTML = "";
+                    }
+                    return;
+                }
+
+                batteryUpdateDebounceTimer = setTimeout(async () => {
+                    try {
+                        const res = await axios.post("/api/battery/product-search-by-name", { query: query }, HeaderToken());
+                        if (!productDropdown) return;
+                        productDropdown.innerHTML = "";
+
+                        if (res.data.status === "success" && res.data.data && res.data.data.length > 0) {
+                            const exactBarcodeMatch = res.data.data.find(p =>
+                                (p.product_code && p.product_code.toLowerCase() === query.toLowerCase()) ||
+                                (Array.isArray(p.all_codes) && p.all_codes.some(c => String(c).toLowerCase() === query.toLowerCase()))
+                            );
+
+                            if (exactBarcodeMatch && res.data.data.length === 1) {
+                                addBatteryUpdateProductToTable(exactBarcodeMatch, query);
+                                productInput.value = "";
+                                productDropdown.style.display = "none";
+                                productDropdown.innerHTML = "";
+                                return;
+                            }
+
+                            productDropdown.style.display = "block";
+                            res.data.data.forEach(product => {
+                                const li = document.createElement("li");
+                                li.className = "list-group-item d-flex justify-content-between align-items-center py-2 px-3";
+                                li.style.cursor = "pointer";
+
+                                const barcodeText = product.display_codes || product.product_code;
+                                const barcodeBadge = barcodeText
+                                    ? `<span class="badge bg-secondary text-white ms-2" style="font-size: 11px;">${barcodeText}</span>`
+                                    : '';
+
+                                li.innerHTML = `
+                                    <div class="d-flex align-items-center flex-wrap">
+                                        <span class="fw-bold text-dark dark:text-light" style="font-size: 13px;">${product.name || product.product_name}</span>
+                                        ${barcodeBadge}
+                                    </div>
+                                    <span class="badge bg-success font-bold" style="font-size: 12px;">৳ ${(parseFloat(product.cost_price) || 0).toFixed(2)}</span>
+                                `;
+                                li.addEventListener("click", () => {
+                                    addBatteryUpdateProductToTable(product);
+                                    productInput.value = "";
+                                    productDropdown.style.display = "none";
+                                    productDropdown.innerHTML = "";
+                                });
+                                productDropdown.appendChild(li);
+                            });
+                        } else {
+                            productDropdown.style.display = "block";
+                            productDropdown.innerHTML = `<li class="list-group-item text-center text-muted py-2 small">No battery product found for "${query}"</li>`;
+                        }
+                    } catch (error) {
+                        console.error("Product Search Error:", error);
+                        if (productDropdown) productDropdown.style.display = "none";
+                    }
+                }, 250);
+            });
+
+            document.addEventListener("click", function(e) {
+                if (productDropdown && productInput && !productInput.contains(e.target) && !productDropdown.contains(e.target)) {
+                    productDropdown.style.display = "none";
+                }
+            });
+        }
+    }
+
+    async function processBatteryUpdateBarcodeOrSearchDirect(query) {
+        try {
+            const res = await axios.post("/api/battery/product-search-by-name", { query: query }, HeaderToken());
+            if (res.data.status === "success" && res.data.data && res.data.data.length > 0) {
+                const found = res.data.data.find(p =>
+                    (p.product_code && p.product_code.toLowerCase() === query.toLowerCase()) ||
+                    (Array.isArray(p.all_codes) && p.all_codes.some(c => String(c).toLowerCase() === query.toLowerCase()))
+                ) || res.data.data[0];
+
+                addBatteryUpdateProductToTable(found, query);
+                const input = document.getElementById("batteryUpdateProductInputData");
+                if (input) input.value = "";
+                const dd = document.getElementById("batteryUpdateProductDropdown");
+                if (dd) { dd.style.display = "none"; dd.innerHTML = ""; }
+            } else {
+                errorToast("No battery product found matching: " + query);
+            }
+        } catch (e) {
+            console.error("Direct barcode search error:", e);
+        }
+    }
+
+    function openBatteryUpdatePurchaseCameraScanner() {
+        const modalEl = new bootstrap.Modal(document.getElementById('batteryUpdatePurchaseCameraScanModal'));
+        modalEl.show();
+        setTimeout(() => {
+            startBatteryUpdatePurchaseCameraScanner();
+        }, 350);
+    }
+
+    function startBatteryUpdatePurchaseCameraScanner() {
+        if (batteryUpdateHtml5QrCode && batteryUpdateHtml5QrCode.isScanning) {
+            batteryUpdateHtml5QrCode.stop().then(() => initBatteryUpdatePurchaseHtml5QrCode()).catch(() => initBatteryUpdatePurchaseHtml5QrCode());
+        } else {
+            initBatteryUpdatePurchaseHtml5QrCode();
+        }
+    }
+
+    function initBatteryUpdatePurchaseHtml5QrCode() {
+        const statusEl = document.getElementById('batteryUpdatePurchaseCameraScannerStatus');
+        if (statusEl) {
+            statusEl.className = "alert alert-info py-2 small mb-3";
+            statusEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-1"></i> Starting camera... Hold barcode in front of camera.';
+        }
+
+        if (typeof Html5Qrcode === 'undefined') {
+            if (statusEl) statusEl.innerHTML = 'Camera scanner library not available.';
+            return;
+        }
+
+        batteryUpdateHtml5QrCode = new Html5Qrcode("batteryUpdatePurchaseReader");
+        const config = { fps: 15, qrbox: { width: 280, height: 160 }, aspectRatio: 1.777778 };
+
+        batteryUpdateHtml5QrCode.start(
+            { facingMode: batteryUpdateFacingMode },
+            config,
+            (decodedText) => onBatteryUpdatePurchaseBarcodeSuccess(decodedText),
+            (err) => {}
+        ).catch((err) => {
+            console.error("Camera error:", err);
+            if (statusEl) {
+                statusEl.className = "alert alert-danger py-2 small mb-3";
+                statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-1"></i> Camera permission denied or device not found.';
+            }
+        });
+    }
+
+    function onBatteryUpdatePurchaseBarcodeSuccess(code) {
+        code = code.trim();
+        if (!code || code === batteryUpdateLastScannedCode) return;
+        batteryUpdateLastScannedCode = code;
+
+        const lastScannedBadge = document.getElementById('batteryUpdatePurchaseLastScannedText');
+        if (lastScannedBadge) {
+            lastScannedBadge.textContent = "Scanned: " + code;
+            lastScannedBadge.className = "badge bg-success text-wrap p-2";
+        }
+
+        const input = document.getElementById("batteryUpdateProductInputData");
+        if (input) {
+            input.value = code;
+        }
+
+        processBatteryUpdateBarcodeOrSearchDirect(code);
+
+        setTimeout(() => {
+            stopBatteryUpdatePurchaseCameraScanner();
+            const modalEl = bootstrap.Modal.getInstance(document.getElementById('batteryUpdatePurchaseCameraScanModal'));
+            if (modalEl) modalEl.hide();
+        }, 400);
+    }
+
+    function stopBatteryUpdatePurchaseCameraScanner() {
+        if (batteryUpdateHtml5QrCode && batteryUpdateHtml5QrCode.isScanning) {
+            batteryUpdateHtml5QrCode.stop().then(() => {
+                batteryUpdateHtml5QrCode.clear();
+            }).catch(err => console.error("Error stopping camera:", err));
+        }
+    }
+
+    function switchBatteryUpdatePurchaseCamera() {
+        batteryUpdateFacingMode = (batteryUpdateFacingMode === "environment") ? "user" : "environment";
+        startBatteryUpdatePurchaseCameraScanner();
     }
 
     async function openEditPurchaseModal(id) {
         try {
             if (typeof showLoader === 'function') showLoader();
-            $('#editPurchaseId').val(id);
+            document.getElementById('editPurchaseId').value = id;
+            batteryUpdateBarcodeLists = {};
+
+            const tableBody = document.getElementById("batteryUpdateOrderTableBody");
+            if (tableBody) tableBody.innerHTML = "";
 
             // 1. Load battery suppliers if not yet loaded
-            if (!updateAllSuppliersData || updateAllSuppliersData.length === 0) {
-                let sRes = await axios.get("/api/battery/supplier-list", HeaderToken());
-                updateAllSuppliersData = sRes.data.SupplierData || sRes.data.data || [];
-                renderUpdateSupplierDropdownItems(updateAllSuppliersData);
-            }
+            await loadBatteryUpdateSuppliersDropdown();
 
             // 2. Fetch purchase by id
             let res = await axios.post("/api/battery/purchases-by-id", {
@@ -4400,26 +5210,39 @@
                 if (dateVal && dateVal.includes('-')) {
                     let parts = dateVal.split('-');
                     if (parts[0].length === 4) {
-                        // Convert Y-m-d to d-m-Y
                         dateVal = `${parts[2]}-${parts[1]}-${parts[0]}`;
                     }
                 }
                 document.getElementById('UpdatePurchaseDate').value = dateVal;
-                initUpdateDatePicker();
-                if (updatePurchaseDatepicker) {
-                    updatePurchaseDatepicker.setDate(dateVal, true, "d-m-Y");
+                initBatteryUpdateDatePicker();
+                if (batteryUpdatePurchaseDatepicker) {
+                    batteryUpdatePurchaseDatepicker.setDate(dateVal, true, "d-m-Y");
                 }
 
-                document.getElementById('UpdateGrandSubtotal').value = data.grand_subtotal || 0;
-                document.getElementById('UpdateDeliveryCharge').value = data.delivery_charge || 0;
-                document.getElementById('UpdatePaidAmount').value = data.paid_amount || 0;
-                document.getElementById('UpdateDueAmount').value = data.due_amount || 0;
+                document.getElementById('batteryUpdateDeliveryCharge').value = data.delivery_charge || 0;
+                document.getElementById('batteryUpdatePaidAmount').value = data.paid_amount || 0;
+
+                // Discount
+                const discTypeSelect = document.getElementById('batteryUpdatePurchaseDiscountType');
+                const discInput = document.getElementById('batteryUpdatePurchaseDiscountInput');
+                if (discTypeSelect) discTypeSelect.value = data.discount_type || 'fixed';
+                if (discInput) {
+                    if (data.discount_type === 'percent' && data.discount_rate) {
+                        discInput.value = data.discount_rate;
+                    } else {
+                        discInput.value = data.discount_amount || 0;
+                    }
+                }
+
+                // Return Adjustment
+                const returnAdjInput = document.getElementById('batteryUpdateReturnAdjustmentAmount');
+                if (returnAdjInput) returnAdjInput.value = data.return_adjustment_amount || 0;
 
                 // Reset file input & show current document link
                 const docInput = document.getElementById('UpdateAttachDocument');
                 if (docInput) docInput.value = '';
 
-                const docLink = document.getElementById('currentDocLink');
+                const docLink = document.getElementById('batteryUpdateCurrentDocLink');
                 if (docLink) {
                     if (data.attach_document) {
                         let docSrc = data.attach_document.startsWith('http') || data.attach_document.startsWith('/') ? data.attach_document : `/${data.attach_document}`;
@@ -4429,21 +5252,84 @@
                     }
                 }
 
+                // Supplier
                 if (data.supplier_id) {
-                    document.getElementById('UpdateSupplierSelect').value = data.supplier_id;
-                    const foundSupp = updateAllSuppliersData.find(s => s.id == data.supplier_id);
+                    document.getElementById('batteryUpdateSupplierSelect').value = data.supplier_id;
+                    const foundSupp = batteryUpdateAllSuppliersData.find(s => s.id == data.supplier_id);
                     if (foundSupp) {
-                        document.getElementById('updateSupplierSearchInput').value = foundSupp.name;
+                        selectBatteryUpdateSupplierItem(foundSupp);
                     } else if (data.supplier) {
-                        document.getElementById('updateSupplierSearchInput').value = data.supplier;
+                        selectBatteryUpdateSupplierItem({
+                            id: data.supplier_id,
+                            name: typeof data.supplier === 'object' ? data.supplier.name : data.supplier,
+                            payable: data.purchase_payable_amount || 0,
+                            credit: 0
+                        });
                     }
                 } else {
-                    document.getElementById('UpdateSupplierSelect').value = '';
-                    document.getElementById('updateSupplierSearchInput').value = '';
+                    document.getElementById('batteryUpdateSupplierSelect').value = 'none';
+                    document.getElementById('batteryUpdateSupplierSearchInput').value = '';
                 }
 
-                setupUpdateSupplierSearch();
-                $('#UpdateGrandSubtotal, #UpdateDeliveryCharge, #UpdatePaidAmount').off('input.updateDue').on('input.updateDue', recalculateUpdateDue);
+                setupBatteryUpdateSupplierSearch();
+                setupBatteryUpdateProductSearchAndCart();
+
+                // Payment Method & Details
+                const firstPayment = (data.payment_details && data.payment_details.length > 0) ? data.payment_details[0] : null;
+                const pMethod = firstPayment?.payment_method || 'Cash';
+                const methodSelect = document.getElementById('batteryUpdatePaymentMethod');
+                if (methodSelect) {
+                    methodSelect.value = pMethod;
+                    handleBatteryUpdatePaymentMethodChange(pMethod);
+                }
+
+                if (firstPayment && firstPayment.transaction_id) {
+                    const trx = firstPayment.transaction_id;
+                    if (['Bkash', 'Nagad', 'Rocket'].includes(pMethod)) {
+                        const parts = trx.split('|').map(s => s.trim());
+                        parts.forEach(p => {
+                            if (p.toLowerCase().startsWith('number:')) {
+                                const num = p.split(':')[1]?.trim() || '';
+                                const el = document.getElementById('batteryUpdatePaymentNumber');
+                                if (el) el.value = num;
+                            } else if (p.toLowerCase().startsWith('trxid:')) {
+                                const t = p.split(':')[1]?.trim() || '';
+                                const el = document.getElementById('batteryUpdateTransactionIdInput');
+                                if (el) el.value = t;
+                            }
+                        });
+                    } else if (pMethod === 'Bank') {
+                        const parts = trx.split('|').map(s => s.trim());
+                        parts.forEach(p => {
+                            if (p.toLowerCase().startsWith('bank:')) {
+                                const b = p.split(':')[1]?.trim() || '';
+                                const el = document.getElementById('batteryUpdateBankNameInput');
+                                if (el) el.value = b;
+                            } else if (p.toLowerCase().startsWith('a/c:')) {
+                                const a = p.split(':')[1]?.trim() || '';
+                                const el = document.getElementById('batteryUpdateBankNumberInput');
+                                if (el) el.value = a;
+                            }
+                        });
+                    }
+                }
+
+                // Load Order Details / Products into table
+                const details = data.order_details || data.orderDetails || [];
+                details.forEach(od => {
+                    const prod = od.product || {};
+                    addBatteryUpdateProductToTable({
+                        id: od.product_id,
+                        name: prod.name || prod.product_name,
+                        product_id: prod.product_id,
+                        cost_price: od.cost_price,
+                        product_code: prod.product_code
+                    }, null, parseInt(od.quantity) || 1, parseFloat(od.cost_price) || 0);
+                });
+
+                updateBatteryUpdateTotals();
+
+                $('#batteryUpdateDeliveryCharge, #batteryUpdatePurchaseDiscountInput, #batteryUpdatePaidAmount').off('input.updateDue').on('input.updateDue', calculateBatteryUpdateDuePayment);
 
                 $('#purchaseUpdateModal').modal('show');
             } else {
@@ -4458,21 +5344,122 @@
 
     async function saveEditBatteryPurchase(event) {
         if (event) event.preventDefault();
+
+        // 1. Validate Supplier
+        let supplierIdVal = document.getElementById('batteryUpdateSupplierSelect')?.value;
+        const suppInputVal = document.getElementById('batteryUpdateSupplierSearchInput')?.value.trim();
+
+        if ((!supplierIdVal || supplierIdVal === 'none') && suppInputVal && batteryUpdateAllSuppliersData.length > 0) {
+            const query = suppInputVal.toLowerCase();
+            const matched = batteryUpdateAllSuppliersData.find(s =>
+                (s.supplier_id && s.supplier_id.toLowerCase() === query) ||
+                (s.name && s.name.toLowerCase() === query) ||
+                (s.mobile && s.mobile === query)
+            );
+            if (matched) {
+                selectBatteryUpdateSupplierItem(matched);
+                supplierIdVal = matched.id;
+            }
+        }
+
+        if (!supplierIdVal || supplierIdVal === 'none' || supplierIdVal.trim() === '') {
+            errorToast("Please select a Supplier!");
+            document.getElementById('batteryUpdateSupplierSearchInput')?.focus();
+            return false;
+        }
+
+        // 2. Validate Reference No
+        const refNoVal = document.getElementById('UpdateReferanceNo')?.value.trim();
+        if (!refNoVal) {
+            errorToast("Please enter Reference No!");
+            document.getElementById('UpdateReferanceNo')?.focus();
+            return false;
+        }
+
+        // 3. Validate Purchase Date
+        const purchaseDateVal = document.getElementById('UpdatePurchaseDate')?.value.trim();
+        if (!purchaseDateVal) {
+            errorToast("Please select a Purchase Date!");
+            document.getElementById('UpdatePurchaseDate')?.focus();
+            return false;
+        }
+
+        // 4. Validate Products
+        const products = [];
+        const rows = document.querySelectorAll('#batteryUpdateOrderTableBody tr');
+
+        rows.forEach(row => {
+            const productId = row.querySelector('.product-id-val').innerText.trim();
+            const quantity = parseInt(row.querySelector('.quantity').value) || 0;
+            const costPrice = parseFloat(row.querySelector('.cost-price').value) || 0;
+            const subtotalText = row.querySelector('.subtotal').innerText.replace(/[^\d.]/g, '');
+            const subtotal = parseFloat(subtotalText) || (quantity * costPrice);
+            const productCodes = batteryUpdateBarcodeLists[productId] || [];
+
+            if (quantity <= 0) {
+                errorToast("Quantity must be greater than zero!");
+                return;
+            }
+
+            products.push({
+                product_id: productId,
+                quantity: quantity,
+                product_code: productCodes,
+                cost_price: costPrice,
+                subtotal: subtotal
+            });
+        });
+
+        if (products.length === 0) {
+            errorToast("At least one product must be added to the purchase!");
+            return false;
+        }
+
+        // 5. Payment details
+        const selectedMethod = document.getElementById('batteryUpdatePaymentMethod')?.value || 'Cash';
+        let trxDetails = '';
+        if (['Bkash', 'Nagad', 'Rocket'].includes(selectedMethod)) {
+            const pNum = document.getElementById('batteryUpdatePaymentNumber')?.value.trim() || '';
+            const tId = document.getElementById('batteryUpdateTransactionIdInput')?.value.trim() || '';
+            trxDetails = [pNum ? 'Number: ' + pNum : '', tId ? 'TrxID: ' + tId : ''].filter(Boolean).join(' | ');
+        } else if (selectedMethod === 'Bank') {
+            const bName = document.getElementById('batteryUpdateBankNameInput')?.value.trim() || '';
+            const bNum = document.getElementById('batteryUpdateBankNumberInput')?.value.trim() || '';
+            trxDetails = [bName ? 'Bank: ' + bName : '', bNum ? 'A/C: ' + bNum : ''].filter(Boolean).join(' | ');
+        }
+
         try {
             let id = $('#editPurchaseId').val();
-            let grandSubtotal = $('#UpdateGrandSubtotal').val();
-            let paidAmount = $('#UpdatePaidAmount').val() || 0;
-            let dueAmount = $('#UpdateDueAmount').val() || 0;
+            let rawSubVal = batteryUpdatePurchaseRawSubtotal || parseFloat(document.getElementById('batteryUpdateGrandSubtotal')?.value) || 0;
+            let deliveryCharge = parseFloat($('#batteryUpdateDeliveryCharge').val()) || 0;
+
+            let discTypeVal = document.getElementById('batteryUpdatePurchaseDiscountType')?.value || 'fixed';
+            let discNumVal = parseFloat(document.getElementById('batteryUpdatePurchaseDiscountInput')?.value) || 0;
+            let discAmountVal = (discTypeVal === 'percent') ? (rawSubVal * discNumVal / 100) : discNumVal;
+            if (discAmountVal < 0) discAmountVal = 0;
+
+            let paidAmount = parseFloat($('#batteryUpdatePaidAmount').val()) || 0;
+            let dueAmount = parseFloat($('#batteryUpdateDueAmount').val()) || 0;
+            let returnAdj = parseFloat($('#batteryUpdateReturnAdjustmentAmount').val()) || 0;
+            let paymentStatus = document.getElementById('batteryUpdatePaymentStatusDisplay')?.textContent.trim() || 'Unpaid';
 
             let formData = new FormData();
             formData.append('id', id);
-            formData.append('referance_no', $('#UpdateReferanceNo').val().trim());
-            formData.append('date', $('#UpdatePurchaseDate').val());
-            formData.append('grand_subtotal', grandSubtotal);
-            formData.append('delivery_charge', parseFloat($('#UpdateDeliveryCharge').val()) || 0);
+            formData.append('supplier_id', supplierIdVal);
+            formData.append('referance_no', refNoVal);
+            formData.append('date', purchaseDateVal);
+            formData.append('grand_subtotal', rawSubVal);
+            formData.append('delivery_charge', deliveryCharge);
+            formData.append('discount_amount', discAmountVal);
+            formData.append('discount_type', discTypeVal);
+            formData.append('discount_rate', discTypeVal === 'percent' ? discNumVal : '');
+            formData.append('return_adjustment_amount', returnAdj);
+            formData.append('payment_method', selectedMethod);
+            formData.append('transaction_id', trxDetails);
             formData.append('paid_amount', paidAmount);
             formData.append('due_amount', dueAmount);
-            formData.append('supplier_id', $('#UpdateSupplierSelect').val());
+            formData.append('payment_status', paymentStatus);
+            formData.append('products', JSON.stringify(products));
 
             const imgInput = document.getElementById('UpdateAttachDocument');
             if (imgInput && imgInput.files[0]) {

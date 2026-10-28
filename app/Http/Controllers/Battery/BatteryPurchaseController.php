@@ -517,28 +517,35 @@ class BatteryPurchaseController extends Controller
 
             // 8. Payment Details Reconciliation
             $authoritativePaid = $existingLedgerPaid;
-            if ($request->filled('paid_amount')) {
-                $requestedPaid = round(floatval($request->input('paid_amount')), 2);
-                if ($requestedPaid != $authoritativePaid) {
-                    $firstPayment = $purchase->paymentDetails->first();
-                    if ($firstPayment) {
-                        $diff = $requestedPaid - $authoritativePaid;
-                        $firstPayment->paid_amount = max(0, (float)$firstPayment->paid_amount + $diff);
-                        $firstPayment->save();
-                        $authoritativePaid = $requestedPaid;
-                    } elseif ($requestedPaid > 0) {
-                        BatteryPurchasePaymentDetail::create([
-                            'purchases_id'    => $purchase->id,
-                            'paid_amount'     => $requestedPaid,
-                            'discount_amount' => 0,
-                            'payment_method'  => 'Cash',
-                            'payment_status'  => ($effectiveTotal - $requestedPaid) <= 0 ? 'Fully Paid' : 'Partial Paid',
-                            'user_id'         => $user_id,
-                        ]);
-                        $authoritativePaid = $requestedPaid;
-                    }
+            $firstPayment = $purchase->paymentDetails->first();
+            if ($firstPayment) {
+                if ($request->filled('paid_amount')) {
+                    $requestedPaid = round(floatval($request->input('paid_amount')), 2);
+                    $diff = $requestedPaid - $authoritativePaid;
+                    $firstPayment->paid_amount = max(0, (float)$firstPayment->paid_amount + $diff);
+                    $authoritativePaid = $requestedPaid;
                 }
+                if ($request->filled('payment_method')) $firstPayment->payment_method = $request->input('payment_method');
+                if ($request->filled('transaction_id')) $firstPayment->transaction_id = $request->input('transaction_id');
+                $firstPayment->discount_amount = $discountAmount;
+                $firstPayment->purchase_due_collection_date = $formattedDate;
+                $firstPayment->payment_status = ($effectiveTotal - $authoritativePaid) <= 0 ? 'Fully Paid' : ($authoritativePaid > 0 ? 'Partial Paid' : 'Unpaid');
+                $firstPayment->save();
+            } elseif ($request->filled('paid_amount') && floatval($request->input('paid_amount')) > 0) {
+                $requestedPaid = round(floatval($request->input('paid_amount')), 2);
+                BatteryPurchasePaymentDetail::create([
+                    'purchases_id'    => $purchase->id,
+                    'paid_amount'     => $requestedPaid,
+                    'discount_amount' => $discountAmount,
+                    'transaction_id'  => $request->input('transaction_id'),
+                    'payment_method'  => $request->input('payment_method', 'Cash'),
+                    'payment_status'  => ($effectiveTotal - $requestedPaid) <= 0 ? 'Fully Paid' : 'Partial Paid',
+                    'purchase_due_collection_date' => $formattedDate,
+                    'user_id'         => $user_id,
+                ]);
+                $authoritativePaid = $requestedPaid;
             }
+
             $effectivePaid = $authoritativePaid + $returnAdj;
             $newDue = max(0, $effectiveTotal - $effectivePaid);
 
@@ -554,6 +561,9 @@ class BatteryPurchaseController extends Controller
             }
             if ($request->has('discount_rate')) {
                 $purchase->discount_rate = $request->filled('discount_rate') ? (float) $request->discount_rate : null;
+            }
+            if ($request->filled('return_adjustment_amount')) {
+                $purchase->return_adjustment_amount = (float) $request->return_adjustment_amount;
             }
             $purchase->paid_amount = $authoritativePaid;
             $purchase->due_amount = $newDue;

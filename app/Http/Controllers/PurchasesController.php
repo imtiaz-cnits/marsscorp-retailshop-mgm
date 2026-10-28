@@ -696,56 +696,280 @@ public function updatePaymentDetails(Request $request)
 
     public function PurchasesUpdate(Request $request)
     {
+        $purchase_id = $request->input('id');
+        if (!$purchase_id) {
+            return response()->json(['status' => 'fail', 'message' => 'Purchase ID is required']);
+        }
+
+        $purchase = Purchase::with(['orderDetails', 'paymentDetails'])->find($purchase_id);
+        if (!$purchase) {
+            return response()->json(['status' => 'fail', 'message' => 'Purchase not found']);
+        }
+
+        DB::beginTransaction();
         try {
-            $purchase_id = $request->input('id');
-            $purchase = Purchase::find($purchase_id);
-            if (!$purchase) {
-                return response()->json(['status' => 'fail', 'message' => 'Purchase not found']);
-            }
+            $user_id = Auth::id() ?? $purchase->user_id;
 
             $updateDate = $purchase->date;
             if ($request->filled('date')) {
                 try {
-                    $updateDate = Carbon::parse($request->date)->format('Y-m-d');
+                    $dateStr = trim($request->input('date'));
+                    if (str_contains($dateStr, '-')) {
+                        $parts = explode('-', $dateStr);
+                        if (count($parts) === 3 && strlen($parts[0]) === 2 && strlen($parts[2]) === 4) {
+                            $updateDate = Carbon::createFromFormat('d-m-Y', $dateStr)->format('Y-m-d');
+                        } else {
+                            $updateDate = Carbon::parse($dateStr)->format('Y-m-d');
+                        }
+                    } else {
+                        $updateDate = Carbon::parse($dateStr)->format('Y-m-d');
+                    }
                 } catch (\Exception $e) {
                     $updateDate = $purchase->date;
                 }
             }
 
-            $updateData = [
-                'referance_no' => $request->input('referance_no', $purchase->referance_no),
-                'date' => $updateDate,
-                'grand_subtotal' => $request->input('grand_subtotal', $purchase->grand_subtotal),
-                'delivery_charge' => $request->input('delivery_charge', $purchase->delivery_charge ?? 0),
-                'paid_amount' => $request->input('paid_amount', $purchase->paid_amount),
-                'due_amount' => $request->input('due_amount', $purchase->due_amount),
-                'supplier_id' => $request->input('supplier_id', $purchase->supplier_id),
-            ];
+            // Supplier resolution
+            $supplier_id = $purchase->supplier_id;
+            if ($request->filled('supplier_id') && $request->supplier_id !== 'none') {
+                $supplier_id = (int) $request->supplier_id;
+            }
 
+            // Document upload
+            $img_url = $purchase->attach_document;
             if ($request->hasFile('img')) {
                 $img = $request->file('img');
-                $user_id = Auth::id() ?? $purchase->user_id;
                 $img_name = "{$user_id}-" . time() . "-" . $img->getClientOriginalName();
                 $img_url = "uploads/purchases-img/{$img_name}";
-                $img->move(public_path('uploads/purchases-img'), $img_name);
-                $updateData['attach_document'] = $img_url;
+                $destination = public_path('uploads/purchases-img');
+                if (!file_exists($destination)) {
+                    @mkdir($destination, 0777, true);
+                }
+                $img->move($destination, $img_name);
             }
 
-            if ($request->filled('discount_amount')) {
-                $updateData['discount_amount'] = (float) $request->discount_amount;
+            // Check if any products have been returned
+            $purchaseReturns = DB::table('purchase_returns')
+                ->where('purchase_id', $purchase->id)
+                ->get();
+            $returnsByProduct = $purchaseReturns->groupBy('product_id')->map(function ($group) {
+                return $group->sum('quantity');
+            });
+
+            // Handle products reconciliation
+            $rawProducts = $request->input('products');
+            $products = null;
+            if ($rawProducts) {
+                $products = is_array($rawProducts) ? $rawProducts : json_decode($rawProducts, true);
             }
-            if ($request->filled('discount_type')) {
-                $updateData['discount_type'] = $request->input('discount_type');
+
+            $lineItemsCalculatedSubtotal = 0;
+
+            if (is_array($products)) {
+                // Map old details by product_id
+                $oldDetails = $purchase->orderDetails;
+                $oldItemsMap = [];
+                foreach ($oldDetails as $od) {
+                    $oldItemsMap[$od->product_id] = [
+                        'quantity'   => (int) $od->quantity,
+                        'cost_price' => (float) $od->cost_price,
+                        'subtotal'   => (float) $od->subtotal,
+                    ];
+                }
+
+                // Map new items by product_id
+                $newItemsMap = [];
+                foreach ($products as $p) {
+                    if (isset($p['product_id']) && !empty($p['product_id'])) {
+                        $pId = (int) $p['product_id'];
+                        $qty = (int) ($p['quantity'] ?? 0);
+                        $cost = (float) ($p['cost_price'] ?? 0);
+                        $sub = (float) ($p['subtotal'] ?? ($qty * $cost));
+
+                        if (isset($newItemsMap[$pId])) {
+                            $newItemsMap[$pId]['quantity'] += $qty;
+                            $newItemsMap[$pId]['subtotal'] += $sub;
+                        } else {
+                            $newItemsMap[$pId] = [
+                                'product_id'   => $pId,
+                                'quantity'     => $qty,
+                                'cost_price'   => $cost,
+                                'subtotal'     => $sub,
+                                'product_code' => $p['product_code'] ?? null,
+                            ];
+                        }
+                    }
+                }
+
+                // Validate return constraints
+                foreach ($returnsByProduct as $retProdId => $retQty) {
+                    if (!isset($newItemsMap[$retProdId])) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'  => 'fail',
+                            'message' => "এই ক্রয় ইনভয়েসে পণ্য আইডি #{$retProdId} এর বিপরীতে রিটার্ন রেকর্ড থাকায় এটিকে তালিকা থেকে বাদ দেওয়া যাবে না।"
+                        ]);
+                    }
+                    if ($newItemsMap[$retProdId]['quantity'] < $retQty) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'  => 'fail',
+                            'message' => "পণ্য আইডি #{$retProdId} এর জন্য ইতিমধ্যে {$retQty} টি রিটার্ন এন্ট্রি রয়েছে, তাই ক্রয় সংখ্যা {$retQty} এর নিচে কমানো সম্ভব নয়।"
+                        ]);
+                    }
+                }
+
+                // Union of all product IDs
+                $allProductIds = array_unique(array_merge(array_keys($oldItemsMap), array_keys($newItemsMap)));
+
+                foreach ($allProductIds as $pId) {
+                    $productModel = Product::where('id', $pId)->lockForUpdate()->first();
+                    if (!$productModel) continue;
+
+                    $oldQty  = $oldItemsMap[$pId]['quantity'] ?? 0;
+                    $oldCost = $oldItemsMap[$pId]['cost_price'] ?? 0;
+
+                    $newQty  = $newItemsMap[$pId]['quantity'] ?? 0;
+                    $newCost = $newItemsMap[$pId]['cost_price'] ?? 0;
+
+                    $deltaQty = $newQty - $oldQty;
+
+                    $currentStock = (int) $productModel->quantity;
+                    $finalStock   = $currentStock + $deltaQty;
+                    if ($deltaQty < 0 && $finalStock < 0) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'  => 'fail',
+                            'message' => "স্টক অপ্রতুল: \"{$productModel->name}\" এর বর্তমান স্টক {$currentStock} পিস, তাই " . abs($deltaQty) . " পিস কমানো সম্ভব নয়।"
+                        ]);
+                    }
+
+                    // Weighted average cost price recalculation using incremental inventory valuation
+                    $currentCost = (float) $productModel->cost_price;
+                    $currentInventoryValue = $currentStock * $currentCost;
+
+                    $oldPurchaseValue = $oldQty * $oldCost;
+                    $newPurchaseValue = $newQty * $newCost;
+                    $deltaValue       = $newPurchaseValue - $oldPurchaseValue;
+
+                    $finalInventoryValue = $currentInventoryValue + $deltaValue;
+
+                    if ($finalStock > 0) {
+                        if ($finalInventoryValue > 0) {
+                            $productModel->cost_price = round($finalInventoryValue / $finalStock, 2);
+                        }
+                    } elseif ($newCost > 0) {
+                        $productModel->cost_price = round($newCost, 2);
+                    }
+
+                    $productModel->quantity = $finalStock;
+
+                    // Barcodes / serials merge if provided
+                    if (!empty($newItemsMap[$pId]['product_code'])) {
+                        $newCodes = $newItemsMap[$pId]['product_code'];
+                        if (!is_array($newCodes)) {
+                            $newCodes = json_decode($newCodes, true) ?? [];
+                        }
+                        if (is_array($newCodes) && count($newCodes) > 0) {
+                            $existingCodes = [];
+                            if ($productModel->product_code) {
+                                $existingCodes = is_array($productModel->product_code)
+                                    ? $productModel->product_code
+                                    : (json_decode($productModel->product_code, true) ?? [$productModel->product_code]);
+                            }
+                            $mergedCodes = array_values(array_unique(array_merge($existingCodes, $newCodes)));
+                            $productModel->product_code = json_encode($mergedCodes);
+                        }
+                    }
+
+                    $productModel->save();
+                }
+
+                // Delete old order details and recreate new ones
+                PurchaseOrderDetails::where('purchase_id', $purchase->id)->delete();
+
+                foreach ($newItemsMap as $newItem) {
+                    $itemSubtotal = round($newItem['quantity'] * $newItem['cost_price'], 2);
+                    $lineItemsCalculatedSubtotal += $itemSubtotal;
+
+                    PurchaseOrderDetails::create([
+                        'purchase_id' => $purchase->id,
+                        'product_id'  => $newItem['product_id'],
+                        'quantity'    => $newItem['quantity'],
+                        'cost_price'  => $newItem['cost_price'],
+                        'subtotal'    => $itemSubtotal,
+                        'user_id'     => $user_id,
+                    ]);
+                }
+            } else {
+                $lineItemsCalculatedSubtotal = (float) $purchase->grand_subtotal;
             }
-            if ($request->has('discount_rate')) {
-                $updateData['discount_rate'] = $request->filled('discount_rate') ? (float) $request->discount_rate : null;
+
+            // Financial Calculations
+            $grandSubtotal = is_array($products) ? $lineItemsCalculatedSubtotal : floatval($request->input('grand_subtotal', $purchase->grand_subtotal));
+            $deliveryCharge = floatval($request->input('delivery_charge', $purchase->delivery_charge ?? 0));
+            $discountAmount = floatval($request->input('discount_amount', $purchase->discount_amount ?? 0));
+            $returnAdj = floatval($request->input('return_adjustment_amount', $purchase->return_adjustment_amount ?? 0));
+
+            $effectiveTotal = max(0, ($grandSubtotal - $discountAmount) + $deliveryCharge);
+
+            $requestedPaid = $request->filled('paid_amount') ? round(floatval($request->input('paid_amount')), 2) : (float) $purchase->paid_amount;
+            $effectivePaid = $requestedPaid + $returnAdj;
+            $newDue = max(0, $effectiveTotal - $effectivePaid);
+
+            // Reconcile Payment Details
+            $paymentMethod = $request->input('payment_method', 'Cash');
+            $transactionId = $request->input('transaction_id', null);
+            $paymentStatus = $request->input('payment_status', ($newDue <= 0 ? 'Fully Paid' : ($requestedPaid > 0 ? 'Partial Paid' : 'Unpaid')));
+
+            $firstPayment = $purchase->paymentDetails->first();
+            if ($firstPayment) {
+                $firstPayment->paid_amount = $requestedPaid;
+                $firstPayment->discount_amount = $discountAmount;
+                if ($request->filled('payment_method')) $firstPayment->payment_method = $paymentMethod;
+                if ($request->filled('transaction_id')) $firstPayment->transaction_id = $transactionId;
+                $firstPayment->payment_status = $paymentStatus;
+                $firstPayment->purchase_due_collection_date = $updateDate;
+                $firstPayment->save();
+            } elseif ($requestedPaid > 0) {
+                PurchasePaymentDetails::create([
+                    'purchases_id'    => $purchase->id,
+                    'paid_amount'     => $requestedPaid,
+                    'discount_amount' => $discountAmount,
+                    'transaction_id'  => $transactionId,
+                    'payment_method'  => $paymentMethod,
+                    'payment_status'  => $paymentStatus,
+                    'purchase_due_collection_date' => $updateDate,
+                    'user_id'         => $user_id,
+                ]);
+            }
+
+            // Update Purchase Record
+            $updateData = [
+                'referance_no'             => $request->input('referance_no', $purchase->referance_no),
+                'date'                     => $updateDate,
+                'supplier_id'              => $supplier_id,
+                'grand_subtotal'           => $grandSubtotal,
+                'delivery_charge'          => $deliveryCharge,
+                'discount_amount'          => $discountAmount,
+                'discount_type'            => $request->input('discount_type', $purchase->discount_type ?? 'fixed'),
+                'discount_rate'            => $request->filled('discount_rate') ? (float) $request->discount_rate : null,
+                'return_adjustment_amount' => $returnAdj,
+                'paid_amount'              => $requestedPaid,
+                'due_amount'               => $newDue,
+                'attach_document'          => $img_url,
+            ];
+            if ($request->filled('purchase_payable_amount')) {
+                $updateData['purchase_payable_amount'] = $request->input('purchase_payable_amount');
             }
 
             $purchase->update($updateData);
 
+            DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Purchase updated successfully']);
         } catch (\Exception $e) {
-            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+            DB::rollBack();
+            return response()->json(['status' => 'fail', 'message' => 'Failed to update purchase: ' . $e->getMessage()]);
         }
     }
 
