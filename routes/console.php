@@ -33,15 +33,27 @@ Artisan::command('invoice:delete {order_no}', function () {
         $this->line("- Customer ID: {$customerId}");
         $this->line("- Subtotal: {$order->sub_total}, Paid: {$paidAmount}, Due: {$dueAmount}");
 
-        // 1. Revert product stocks
+        // 1. Revert product stocks (accounting for any prior returns already restored to inventory)
         $this->info("\nRestoring product stocks...");
-        foreach ($order->details as $detail) {
-            $product = \App\Models\Product::find($detail->product_id);
-            if ($product) {
-                $oldQty = $product->quantity;
-                $product->increment('quantity', $detail->quantity);
-                $newQty = $product->fresh()->quantity;
-                $this->line("  ✓ Product #{$product->id} ({$product->product_name}): Stock {$oldQty} -> {$newQty} (+{$detail->quantity})");
+        if ($order->details->isEmpty()) {
+            $this->line("  - No order items found (or items were previously fully returned). Product stocks unchanged.");
+        } else {
+            foreach ($order->details as $detail) {
+                $product = \App\Models\Product::find($detail->product_id);
+                if ($product) {
+                    $returnedQty = \App\Models\ProductReturn::where('order_id', $orderId)
+                        ->where('product_id', $detail->product_id)
+                        ->sum('quantity');
+                    $netRestoreQty = max(0, (float)$detail->quantity - (float)$returnedQty);
+                    if ($netRestoreQty > 0) {
+                        $oldQty = $product->quantity;
+                        $product->increment('quantity', $netRestoreQty);
+                        $newQty = $product->fresh()->quantity;
+                        $this->line("  ✓ Product #{$product->id} ({$product->product_name}): Stock {$oldQty} -> {$newQty} (+{$netRestoreQty})");
+                    } else {
+                        $this->line("  - Product #{$product->id} ({$product->product_name}): Stock unchanged (items were already returned to inventory).");
+                    }
+                }
             }
         }
 
