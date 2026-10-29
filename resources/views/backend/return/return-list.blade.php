@@ -1,3 +1,7 @@
+<!-- Flatpickr Styles & Scripts -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <!-- Sales & Purchase Return Management Section Start -->
 <div class="main-content">
     <div class="page-content min-h-screen flex flex-col justify-between">
@@ -72,10 +76,32 @@
                             <span id="returnRecordCountBadge" class="display-info-box font-bold text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-slate-800 text-xs">0 Records</span>
                         </div>
 
-                        <!-- Search Bar + Show Entry Side-by-Side -->
-                        <div class="flex items-center gap-2 sm:gap-2.5 w-full md:w-auto">
+                        <!-- Date Range + Search Bar + Show Entry Side-by-Side -->
+                        <div class="flex items-center flex-wrap gap-2 sm:gap-2.5 w-full md:w-auto">
+                            <!-- Start Date with Flatpickr -->
+                            <div class="col-start-date date-input-wrapper unified-ui-border h-[38px] w-[140px] sm:w-[148px] flex items-center px-2.5 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
+                                <input type="text" id="returnStartDate" name="returnStartDate" placeholder="Start Date" style="padding: 0 4px !important;" class="w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
+                                <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </div>
+
+                            <!-- End Date with Flatpickr -->
+                            <div class="col-end-date date-input-wrapper unified-ui-border h-[38px] w-[140px] sm:w-[148px] flex items-center px-2.5 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
+                                <input type="text" id="returnEndDate" name="returnEndDate" placeholder="End Date" style="padding: 0 4px !important;" class="w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
+                                <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </div>
+
                             <!-- Search Bar -->
-                            <div class="search-input-wrapper unified-ui-border flex-1 md:w-[260px] lg:w-[300px] h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm transition-all focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20">
+                            <div class="search-input-wrapper unified-ui-border flex-1 md:w-[220px] lg:w-[250px] h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm transition-all focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-600/20">
                                 <svg class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0 mr-2.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="11" cy="11" r="8"></circle>
                                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -314,6 +340,51 @@
         outline: none !important;
         box-shadow: none !important;
         background: transparent !important;
+    }
+
+    /* Date range flatpickr inputs */
+    .date-input-wrapper {
+        min-width: 140px !important;
+        width: 145px !important;
+    }
+    @media (min-width: 640px) {
+        .date-input-wrapper {
+            min-width: 145px !important;
+            width: 148px !important;
+        }
+    }
+    .date-input-wrapper input,
+    .date-input-wrapper .flatpickr-input,
+    .date-input-wrapper input.flatpickr-input,
+    #returnStartDate,
+    #returnEndDate {
+        font-size: 11px !important;
+        font-weight: 500 !important;
+        color: #334155 !important;
+        padding: 0 2px !important;
+        margin: 0 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        height: 100% !important;
+        line-height: normal !important;
+    }
+    body[light-mode="dark"] .date-input-wrapper input,
+    body[light-mode="dark"] .date-input-wrapper .flatpickr-input,
+    body[light-mode="dark"] #returnStartDate,
+    body[light-mode="dark"] #returnEndDate {
+        color: #e2e8f0 !important;
+    }
+    .date-input-wrapper input::placeholder,
+    .date-input-wrapper .flatpickr-input::placeholder,
+    #returnStartDate::placeholder,
+    #returnEndDate::placeholder {
+        font-size: 11px !important;
+        font-weight: 400 !important;
+        color: #94a3b8 !important;
     }
 
     #printTable thead th {
@@ -686,11 +757,49 @@
     let currentFilteredReturns = [];
     let currentPage = 1;
     let pageSize = 15;
+    let returnStartPicker = null;
+    let returnEndPicker = null;
+
+    function initReturnDatePickers() {
+        if (typeof flatpickr !== 'undefined') {
+            const commonConfig = {
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "d/m/Y",
+                altInputClass: "w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 p-0 m-0 cursor-pointer flatpickr-input",
+                allowInput: true,
+                onChange: function() {
+                    currentPage = 1;
+                    renderPaginatedReturnList();
+                }
+            };
+
+            if (document.getElementById("returnStartDate")) {
+                returnStartPicker = flatpickr("#returnStartDate", {
+                    ...commonConfig,
+                    placeholder: "Start Date"
+                });
+            }
+
+            if (document.getElementById("returnEndDate")) {
+                returnEndPicker = flatpickr("#returnEndDate", {
+                    ...commonConfig,
+                    placeholder: "End Date"
+                });
+            }
+        }
+    }
 
     document.addEventListener("DOMContentLoaded", () => {
+        initReturnDatePickers();
         fetchActiveReturnList();
 
         $("#historySearchInput").on("keyup search input", function () {
+            currentPage = 1;
+            renderPaginatedReturnList();
+        });
+
+        $("#returnStartDate, #returnEndDate").on("change input keyup", function () {
             currentPage = 1;
             renderPaginatedReturnList();
         });
@@ -792,23 +901,63 @@
         }
     }
 
+    function parseItemDate(dateStr) {
+        if (!dateStr) return null;
+        dateStr = String(dateStr).trim();
+        // DD-MM-YYYY or DD/MM/YYYY
+        let dmy = dateStr.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+        if (dmy) {
+            return new Date(parseInt(dmy[3], 10), parseInt(dmy[2], 10) - 1, parseInt(dmy[1], 10));
+        }
+        // YYYY-MM-DD
+        let ymd = dateStr.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+        if (ymd) {
+            return new Date(parseInt(ymd[1], 10), parseInt(ymd[2], 10) - 1, parseInt(ymd[3], 10));
+        }
+        let parsed = new Date(dateStr);
+        if (!isNaN(parsed.getTime())) {
+            return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+        }
+        return null;
+    }
+
     function renderPaginatedReturnList() {
         if (!rawReturnList) return;
 
         let searchVal = ($("#historySearchInput").val() || "").toLowerCase().trim();
+        let startDateVal = $("#returnStartDate").val();
+        let endDateVal = $("#returnEndDate").val();
+        let startDateObj = startDateVal ? parseItemDate(startDateVal) : null;
+        let endDateObj = endDateVal ? parseItemDate(endDateVal) : null;
+        if (endDateObj) endDateObj.setHours(23, 59, 59, 999);
+        if (startDateObj) startDateObj.setHours(0, 0, 0, 0);
 
         // 1. Filter
         let filtered = rawReturnList.filter(item => {
             const refNo = (activeReturnTab === 'purchase' ? item.purchase_no : item.order_no) || '';
             const partyName = (activeReturnTab === 'purchase' ? item.supplier_name : item.customer_name) || '';
             const product = item.product_name || '';
-            const date = item.date || '';
+            const date = item.date || item.created_at || '';
 
-            return !searchVal || 
+            let matchesSearch = !searchVal || 
                    refNo.toLowerCase().includes(searchVal) || 
                    partyName.toLowerCase().includes(searchVal) || 
                    product.toLowerCase().includes(searchVal) ||
                    date.toLowerCase().includes(searchVal);
+
+            if (!matchesSearch) return false;
+
+            if (startDateObj || endDateObj) {
+                let itemDateObj = parseItemDate(item.date || item.created_at);
+                if (itemDateObj) {
+                    if (startDateObj && itemDateObj < startDateObj) return false;
+                    if (endDateObj && itemDateObj > endDateObj) return false;
+                } else {
+                    return false;
+                }
+            }
+
+            return true;
         });
 
         // 2. New data top-a dekhabe

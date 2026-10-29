@@ -2648,6 +2648,332 @@
             pointer-events: auto !important;
             cursor: pointer !important;
         }
+
+        /* POS Ultra-Compact Vertical Payment Section (Strict 100vh Fit) */
+        .pos-payment-methods-row {
+            display: flex;
+            gap: 4px;
+            width: 100%;
+        }
+        .pos-method-pill {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 25px !important;
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            border-radius: 6px;
+            color: #1e293b;
+            font-size: 10.5px !important;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 0;
+            transition: all 0.15s ease;
+            user-select: none;
+            text-align: center;
+            padding: 0 4px !important;
+        }
+        .pos-method-pill:hover {
+            border-color: #b91c1c;
+        }
+        .pos-method-pill.active,
+        .pos-method-pill:has(input:checked) {
+            background: #b91c1c !important;
+            border-color: #b91c1c !important;
+            color: #ffffff !important;
+        }
+        body[light-mode="dark"] .pos-method-pill {
+            background: #1e293b;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+        body[light-mode="dark"] .pos-method-pill.active,
+        body[light-mode="dark"] .pos-method-pill:has(input:checked) {
+            background: #b91c1c !important;
+            border-color: #b91c1c !important;
+            color: #ffffff !important;
+        }
+
+        .pos-order-note-field {
+            width: 100% !important;
+            height: 25px !important;
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            padding: 2px 8px !important;
+            font-size: 10.5px !important;
+            outline: none !important;
+            background: #ffffff !important;
+            color: #1e293b !important;
+            transition: border-color 0.2s ease;
+        }
+        .pos-order-note-field:focus {
+            border-color: #0284c7 !important;
+        }
+        body[light-mode="dark"] .pos-order-note-field {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+
+        .pos-amount-summary-card {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 4px 8px !important;
+            background: #ffffff;
+            margin-bottom: 3px !important;
+        }
+        body[light-mode="dark"] .pos-amount-summary-card {
+            border-color: #334155;
+            background: #0f172a;
+        }
+
+        .pos-summary-row {
+            padding: 0.5px 0 !important;
+        }
+
+        .pos-summary-label {
+            font-size: 9.5px !important;
+            font-weight: 800;
+            color: #64748b;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+        }
+        body[light-mode="dark"] .pos-summary-label {
+            color: #94a3b8;
+        }
+
+        .pos-summary-subtotal-val {
+            font-size: 11.5px !important;
+            font-weight: 800;
+            color: #0284c7;
+        }
+
+        .pos-discount-toggle {
+            border-color: #cbd5e1 !important;
+            height: 18px !important;
+        }
+        .pos-discount-type-btn {
+            padding: 0 4px !important;
+            font-size: 9px !important;
+            cursor: pointer;
+            font-weight: 700;
+            margin: 0;
+            line-height: 16px !important;
+            background: #f8fafc;
+            color: #64748b;
+        }
+        .pos-discount-type-btn.active {
+            background: #b91c1c !important;
+            color: #ffffff !important;
+        }
+
+        .pos-amount-input-box {
+            width: 72px !important;
+            height: 20px !important;
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 4px !important;
+            font-size: 10.5px !important;
+            font-weight: 700 !important;
+            text-align: center !important;
+            padding: 0 2px !important;
+            outline: none !important;
+            background: #ffffff !important;
+            color: #1e293b !important;
+            line-height: 18px !important;
+        }
+        .pos-amount-input-box:focus {
+            border-color: #0284c7 !important;
+        }
+        body[light-mode="dark"] .pos-amount-input-box {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+
+        .pos-summary-divider {
+            border-top: 1px solid #e2e8f0;
+            margin: 2px 0 !important;
+        }
+        body[light-mode="dark"] .pos-summary-divider {
+            border-color: #334155;
+        }
+
+        .pos-summary-label-net {
+            font-size: 10px !important;
+            font-weight: 900;
+            color: #0f172a;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+        }
+        body[light-mode="dark"] .pos-summary-label-net {
+            color: #f8fafc;
+        }
+
+        .pos-summary-net-val {
+            font-size: 12.5px !important;
+            font-weight: 900;
+            color: #991b1b;
+        }
+
+        .pos-summary-label-paid {
+            font-size: 9.5px !important;
+            font-weight: 800;
+            color: #64748b;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+        }
+        body[light-mode="dark"] .pos-summary-label-paid {
+            color: #94a3b8;
+        }
+
+        .pos-full-paid-btn {
+            font-size: 9px !important;
+            font-weight: 700;
+            padding: 0 5px !important;
+            border-radius: 3px !important;
+            background: #ffe4e6;
+            color: #e11d48;
+            border: none;
+            cursor: pointer;
+            line-height: 15px !important;
+            height: 16px !important;
+            transition: background 0.15s ease;
+        }
+        .pos-full-paid-btn:hover {
+            background: #fecdd3;
+        }
+        body[light-mode="dark"] .pos-full-paid-btn {
+            background: rgba(225, 29, 72, 0.2);
+            color: #fda4af;
+        }
+
+        .pos-paid-input-box {
+            border-color: #e11d48 !important;
+            color: #e11d48 !important;
+        }
+        .pos-paid-input-box:focus {
+            border-color: #be123c !important;
+        }
+
+        .pos-summary-label-due {
+            font-size: 10px !important;
+            font-weight: 900;
+            color: #dc2626;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+        }
+
+        .pos-status-badge-paid {
+            font-size: 8.5px !important;
+            font-weight: 800;
+            padding: 0 4px !important;
+            border-radius: 3px;
+            background: #ffe4e6;
+            color: #dc2626;
+            display: inline-block;
+            line-height: 14px !important;
+            height: 15px !important;
+        }
+        body[light-mode="dark"] .pos-status-badge-paid {
+            background: rgba(220, 38, 38, 0.2);
+            color: #f87171;
+        }
+
+        .pos-summary-due-val {
+            font-size: 12.5px !important;
+            font-weight: 900;
+            color: #dc2626;
+        }
+
+        .pos-btn-hold {
+            background: #f59e0b;
+            color: #0f172a;
+            font-weight: 800;
+            border: none;
+            border-radius: 6px !important;
+            height: 29px !important;
+            padding: 0 10px !important;
+            font-size: 11px !important;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .pos-btn-hold:hover {
+            background: #d97706;
+        }
+
+        .pos-btn-clear {
+            background: #fff1f2;
+            border: 1.5px solid #fca5a5;
+            color: #dc2626;
+            font-weight: 800;
+            border-radius: 6px !important;
+            height: 29px !important;
+            padding: 0 10px !important;
+            font-size: 11px !important;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .pos-btn-clear:hover {
+            background: #ffe4e6;
+            border-color: #f87171;
+        }
+        body[light-mode="dark"] .pos-btn-clear {
+            background: rgba(220, 38, 38, 0.15);
+            border-color: rgba(220, 38, 38, 0.4);
+            color: #fca5a5;
+        }
+
+        .pos-btn-submit {
+            background: #cbd5e1;
+            color: #0f172a;
+            font-weight: 800;
+            border: none;
+            border-radius: 6px !important;
+            height: 29px !important;
+            padding: 0 10px !important;
+            font-size: 11px !important;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .pos-btn-submit:hover {
+            background: #94a3b8;
+        }
+        body[light-mode="dark"] .pos-btn-submit {
+            background: #334155;
+            color: #f8fafc;
+        }
+        body[light-mode="dark"] .pos-btn-submit:hover {
+            background: #475569;
+        }
+
+        /* Desktop Strict 100vh Containment */
+        @media (min-width: 992px) {
+            #posMainRow {
+                height: calc(100vh - 50px) !important;
+                max-height: calc(100vh - 50px) !important;
+                overflow: hidden !important;
+            }
+            #posCartCol {
+                height: 100% !important;
+                max-height: 100% !important;
+                min-height: 0 !important;
+                overflow: hidden !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            .pos-cart-table-wrapper {
+                flex: 1 1 0px !important;
+                min-height: 40px !important;
+                overflow-y: auto !important;
+                margin-bottom: 2px !important;
+            }
+            #payment {
+                flex-shrink: 0 !important;
+                margin-top: auto !important;
+            }
+        }
     </style>
 
     <!-- Google Fonts: Valley Sans & Baloo Da 2 -->
@@ -2882,16 +3208,16 @@
                 </div>
 
                 <!-- Order list table Start (Scrollable Area) -->
-                <div class="pos-cart-table-wrapper flex-grow-1 overflow-auto bg-white border shadow-sm" style="border-radius: 10px; border-color: #e2e8f0 !important; min-height: 180px;">
+                <div class="pos-cart-table-wrapper flex-grow-1 overflow-auto bg-white border shadow-sm" style="border-radius: 8px; border-color: #e2e8f0 !important; min-height: 40px;">
                     <table class="table mb-0 w-100" style="table-layout: fixed;">
                         <thead>
                             <tr class="align-middle">
-                                <th scope="col" style="width: 26%; text-align: left; padding: 7px 6px 7px 14px !important;">Product</th>
-                                <th scope="col" style="width: 22%; text-align: center; padding: 7px 4px !important;">Quantity</th>
-                                <th scope="col" class="cost-price-header" style="width: 14%; text-align: center; padding: 7px 4px !important;">Cost Price</th>
-                                <th scope="col" style="width: 13%; text-align: center; padding: 7px 4px !important;">Sell Price</th>
-                                <th scope="col" style="width: 15%; text-align: center; padding: 7px 4px !important;">Sub Total</th>
-                                <th scope="col" style="width: 10%; text-align: center; padding: 7px 4px !important;">Action</th>
+                                <th scope="col" style="width: 26%; text-align: left; padding: 5px 6px 5px 12px !important; font-size: 11px !important;">Product</th>
+                                <th scope="col" style="width: 22%; text-align: center; padding: 5px 4px !important; font-size: 11px !important;">Quantity</th>
+                                <th scope="col" class="cost-price-header" style="width: 14%; text-align: center; padding: 5px 4px !important; font-size: 11px !important;">Cost Price</th>
+                                <th scope="col" style="width: 13%; text-align: center; padding: 5px 4px !important; font-size: 11px !important;">Sell Price</th>
+                                <th scope="col" style="width: 15%; text-align: center; padding: 5px 4px !important; font-size: 11px !important;">Sub Total</th>
+                                <th scope="col" style="width: 10%; text-align: center; padding: 5px 4px !important; font-size: 11px !important;">Action</th>
                             </tr>
                         </thead>
                         <tbody id="cartTableBody">
@@ -2901,191 +3227,159 @@
                 </div>
                 <!-- Order list table End -->
 
-                <!-- Sticky Bottom Payment & Confirmation Area -->
+                <!-- Sticky Bottom Payment & Confirmation Area (Image 1 Layout - 100vh Compact) -->
                 <div id="payment" class="mt-1 pt-1 border-top" style="flex-shrink: 0;">
-                    <div class="row g-2 align-items-stretch">
-                        <div class="col-lg-6 col-12">
-                            <div class="payments">
-                                <div class="heading mb-1.5">
-                                    <h2 style="font-size: 12px; font-weight: 800 !important; color: #475569; margin: 0; text-transform: uppercase; letter-spacing: 0.4px;">Payment Method</h2>
-                                </div>
-                                <form action="#" id="paymentMethodForm">
-                                    <div class="category-wrapper">
-                                        <div class="category">
-                                            <label for="cash" class="cashMethod active">
-                                                <input type="radio" name="payment" id="cash" checked style="display: none;" />
-                                                <div class="imgName">
-                                                    <div class="imgContainer cash">
-                                                        <img src="{{ asset('backend/assets/img/payment-cash.png') }}" alt="Cash" />
-                                                    </div>
-                                                    <h1>Cash</h1>
-                                                </div>
-                                                <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                            </label>
+                    
+                    <!-- 1. Header: PAYMENT METHOD & Selected Method Name -->
+                    <div class="d-flex align-items-center justify-content-between mb-1 px-0.5">
+                        <span style="font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px;">PAYMENT METHOD</span>
+                        <span id="posSelectedMethodTitle" style="font-size: 10.5px; font-weight: 800; color: #dc2626; text-transform: uppercase; letter-spacing: 0.3px;">CASH</span>
+                    </div>
 
-                                            <label for="bkash" class="bkashMethod">
-                                                <input type="radio" name="payment" id="bkash" style="display: none;" />
-                                                <div class="imgName">
-                                                    <div class="imgContainer bkash">
-                                                        <img src="{{ asset('backend/assets/img/payment-bkash.png') }}" alt="bKash" />
-                                                    </div>
-                                                    <h1>bKash</h1>
-                                                </div>
-                                                <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                            </label>
+                    <!-- 2. Payment Method Buttons (Single Horizontal Row) -->
+                    <form action="#" id="paymentMethodForm" class="mb-1">
+                        <div class="pos-payment-methods-row">
+                            <!-- Cash -->
+                            <label for="cash" class="pos-method-pill active" onclick="onPosPaymentMethodChange('cash', 'CASH')">
+                                <input type="radio" name="payment" id="cash" checked style="display: none;" />
+                                <span>Cash</span>
+                            </label>
 
-                                            <label for="nagad" class="nagadMethod">
-                                                <input type="radio" name="payment" id="nagad" style="display: none;" />
-                                                <div class="imgName">
-                                                    <div class="imgContainer nagad">
-                                                        <img src="{{ asset('backend/assets/img/payment-nagad.png') }}" alt="Nagad" />
-                                                    </div>
-                                                    <h1>Nagad</h1>
-                                                </div>
-                                                <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                            </label>
+                            <!-- bKash -->
+                            <label for="bkash" class="pos-method-pill" onclick="onPosPaymentMethodChange('bkash', 'BKASH')">
+                                <input type="radio" name="payment" id="bkash" style="display: none;" />
+                                <span>bKash</span>
+                            </label>
 
-                                            <label for="rocket" class="rocketMethod">
-                                                <input type="radio" name="payment" id="rocket" style="display: none;" />
-                                                <div class="imgName">
-                                                    <div class="imgContainer rocket">
-                                                        <img src="{{ asset('backend/assets/img/payment-rocket.png') }}" alt="Rocket" />
-                                                    </div>
-                                                    <h1>Rocket</h1>
-                                                </div>
-                                                <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                            </label>
+                            <!-- Nagad -->
+                            <label for="nagad" class="pos-method-pill" onclick="onPosPaymentMethodChange('nagad', 'NAGAD')">
+                                <input type="radio" name="payment" id="nagad" style="display: none;" />
+                                <span>Nagad</span>
+                            </label>
 
-                                            <label for="bank" class="bankMethod">
-                                                <input type="radio" name="payment" id="bank" style="display: none;" />
-                                                <div class="imgName">
-                                                    <div class="imgContainer bank">
-                                                        <img src="{{ asset('backend/assets/img/payment-bank.png') }}" alt="Bank" />
-                                                    </div>
-                                                    <h1>Bank</h1>
-                                                </div>
-                                                <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                            </label>
+                            <!-- Rocket -->
+                            <label for="rocket" class="pos-method-pill" onclick="onPosPaymentMethodChange('rocket', 'ROCKET')">
+                                <input type="radio" name="payment" id="rocket" style="display: none;" />
+                                <span>Rocket</span>
+                            </label>
 
-                                            <label for="mastercard" class="mastercardMethod">
-                                                <input type="radio" name="payment" id="mastercard" style="display: none;" />
-                                                <div class="imgName">
-                                                    <div class="imgContainer mastercard">
-                                                        <img src="{{ asset('backend/assets/img/payment-card.png') }}" alt="Card" />
-                                                    </div>
-                                                    <h1>Card</h1>
-                                                </div>
-                                                <span class="check"><i class="fa-solid fa-circle-check"></i></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="d-flex align-items-center gap-1.5 mt-1">
-                                <div class="transaction flex-grow-1">
-                                    <input type="text" id="transactionInput" placeholder="Enter Transaction ID" class="w-100" />
-                                </div>
-                                <div class="transaction flex-grow-1">
-                                    <input type="text" id="orderNote" placeholder="Enter Note" class="w-100" />
-                                </div>
-                            </div>
+                            <!-- Bank -->
+                            <label for="bank" class="pos-method-pill" onclick="onPosPaymentMethodChange('bank', 'BANK')">
+                                <input type="radio" name="payment" id="bank" style="display: none;" />
+                                <span>Bank</span>
+                            </label>
+
+                            <!-- Card -->
+                            <label for="mastercard" class="pos-method-pill" onclick="onPosPaymentMethodChange('mastercard', 'CARD')">
+                                <input type="radio" name="payment" id="mastercard" style="display: none;" />
+                                <span>Card</span>
+                            </label>
                         </div>
-                        <div class="col-lg-6 col-12">
-                            <form id="orderForm">
-                                <div class="totals">
-                                    <div class="subtotal" style="display: none;">
-                                        <span>Total Cost</span>
-                                        <span id="totalCost">৳</span>
-                                    </div>
+                    </form>
 
-                                    <!-- Sub-Total -->
-                                    <div class="subtotal d-flex align-items-center justify-content-between py-1 border-bottom border-light">
-                                        <span class="fw-bold" style="font-size: 12px; font-weight: 800 !important; color: #475569; text-transform: uppercase; letter-spacing: 0.4px;">Sub-Total</span>
-                                        <span style="color: #0284c7; font-size: 14px; font-weight: 800;" id="subTotal">৳ 0.00</span>
-                                    </div>
-
-                                    <!-- Discount Amount -->
-                                    <div class="subtotal d-flex align-items-center justify-content-between py-1 border-bottom border-light">
-                                        <div class="d-flex align-items-center gap-1.5">
-                                            <span class="fw-bold" style="font-size: 12px; font-weight: 800 !important; color: #475569; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.4px;">Discount</span>
-                                            <div class="discount-type-pill d-inline-flex border rounded overflow-hidden" style="border-color: #cbd5e1 !important; height: 24px;">
-                                                <input type="radio" name="discountType" id="discountTypeFlat" value="flat" checked onchange="calculateDuePayment()" style="display: none;">
-                                                <label for="discountTypeFlat" title="Solid Amount (৳)" style="padding: 1px 7px; font-size: 12px; cursor: pointer; font-weight: 700; margin: 0; line-height: 20px;">৳</label>
-
-                                                <input type="radio" name="discountType" id="discountTypePercent" value="percent" onchange="calculateDuePayment()" style="display: none;">
-                                                <label for="discountTypePercent" title="Percentage (%)" style="padding: 1px 7px; font-size: 12px; cursor: pointer; font-weight: 700; margin: 0; line-height: 20px;">%</label>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center gap-1">
-                                            <span id="discountCalculatedBadge" class="badge bg-success-subtle text-success border border-success-subtle fw-bold" style="font-size: 12px; display: none; padding: 2px 6px;">= ৳ 0</span>
-                                            <input type="number" id="discountAmountInput" oninput="calculateDuePayment()" placeholder="0" min="0" step="any" style="width: 78px; height: 26px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 12px; font-weight: 700; text-align: right; padding: 2px 6px; outline: none;">
-                                        </div>
-                                    </div>
-
-                                    <!-- Return Credit Adjustment Removed per request; hidden input kept for JS safety -->
-                                    <input type="hidden" id="posReturnAdjustmentInput" value="0">
-
-                                    <!-- Paid Amount -->
-                                    <div class="subtotal d-flex align-items-center justify-content-between py-1 border-bottom border-light">
-                                        <span class="fw-bold" style="font-size: 12px; font-weight: 800 !important; color: #475569; text-transform: uppercase; letter-spacing: 0.4px;">Paid Amount</span>
-                                        <input type="number" id="paidAmountInput" oninput="calculateDuePayment()" placeholder="0" style="width: 78px; height: 26px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 12px; font-weight: 700; text-align: right; padding: 2px 6px; outline: none;">
-                                    </div>
-
-                                    <!-- Delivery Charge -->
-                                    <div class="subtotal d-flex align-items-center justify-content-between py-1 border-bottom border-light">
-                                        <span class="fw-bold" style="font-size: 12px; font-weight: 800 !important; color: #475569; text-transform: uppercase; letter-spacing: 0.4px;">Delivery Charge</span>
-                                        <input type="number" id="deliveryChargeInput" oninput="calculateDuePayment()" placeholder="0" min="0" step="any" style="width: 78px; height: 26px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 12px; font-weight: 700; text-align: right; padding: 2px 6px; outline: none;">
-                                    </div>
-
-                                    <!-- Due Amount -->
-                                    <div class="total d-flex align-items-center justify-content-between py-1 border-bottom border-light">
-                                        <span class="fw-bold" style="font-size: 12px; font-weight: 800 !important; text-transform: uppercase; letter-spacing: 0.4px; color: #dc2626 !important;">Due Amount</span>
-                                        <span style="color: #dc2626; font-size: 15px; font-weight: 800;" id="totalDuePayable">৳ 0.00</span>
-                                    </div>
-
-                                    <!-- Status -->
-                                    <div class="total d-flex align-items-center justify-content-between py-1">
-                                        <span class="fw-bold" style="font-size: 12px; font-weight: 800 !important; color: #475569; text-transform: uppercase; letter-spacing: 0.4px;">Status</span>
-                                        <span id="paymentStatusDisplay" class="partial-payment-status" style="font-size: 12px; padding: 2px 8px; border-radius: 6px; font-weight: 700;">Partial Paid</span>
-                                    </div>
-                                </div>
-                            </form>
+                    <!-- 3. Order Note / Remark Input (Full Width) -->
+                    <div class="pos-note-wrapper mb-1">
+                        <input type="text" id="orderNote" placeholder="Order Note / Remark" class="pos-order-note-field" />
+                        <!-- Hidden transaction input container (dynamically shown for digital/bank methods) -->
+                        <div id="transactionInputContainer" style="display: none;" class="mt-0.5">
+                            <input type="text" id="transactionInput" placeholder="Enter Transaction ID (for Digital / Bank)" class="pos-order-note-field" />
                         </div>
                     </div>
 
-                    <!-- Trending POS Bottom Action Bar -->
-                    <div class="pos-bottom-trending-bar">
-                        <div class="row g-1.5 align-items-center">
-                            <!-- Box 1: Hold Invoice Button & Held Counter (Mobile Row 1: 2 buttons side-by-side) -->
-                            <div class="col-12 col-lg-4 mb-1.5 mb-lg-0">
-                                <div class="d-flex gap-1.5 w-100">
-                                    <button type="button" onclick="holdCurrentInvoice()" class="btn btn-warning flex-fill py-1.5 d-flex align-items-center justify-content-center gap-1 fw-bold text-dark shadow-sm" style="border-radius: 8px; background: #f59e0b; border: none; font-size: 12px; height: 38px; color: #0f172a !important;">
-                                        <i class="fa-solid fa-pause-circle fs-6" style="color: #0f172a !important;"></i>
-                                        <span style="color: #0f172a !important;">Hold</span>
-                                    </button>
-                                    <button type="button" onclick="openHoldInvoicesModal()" class="btn btn-outline-warning flex-fill py-1.5 px-2 d-flex align-items-center justify-content-center gap-1.5 fw-bold" style="border-radius: 8px; font-size: 12px; height: 38px; border-color: #f59e0b; color: #f59e0b;" title="Held Invoices List">
-                                        <i class="fa-solid fa-folder-open" style="color: #f59e0b;"></i>
-                                        <span>List</span>
-                                        <span id="heldInvoicesBadge" class="badge bg-danger rounded-pill ms-0.5">0</span>
-                                    </button>
-                                </div>
-                            </div>
+                    <!-- 4. Amount Summary Card (Full Width) -->
+                    <div class="pos-amount-summary-card mb-1">
+                        <!-- Sub-Total -->
+                        <div class="pos-summary-row d-flex align-items-center justify-content-between py-0">
+                            <span class="pos-summary-label">SUB-TOTAL:</span>
+                            <span id="subTotal" class="pos-summary-subtotal-val">৳ 0.00</span>
+                        </div>
 
-                            <!-- Box 2: Big Sub-Total / Net Payable Card (Mobile Row 2: Left 50%) -->
-                            <div class="col-6 col-lg-4">
-                                <div class="pos-big-subtotal-card py-1 px-1.5 text-center border rounded-2 shadow-xs d-flex flex-column justify-content-center" style="border-radius: 8px; height: 38px;">
-                                    <span class="pos-big-subtotal-label text-muted d-block small fw-bold text-uppercase" style="font-size: 12px; letter-spacing: 0.3px; line-height: 1;">SUB-TOTAL</span>
-                                    <span id="bigSubTotalDisplay" class="pos-big-subtotal-val fw-bolder text-success" style="font-size: 14px; line-height: 1.2;">৳ 0.00</span>
+                        <!-- Discount -->
+                        <div class="pos-summary-row d-flex align-items-center justify-content-between py-0">
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="pos-summary-label">DISCOUNT:</span>
+                                <div class="pos-discount-toggle d-inline-flex border rounded overflow-hidden">
+                                    <input type="radio" name="discountType" id="discountTypeFlat" value="flat" checked onchange="calculateDuePayment()" style="display: none;">
+                                    <label for="discountTypeFlat" id="labelDiscountFlat" title="Solid Amount (৳)" class="pos-discount-type-btn active">৳</label>
+                                    <input type="radio" name="discountType" id="discountTypePercent" value="percent" onchange="calculateDuePayment()" style="display: none;">
+                                    <label for="discountTypePercent" id="labelDiscountPercent" title="Percentage (%)" class="pos-discount-type-btn">%</label>
                                 </div>
+                                <span id="discountCalculatedBadge" class="badge bg-success-subtle text-success border border-success-subtle fw-bold" style="font-size: 9.5px; display: none; padding: 1px 4px;">= ৳ 0</span>
                             </div>
-
-                            <!-- Box 3: Pay / Submit Order Button (Mobile Row 2: Right 50%) -->
-                            <div class="col-6 col-lg-4">
-                                <button type="submit" onclick="SavePaymentInfo(event)" class="btn btn-success w-100 py-2 fw-bold text-white shadow d-flex align-items-center justify-content-center gap-1" style="border-radius: 8px; background: linear-gradient(135deg, #15803d 0%, #16a34a 100%); border: none; font-size: 12.5px; height: 38px; letter-spacing: 0.3px;">
-                                    <i class="fa-solid fa-paper-plane me-1"></i> Submit Order
-                                </button>
+                            <div>
+                                <input type="number" id="discountAmountInput" oninput="calculateDuePayment()" placeholder="0" min="0" step="any" class="pos-amount-input-box" />
                             </div>
                         </div>
+
+                        <!-- Delivery Charge -->
+                        <div class="pos-summary-row d-flex align-items-center justify-content-between py-0">
+                            <span class="pos-summary-label">DELIVERY CHARGE:</span>
+                            <div>
+                                <input type="number" id="deliveryChargeInput" oninput="calculateDuePayment()" placeholder="0" min="0" step="any" class="pos-amount-input-box" />
+                            </div>
+                        </div>
+
+                        <!-- Exchange Amount -->
+                        <div class="pos-summary-row d-flex align-items-center justify-content-between py-0">
+                            <span class="pos-summary-label">EXCHANGE AMOUNT:</span>
+                            <div>
+                                <input type="number" id="exchangeAmountInput" oninput="calculateDuePayment()" placeholder="0" min="0" step="any" class="pos-amount-input-box" />
+                            </div>
+                        </div>
+
+                        <!-- Hidden elements for script safety -->
+                        <input type="hidden" id="posReturnAdjustmentInput" value="0">
+                        <span id="totalCost" style="display: none;">৳</span>
+
+                        <div class="pos-summary-divider"></div>
+
+                        <!-- Net Payable -->
+                        <div class="pos-summary-row d-flex align-items-center justify-content-between py-0">
+                            <span class="pos-summary-label-net">NET PAYABLE:</span>
+                            <span id="bigSubTotalDisplay" class="pos-summary-net-val">৳ 0.00</span>
+                        </div>
+
+                        <!-- Paid Amount -->
+                        <div class="pos-summary-row d-flex align-items-center justify-content-between py-0">
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="pos-summary-label-paid">PAID AMOUNT:</span>
+                                <button type="button" onclick="setFullPaidAmount()" class="pos-full-paid-btn" title="Click to fill Full Amount">Full Paid</button>
+                            </div>
+                            <div>
+                                <input type="number" id="paidAmountInput" oninput="calculateDuePayment()" placeholder="0" class="pos-amount-input-box pos-paid-input-box" />
+                            </div>
+                        </div>
+
+                        <!-- Current Due -->
+                        <div class="pos-summary-row d-flex align-items-center justify-content-between py-0">
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="pos-summary-label-due">CURRENT DUE:</span>
+                                <span id="paymentStatusDisplay" class="pos-status-badge-paid">PAID</span>
+                            </div>
+                            <span id="totalDuePayable" class="pos-summary-due-val">৳ 0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- 5. Bottom Action Buttons Row -->
+                    <div class="pos-action-buttons-row d-flex align-items-center gap-1.5">
+                        <!-- Hold Button -->
+                        <button type="button" id="posBtnHold" onclick="holdCurrentInvoice()" class="pos-btn-hold d-flex align-items-center justify-content-center gap-1" title="Hold Current Invoice">
+                            <i class="fa-solid fa-circle-pause" style="font-size: 11px;"></i>
+                            <span>Hold</span>
+                            <span id="heldInvoicesBadge" onclick="event.stopPropagation(); openHoldInvoicesModal();" class="badge bg-dark rounded-pill ms-0.5" style="display: none; font-size: 9px; padding: 2px 4px;" title="View Held Invoices">0</span>
+                        </button>
+
+                        <!-- Clear Button -->
+                        <button type="button" onclick="clearPosCart()" class="pos-btn-clear d-flex align-items-center justify-content-center gap-1" title="Clear POS Cart">
+                            <i class="fa-solid fa-arrows-rotate" style="font-size: 11px;"></i>
+                            <span>Clear</span>
+                        </button>
+
+                        <!-- Submit Order (F4) Button -->
+                        <button type="submit" onclick="SavePaymentInfo(event)" class="pos-btn-submit flex-grow-1 d-flex align-items-center justify-content-center gap-1" title="Submit Order (Press F4)">
+                            <i class="fa-solid fa-paper-plane" style="font-size: 11px;"></i>
+                            <span>SUBMIT ORDER (F4)</span>
+                        </button>
                     </div>
                 </div>
 
@@ -4208,14 +4502,20 @@
             const discountType = document.querySelector('input[name="discountType"]:checked')?.value || 'flat';
             const paidAmount = parseFloat(document.getElementById("paidAmountInput")?.value) || 0;
             const deliveryCharge = parseFloat(document.getElementById("deliveryChargeInput")?.value) || 0;
+            const exchangeAmount = parseFloat(document.getElementById("exchangeAmountInput")?.value) || 0;
 
             // Sub-Total is itemsTotal + deliveryCharge
             const subTotalWithDelivery = itemsTotal + deliveryCharge;
 
             let discountAmount = 0;
             const badge = document.getElementById("discountCalculatedBadge");
+            const flatLabel = document.getElementById("labelDiscountFlat");
+            const percentLabel = document.getElementById("labelDiscountPercent");
 
             if (discountType === 'percent') {
+                if (flatLabel) flatLabel.classList.remove('active');
+                if (percentLabel) percentLabel.classList.add('active');
+
                 if (discountInputVal > 100) {
                     Swal.fire({
                         icon: 'warning',
@@ -4234,6 +4534,9 @@
                     badge.textContent = `= ৳ ${discountAmount.toFixed(2)}`;
                 }
             } else {
+                if (flatLabel) flatLabel.classList.add('active');
+                if (percentLabel) percentLabel.classList.remove('active');
+
                 discountAmount = discountInputVal;
                 if (discountAmount > subTotalWithDelivery && subTotalWithDelivery > 0) {
                     Swal.fire({
@@ -4251,15 +4554,19 @@
                 }
             }
 
-            // Net payable after applying discount
-            const netPayable = Math.max(0, subTotalWithDelivery - discountAmount);
+            // Net payable after applying discount and exchange
+            const netPayable = Math.max(0, subTotalWithDelivery - discountAmount - exchangeAmount);
             const dueAmount = Math.max(0, netPayable - paidAmount);
 
             // Update Sub-Total Display (Item total + Delivery charge)
-            document.getElementById("subTotal").textContent = `৳ ${subTotalWithDelivery.toFixed(2)}`;
+            if (document.getElementById("subTotal")) {
+                document.getElementById("subTotal").textContent = `৳ ${subTotalWithDelivery.toFixed(2)}`;
+            }
 
             // Update the Due Amount Display
-            document.getElementById("totalDuePayable").textContent = `৳ ${dueAmount.toFixed(2)}`;
+            if (document.getElementById("totalDuePayable")) {
+                document.getElementById("totalDuePayable").textContent = `৳ ${dueAmount.toFixed(2)}`;
+            }
 
             // Update Big Sub-Total Display Card
             const bigSubTotalDisplay = document.getElementById("bigSubTotalDisplay");
@@ -4274,29 +4581,107 @@
 
             // Update Payment Status Display
             const paymentStatusDisplay = document.getElementById("paymentStatusDisplay");
-            const effectivePaid = paidAmount;
-            const totalTarget = netPayable;
-
-            if (effectivePaid >= totalTarget && totalTarget > 0) {
-                paymentStatusDisplay.textContent = "Paid";
-                paymentStatusDisplay.classList.remove("partial-payment-status");
-                paymentStatusDisplay.classList.add("fully-paid-status");
-            } else if (effectivePaid > 0) {
-                paymentStatusDisplay.textContent = "Due";
-                paymentStatusDisplay.classList.add("partial-payment-status");
-                paymentStatusDisplay.classList.remove("fully-paid-status");
-            } else {
-                paymentStatusDisplay.textContent = "Due";
-                paymentStatusDisplay.classList.remove("partial-payment-status", "fully-paid-status");
+            if (paymentStatusDisplay) {
+                if (paidAmount >= netPayable && netPayable > 0) {
+                    paymentStatusDisplay.textContent = "PAID";
+                    paymentStatusDisplay.className = "pos-status-badge-paid";
+                } else if (paidAmount > 0) {
+                    paymentStatusDisplay.textContent = "PARTIAL";
+                    paymentStatusDisplay.className = "pos-status-badge-paid";
+                } else {
+                    paymentStatusDisplay.textContent = "DUE";
+                    paymentStatusDisplay.className = "pos-status-badge-paid";
+                }
             }
         }
+
+        // Switch payment method dynamically and update header title
+        function onPosPaymentMethodChange(methodId, methodName) {
+            const titleEl = document.getElementById('posSelectedMethodTitle');
+            if (titleEl) {
+                titleEl.textContent = methodName || methodId.toUpperCase();
+            }
+            document.querySelectorAll('.pos-method-pill').forEach(pill => {
+                pill.classList.remove('active');
+            });
+            const selectedInput = document.getElementById(methodId);
+            if (selectedInput) {
+                selectedInput.checked = true;
+                const parentPill = selectedInput.closest('.pos-method-pill');
+                if (parentPill) parentPill.classList.add('active');
+            }
+            const txnContainer = document.getElementById('transactionInputContainer');
+            if (txnContainer) {
+                txnContainer.style.display = (methodId !== 'cash') ? 'block' : 'none';
+            }
+        }
+
+        // Set Full Paid Amount Helper
+        function setFullPaidAmount() {
+            const itemsTotal = (cartItems || []).reduce((acc, item) => acc + ((parseFloat(item.sellingPrice) || 0) * (parseFloat(item.quantity) || 0)), 0);
+            const deliveryCharge = parseFloat(document.getElementById("deliveryChargeInput")?.value) || 0;
+            const subTotalWithDelivery = itemsTotal + deliveryCharge;
+            const discountInputVal = parseFloat(document.getElementById("discountAmountInput")?.value) || 0;
+            const discountType = document.querySelector('input[name="discountType"]:checked')?.value || 'flat';
+            let discountAmount = 0;
+            if (discountType === 'percent') {
+                discountAmount = (subTotalWithDelivery * Math.min(100, discountInputVal)) / 100;
+            } else {
+                discountAmount = Math.min(subTotalWithDelivery, discountInputVal);
+            }
+            const exchangeAmount = parseFloat(document.getElementById("exchangeAmountInput")?.value) || 0;
+            const netPayable = Math.max(0, subTotalWithDelivery - discountAmount - exchangeAmount);
+            const paidInput = document.getElementById("paidAmountInput");
+            if (paidInput) {
+                paidInput.value = netPayable > 0 ? netPayable.toFixed(2) : 0;
+                calculateDuePayment();
+            }
+        }
+
+        // Clear POS Cart Helper
+        function clearPosCart() {
+            if (!cartItems || cartItems.length === 0) return;
+            Swal.fire({
+                title: 'Clear Cart?',
+                text: 'Are you sure you want to clear all items in the cart?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, Clear'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    cartItems = [];
+                    renderCart();
+                    if (document.getElementById('discountAmountInput')) document.getElementById('discountAmountInput').value = '';
+                    const radioFlat = document.getElementById('discountTypeFlat');
+                    if (radioFlat) radioFlat.checked = true;
+                    if (document.getElementById('deliveryChargeInput')) document.getElementById('deliveryChargeInput').value = '';
+                    if (document.getElementById('exchangeAmountInput')) document.getElementById('exchangeAmountInput').value = '';
+                    if (document.getElementById('paidAmountInput')) document.getElementById('paidAmountInput').value = '';
+                    if (document.getElementById('orderNote')) document.getElementById('orderNote').value = '';
+                    calculateDuePayment();
+                }
+            });
+        }
+
+        // Shortcut: Press F4 to submit order
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F4') {
+                e.preventDefault();
+                SavePaymentInfo(e);
+            }
+        });
 
         // Hold Invoices Manager System
         function updateHeldInvoicesBadge() {
             try {
                 const heldList = JSON.parse(localStorage.getItem('pos_held_invoices') || '[]');
                 const badge = document.getElementById('heldInvoicesBadge');
-                if (badge) badge.textContent = heldList.length;
+                if (badge) {
+                    badge.textContent = heldList.length;
+                    badge.style.display = heldList.length > 0 ? 'inline-block' : 'none';
+                }
             } catch (e) {}
         }
 
@@ -4524,10 +4909,11 @@
             }
         }
 
-        // Call function when discount, delivery charge, or paid amount changes
-        document.getElementById("discountAmountInput").addEventListener("input", calculateDuePayment);
-        document.getElementById("deliveryChargeInput").addEventListener("input", calculateDuePayment);
-        document.getElementById("paidAmountInput").addEventListener("input", calculateDuePayment);
+        // Call function when discount, delivery charge, exchange amount, or paid amount changes
+        document.getElementById("discountAmountInput")?.addEventListener("input", calculateDuePayment);
+        document.getElementById("deliveryChargeInput")?.addEventListener("input", calculateDuePayment);
+        document.getElementById("exchangeAmountInput")?.addEventListener("input", calculateDuePayment);
+        document.getElementById("paidAmountInput")?.addEventListener("input", calculateDuePayment);
 
         // Initialize the values on page load
         calculateDuePayment();
@@ -4658,6 +5044,10 @@
                 formData.append('previous_due_amount', totalPreviousDueAmount);
                 formData.append('transaction_id', transactionId);
                 formData.append('order_note', orderNote);
+                const exchangeAmount = parseFloat(document.getElementById('exchangeAmountInput')?.value) || 0;
+                if (exchangeAmount > 0) {
+                    formData.append('exchange_amount', exchangeAmount);
+                }
                 formData.append('payment_method', paymentMethod);
                 formData.append('payment_status', paymentStatusDisplay);
                 formData.append('products', JSON.stringify(products));
