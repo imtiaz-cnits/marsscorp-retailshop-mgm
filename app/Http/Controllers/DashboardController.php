@@ -56,55 +56,95 @@ class DashboardController extends Controller
 
             // --- 1. FILTERED BANNER METRICS ---
             $todaySalesCount = Order::where(function($q) use ($filterStart, $filterEnd) {
-                $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd]);
+                $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd])
+                  ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
             })->count();
 
             $todaySalesAmount = (float) Order::where(function($q) use ($filterStart, $filterEnd) {
-                $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd]);
+                $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd])
+                  ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
             })->sum('sub_total');
             
             $todayDetails = DB::table('order_details')
                 ->join('orders', 'order_details.order_id', '=', 'orders.id')
                 ->where(function($q) use ($filterStart, $filterEnd) {
-                    $q->whereBetween(DB::raw("COALESCE(orders.invoice_date, DATE(orders.created_at))"), [$filterStart, $filterEnd]);
+                    $q->whereBetween(DB::raw("COALESCE(orders.invoice_date, DATE(orders.created_at))"), [$filterStart, $filterEnd])
+                      ->orWhereBetween(DB::raw("DATE(orders.created_at)"), [$filterStart, $filterEnd]);
                 })
                 ->selectRaw('SUM( (order_details.selling_price - order_details.price) * order_details.quantity ) as gross_profit')
                 ->first();
 
             $todayDiscountGiven = (float) Order::where(function($q) use ($filterStart, $filterEnd) {
-                $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd]);
+                $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd])
+                  ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
             })->sum('discount_amount');
 
             $todayGrossProfit = ((float)($todayDetails->gross_profit ?? 0)) - $todayDiscountGiven;
 
-            $todayExpense = (float) Expense::whereBetween(
-                DB::raw("COALESCE(NULLIF(date, ''), DATE(created_at))"),
-                [$filterStart, $filterEnd]
-            )->sum('expense_amount');
+            $todayExpense = (float) Expense::where(function($q) use ($filterStart, $filterEnd) {
+                $q->whereBetween(DB::raw("
+                    CASE 
+                        WHEN date LIKE '__-__-____' THEN STR_TO_DATE(date, '%d-%m-%Y')
+                        WHEN date LIKE '____-__-__%' THEN STR_TO_DATE(SUBSTRING(date, 1, 10), '%Y-%m-%d')
+                        ELSE DATE(created_at)
+                    END
+                "), [$filterStart, $filterEnd])
+                ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
+            })->sum('expense_amount');
 
             $todayNetProfit = $todayGrossProfit - $todayExpense;
 
             $todayCashCollection = (float) OrderPaymentDetails::where(function($q) use ($filterStart, $filterEnd) {
-                $q->whereBetween(DB::raw("COALESCE(NULLIF(due_collection_date, ''), DATE(created_at))"), [$filterStart, $filterEnd]);
+                $q->whereBetween(DB::raw("
+                    CASE 
+                        WHEN due_collection_date LIKE '__-__-____' THEN STR_TO_DATE(due_collection_date, '%d-%m-%Y')
+                        WHEN due_collection_date LIKE '____-__-__%' THEN STR_TO_DATE(SUBSTRING(due_collection_date, 1, 10), '%Y-%m-%d')
+                        ELSE DATE(created_at)
+                    END
+                "), [$filterStart, $filterEnd])
+                ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
             })->sum('paid_amount') 
             + (float) CustomerPaymentDetails::where(function($q) use ($filterStart, $filterEnd) {
-                $q->whereBetween(DB::raw("COALESCE(due_collection_date, DATE(created_at))"), [$filterStart, $filterEnd]);
+                $q->whereBetween(DB::raw("COALESCE(due_collection_date, DATE(created_at))"), [$filterStart, $filterEnd])
+                  ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
             })->sum('paid_amount');
 
             $todayPurchaseAmount = (float) Purchase::where(function($q) use ($filterStart, $filterEnd) {
-                $q->whereBetween(DB::raw("COALESCE(date, DATE(created_at))"), [$filterStart, $filterEnd]);
+                $q->whereBetween(DB::raw("
+                    CASE 
+                        WHEN date LIKE '__-__-____' THEN STR_TO_DATE(date, '%d-%m-%Y')
+                        WHEN date LIKE '____-__-__%' THEN STR_TO_DATE(SUBSTRING(date, 1, 10), '%Y-%m-%d')
+                        ELSE DATE(created_at)
+                    END
+                "), [$filterStart, $filterEnd])
+                ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
             })->sum('grand_subtotal');
 
             $filteredReceivableDue = (float) Order::where(function($q) use ($filterStart, $filterEnd) {
-                $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd]);
+                $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd])
+                  ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
             })->sum('due_amount');
 
             $filteredPayableDue = (float) Purchase::where(function($q) use ($filterStart, $filterEnd) {
-                $q->whereBetween(DB::raw("COALESCE(date, DATE(created_at))"), [$filterStart, $filterEnd]);
+                $q->whereBetween(DB::raw("
+                    CASE 
+                        WHEN date LIKE '__-__-____' THEN STR_TO_DATE(date, '%d-%m-%Y')
+                        WHEN date LIKE '____-__-__%' THEN STR_TO_DATE(SUBSTRING(date, 1, 10), '%Y-%m-%d')
+                        ELSE DATE(created_at)
+                    END
+                "), [$filterStart, $filterEnd])
+                ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
             })->sum('due_amount');
 
             $filteredReturn = (float) \App\Models\ProductReturn::where(function($q) use ($filterStart, $filterEnd) {
-                $q->whereBetween(DB::raw("COALESCE(NULLIF(date, ''), DATE(created_at))"), [$filterStart, $filterEnd]);
+                $q->whereBetween(DB::raw("
+                    CASE 
+                        WHEN date LIKE '__-__-____' THEN STR_TO_DATE(date, '%d-%m-%Y')
+                        WHEN date LIKE '____-__-__%' THEN STR_TO_DATE(SUBSTRING(date, 1, 10), '%Y-%m-%d')
+                        ELSE DATE(created_at)
+                    END
+                "), [$filterStart, $filterEnd])
+                ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
             })->sum('amount');
 
             // --- 2. THIS MONTH'S METRICS ---

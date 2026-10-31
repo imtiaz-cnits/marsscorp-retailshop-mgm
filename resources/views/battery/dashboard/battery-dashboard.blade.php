@@ -242,8 +242,47 @@
                     border-radius: 14px !important;
                     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04) !important;
                     font-family: inherit !important;
-                    padding: 8px !important;
+                    padding: 6px 10px !important;
+                    width: 328px !important;
                     max-width: calc(100vw - 20px) !important;
+                    box-sizing: border-box !important;
+                }
+                .flatpickr-innerContainer {
+                    width: 100% !important;
+                    overflow: visible !important;
+                }
+                .flatpickr-rContainer {
+                    width: 100% !important;
+                }
+                .flatpickr-days {
+                    width: 100% !important;
+                }
+                .dayContainer {
+                    width: 100% !important;
+                    min-width: 100% !important;
+                    max-width: 100% !important;
+                    display: flex !important;
+                    flex-wrap: wrap !important;
+                    justify-content: space-around !important;
+                    padding: 0 !important;
+                }
+                .flatpickr-day {
+                    max-width: 38px !important;
+                    height: 36px !important;
+                    line-height: 36px !important;
+                    margin: 2px 0 !important;
+                }
+                .flatpickr-weekdays {
+                    width: 100% !important;
+                }
+                .flatpickr-weekdaycontainer {
+                    width: 100% !important;
+                    display: flex !important;
+                    justify-content: space-around !important;
+                }
+                span.flatpickr-weekday {
+                    flex: 1 !important;
+                    text-align: center !important;
                 }
                 .flatpickr-calendar.rightMost,
                 .flatpickr-calendar.arrowRight {
@@ -413,7 +452,7 @@
 
             <!-- Overview Dashboard Header Card -->
             <div class="card border-0 shadow-sm mb-4 dashboard-header-card">
-                <div class="card-body p-3 p-md-3 d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="card-body p-3 p-md-3 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                     <div class="d-flex align-items-center gap-3 flex-shrink-0">
                         <div class="rounded-3 d-flex align-items-center justify-content-center shadow-sm flex-shrink-0" style="width: 44px; height: 44px; min-width: 44px; background: #e0f2fe; color: #0284c7;">
                             <i class="fa-solid fa-arrow-trend-up fs-5"></i>
@@ -463,9 +502,9 @@
                             </div>
                         </div>
 
-                        <!-- Refresh Button -->
-                        <button type="button" id="dashboardRefreshBtn" class="dashboard-refresh-btn" title="Reload Dashboard Data">
-                            <i class="fa-solid fa-rotate" id="dashboardRefreshIcon" style="font-size: 13px;"></i>
+                        <!-- Clear Filter Button (Reset to Today) -->
+                        <button type="button" id="dashboardRefreshBtn" class="dashboard-refresh-btn" title="Clear Filter (Reset to Today)">
+                            <i class="fa-solid fa-xmark text-danger" id="dashboardRefreshIcon" style="font-size: 15px; font-weight: 700;"></i>
                         </button>
 
                         <!-- POS Terminal Button -->
@@ -479,7 +518,6 @@
                         </a>
                     </div>
                 </div>
-            </div>
             </div>
 
             <!-- FINANCIAL METRICS & CHARTS WRAPPER -->
@@ -565,7 +603,7 @@
                 <div class="row g-3 mb-3">
                     <!-- Receivable Due -->
                     <div class="col-xl-3 col-md-6 col-sm-6">
-                        <div class="card border-0 shadow-sm px-3 py-2.5 h-100" style="border-radius: 12px; background: #ffffff;">
+                        <div class="card border-0 shadow-sm px-3 py-2.5" style="border-radius: 12px; background: #ffffff;">
                             <div class="d-flex align-items-center gap-2 mb-1">
                                 <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 24px; height: 24px; min-width: 24px; background: #fef3c7; color: #d97706; font-size: 11px;">
                                     <i class="fa-solid fa-users"></i>
@@ -579,7 +617,7 @@
                     </div>
                     <!-- Payable Due -->
                     <div class="col-xl-3 col-md-6 col-sm-6">
-                        <div class="card border-0 shadow-sm px-3 py-2.5 h-100" style="border-radius: 12px; background: #ffffff;">
+                        <div class="card border-0 shadow-sm px-3 py-2.5" style="border-radius: 12px; background: #ffffff;">
                             <div class="d-flex align-items-center gap-2 mb-1">
                                 <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 24px; height: 24px; min-width: 24px; background: #e0e7ff; color: #4f46e5; font-size: 11px;">
                                     <i class="fa-solid fa-truck-field"></i>
@@ -593,7 +631,7 @@
                     </div>
                     <!-- Return -->
                     <div class="col-xl-3 col-md-6 col-sm-6">
-                        <div class="card border-0 shadow-sm px-3 py-2.5 h-100" style="border-radius: 12px; background: #ffffff;">
+                        <div class="card border-0 shadow-sm px-3 py-2.5" style="border-radius: 12px; background: #ffffff;">
                             <div class="d-flex align-items-center gap-2 mb-1">
                                 <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 24px; height: 24px; min-width: 24px; background: #ffe4e6; color: #e11d48; font-size: 11px;">
                                     <i class="fa-solid fa-rotate-left"></i>
@@ -607,7 +645,7 @@
                     </div>
                     <!-- Discount -->
                     <div class="col-xl-3 col-md-6 col-sm-6">
-                        <div class="card border-0 shadow-sm px-3 py-2.5 h-100" style="border-radius: 12px; background: #ffffff;">
+                        <div class="card border-0 shadow-sm px-3 py-2.5" style="border-radius: 12px; background: #ffffff;">
                             <div class="d-flex align-items-center gap-2 mb-1">
                                 <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 24px; height: 24px; min-width: 24px; background: #f3e8ff; color: #9333ea; font-size: 11px;">
                                     <i class="fa-solid fa-percent"></i>
@@ -1040,76 +1078,96 @@
 
         // Flatpickr initialization
         if (typeof flatpickr !== 'undefined') {
-            const handlePickerSync = () => {
-                if (!dashboardStartPicker) return;
-                const sDate = dashboardStartPicker.input.value;
-                const eDate = dashboardEndPicker ? dashboardEndPicker.input.value : sDate;
-                if (sDate) {
-                    currentDashboardStartDate = sDate;
-                    currentDashboardEndDate = eDate || sDate;
-                    if (currentDashboardFilter === 'date_wise') {
-                        loadBatteryDashboardData('date_wise', currentDashboardStartDate, currentDashboardEndDate);
-                    }
-                }
-            };
-
-            const flatpickrConfig = {
-                dateFormat: "Y-m-d",
-                altInput: true,
-                altFormat: "d M Y",
-                altInputClass: "dashboard-date-input",
-                allowInput: true,
-                position: "auto right",
-                onOpen: function(selectedDates, dateStr, instance) {
-                    setTimeout(() => {
-                        const cal = instance.calendarContainer;
-                        if (cal) {
-                            const rect = cal.getBoundingClientRect();
-                            if (rect.right > (window.innerWidth - 10)) {
-                                const overflow = rect.right - window.innerWidth + 15;
-                                cal.style.left = Math.max(10, cal.offsetLeft - overflow) + 'px';
-                            }
-                        }
-                    }, 10);
-                },
-                onChange: function(selectedDates, dateStr, instance) {
-                    if (instance.element.id === 'dashboardStartDate') {
-                        currentDashboardStartDate = dateStr;
-                        if (dashboardEndPicker) {
-                            dashboardEndPicker.set('minDate', dateStr);
-                            if (!currentDashboardEndDate || currentDashboardEndDate < dateStr) {
-                                currentDashboardEndDate = dateStr;
-                                dashboardEndPicker.setDate(dateStr, false);
-                            }
-                        }
-                    } else if (instance.element.id === 'dashboardEndDate') {
-                        currentDashboardEndDate = dateStr;
-                        if (!currentDashboardStartDate) {
-                            currentDashboardStartDate = dateStr;
-                            if (dashboardStartPicker) dashboardStartPicker.setDate(dateStr, false);
+            const adjustCalendarPosition = (instance) => {
+                setTimeout(() => {
+                    const cal = instance ? instance.calendarContainer : null;
+                    if (cal) {
+                        const rect = cal.getBoundingClientRect();
+                        if (rect.right > (window.innerWidth - 15)) {
+                            const overflow = rect.right - window.innerWidth + 20;
+                            cal.style.left = Math.max(10, cal.offsetLeft - overflow) + 'px';
                         }
                     }
-                    handlePickerSync();
-                },
-                onClose: function() {
-                    handlePickerSync();
-                }
+                }, 10);
             };
 
             const startEl = document.getElementById('dashboardStartDate');
             const endEl = document.getElementById('dashboardEndDate');
-            if (startEl) dashboardStartPicker = flatpickr(startEl, { ...flatpickrConfig, placeholder: "From Date" });
-            if (endEl) dashboardEndPicker = flatpickr(endEl, { ...flatpickrConfig, placeholder: "To Date" });
+
+            if (startEl) {
+                dashboardStartPicker = flatpickr(startEl, {
+                    dateFormat: "Y-m-d",
+                    altInput: true,
+                    altFormat: "d M Y",
+                    altInputClass: "dashboard-date-input",
+                    allowInput: false,
+                    position: "auto right",
+                    placeholder: "From Date",
+                    onOpen: function(selectedDates, dateStr, instance) {
+                        adjustCalendarPosition(instance);
+                    },
+                    onChange: function(selectedDates, dateStr) {
+                        if (!dateStr) return;
+                        currentDashboardStartDate = dateStr;
+                        if (!currentDashboardEndDate || currentDashboardEndDate < dateStr) {
+                            currentDashboardEndDate = dateStr;
+                            if (dashboardEndPicker) dashboardEndPicker.setDate(dateStr, false);
+                        }
+                        if (dashboardEndPicker) dashboardEndPicker.set('minDate', dateStr);
+                        loadBatteryDashboardData('date_wise', currentDashboardStartDate, currentDashboardEndDate);
+                    }
+                });
+            }
+
+            if (endEl) {
+                dashboardEndPicker = flatpickr(endEl, {
+                    dateFormat: "Y-m-d",
+                    altInput: true,
+                    altFormat: "d M Y",
+                    altInputClass: "dashboard-date-input",
+                    allowInput: false,
+                    position: "auto right",
+                    placeholder: "To Date",
+                    onOpen: function(selectedDates, dateStr, instance) {
+                        adjustCalendarPosition(instance);
+                    },
+                    onChange: function(selectedDates, dateStr) {
+                        if (!dateStr) return;
+                        currentDashboardEndDate = dateStr;
+                        if (!currentDashboardStartDate || currentDashboardStartDate > dateStr) {
+                            currentDashboardStartDate = dateStr;
+                            if (dashboardStartPicker) dashboardStartPicker.setDate(dateStr, false);
+                        }
+                        loadBatteryDashboardData('date_wise', currentDashboardStartDate, currentDashboardEndDate);
+                    }
+                });
+            }
         }
 
-        // Refresh Button Click
+        // Clear Filter Button Click (Reset to Today)
         if (refreshBtn) {
             refreshBtn.addEventListener('click', async () => {
-                if (refreshIcon) refreshIcon.classList.add('fa-spin');
-                await loadBatteryDashboardData(currentDashboardFilter, currentDashboardStartDate, currentDashboardEndDate);
-                setTimeout(() => {
-                    if (refreshIcon) refreshIcon.classList.remove('fa-spin');
-                }, 400);
+                currentDashboardFilter = 'today';
+                currentDashboardStartDate = null;
+                currentDashboardEndDate = null;
+
+                if (selectedText) selectedText.innerText = 'Today';
+                const items = menu.querySelectorAll('.dashboard-filter-item');
+                items.forEach(i => {
+                    const isToday = i.getAttribute('data-filter') === 'today';
+                    i.classList.toggle('active', isToday);
+                    const ck = i.querySelector('.check-icon');
+                    if (ck) ck.style.display = isToday ? 'inline-block' : 'none';
+                });
+
+                if (dateBox) {
+                    dateBox.classList.add('d-none');
+                    dateBox.classList.remove('d-flex');
+                }
+                if (dashboardStartPicker) dashboardStartPicker.clear();
+                if (dashboardEndPicker) dashboardEndPicker.clear();
+
+                await loadBatteryDashboardData('today');
             });
         }
     }
@@ -1122,6 +1180,10 @@
     async function loadBatteryDashboardData(filterType = currentDashboardFilter, startDate = currentDashboardStartDate, endDate = currentDashboardEndDate) {
         try {
             if (typeof showLoader === "function") showLoader();
+            currentDashboardFilter = filterType;
+            if (startDate) currentDashboardStartDate = startDate;
+            if (endDate) currentDashboardEndDate = endDate;
+
             let queryParams = `?filter_type=${encodeURIComponent(filterType)}`;
             const s = startDate || currentDashboardStartDate;
             const e = endDate || currentDashboardEndDate || s;
@@ -1143,10 +1205,10 @@
                 if (document.getElementById('todayCashCollection')) document.getElementById('todayCashCollection').innerText = '৳ ' + formatMoney(today.cash_collection || 0);
                 if (document.getElementById('todayExpense')) document.getElementById('todayExpense').innerText = '৳ ' + formatMoney(today.expense || 0);
                 if (document.getElementById('todayNetProfit')) document.getElementById('todayNetProfit').innerText = '৳ ' + formatMoney(today.net_profit || 0);
-                if (document.getElementById('customerDue')) document.getElementById('customerDue').innerText = '৳ ' + formatMoney(today.customer_due !== undefined ? today.customer_due : (financial.customer_due || 0));
-                if (document.getElementById('supplierPayable')) document.getElementById('supplierPayable').innerText = '৳ ' + formatMoney(today.supplier_payable !== undefined ? today.supplier_payable : (financial.supplier_payable || 0));
-                if (document.getElementById('totalReturnAmount')) document.getElementById('totalReturnAmount').innerText = '৳ ' + formatMoney(today.total_return !== undefined ? today.total_return : (financial.total_return || 0));
-                if (document.getElementById('totalDiscountAmount')) document.getElementById('totalDiscountAmount').innerText = '৳ ' + formatMoney(today.total_discount !== undefined ? today.total_discount : (financial.total_discount || 0));
+                if (document.getElementById('customerDue')) document.getElementById('customerDue').innerText = '৳ ' + formatMoney(today.customer_due !== undefined ? today.customer_due : 0);
+                if (document.getElementById('supplierPayable')) document.getElementById('supplierPayable').innerText = '৳ ' + formatMoney(today.supplier_payable !== undefined ? today.supplier_payable : 0);
+                if (document.getElementById('totalReturnAmount')) document.getElementById('totalReturnAmount').innerText = '৳ ' + formatMoney(today.total_return !== undefined ? today.total_return : 0);
+                if (document.getElementById('totalDiscountAmount')) document.getElementById('totalDiscountAmount').innerText = '৳ ' + formatMoney(today.total_discount !== undefined ? today.total_discount : 0);
                 if (document.getElementById('todaySalesCountBadge')) document.getElementById('todaySalesCountBadge').innerText = (today.sales_count || 0) + ' Invoices generated';
 
                 // 2. Monthly Cards
@@ -1156,20 +1218,8 @@
                 document.getElementById('monthlyPurchase').innerText = '৳ ' + formatMoney(monthly.purchase_amount || 0);
 
                 // 3. Balance & Inventory
-                const formattedCustDue = '৳ ' + formatMoney(financial.customer_due || 0);
-                if (document.getElementById('customerDue')) document.getElementById('customerDue').innerText = formattedCustDue;
                 if (document.getElementById('customerDueBottom')) document.getElementById('customerDueBottom').innerText = '৳ ' + formatMoney(financial.lifetime_customer_due || financial.customer_due || 0);
-
-                const formattedSuppPay = '৳ ' + formatMoney(financial.supplier_payable || 0);
-                if (document.getElementById('supplierPayable')) document.getElementById('supplierPayable').innerText = formattedSuppPay;
                 if (document.getElementById('supplierPayableBottom')) document.getElementById('supplierPayableBottom').innerText = '৳ ' + formatMoney(financial.lifetime_supplier_payable || financial.supplier_payable || 0);
-
-                if (document.getElementById('totalReturnAmount')) {
-                    document.getElementById('totalReturnAmount').innerText = '৳ ' + formatMoney(financial.total_return || 0);
-                }
-                if (document.getElementById('totalDiscountAmount')) {
-                    document.getElementById('totalDiscountAmount').innerText = '৳ ' + formatMoney(financial.total_discount || 0);
-                }
 
                 if (document.getElementById('totalProductsCount')) {
                     document.getElementById('totalProductsCount').innerText = financial.total_products || 0;
