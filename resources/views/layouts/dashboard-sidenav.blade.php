@@ -2,6 +2,71 @@
 <html lang="en">
 
 <head>
+  <script>
+    (function () {
+      try {
+        var token = localStorage.getItem("token");
+        if (!token || token === "null" || token === "undefined") {
+          window.location.replace("/admin-login-page");
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Universal Primary Theme Focus/Hover & Modal Scroll Lock Styles -->
+  <style>
+    /* Universal Project Theme Primary Color Hover/Focus for all Inputs, Selects, and Dropdowns */
+    input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="file"]):hover,
+    select:hover,
+    textarea:hover,
+    .form-control:hover,
+    .form-select:hover,
+    .select2-container--default .select2-selection--single:hover,
+    .select2-container--default .select2-selection--multiple:hover,
+    .select-dropdown-selected:hover,
+    .custom-dropdown-btn:hover {
+      border-color: #16a34a !important;
+    }
+
+    input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="file"]):focus,
+    select:focus,
+    textarea:focus,
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #15803d !important;
+      box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.22) !important;
+      outline: none !important;
+    }
+
+    .select2-container--default.select2-container--focus .select2-selection--single,
+    .select2-container--default.select2-container--open .select2-selection--single,
+    .select2-container--default.select2-container--focus .select2-selection--multiple,
+    .select2-container--default.select2-container--open .select2-selection--multiple,
+    .select-dropdown-selected:focus,
+    .select-dropdown-selected.show,
+    .custom-dropdown-btn:focus {
+      border-color: #15803d !important;
+      box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.22) !important;
+      outline: none !important;
+    }
+
+    /* Universal Modal Scroll Lock: Prevents background scroll when ANY modal is open */
+    body.modal-open,
+    body:has(.modal.show),
+    body:has(.add-product-modal.show),
+    body:has(.addnewwarehouse.show),
+    body:has(.addnewcategory.show),
+    body:has(.unique-modal.show),
+    body:has(.addcustomer-modal.show),
+    body:has(.addnewbrand.show),
+    body:has(.selectsupplier-modal.show),
+    body:has(.selectunit-modal.show),
+    body:has(.newbrand.show),
+    body:has(.recent-draft-modal-wrapper.show),
+    body:has(.draftmodal-wrapper.show) {
+      overflow: hidden !important;
+    }
+  </style>
   <meta charset="utf-8" />
   <title>@yield('title') - MARSS CORPORATION</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />

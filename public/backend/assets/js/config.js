@@ -47,7 +47,7 @@ function startLogoutTimer() {
         clearTimeout(logoutTimer);
     }
     // Start a new timer for 24 hours (86,400,000 milliseconds)
-    logoutTimer = setTimeout(logout, 43200000); // 6 hours in milliseconds
+    logoutTimer = setTimeout(logout, 86400000); // 24 hours in milliseconds
 }
 
 function resetLogoutTimer() {
@@ -59,7 +59,7 @@ function resetLogoutTimer() {
 function logout() {
     localStorage.clear();
     sessionStorage.clear();
-    window.location.href = "/nexus-login-page";
+    window.location.href = "/admin-login-page";
 }
 
 function unauthorized(code){
@@ -67,7 +67,7 @@ function unauthorized(code){
         localStorage.clear();
         sessionStorage.clear();
 
-        window.location.href="/nexus-login-page"
+        window.location.href="/admin-login-page"
     }
 }
 

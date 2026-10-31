@@ -23,53 +23,89 @@ use App\Models\PurchasePaymentDetails;
 class DashboardController extends Controller
 {
 
-    public function DashboardAllCalculation()
+    public function DashboardAllCalculation(Request $request = null)
     {
         try {
+            $filterType = $request ? $request->query('filter_type', 'today') : 'today';
+            $customStart = $request ? $request->query('start_date') : null;
+            $customEnd = $request ? $request->query('end_date') : null;
+
             $today = Carbon::today()->toDateString();
             $currentYear = date('Y');
             $currentMonth = date('m');
 
-            // --- 1. TODAY'S METRICS ---
-            $todaySalesCount = Order::where(function($q) use ($today) {
-                $q->whereDate('invoice_date', $today)->orWhereDate('created_at', $today);
+            if ($filterType === 'last_week') {
+                $filterStart = Carbon::today()->subDays(6)->toDateString();
+                $filterEnd = $today;
+            } elseif ($filterType === 'last_month') {
+                $filterStart = Carbon::today()->subDays(29)->toDateString();
+                $filterEnd = $today;
+            } elseif ($filterType === 'date_wise' && $customStart) {
+                $filterStart = Carbon::parse($customStart)->toDateString();
+                $filterEnd = $customEnd ? Carbon::parse($customEnd)->toDateString() : $filterStart;
+                if ($filterStart > $filterEnd) {
+                    $tmp = $filterStart;
+                    $filterStart = $filterEnd;
+                    $filterEnd = $tmp;
+                }
+            } else {
+                $filterType = 'today';
+                $filterStart = $today;
+                $filterEnd = $today;
+            }
+
+            // --- 1. FILTERED BANNER METRICS ---
+            $todaySalesCount = Order::where(function($q) use ($filterStart, $filterEnd) {
+                $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd]);
             })->count();
 
-            $todaySalesAmount = (float) Order::where(function($q) use ($today) {
-                $q->whereDate('invoice_date', $today)->orWhereDate('created_at', $today);
+            $todaySalesAmount = (float) Order::where(function($q) use ($filterStart, $filterEnd) {
+                $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd]);
             })->sum('sub_total');
             
             $todayDetails = DB::table('order_details')
                 ->join('orders', 'order_details.order_id', '=', 'orders.id')
-                ->where(function($q) use ($today) {
-                    $q->whereDate('orders.invoice_date', $today)->orWhereDate('orders.created_at', $today);
+                ->where(function($q) use ($filterStart, $filterEnd) {
+                    $q->whereBetween(DB::raw("COALESCE(orders.invoice_date, DATE(orders.created_at))"), [$filterStart, $filterEnd]);
                 })
                 ->selectRaw('SUM( (order_details.selling_price - order_details.price) * order_details.quantity ) as gross_profit')
                 ->first();
 
-            $todayDiscountGiven = (float) Order::where(function($q) use ($today) {
-                $q->whereDate('invoice_date', $today)->orWhereDate('created_at', $today);
+            $todayDiscountGiven = (float) Order::where(function($q) use ($filterStart, $filterEnd) {
+                $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd]);
             })->sum('discount_amount');
 
             $todayGrossProfit = ((float)($todayDetails->gross_profit ?? 0)) - $todayDiscountGiven;
 
-            $todayExpense = (float) Expense::where(
-                DB::raw("DATE(COALESCE(NULLIF(date, ''), created_at))"),
-                $today
+            $todayExpense = (float) Expense::whereBetween(
+                DB::raw("COALESCE(NULLIF(date, ''), DATE(created_at))"),
+                [$filterStart, $filterEnd]
             )->sum('expense_amount');
 
             $todayNetProfit = $todayGrossProfit - $todayExpense;
 
-            $todayCashCollection = (float) OrderPaymentDetails::where(function($q) use ($today) {
-                $q->whereDate('due_collection_date', $today)->orWhereDate('created_at', $today);
+            $todayCashCollection = (float) OrderPaymentDetails::where(function($q) use ($filterStart, $filterEnd) {
+                $q->whereBetween(DB::raw("COALESCE(NULLIF(due_collection_date, ''), DATE(created_at))"), [$filterStart, $filterEnd]);
             })->sum('paid_amount') 
-            + (float) CustomerPaymentDetails::where(function($q) use ($today) {
-                $q->whereDate('due_collection_date', $today)->orWhereDate('created_at', $today);
+            + (float) CustomerPaymentDetails::where(function($q) use ($filterStart, $filterEnd) {
+                $q->whereBetween(DB::raw("COALESCE(due_collection_date, DATE(created_at))"), [$filterStart, $filterEnd]);
             })->sum('paid_amount');
 
-            $todayPurchaseAmount = (float) Purchase::where(function($q) use ($today) {
-                $q->whereDate('date', $today)->orWhereDate('created_at', $today);
+            $todayPurchaseAmount = (float) Purchase::where(function($q) use ($filterStart, $filterEnd) {
+                $q->whereBetween(DB::raw("COALESCE(date, DATE(created_at))"), [$filterStart, $filterEnd]);
             })->sum('grand_subtotal');
+
+            $filteredReceivableDue = (float) Order::where(function($q) use ($filterStart, $filterEnd) {
+                $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd]);
+            })->sum('due_amount');
+
+            $filteredPayableDue = (float) Purchase::where(function($q) use ($filterStart, $filterEnd) {
+                $q->whereBetween(DB::raw("COALESCE(date, DATE(created_at))"), [$filterStart, $filterEnd]);
+            })->sum('due_amount');
+
+            $filteredReturn = (float) \App\Models\ProductReturn::where(function($q) use ($filterStart, $filterEnd) {
+                $q->whereBetween(DB::raw("COALESCE(NULLIF(date, ''), DATE(created_at))"), [$filterStart, $filterEnd]);
+            })->sum('amount');
 
             // --- 2. THIS MONTH'S METRICS ---
             $monthlySalesCount = Order::where(function($q) use ($currentYear, $currentMonth) {
@@ -147,6 +183,8 @@ class DashboardController extends Controller
 
             $totalCustomerDue = (float) Customer::sum('previous_due_amount') + (float) Order::sum('due_amount');
             $totalSupplierPayable = (float) Supplier::sum('purchase_payable_amount') + (float) Purchase::sum('due_amount');
+            $totalReturn = (float) \App\Models\ProductReturn::sum('amount');
+            $totalDiscount = (float) Order::sum('discount_amount');
 
             $stockValuation = \App\Models\Product::selectRaw('SUM(CAST(cost_price AS DECIMAL(10,2)) * CAST(quantity AS DECIMAL(10,2))) as cost_value, SUM(CAST(sell_price AS DECIMAL(10,2)) * CAST(quantity AS DECIMAL(10,2))) as sell_value, SUM(CASE WHEN CAST(quantity AS DECIMAL(10,2)) <= 10 THEN 1 ELSE 0 END) as low_stock_count')->first();
 
@@ -223,6 +261,10 @@ class DashboardController extends Controller
                     'net_profit'      => $todayNetProfit,
                     'cash_collection' => $todayCashCollection,
                     'purchase_amount' => $todayPurchaseAmount,
+                    'customer_due'    => $filteredReceivableDue,
+                    'supplier_payable'=> $filteredPayableDue,
+                    'total_return'    => $filteredReturn,
+                    'total_discount'  => $todayDiscountGiven,
                 ],
                 'monthly' => [
                     'sales_count'     => $monthlySalesCount,
@@ -234,14 +276,18 @@ class DashboardController extends Controller
                     'purchase_amount' => $monthlyPurchaseAmount,
                 ],
                 'financial' => [
-                    'customer_due'     => $totalCustomerDue,
-                    'supplier_payable' => $totalSupplierPayable,
-                    'total_customers'  => $totalCustomers,
-                    'total_suppliers'  => $totalSuppliers,
-                    'total_products'   => $totalProducts,
-                    'cost_stock_value' => (float)($stockValuation->cost_value ?? 0),
-                    'sell_stock_value' => (float)($stockValuation->sell_value ?? 0),
-                    'low_stock_count'  => (int)($stockValuation->low_stock_count ?? 0),
+                    'customer_due'              => $filteredReceivableDue,
+                    'supplier_payable'          => $filteredPayableDue,
+                    'lifetime_customer_due'     => $totalCustomerDue,
+                    'lifetime_supplier_payable' => $totalSupplierPayable,
+                    'total_customers'           => $totalCustomers,
+                    'total_suppliers'           => $totalSuppliers,
+                    'total_products'            => $totalProducts,
+                    'cost_stock_value'          => (float)($stockValuation->cost_value ?? 0),
+                    'sell_stock_value'          => (float)($stockValuation->sell_value ?? 0),
+                    'low_stock_count'           => (int)($stockValuation->low_stock_count ?? 0),
+                    'total_return'              => $filteredReturn,
+                    'total_discount'            => $todayDiscountGiven,
                 ],
                 'chart' => [
                     'dates'   => $chartDates,

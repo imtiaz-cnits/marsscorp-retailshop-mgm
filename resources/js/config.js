@@ -62,7 +62,7 @@ export function startLogoutTimer() {
     if (logoutTimer) {
         clearTimeout(logoutTimer);
     }
-    logoutTimer = setTimeout(logout, 43200000); // 12 hours in ms
+    logoutTimer = setTimeout(logout, 86400000); // 24 hours in ms
 }
 
 export function resetLogoutTimer() {
@@ -72,14 +72,14 @@ export function resetLogoutTimer() {
 export function logout() {
     localStorage.clear();
     sessionStorage.clear();
-    window.location.href = "/nexus-login-page";
+    window.location.href = "/admin-login-page";
 }
 
 export function unauthorized(code) {
     if (code === 401) {
         localStorage.clear();
         sessionStorage.clear();
-        window.location.href = "/nexus-login-page";
+        window.location.href = "/admin-login-page";
     }
 }
 

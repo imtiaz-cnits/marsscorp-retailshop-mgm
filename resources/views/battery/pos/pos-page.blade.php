@@ -2,6 +2,16 @@
 <html lang="en">
 
 <head>
+    <script>
+        (function () {
+            try {
+                var token = localStorage.getItem("token");
+                if (!token || token === "null" || token === "undefined") {
+                    window.location.replace("/admin-login-page");
+                }
+            } catch (e) {}
+        })();
+    </script>
     <meta charset="utf-8" />
     <title>Battery Point of Sale - MARSS Corporation (Battery POS)
     </title>
@@ -1978,31 +1988,31 @@
             vertical-align: middle !important;
         }
 
-        /* Redesigned Modern Trash Action Button */
+        /* Redesigned Modern Action Button (Primary Theme) */
         .btn-cart-delete {
             width: 28px !important;
             height: 28px !important;
             min-width: 28px !important;
             min-height: 28px !important;
             border-radius: 7px !important;
-            background: #fee2e2 !important;
-            border: 1px solid #fca5a5 !important;
-            color: #dc2626 !important;
+            background: #f0fdf4 !important;
+            border: 1px solid #bbf7d0 !important;
+            color: #15803d !important;
             display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
             cursor: pointer !important;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             padding: 0 !important;
-            box-shadow: 0 1px 2px rgba(220, 38, 38, 0.08) !important;
+            box-shadow: 0 1px 2px rgba(21, 128, 61, 0.08) !important;
         }
 
         .btn-cart-delete:hover {
-            background: #dc2626 !important;
+            background: #15803d !important;
             color: #ffffff !important;
-            border-color: #dc2626 !important;
+            border-color: #15803d !important;
             transform: scale(1.08) !important;
-            box-shadow: 0 3px 8px rgba(220, 38, 38, 0.28) !important;
+            box-shadow: 0 3px 8px rgba(21, 128, 61, 0.28) !important;
         }
 
         .btn-cart-delete:active {
@@ -2675,12 +2685,12 @@
             padding: 0 4px !important;
         }
         .pos-method-pill:hover {
-            border-color: #b91c1c;
+            border-color: #16a34a;
         }
         .pos-method-pill.active,
         .pos-method-pill:has(input:checked) {
-            background: #b91c1c !important;
-            border-color: #b91c1c !important;
+            background: #15803d !important;
+            border-color: #15803d !important;
             color: #ffffff !important;
         }
         body[light-mode="dark"] .pos-method-pill {
@@ -2690,8 +2700,8 @@
         }
         body[light-mode="dark"] .pos-method-pill.active,
         body[light-mode="dark"] .pos-method-pill:has(input:checked) {
-            background: #b91c1c !important;
-            border-color: #b91c1c !important;
+            background: #16a34a !important;
+            border-color: #16a34a !important;
             color: #ffffff !important;
         }
 
@@ -2764,7 +2774,7 @@
             color: #64748b;
         }
         .pos-discount-type-btn.active {
-            background: #b91c1c !important;
+            background: #15803d !important;
             color: #ffffff !important;
         }
 
@@ -2783,7 +2793,7 @@
             line-height: 18px !important;
         }
         .pos-amount-input-box:focus {
-            border-color: #0284c7 !important;
+            border-color: #15803d !important;
         }
         body[light-mode="dark"] .pos-amount-input-box {
             background: #1e293b !important;
@@ -2813,7 +2823,7 @@
         .pos-summary-net-val {
             font-size: 12.5px !important;
             font-weight: 900;
-            color: #991b1b;
+            color: #15803d;
         }
 
         .pos-summary-label-paid {
@@ -2832,8 +2842,8 @@
             font-weight: 700;
             padding: 0 5px !important;
             border-radius: 3px !important;
-            background: #ffe4e6;
-            color: #e11d48;
+            background: #dcfce7;
+            color: #15803d;
             border: none;
             cursor: pointer;
             line-height: 15px !important;
@@ -2841,25 +2851,26 @@
             transition: background 0.15s ease;
         }
         .pos-full-paid-btn:hover {
-            background: #fecdd3;
+            background: #bbf7d0;
         }
         body[light-mode="dark"] .pos-full-paid-btn {
-            background: rgba(225, 29, 72, 0.2);
-            color: #fda4af;
+            background: rgba(21, 128, 61, 0.2);
+            color: #86efac;
         }
 
         .pos-paid-input-box {
-            border-color: #e11d48 !important;
-            color: #e11d48 !important;
+            border-color: #16a34a !important;
+            color: #15803d !important;
         }
         .pos-paid-input-box:focus {
-            border-color: #be123c !important;
+            border-color: #15803d !important;
+            box-shadow: 0 0 0 2px rgba(21, 128, 61, 0.2) !important;
         }
 
         .pos-summary-label-due {
             font-size: 10px !important;
             font-weight: 900;
-            color: #dc2626;
+            color: #15803d;
             letter-spacing: 0.2px;
             text-transform: uppercase;
         }
@@ -2869,21 +2880,21 @@
             font-weight: 800;
             padding: 0 4px !important;
             border-radius: 3px;
-            background: #ffe4e6;
-            color: #dc2626;
+            background: #dcfce7;
+            color: #15803d;
             display: inline-block;
             line-height: 14px !important;
             height: 15px !important;
         }
         body[light-mode="dark"] .pos-status-badge-paid {
-            background: rgba(220, 38, 38, 0.2);
-            color: #f87171;
+            background: rgba(21, 128, 61, 0.2);
+            color: #86efac;
         }
 
         .pos-summary-due-val {
             font-size: 12.5px !important;
             font-weight: 900;
-            color: #dc2626;
+            color: #15803d;
         }
 
         .pos-btn-hold {
@@ -2903,9 +2914,9 @@
         }
 
         .pos-btn-clear {
-            background: #fff1f2;
-            border: 1.5px solid #fca5a5;
-            color: #dc2626;
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            color: #475569;
             font-weight: 800;
             border-radius: 6px !important;
             height: 29px !important;
@@ -2915,18 +2926,19 @@
             transition: all 0.15s ease;
         }
         .pos-btn-clear:hover {
-            background: #ffe4e6;
-            border-color: #f87171;
+            background: #f1f5f9;
+            border-color: #16a34a;
+            color: #15803d;
         }
         body[light-mode="dark"] .pos-btn-clear {
-            background: rgba(220, 38, 38, 0.15);
-            border-color: rgba(220, 38, 38, 0.4);
-            color: #fca5a5;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #334155;
+            color: #cbd5e1;
         }
 
         .pos-btn-submit {
-            background: #cbd5e1;
-            color: #0f172a;
+            background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important;
+            color: #ffffff !important;
             font-weight: 800;
             border: none;
             border-radius: 6px !important;
@@ -2935,17 +2947,19 @@
             font-size: 11px !important;
             letter-spacing: 0.2px;
             cursor: pointer;
-            transition: background 0.15s ease;
+            transition: all 0.15s ease;
+            box-shadow: 0 2px 4px rgba(21, 128, 61, 0.25) !important;
         }
         .pos-btn-submit:hover {
-            background: #94a3b8;
+            background: linear-gradient(135deg, #166534 0%, #15803d 100%) !important;
+            transform: translateY(-1px);
         }
         body[light-mode="dark"] .pos-btn-submit {
-            background: #334155;
-            color: #f8fafc;
+            background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important;
+            color: #ffffff !important;
         }
         body[light-mode="dark"] .pos-btn-submit:hover {
-            background: #475569;
+            background: linear-gradient(135deg, #166534 0%, #15803d 100%) !important;
         }
 
         /* Desktop Strict 100vh Containment */
@@ -3233,7 +3247,7 @@
                     <!-- 1. Header: PAYMENT METHOD & Selected Method Name -->
                     <div class="d-flex align-items-center justify-content-between mb-1 px-0.5">
                         <span style="font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px;">PAYMENT METHOD</span>
-                        <span id="posSelectedMethodTitle" style="font-size: 10.5px; font-weight: 800; color: #dc2626; text-transform: uppercase; letter-spacing: 0.3px;">CASH</span>
+                        <span id="posSelectedMethodTitle" style="font-size: 10.5px; font-weight: 800; color: #15803d; text-transform: uppercase; letter-spacing: 0.3px;">CASH</span>
                     </div>
 
                     <!-- 2. Payment Method Buttons (Single Horizontal Row) -->
@@ -4250,7 +4264,7 @@
                                 value="${item.cost_price}"
                                 id="cost_price-${item.id}"
                                 oninput="updateCostPrice(${item.id}, this)"
-                                style="color: #dc2626 !important; font-weight: 800 !important; width: 48px; height: 26px; font-size: 12px; border-radius: 6px; padding: 1px 2px;"
+                                style="color: #15803d !important; font-weight: 800 !important; width: 48px; height: 26px; font-size: 12px; border-radius: 6px; padding: 1px 2px;"
                             />
                         </div>
                     </td>
