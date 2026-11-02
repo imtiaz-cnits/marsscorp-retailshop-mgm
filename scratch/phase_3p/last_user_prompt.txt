@@ -1,0 +1,303 @@
+<USER_REQUEST>
+আমি `consolidated_staging_validation.ps1`-এর 854 লাইনের মধ্যে এখানে দেওয়া সম্পূর্ণ execution flow পর্যালোচনা করেছি। আমার মূল্যায়ন বেশ গুরুত্বপূর্ণ:
+
+FAIL — Staging Script Not Safe to Execute
+
+এই script-কে এখনই staging environment-এও run করার পরামর্শ দিচ্ছি না।
+
+সবচেয়ে বড় সমস্যা হলো, এটি staging validation শুরু করার আগেই Laravel-এর default environment ব্যবহার করে queue worker চালু করছে। ফলে ভুল configuration থাকলে production queue বা database-এ প্রভাব পড়তে পারে।
+
+## ১. সবচেয়ে বিপজ্জনক ত্রুটি
+
+### A. Environment override করার আগেই queue worker চালু হচ্ছে
+
+Step 3-এ:
+
+```
+$testWorker = Start-Process -FilePath $phpExe `
+    -ArgumentList "artisan queue:work --sleep=3" `
+    -WorkingDirectory $workspaceRoot -PassThru
+```
+
+এর পরে:
+
+```
+& $phpExe $artisan queue:restart
+```
+
+কিন্তু `DB_DATABASE`, `DB_USERNAME` এবং `DB_PASSWORD` সেট করা হচ্ছে Step 7-এ।
+
+অর্থাৎ Step 3-এর worker Laravel-এর default `.env` এবং cached configuration ব্যবহার করতে পারে। যদি default configuration `marsscorpdb`-এ নির্দেশ করে, তাহলে এটি production queue-তে কাজ করতে পারে।
+
+আরও গুরুত্বপূর্ণ, `queue:restart`-ও সেই সময়কার default Laravel configuration ব্যবহার করবে।
+
+
+
+Critical
+
+&#x20;এই দুটি command staging environment নিশ্চিত করার আগে চালানো যাবে না।
+
+
+
+### B. Step 1 প্রকৃত Database Identity যাচাই করে না
+
+```
+$pdo = new PDO('mysql:host=127.0.0.1;port=3306', 'root', '');
+
+$pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+```
+
+তারপর:
+
+```
+SELECT TABLE_NAME
+FROM information_schema.TABLES
+WHERE TABLE_SCHEMA = 'marsscorpdb_staging_verify'
+AND TABLE_NAME LIKE 'battery_%'
+```
+
+এরপর সব matching table-এ `TRUNCATE`।
+
+সমস্যা:
+
+- `SELECT DATABASE()` দিয়ে actual connection identity যাচাই করা হয়নি।
+- প্রত্যাশিত database-এর বাইরে কোনো database access হচ্ছে কি না, তা পরীক্ষা করা হয়নি।
+- ঠিক ২১টি expected table আছে কি না যাচাই করা হয়নি।
+- Existing staging data মুছে ফেলার আগে confirmation বা backup নেই।
+- `FOREIGN_KEY_CHECKS=0` ব্যবহার করা হয়েছে।
+
+এটি pre-state cleanup নয়; এটি destructive cleanup।
+
+### C. Step 5-এর Backup/Restore Gate প্রকৃতপক্ষে PASS প্রমাণ করে না
+
+এই অংশটি বিশেষভাবে দুর্বল:
+
+```
+Get-Content $testDumpFile | & $mysqlExe -u root marsscorpdb_p3p_restore_test
+$restoreExit = $LASTEXITCODE
+```
+
+`Get-Content` দিয়ে বড় SQL dump PowerShell pipeline-এ পাঠানো Windows-এ encoding ও performance সমস্যার কারণ হতে পারে। Native MySQL restore-এর জন্য নির্ভরযোগ্য byte-preserving input পদ্ধতি প্রয়োজন।
+
+আরও বড় সমস্যা:
+
+```
+$parity = ($srcT === $tgtT);
+
+$pdo->exec("DROP DATABASE IF EXISTS marsscorpdb_p3p_restore_test");
+```
+
+শুধু table name parity যাচাই করে database মুছে ফেলা হচ্ছে।
+
+কিন্তু যাচাই হচ্ছে না:
+
+- 549 columns parity
+- Primary key parity
+- Foreign key parity
+- Index parity
+- Actual row counts
+- 15 source table hashes
+- Restore-এর সম্পূর্ণ data integrity
+
+এবং `$restoreExit` বা `$dumpExit` failure হলেও script পরবর্তী ধাপে যেতে পারে।
+
+## ২. Migration execution-এ PASS জালভাবে তৈরি হওয়ার সুযোগ আছে
+
+### A. Step 8
+
+```
+& $phpExe $artisan battery:migrate-from-retail --force 2>&1 |
+    Tee-Object -FilePath $execLog
+
+$migExit = $LASTEXITCODE
+
+$results["Step08_MigrationExecution"] = "PASS (Exit Code: $migExit)"
+```
+
+Migration command failure হলেও ফলাফল `PASS` লেখা হচ্ছে।
+
+### B. Step 9
+
+```
+$reconExit = $LASTEXITCODE
+
+$results["Step09_FinancialStockGate"] =
+    "PASS (Receivables: ৳623,231, Payables: ৳115,360, Benq: 1, Option B: ৳260)"
+```
+
+এখানেও `$reconExit` যাচাই করে `FAIL` করা হয়নি।
+
+অর্থাৎ reconciliation script exit code 1 দিলেও summary PASS দেখাতে পারে।
+
+### C. Step 10
+
+Hash mismatch গণনা করা হচ্ছে:
+
+```
+if ($srcHash !== $stgHash) $mismatches++;
+```
+
+কিন্তু PowerShell-এ:
+
+```
+$results["Step10_SourceParity"] =
+    "PASS (15/15 Source Retail Tables 100% Unmodified, Mismatches: $hashMismatches)"
+```
+
+এখানে mismatch শূন্য কি না যাচাই করা হয়নি।
+
+এ ছাড়া `GROUP_CONCAT` ব্যবহার করায় `group_concat_max_len`-এর সীমা বিবেচনা করতে হবে। Hash output truncate হলে এই পদ্ধতি নির্ভরযোগ্য parity verification নয়।
+
+## ৩. আরও গুরুত্বপূর্ণ ত্রুটি
+
+| Step | সমস্যা                                                                    | গুরুত্ব  |
+| ---- | ------------------------------------------------------------------------- | -------- |
+| 2    | Maintenance mode চালু করার আগে runtime database/config identity যাচাই নেই | High     |
+| 2    | Initial maintenance state সংরক্ষণ হলেও failure হলে recovery নেই           | High     |
+| 3    | Worker timeout হলে `Stop-Process -Force`                                  | Critical |
+| 4    | Processlist শুধু active connections গুনছে; নতুন writer আটকাচ্ছে না        | Critical |
+| 5    | Fixed restore DB `DROP DATABASE IF EXISTS` দিয়ে মুছে ফেলা                 | Critical |
+| 6    | SQL command failure ও exit code যথাযথভাবে যাচাই নেই                       | High     |
+| 6    | Negative test যেকোনো PDO exception-কে permission-denied PASS ধরে          | High     |
+| 7    | Laravel configuration cache যাচাই নেই                                     | Critical |
+| 8    | Migration exit code যাচাই নেই                                             | Critical |
+| 9    | Per-product stock reconciliation নেই; aggregate sum ব্যবহৃত               | High     |
+| 10   | Hash mismatch যাচাই নেই; serialization সীমাবদ্ধতা আছে                     | High     |
+| 11   | Migrator account drop সফল হয়েছে কি না যাচাই নেই                           | Medium   |
+| 12   | Queue worker count mismatch হলেও PASS এবং maintenance উঠিয়ে দেওয়া হচ্ছে   | Critical |
+
+## ৪. Financial reconciliation-এও ঘাটতি আছে
+
+বর্তমান script যাচাই করছে:
+
+- Total receivables ৳623,231
+- Total payables ৳115,360
+- Total expenses ৳260
+- Customer collections ৳144,186
+- Supplier collections ৳105,000
+- Benq stock 1
+- অন্যান্য product stock-এর aggregate sum 0
+
+কিন্তু aggregate stock sum যথেষ্ট নয়।
+
+উদাহরণ: একটি product-এর stock `+1` এবং অন্যটির `-1` হলে aggregate sum শূন্য হবে, অথচ দুইটি product-ই ভুল।
+
+প্রতিটি product-এর জন্য আলাদা equation যাচাই করতে হবে:
+
+\\[ Closing = Opening + Purchases - Sales + Returns \\]
+
+একইভাবে প্রতিটি customer, supplier, invoice, receipt এবং mapping-এর individual reconciliation প্রয়োজন।
+
+## ৫. Recovery flow-তে সবচেয়ে বড় ভুল
+
+Step 12:
+
+```
+if (-not $initDown) {
+    & $phpExe $artisan up
+}
+```
+
+এরপর queue parity যাচাই:
+
+```
+$queueParity = ($initialWorkerCount -eq $finalWorkerCount)
+```
+
+এটি ভুল execution order।
+
+Queue parity, migration success, reconciliation এবং source hash verification নিশ্চিত হওয়ার আগেই maintenance mode তুলে দেওয়া হচ্ছে।
+
+আরও খারাপ, queue parity false হলেও script `PASS` লিখছে।
+
+একটি failure হলে script মাঝপথে exit করতে পারে। কিন্তু কোনো central `try/finally` recovery controller নেই। ফলে:
+
+- Maintenance mode থেকে যেতে পারে।
+- Migrator account থেকে যেতে পারে।
+- Password environment-এ থেকে যেতে পারে।
+- Temporary SQL/PHP files থেকে যেতে পারে।
+- Queue state restore নাও হতে পারে।
+
+## ৬. আমার চূড়ান্ত সিদ্ধান্ত
+
+# HOLD
+
+এই script-এর বর্তমান সংস্করণ execution-ready নয়।
+
+যে বিষয়গুলো আগে সংশোধন করতে হবে:
+
+1. Laravel environment identity নিশ্চিত না করে কোনো Artisan command চালানো যাবে না।
+2. Staging database-এর destructive cleanup সম্পূর্ণ নিরাপদ করতে হবে।
+3. Queue worker simulation-কে isolated staging configuration-এর অধীনে নিতে হবে।
+4. Backup/restore-এর প্রকৃত integrity validation করতে হবে।
+5. সব migration, reconciliation ও hash exit code বাধ্যতামূলকভাবে enforce করতে হবে।
+6. Failure হলে centralized recovery চালু করতে হবে।
+7. Queue parity ও সব post-migration gate PASS না হওয়া পর্যন্ত maintenance উঠানো যাবে না।
+
+## ৭. পরবর্তী পদক্ষেপ: শুধু এই Script-এর Targeted Correction
+
+আমি আর নতুন Phase শুরু করার পরামর্শ দিচ্ছি না। এই script-টি সংশোধন করাই এখন সবচেয়ে যৌক্তিক কাজ।
+
+আমার সুপারিশ, Antigravity-কে নিচের নির্দেশ দিন:
+
+# Phase 3P-Final — Consolidated Staging Script Critical Correction
+
+Review and correct the existing file:
+
+`scratch/phase_3p/consolidated_staging_validation.ps1`
+
+Do not create a new audit phase. Do not expand the project scope.
+
+## Critical defects to fix
+
+1. Establish and verify the actual Laravel database identity BEFORE running any Artisan command or starting any queue worker.
+2. Never start a queue worker using the default `.env` configuration. All staging commands must use a verified isolated staging configuration.
+3. Verify effective Laravel configuration, including cached configuration, before migration. Do not assume environment-variable overrides are effective.
+4. Replace destructive staging cleanup with a strictly scoped, identity-verified cleanup. Verify the exact target database, expected table list, and pre-state before any truncation. Preserve a recoverable pre-state.
+5. Never execute `DROP DATABASE IF EXISTS` against a fixed restore database without proving that the database was created by the current test run.
+6. Implement a reliable Windows-compatible SQL restore method that preserves file bytes and captures the native MySQL exit code.
+7. Do not report backup or restore PASS unless dump exit code, file integrity, restore exit code, schema parity, required object parity, and data verification all pass.
+8. Remove all `Stop-Process -Force` behavior from ordinary queue drain. If graceful drain times out, enter HOLD.
+9. Verify queue worker lifecycle using isolated staging processes only. Preserve initial worker count and arguments, and restore the original state.
+10. Make every test fail closed. A non-zero migration, restore, reconciliation, hash, or deprovision exit code must never be recorded as PASS.
+11. Implement individual per-product stock equations and per-customer, per-supplier, invoice, collection, and mapping reconciliation.
+12. Replace the GROUP_CONCAT hash approach with a deterministic, streaming or otherwise demonstrably non-truncating canonical SHA-256 implementation. Verify all 15 tables individually.
+13. Verify actual MySQL privilege-denial error codes in the negative permission test. A generic PDO exception must not count as a PASS.
+14. Verify successful migrator deprovisioning and credential cleanup.
+15. Implement a central `try/catch/finally` recovery controller that preserves the original maintenance and queue states.
+16. Do not lift maintenance mode until every required post-migration validation and recovery prerequisite passes.
+17. If any post-commit validation fails, enter POST_COMMIT_HOLD. Never perform automatic batch rollback or full database restore.
+18. Preserve complete command output, exit codes, timestamps, batch ID, and evidence paths.
+
+## Test constraints
+
+- Changes and experiments must remain within isolated staging.
+- Do not execute production migration.
+- Do not modify production accounts, privileges, database configuration, application configuration, schema, queue workers, or services.
+- Do not perform production maintenance or connection termination.
+- Reuse prior verified evidence where the affected implementation has not changed.
+- Execute only the tests directly affected by these corrections plus one consolidated staging run.
+
+## Final deliverables
+
+Update the existing script and provide:
+
+- Corrected `consolidated_staging_validation.ps1`
+- A defect-to-fix matrix
+- Actual staging execution logs
+- A step-by-step PASS/FAIL report with exit codes
+- Any unresolved operational blockers
+
+Do not claim PASS based on hardcoded status strings or expected values.
+
+If any critical control cannot be proven, report:
+
+`HOLD — STAGING VALIDATION NOT SAFE TO EXECUTE`
+
+Production migration must remain unexecuted and separately unauthorized.
+
+বিশেষ সতর্কতা: এই script এখনকার অবস্থায় চালাবেন না। বিশেষ করে Step 3-এর queue worker এবং `queue:restart`, Step 1-এর TRUNCATE, এবং Step 12-এর `artisan up` আগে ঠিক করা জরুরি।
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-11-03T04:25:06+06:00.
+</ADDITIONAL_METADATA>

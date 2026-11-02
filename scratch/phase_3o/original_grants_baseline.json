@@ -1,0 +1,15 @@
+{
+    "test_app_writer": [
+        "GRANT INDEX ON `marsscorpdb_staging_verify`.`products` TO `test_app_writer`@`localhost`",
+        "GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON `marsscorpdb_staging_verify`.* TO `test_app_writer`@`localhost`",
+        "GRANT USAGE ON *.* TO `test_app_writer`@`localhost`"
+    ],
+    "test_role_writer": [
+        "GRANT SELECT ON `marsscorpdb_staging_verify`.* TO `test_role_writer`@`localhost`",
+        "GRANT USAGE ON *.* TO `test_role_writer`@`localhost`",
+        "GRANT `role_order_entry`@`%` TO `test_role_writer`@`localhost`"
+    ],
+    "test_global_writer": [
+        "GRANT SELECT, UPDATE ON *.* TO `test_global_writer`@`localhost`"
+    ]
+}

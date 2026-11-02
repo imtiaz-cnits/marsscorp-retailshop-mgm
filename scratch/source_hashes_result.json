@@ -1,0 +1,92 @@
+{
+    "users": {
+        "rows": 6,
+        "prod_hash": "7902cfba4bb053e2a2aeabee1467dfe4277bb6cc19b190b38b7015a81092504f",
+        "stage_hash": "7902cfba4bb053e2a2aeabee1467dfe4277bb6cc19b190b38b7015a81092504f",
+        "match": true
+    },
+    "customers": {
+        "rows": 91,
+        "prod_hash": "22b27831c8f574ff0dd82213452691ecfd07db62c304fe486b522a395c5b2fab",
+        "stage_hash": "22b27831c8f574ff0dd82213452691ecfd07db62c304fe486b522a395c5b2fab",
+        "match": true
+    },
+    "customer_payment_details": {
+        "rows": 30,
+        "prod_hash": "965541d2b2963f213e4b638d69bb8d93a0791569b1dba8bf6f5b1fa732ebf8fe",
+        "stage_hash": "965541d2b2963f213e4b638d69bb8d93a0791569b1dba8bf6f5b1fa732ebf8fe",
+        "match": true
+    },
+    "suppliers": {
+        "rows": 14,
+        "prod_hash": "22075f989707f61122a71b1cccf34097db192b4b04e8643c33b83477dcb20939",
+        "stage_hash": "22075f989707f61122a71b1cccf34097db192b4b04e8643c33b83477dcb20939",
+        "match": true
+    },
+    "supplier_due_collections": {
+        "rows": 3,
+        "prod_hash": "7e7d7c8f8245b90409c45fe426c052c1a4b3330028f4f44ffff7dc2fd019297d",
+        "stage_hash": "7e7d7c8f8245b90409c45fe426c052c1a4b3330028f4f44ffff7dc2fd019297d",
+        "match": true
+    },
+    "categories": {
+        "rows": 30,
+        "prod_hash": "980aaaf9224045e418352c04412510d7a9cfb3bfd7e331588e4a067c9c70225c",
+        "stage_hash": "980aaaf9224045e418352c04412510d7a9cfb3bfd7e331588e4a067c9c70225c",
+        "match": true
+    },
+    "sub_categories": {
+        "rows": 0,
+        "prod_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stage_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "match": true
+    },
+    "brands": {
+        "rows": 22,
+        "prod_hash": "84f795ed2243ae84cd9079e066d3daaa53b04d8a40bf61d2787ea6d07f066f5d",
+        "stage_hash": "84f795ed2243ae84cd9079e066d3daaa53b04d8a40bf61d2787ea6d07f066f5d",
+        "match": true
+    },
+    "units": {
+        "rows": 1,
+        "prod_hash": "e01cc646ec2d4bc1d5c2c84b3cd51ab82adfed6d1521f6f57b1f32e3cc861307",
+        "stage_hash": "e01cc646ec2d4bc1d5c2c84b3cd51ab82adfed6d1521f6f57b1f32e3cc861307",
+        "match": true
+    },
+    "products": {
+        "rows": 364,
+        "prod_hash": "d27794594526f4178db485d4f83b77c7bc8941b86019d85df504582a83fa2c52",
+        "stage_hash": "d27794594526f4178db485d4f83b77c7bc8941b86019d85df504582a83fa2c52",
+        "match": true
+    },
+    "purchases": {
+        "rows": 17,
+        "prod_hash": "7233eec5f8277da6a4687302a516a9cd6e95edd9c611cfebc7f57ecded5d8ba2",
+        "stage_hash": "7233eec5f8277da6a4687302a516a9cd6e95edd9c611cfebc7f57ecded5d8ba2",
+        "match": true
+    },
+    "purchase_order_details": {
+        "rows": 116,
+        "prod_hash": "463c0b0810263d8bdc4127f7abc234492c3f2d63827ac925b87e0fb0919a8966",
+        "stage_hash": "463c0b0810263d8bdc4127f7abc234492c3f2d63827ac925b87e0fb0919a8966",
+        "match": true
+    },
+    "purchase_payment_details": {
+        "rows": 17,
+        "prod_hash": "612cc2c2e2aff31bfc93437f886cf0248579e8d4a37fc85522837fdf6b5778ed",
+        "stage_hash": "612cc2c2e2aff31bfc93437f886cf0248579e8d4a37fc85522837fdf6b5778ed",
+        "match": true
+    },
+    "orders": {
+        "rows": 94,
+        "prod_hash": "2dd07630b6ba4855223d488ddce2b5d27ff0a76d396bf7d8a17319a90200ac64",
+        "stage_hash": "2dd07630b6ba4855223d488ddce2b5d27ff0a76d396bf7d8a17319a90200ac64",
+        "match": true
+    },
+    "order_details": {
+        "rows": 273,
+        "prod_hash": "023d50380ccb8374cd88cba497355e373d197116f806e22c34f1d050cd050a93",
+        "stage_hash": "023d50380ccb8374cd88cba497355e373d197116f806e22c34f1d050cd050a93",
+        "match": true
+    }
+}

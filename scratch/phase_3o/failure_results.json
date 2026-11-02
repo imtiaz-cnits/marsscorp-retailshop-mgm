@@ -1,0 +1,146 @@
+[
+    {
+        "Id":  "F01",
+        "Name":  "Connection Loss During Backup",
+        "Status":  "PASS",
+        "Detail":  "Missing trailer caught, execution aborted before touching DB."
+    },
+    {
+        "Id":  "F02",
+        "Name":  "Truncated Backup (\u003c100KB)",
+        "Status":  "PASS",
+        "Detail":  "Rejected 5-byte file below 100KB safety threshold."
+    },
+    {
+        "Id":  "F03",
+        "Name":  "Interrupted Staging Restore",
+        "Status":  "PASS",
+        "Detail":  "Validated all 55 tables present before proceeding."
+    },
+    {
+        "Id":  "F04",
+        "Name":  "Maintenance Ingress Bypass",
+        "Status":  "PASS",
+        "Detail":  "Secret bypass detected and replaced with strict down (no secret)."
+    },
+    {
+        "Id":  "F05",
+        "Name":  "Stubborn Queue Worker",
+        "Status":  "PASS",
+        "Detail":  "Lingering worker eliminated via forced PID termination."
+    },
+    {
+        "Id":  "F06",
+        "Name":  "Privilege Restore Fails",
+        "Status":  "PASS",
+        "Detail":  "Fail-closed safety verified: Application kept in 503 Maintenance."
+    },
+    {
+        "Id":  "F07",
+        "Name":  "Post-Commit Verification Failure",
+        "Status":  "PASS",
+        "Detail":  "Zero automatic rollback rule enforced. Preserved committed data."
+    },
+    {
+        "Id":  "F08",
+        "Name":  "Recovery Script Idempotency",
+        "Status":  "PASS",
+        "Detail":  "Executed re-run without errors or deadlocks."
+    },
+    {
+        "Id":  "F09",
+        "Name":  "Global Privilege Bypass",
+        "Status":  "PASS",
+        "Detail":  "Demonstrated bypass on direct grant; blocked via ACCOUNT LOCK."
+    },
+    {
+        "Id":  "F10",
+        "Name":  "Role-Derived Write Bypass",
+        "Status":  "PASS",
+        "Detail":  "Role-derived write blocked via REVOKE ROLE."
+    },
+    {
+        "Id":  "F11",
+        "Name":  "Table-Level Grant Bypass",
+        "Status":  "PASS",
+        "Detail":  "Table-level grant blocked via REVOKE on table."
+    },
+    {
+        "Id":  "F12",
+        "Name":  "Exact Privilege Restoration Mismatch",
+        "Status":  "PASS",
+        "Detail":  "Detected mismatch during SHOW GRANTS comparison; fail-closed triggered."
+    },
+    {
+        "Id":  "F13",
+        "Name":  "Privilege Restoration Partially Succeeds",
+        "Status":  "PASS",
+        "Detail":  "Partial grant failure treated as fatal; maintenance mode preserved."
+    },
+    {
+        "Id":  "F14",
+        "Name":  "Privilege Restoration Comparison Fails",
+        "Status":  "PASS",
+        "Detail":  "Exact bit-for-bit comparison check enforced before lifting maintenance."
+    },
+    {
+        "Id":  "F15",
+        "Name":  "Migration Account Lacks Permission",
+        "Status":  "PASS",
+        "Detail":  "Simulated missing INSERT on battery table; aborts cleanly with Error 1142."
+    },
+    {
+        "Id":  "F16",
+        "Name":  "Migration Account Excessive Permission",
+        "Status":  "PASS",
+        "Detail":  "Least-privilege audit rejected DROP/ALTER/GRANT privileges."
+    },
+    {
+        "Id":  "F17",
+        "Name":  "Sleeping Writer Attempts Write",
+        "Status":  "PASS",
+        "Detail":  "Sleeping thread killed via PROCESSLIST session drain."
+    },
+    {
+        "Id":  "F18",
+        "Name":  "New External Writer Connects",
+        "Status":  "PASS",
+        "Detail":  "Engine-level denial: SQLSTATE[42000] 1142 UPDATE command denied."
+    },
+    {
+        "Id":  "F19",
+        "Name":  "Queue Restoration Fails",
+        "Status":  "PASS",
+        "Detail":  "Pre-migration worker count preserved; operator alert raised."
+    },
+    {
+        "Id":  "F20",
+        "Name":  "Web Ingress Restoration Fails",
+        "Status":  "PASS",
+        "Detail":  ".htaccess failure triggers operator alert; application left in 503."
+    },
+    {
+        "Id":  "F21",
+        "Name":  "Recovery Script Crash During Grant",
+        "Status":  "PASS",
+        "Detail":  "State machine resumes from saved grant snapshot on next run."
+    },
+    {
+        "Id":  "F22",
+        "Name":  "Recovery Script Repeated Execution",
+        "Status":  "PASS",
+        "Detail":  "100% idempotent; verified across multiple invocations."
+    },
+    {
+        "Id":  "F23",
+        "Name":  "Pre-Commit Failure After Backup",
+        "Status":  "PASS",
+        "Detail":  "InnoDB transaction rolled back; 0 battery rows created."
+    },
+    {
+        "Id":  "F24",
+        "Name":  "Post-Commit Verification Failure",
+        "Status":  "PASS",
+        "Detail":  "Strict prohibition on automated rollback; human authorization required."
+    }
+]

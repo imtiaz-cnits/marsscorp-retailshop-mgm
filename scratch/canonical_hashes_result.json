@@ -1,0 +1,107 @@
+{
+    "users": {
+        "rows": 6,
+        "prod_hash": "8960388e0c616f79919083ec2c6046b4de5e806e0122d6c4e0cf33f4d55b5d19",
+        "stage_hash": "8960388e0c616f79919083ec2c6046b4de5e806e0122d6c4e0cf33f4d55b5d19",
+        "match": true,
+        "sample": "[1, null, \"Admin\", \"admin@gmail.com\", \"01975-703216\", \"$2y$12$G\/sQ.9XBS2wC16GjJJE7Re69UrCPrK0XwNXw9C2eNpt\/mX1sb4SX2\", \"0\", null, \"approved\", \"admin\", null, \"2026-08-23 14:27:10\", \"2026-08-23 18:01:58\"]"
+    },
+    "customers": {
+        "rows": 91,
+        "prod_hash": "2ee71ea295fe090ffefa5079737502d4c06d5ff34c89a7e7e161ac7b7c47eb39",
+        "stage_hash": "2ee71ea295fe090ffefa5079737502d4c06d5ff34c89a7e7e161ac7b7c47eb39",
+        "match": true,
+        "sample": "[1, \"CUST-0001\", \"Ma Saleha Enterpice\", \"Bus Tarminal, Pabna\", null, \"01711387958\", null, null, null, \"118680\", null, null, null, 1, \"2026-08-25 16:45:53\", \"2026-10-26 03:06:36\", null]"
+    },
+    "customer_payment_details": {
+        "rows": 30,
+        "prod_hash": "d282e0010182a0b45dd854b6ff72bc9e81af0f0bf294f568daa3479ca1cb27b6",
+        "stage_hash": "d282e0010182a0b45dd854b6ff72bc9e81af0f0bf294f568daa3479ca1cb27b6",
+        "match": true,
+        "sample": "[3, \"92\", \"21000\", \"0\", \"21092\", \"2026-08-29\", \"Cash\", \"Hand Cash\", \"Fully Paid\", 15, 1, \"2026-09-02 20:34:07\", \"2026-09-02 20:34:07\"]"
+    },
+    "suppliers": {
+        "rows": 14,
+        "prod_hash": "3445624deb5c61db739dbcff7bf2074ecdbbc482e664bbee3aedc53407b7ceab",
+        "stage_hash": "3445624deb5c61db739dbcff7bf2074ecdbbc482e664bbee3aedc53407b7ceab",
+        "match": true,
+        "sample": "[1, \"SUP-10001\", \"Polo Battery\", \"Polo Battery\", \"01712-295492\", \"Motijill ,Dhaka\", \"\", null, \"7360\", \"Active\", 1, \"2026-09-02 20:09:43\", \"2026-10-29 18:22:27\"]"
+    },
+    "supplier_due_collections": {
+        "rows": 3,
+        "prod_hash": "841d5a65a14069af48a1ca6e532a2923887b28a8ff7378cb016b15bf3556f7e4",
+        "stage_hash": "841d5a65a14069af48a1ca6e532a2923887b28a8ff7378cb016b15bf3556f7e4",
+        "match": true,
+        "sample": "[1, \"30000\", \"82360\", \"0\", \"30000\", \"Cash\", null, \"Partial Paid\", \"2026-10-04\", 1, 1, \"2026-10-04 21:59:06\", \"2026-10-04 21:59:06\"]"
+    },
+    "categories": {
+        "rows": 30,
+        "prod_hash": "41557840115d370d08a66efd4512cbfbf8b4a8f1b7b2bcb85c8f4aeeeae34538",
+        "stage_hash": "41557840115d370d08a66efd4512cbfbf8b4a8f1b7b2bcb85c8f4aeeeae34538",
+        "match": true,
+        "sample": "[1, \"Sanitary\", null, \"active\", 1, \"2026-08-23 14:32:18\", \"2026-08-23 14:32:18\"]"
+    },
+    "sub_categories": {
+        "rows": 0,
+        "prod_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stage_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "match": true,
+        "sample": "EMPTY"
+    },
+    "brands": {
+        "rows": 22,
+        "prod_hash": "1076c2bc2e5a28b331f8be38e961cfbf6bce89a1cb9ee95d47ba340363ad92aa",
+        "stage_hash": "1076c2bc2e5a28b331f8be38e961cfbf6bce89a1cb9ee95d47ba340363ad92aa",
+        "match": true,
+        "sample": "[1, \"General\", null, \"active\", 1, \"2026-08-23 14:32:18\", \"2026-08-23 14:32:18\"]"
+    },
+    "units": {
+        "rows": 1,
+        "prod_hash": "2d38286f994569837f2fd310be6f2f422851b6608f64cae0f1f4db884f1adc8c",
+        "stage_hash": "2d38286f994569837f2fd310be6f2f422851b6608f64cae0f1f4db884f1adc8c",
+        "match": true,
+        "sample": "[1, \"Pcs\", \"active\", 1, \"2026-08-23 14:32:18\", \"2026-08-23 14:32:18\"]"
+    },
+    "products": {
+        "rows": 364,
+        "prod_hash": "6dfd9dc95b0cf0083c1a67cb56844c02298faea9d417e614996d33b94ff0891b",
+        "stage_hash": "6dfd9dc95b0cf0083c1a67cb56844c02298faea9d417e614996d33b94ff0891b",
+        "match": true,
+        "sample": "[360, null, \"245 - Digital 4''\", \"2\", \"2250\", \"0\", \"Active\", [\"245\"], 3, 2, \"Left Handed\", null, null, 1, \"2026-08-25 19:28:15\", \"2026-09-24 15:42:31\"]"
+    },
+    "purchases": {
+        "rows": 17,
+        "prod_hash": "df4df77fc525f4dddbdc26a7e90f5900fcc3c4f6110c547a91c2dde19ba430fc",
+        "stage_hash": "df4df77fc525f4dddbdc26a7e90f5900fcc3c4f6110c547a91c2dde19ba430fc",
+        "match": true,
+        "sample": "[7, \"#PurID00002\", \"2735\", \"15629\", \"0.4\", \"0\", \"2026-09-24\", \"15629.4\", 0.00, 0.00, \"fixed\", null, 0.00, null, 3, 1, \"2026-09-29 20:05:43\", \"2026-09-29 20:05:43\"]"
+    },
+    "purchase_order_details": {
+        "rows": 116,
+        "prod_hash": "e96a7de8d9a02c330418e35dacec77dad6e01f5ef563d760f0a240aa42241765",
+        "stage_hash": "e96a7de8d9a02c330418e35dacec77dad6e01f5ef563d760f0a240aa42241765",
+        "match": true,
+        "sample": "[7, 534, 7, \"12\", 0, \"319.5\", \"3834\", 1, \"2026-09-29 20:05:43\", \"2026-09-29 20:05:43\"]"
+    },
+    "purchase_payment_details": {
+        "rows": 17,
+        "prod_hash": "415c0e6dc162a3b3a425688e64b3a4491efb588bce231f5c35b97ed89824aadc",
+        "stage_hash": "415c0e6dc162a3b3a425688e64b3a4491efb588bce231f5c35b97ed89824aadc",
+        "match": true,
+        "sample": "[2, 7, 15629.00, 0.00, \"Bank\", \"Partial Paid\", \"Bank: Brac bank | A\/C: 2059182070001\", \"2026-09-24\", null, 1, \"2026-09-29 20:05:43\", \"2026-09-29 20:05:43\"]"
+    },
+    "orders": {
+        "rows": 94,
+        "prod_hash": "ef177b901769dd58424238f50fb5abacb7a1300873559de2e26803096ac5d4d9",
+        "stage_hash": "ef177b901769dd58424238f50fb5abacb7a1300873559de2e26803096ac5d4d9",
+        "match": true,
+        "sample": "[2, \"#InvID00001\", 8600.00, 0.00, 8600.00, 0.00, 0.00, \"fixed\", null, 0.00, 0.00, \"Hand Cash\", 19, \"2026-09-01\", 1, \"2026-09-05 15:52:20\", \"2026-09-05 15:52:20\"]"
+    },
+    "order_details": {
+        "rows": 273,
+        "prod_hash": "679491ec58e99fa3d4b1366eee610cfa7fcfd80d9a1d634a91df0db615f891c4",
+        "stage_hash": "679491ec58e99fa3d4b1366eee610cfa7fcfd80d9a1d634a91df0db615f891c4",
+        "match": true,
+        "sample": "[2, 2, 371, \"4\", 0, \"1170\", \"2150\", 1, \"2026-09-05 15:52:20\", \"2026-09-05 15:52:20\"]"
+    }
+}

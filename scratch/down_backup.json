@@ -1,0 +1,11 @@
+{
+    "except": [
+        "\/up"
+    ],
+    "redirect": null,
+    "retry": null,
+    "refresh": null,
+    "secret": "testsecret123",
+    "status": 503,
+    "template": null
+}

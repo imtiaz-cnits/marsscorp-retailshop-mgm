@@ -1,0 +1,93 @@
+﻿
+================================================================================
+          MARSS Corp — Retail to Battery Module Data Migration Engine           
+================================================================================
+***************************************************************************************
+*     >>> EXECUTION MODE: LIVE MIGRATION (Changes will be permanently committed) <<<     *
+***************************************************************************************
+
+Live Migration Batch ID: BATCH-20261103-035312-gW2O2s
+
+--------------------------------------------------------------------------------
+STARTING PHASE 2B HARDENED MIGRATION PIPELINE [Batch: BATCH-20261103-035312-gW2O2s]
+--------------------------------------------------------------------------------
+
+[DAG Level 1/6] Migrating Master Catalogs...
+  ✓ Category created: 'Battery' (Target ID: 1)
+  ✓ Brand created: 'Pollo' (Target ID: 1)
+  ✓ Brand created: 'E.V Battery' (Target ID: 2)
+  ✓ Unit created: 'Pcs' (Target ID: 1)
+  ✓ Expense Type created: 'Transports cost' (Target ID: 1)
+
+[DAG Level 2/6] Migrating Master Entities (Suppliers & Customers)...
+  ✓ Supplier created: 'Polo Battery' (Payable: ৳7,360.00, Target ID: 1)
+  ✓ Supplier created: 'CK124' (Target ID: 2)
+  ✓ Customer created: 'Nur Battery' (Due: ৳467,465.00, Target ID: 1)
+  ✓ Customer created: 'Riyaz Battery' (Opening Due: ৳23,592.00, Target ID: 2)
+  ✓ Shared Customer replicated: 'Ma Saleha Enterpice' (Battery Opening Due: ৳0.00, Target ID: 3)
+  ✓ Walk-in Customer created for Order #26 mirror (Target ID: 4)
+
+[DAG Level 3/6] Migrating Products & Option B Expenses...
+  ✓ Product created: 'HPD-225T' (Stock: 0, Target ID: 1)
+  ✓ Product created: 'PTB-250' (Stock: 0, Target ID: 2)
+  ✓ Product created: 'NEXCELL-235' (Stock: 0, Target ID: 3)
+  ✓ Product created: 'AP-29' (Stock: 0, Target ID: 4)
+  ✓ Product created: 'Benq' (Stock: 1, Target ID: 5)
+  ✓ Pure Expense migrated: ID 82 ('battery bill,', ৳160.00, Target ID: 1)
+  ✓ Pure Expense migrated: ID 123 ('battery vara', ৳100.00, Target ID: 2)
+  ℹ Option B Enforced: Mixed transport expenses (IDs 13, 21, 47, 89 = ৳820.00) remain 100% in Retail.
+
+[DAG Level 4/6] Migrating Purchases & Sales Orders...
+  ✓ Purchase created: '#PurID00015' (Due: ৳108000, Target ID: 1)
+  ✓ Order created: '#InvID00051' (Due: ৳37674.00, Target ID: 1)
+  ✓ Order created: '#InvID00060' (Due: ৳94500.00, Target ID: 2)
+  ✓ Order created: '#InvID00024' (Due: ৳0.00, Target ID: 3)
+
+[DAG Level 5/6] Migrating Line Items, Payments & Due Collections...
+  ✓ Purchase Detail created: 8x Benq @ ৳13,500 = ৳108,000.00
+  ✓ Purchase Payment Detail created: Unpaid ৳108,000.00
+  ✓ Order Detail created: Order #53 (2x AP-29 @ ৳20,930)
+  ✓ Order Detail created: Order #62 (7x Benq @ ৳13,500)
+  ✓ Order Detail created: Order #26 Mirror (1x PTB-250 @ ৳0)
+  ✓ Order Payment Detail created for Order ID: 1
+  ✓ Order Payment Detail created for Order ID: 2
+  ✓ Customer Collection created: CPD #6, Cust ID 1, Paid ৳20000 on 2026-09-03
+  ✓ Customer Collection created: CPD #27, Cust ID 1, Paid ৳30000 on 2026-10-20
+  ✓ Customer Collection created: CPD #4, Cust ID 2, Paid ৳50000 on 2026-09-02
+  ✓ Customer Collection created: CPD #15, Cust ID 2, Paid ৳14186 on 2026-10-01
+  ✓ Customer Collection created: CPD #19, Cust ID 2, Paid ৳30000 on 2026-10-06
+  ✓ Supplier Collection created: SDC #1, Supp ID 1, Paid ৳30000 on 2026-10-04
+  ✓ Supplier Collection created: SDC #2, Supp ID 1, Paid ৳40000 on 2026-10-25
+  ✓ Supplier Collection created: SDC #3, Supp ID 1, Paid ৳35000 on 2026-10-29
+
+[DAG Level 6/6] Checking Returns Integrity...
+  - Verified: 0 battery product returns and 0 purchase returns in source ERP.
+  ✓ Target return tables (battery_product_returns, battery_purchase_returns) remain clean with 0 records.
+
+--------------------------------------------------------------------------------
+RUNNING POST-MIGRATION MATHEMATICAL RECONCILIATION
+--------------------------------------------------------------------------------
+  • Physical Stock Verification:
+    - Benq Stock: 1 (Expected: 1) -> PASS
+    - Other 4 Battery Products Stock: 0 (Expected: 0) -> PASS
+  • Supplier Liabilities Verification:
+    - CK124 Purchase Due: ৳108000.00 (Expected: ৳108,000.00)
+    - Polo Battery Payable: ৳7360.00 (Expected: ৳7,360.00)
+    - Total Supplier Payables: ৳115360 (Expected: ৳115,360.00) -> PASS
+  • Customer Receivables Verification:
+    - Nur Battery Active Due: ৳467465 (Expected: ৳467,465.00)
+    - Riyaz Battery Active Due: ৳61266 (৳23592 prev + ৳37674 order) (Expected: ৳61,266.00)
+    - Ma Saleha Battery Order Due: ৳94500 (Expected: ৳94,500.00)
+    - Total Battery Receivables: ৳623231 (Expected: ৳623,231.00) -> PASS
+  • Expense Verification (Option B):
+    - Migrated Battery Expenses: ৳260 (Expected: ৳260.00) -> PASS
+  • Historical Collections Verification:
+    - Total Customer Collections: ৳144186 (Expected: ৳144,186.00) -> PASS
+    - Total Supplier Collections: ৳105000 (Expected: ৳105,000.00) -> PASS
+
+================================================================================
+[SUCCESS] Retail-to-Battery data migration completed and committed successfully!
+Batch ID 'BATCH-20261103-035312-gW2O2s' recorded. For batch rollback run: --rollback --batch=BATCH-20261103-035312-gW2O2s
+================================================================================
+
+  ✓ Migration mapping log written to: storage/app/battery_migration_mapping.json
