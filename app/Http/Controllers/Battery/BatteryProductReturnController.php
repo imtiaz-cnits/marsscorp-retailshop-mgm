@@ -166,7 +166,7 @@ class BatteryProductReturnController extends Controller
 
             $cName = $order->customer ? ($order->customer->name ?? $order->customer->customer_name) : 'Guest Customer';
 
-            $items = $order->details->map(function($detail) {
+            $items = $order->details->map(function($detail) use ($order) {
                 $code = 'N/A';
                 if ($detail->product && $detail->product->product_code) {
                     $rawCode = $detail->product->product_code;
@@ -179,7 +179,12 @@ class BatteryProductReturnController extends Controller
                 }
 
                 $totalQty = (int) $detail->quantity;
-                $priorReturns = (int) BatteryProductReturn::where('order_detail_id', $detail->id)->sum('quantity');
+                $priorReturns = (int) BatteryProductReturn::where('order_detail_id', $detail->id)
+                    ->orWhere(function ($q) use ($order, $detail) {
+                        $q->whereNull('order_detail_id')
+                          ->where('order_id', $order->id)
+                          ->where('product_id', $detail->product_id);
+                    })->sum('quantity');
                 $returnedQty = max((int) ($detail->return_quantity ?? 0), $priorReturns);
                 $availableQty = max(0, $totalQty - $returnedQty);
                 $unitPrice = (float) $detail->selling_price;
@@ -244,7 +249,16 @@ class BatteryProductReturnController extends Controller
             $totalReturnAmount = 0;
             $totalDiscountToReduce = 0;
             $totalDueToReduce = 0;
-            $totalOrderQty = (int) $order->details->sum('quantity');
+
+            // Value-proportional discount ratio based on order sub_total
+            $orderSubTotal = (float) $order->sub_total;
+            $orderDiscountAmount = (float) ($order->discount_amount ?? 0);
+            $remainingDiscount = $orderDiscountAmount;
+            $remainingDue = (float) ($order->due_amount ?? 0);
+
+            $discountRatio = ($orderSubTotal > 0 && $orderDiscountAmount > 0)
+                ? ($orderDiscountAmount / $orderSubTotal)
+                : 0;
 
             foreach ($request->products as $returnedItem) {
                 // Lock rows for concurrency protection
@@ -252,8 +266,13 @@ class BatteryProductReturnController extends Controller
                 $product = BatteryProduct::where('id', $returnedItem['product_id'])->lockForUpdate()->firstOrFail();
                 $returnQty = (int) $returnedItem['quantity'];
 
-                // Calculate cumulative prior returns against this exact line item
-                $priorReturns = (int) BatteryProductReturn::where('order_detail_id', $orderDetail->id)->sum('quantity');
+                // Calculate cumulative prior returns against this line item (including legacy records)
+                $priorReturns = (int) BatteryProductReturn::where('order_detail_id', $orderDetail->id)
+                    ->orWhere(function ($q) use ($order, $product) {
+                        $q->whereNull('order_detail_id')
+                          ->where('order_id', $order->id)
+                          ->where('product_id', $product->id);
+                    })->sum('quantity');
                 $priorReturnedQty = max((int) ($orderDetail->return_quantity ?? 0), $priorReturns);
                 $availableReturnQty = max(0, (int) $orderDetail->quantity - $priorReturnedQty);
 
@@ -270,8 +289,20 @@ class BatteryProductReturnController extends Controller
                 $unitSellingPrice = (float) $orderDetail->selling_price;
                 $lineReturnAmount = round($returnQty * $unitSellingPrice, 2);
 
-                $discountToReduce = ($totalOrderQty > 0) ? round($returnQty * ($order->discount_amount / $totalOrderQty), 2) : 0;
-                $dueToReduce = min($lineReturnAmount, (float) $order->due_amount);
+                // Value-proportional discount allocation (capped by remaining invoice discount)
+                $discountToReduce = 0;
+                if ($discountRatio > 0 && $remainingDiscount > 0) {
+                    $discountToReduce = min(round($lineReturnAmount * $discountRatio, 2), $remainingDiscount);
+                    $remainingDiscount = max(0, $remainingDiscount - $discountToReduce);
+                }
+
+                // Due reduction (capped by net line return value and remaining invoice due across batch)
+                $dueToReduce = 0;
+                if ($remainingDue > 0) {
+                    $netLineAmount = max(0, $lineReturnAmount - $discountToReduce);
+                    $dueToReduce = min($netLineAmount, $remainingDue);
+                    $remainingDue = max(0, $remainingDue - $dueToReduce);
+                }
 
                 // Create BatteryProductReturn record
                 BatteryProductReturn::create([
@@ -289,7 +320,7 @@ class BatteryProductReturnController extends Controller
                     'user_id'         => $user_id,
                 ]);
 
-                // Increment battery product stock atomically
+                // Increment battery product stock atomically - NEVER alters product cost_price or sell_price
                 $product->increment('quantity', $returnQty);
 
                 // Update battery order details return_quantity (preserve invoice line)
@@ -330,9 +361,9 @@ class BatteryProductReturnController extends Controller
         $order = BatteryOrder::with(['customer', 'details.product', 'payment', 'paymentDetails'])->find($id);
         if ($order) {
             $invoice = $order;
-            $subTotal = $invoice->details->sum(function($orderDetail) {
-                return ($orderDetail->selling_price ?: ($orderDetail->price * $orderDetail->quantity));
-            });
+            $subTotal = (float) ($invoice->sub_total ?? $invoice->details->sum(function($orderDetail) {
+                return (float) ($orderDetail->selling_price ?? $orderDetail->price ?? 0) * (float) $orderDetail->quantity;
+            }));
             $paidAmount = (float) ($invoice->paid_amount ?? ($invoice->payment ? $invoice->payment->paid_amount : 0));
             $dueAmount = (float) ($invoice->due_amount ?? max(0, $subTotal - $paidAmount));
 

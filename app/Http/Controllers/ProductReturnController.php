@@ -59,13 +59,13 @@ class ProductReturnController extends Controller
         // Ensure that the order ID is available
         $orderID = $invoice->id;
 
-        // Calculate the total amount, paid amount, and due amount
-        $subTotal = $invoice->details->sum(function($orderDetail) {
-            return $orderDetail->price * $orderDetail->quantity;
-        });
+        // Calculate the total selling amount, paid amount, and due amount accurately
+        $subTotal = (float) ($invoice->sub_total ?? $invoice->details->sum(function($orderDetail) {
+            return (float) ($orderDetail->selling_price ?? $orderDetail->price ?? 0) * (float) $orderDetail->quantity;
+        }));
 
-        $paidAmount = $invoice->payment ? $invoice->payment->paid_amount : 0;
-        $dueAmount = $subTotal - $paidAmount;
+        $paidAmount = (float) ($invoice->paid_amount ?? ($invoice->payment ? $invoice->payment->paid_amount : 0));
+        $dueAmount = (float) ($invoice->due_amount ?? max(0, $subTotal - $paidAmount));
 
         // Pass the calculated values to the view
         return view('backend.view-return.return-details', compact('invoice', 'subTotal', 'paidAmount', 'dueAmount'));
@@ -388,7 +388,16 @@ class ProductReturnController extends Controller
             $totalReturnAmount = 0;
             $totalDiscountToReduce = 0;
             $totalDueToReduce = 0;
-            $totalOrderQty = (int) $order->details->sum('quantity');
+
+            // Value-proportional discount ratio based on order sub_total
+            $orderSubTotal = (float) $order->sub_total;
+            $orderDiscountAmount = (float) ($order->discount_amount ?? 0);
+            $remainingDiscount = $orderDiscountAmount;
+            $remainingDue = (float) ($order->due_amount ?? 0);
+
+            $discountRatio = ($orderSubTotal > 0 && $orderDiscountAmount > 0)
+                ? ($orderDiscountAmount / $orderSubTotal)
+                : 0;
 
             foreach ($request->products as $returnedItem) {
                 // Lock row for concurrency protection
@@ -396,8 +405,13 @@ class ProductReturnController extends Controller
                 $product = Product::where('id', $returnedItem['product_id'])->lockForUpdate()->firstOrFail();
                 $returnQty = (int) $returnedItem['quantity'];
 
-                // Calculate cumulative prior returns against this exact line item
-                $priorReturns = (int) ProductReturn::where('order_detail_id', $orderDetail->id)->sum('quantity');
+                // Calculate cumulative prior returns against this line item (including legacy records)
+                $priorReturns = (int) ProductReturn::where('order_detail_id', $orderDetail->id)
+                    ->orWhere(function ($q) use ($order, $product) {
+                        $q->whereNull('order_detail_id')
+                          ->where('order_id', $order->id)
+                          ->where('product_id', $product->id);
+                    })->sum('quantity');
                 $priorReturnedQty = max((int) ($orderDetail->return_quantity ?? 0), $priorReturns);
                 $availableReturnQty = max(0, (int) $orderDetail->quantity - $priorReturnedQty);
 
@@ -414,10 +428,22 @@ class ProductReturnController extends Controller
                 $unitSellingPrice = (float) $orderDetail->selling_price;
                 $lineReturnAmount = round($returnQty * $unitSellingPrice, 2);
 
-                $discountToReduce = ($totalOrderQty > 0) ? round($returnQty * ($order->discount_amount / $totalOrderQty), 2) : 0;
-                $dueToReduce = min($lineReturnAmount, (float) $order->due_amount);
+                // Value-proportional discount allocation (capped by remaining invoice discount)
+                $discountToReduce = 0;
+                if ($discountRatio > 0 && $remainingDiscount > 0) {
+                    $discountToReduce = min(round($lineReturnAmount * $discountRatio, 2), $remainingDiscount);
+                    $remainingDiscount = max(0, $remainingDiscount - $discountToReduce);
+                }
 
-                // Create ProductReturn record with batch return_number and order_detail_id
+                // Due reduction (capped by net line return value and remaining invoice due across batch)
+                $dueToReduce = 0;
+                if ($remainingDue > 0) {
+                    $netLineAmount = max(0, $lineReturnAmount - $discountToReduce);
+                    $dueToReduce = min($netLineAmount, $remainingDue);
+                    $remainingDue = max(0, $remainingDue - $dueToReduce);
+                }
+
+                // Create ProductReturn record with batch return_number, order_detail_id, and explicit unit_price
                 ProductReturn::create([
                     'return_number'   => $returnNumber,
                     'order_id'        => $order->id,
@@ -433,7 +459,7 @@ class ProductReturnController extends Controller
                     'user_id'         => $user_id,
                 ]);
 
-                // Update product stock atomically
+                // Update product stock atomically - NEVER alters product cost_price or sell_price
                 $product->increment('quantity', $returnQty);
 
                 // Track returned quantity immutably on order detail (NEVER alter quantity, price, or selling_price, and NEVER delete detail!)
@@ -921,7 +947,7 @@ public function PurchaseReturnProductCreate(Request $request)
 
             $cName = $order->customer ? ($order->customer->name ?? $order->customer->customer_name) : 'Guest Customer';
 
-            $items = $order->details->map(function($detail) {
+            $items = $order->details->map(function($detail) use ($order) {
                 $code = 'N/A';
                 if ($detail->product && $detail->product->product_code) {
                     $rawCode = $detail->product->product_code;
@@ -934,7 +960,12 @@ public function PurchaseReturnProductCreate(Request $request)
                 }
 
                 $totalQty = (int) $detail->quantity;
-                $priorReturns = (int) ProductReturn::where('order_detail_id', $detail->id)->sum('quantity');
+                $priorReturns = (int) ProductReturn::where('order_detail_id', $detail->id)
+                    ->orWhere(function ($q) use ($order, $detail) {
+                        $q->whereNull('order_detail_id')
+                          ->where('order_id', $order->id)
+                          ->where('product_id', $detail->product_id);
+                    })->sum('quantity');
                 $returnedQty = max((int) ($detail->return_quantity ?? 0), $priorReturns);
                 $availableQty = max(0, $totalQty - $returnedQty);
                 $unitPrice = (float) $detail->selling_price;

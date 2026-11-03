@@ -1163,23 +1163,22 @@
             if (startDate) currentDashboardStartDate = startDate;
             if (endDate) currentDashboardEndDate = endDate;
 
-            let queryParams = `?filter_type=${encodeURIComponent(filterType)}`;
             const s = startDate || currentDashboardStartDate;
             const e = endDate || currentDashboardEndDate || s;
-            if (filterType === 'date_wise' && s) {
-                queryParams += `&start_date=${encodeURIComponent(s)}&end_date=${encodeURIComponent(e)}`;
-            }
             const timestamp = new Date().getTime();
-            queryParams += `&_t=${timestamp}`;
+
+            const queryParamsObj = {
+                filter_type: filterType,
+                _t: timestamp
+            };
+            if (filterType === 'date_wise' && s) {
+                queryParamsObj.start_date = s;
+                queryParamsObj.end_date = e;
+            }
 
             const tokenConfig = typeof HeaderToken === 'function' ? HeaderToken() : {};
-            const res = await axios.get(`/api/dashboard-all-calculation${queryParams}`, {
-                params: {
-                    filter_type: filterType,
-                    start_date: (filterType === 'date_wise' ? s : null),
-                    end_date: (filterType === 'date_wise' ? e : null),
-                    _t: timestamp
-                },
+            const res = await axios.get('/api/dashboard-all-calculation', {
+                params: queryParamsObj,
                 headers: {
                     ...(tokenConfig.headers || {}),
                     'Cache-Control': 'no-cache, no-store, must-revalidate',
