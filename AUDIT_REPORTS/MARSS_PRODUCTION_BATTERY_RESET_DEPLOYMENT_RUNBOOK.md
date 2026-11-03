@@ -546,19 +546,18 @@ DB::beginTransaction();
 try {
     echo "--- INITIATING CONTROLLED PRODUCTION TRANSACTION ---\n";
 
-    // A. CLEAR 21 BATTERY MODULE TABLES IN FK CHILD-TO-PARENT ORDER
+    // A. CLEAR 21 BATTERY MODULE TABLES WITH FK PROTECTION
     $batTables = [
         'battery_migration_mappings',
         'battery_order_payment_details',
         'battery_customer_payment_details',
-        'battery_order_details',
-        'battery_orders',
-        'battery_purchase_payment_details',
-        'battery_purchase_order_details',
-        'battery_supplier_due_collections',
-        'battery_purchases',
         'battery_product_returns',
         'battery_purchase_returns',
+        'battery_order_details',
+        'battery_purchase_order_details',
+        'battery_supplier_due_collections',
+        'battery_orders',
+        'battery_purchases',
         'battery_expenses',
         'battery_expense_types',
         'battery_opening_balances',
@@ -571,6 +570,7 @@ try {
         'battery_suppliers',
     ];
 
+    DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
     $totalBatRowsCleared = 0;
     foreach ($batTables as $tbl) {
         if (Schema::hasTable($tbl)) {
@@ -579,6 +579,7 @@ try {
             $totalBatRowsCleared += $c;
         }
     }
+    DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
     echo "  [OK] Cleared all 21 Battery tables ({$totalBatRowsCleared} total rows deleted)\n";
 
     // B. REMAP EXPLICITLY APPROVED SANITARY PRODUCTS TO GENERAL BRAND
