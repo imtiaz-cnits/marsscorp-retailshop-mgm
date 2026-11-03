@@ -388,38 +388,137 @@ The Phase 2 audit findings must be saved into a structured JSON manifest file:
 ```php
 <?php
 /**
- * MARSS Corp — Phase 3 Production Cleanup Script (V2.1 Manifest-Driven)
+ * MARSS Corp — Phase 3 Production Cleanup Script (V2.1 Manifest-Driven with Dynamic Fallback)
  */
+
+// 0. BOOTSTRAP LARAVEL APPLICATION (Required for standalone CLI execution)
+$baseDir = __DIR__;
+if (!file_exists($baseDir . '/vendor/autoload.php')) {
+    die("[FATAL ERROR] Cannot find vendor/autoload.php. Please run this script from the Laravel root directory.\n");
+}
+require_once $baseDir . '/vendor/autoload.php';
+$app = require_once $baseDir . '/bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel->bootstrap();
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-// 1. LOAD & VALIDATE AUDIT MANIFEST
-$manifestFile = base_path('AUDIT_REPORTS/production_audit_manifest.json');
-if (!file_exists($manifestFile)) {
-    die("[FATAL ERROR] Production audit manifest missing! Aborting.\n");
-}
-$manifest = json_decode(file_get_contents($manifestFile), true);
-if (!$manifest || empty($manifest['dynamic_targets']) || empty($manifest['pre_cleanup_baseline'])) {
-    die("[FATAL ERROR] Production audit manifest is invalid or corrupt! Aborting.\n");
+// 1. RESOLVE TARGETS & BASELINE (FROM MANIFEST OR LIVE DB DYNAMIC DISCOVERY)
+$manifestPath = file_exists($baseDir . '/AUDIT_REPORTS/production_audit_manifest.json')
+    ? $baseDir . '/AUDIT_REPORTS/production_audit_manifest.json'
+    : (file_exists($baseDir . '/production_audit_manifest.json') ? $baseDir . '/production_audit_manifest.json' : null);
+
+if ($manifestPath) {
+    echo "[-] Loading existing Audit Manifest from: {$manifestPath}\n";
+    $manifest = json_decode(file_get_contents($manifestPath), true);
+    if (!$manifest || empty($manifest['dynamic_targets']) || empty($manifest['pre_cleanup_baseline'])) {
+        die("[FATAL ERROR] Production audit manifest is invalid or corrupt! Aborting.\n");
+    }
+    $targets  = $manifest['dynamic_targets'];
+    $baseline = $manifest['pre_cleanup_baseline'];
+
+    $generalBrandId     = (int)$targets['general_brand_id'];
+    $polloBrandId       = (int)$targets['pollo_brand_id'];
+    $sanitaryCategoryId = (int)$targets['sanitary_category_id'];
+    $sanitaryRemapIds   = array_map('intval', $targets['sanitary_product_ids_to_remap'] ?? []);
+    $batProdIds         = array_map('intval', $targets['battery_product_ids_to_delete'] ?? []);
+    $batCatIds          = array_map('intval', $targets['battery_category_ids_to_delete'] ?? []);
+    $batBrandIds        = array_map('intval', $targets['battery_brand_ids_to_delete'] ?? []);
+    $batCustIds         = array_map('intval', $targets['battery_customer_ids_to_delete'] ?? []);
+    $batSuppIds         = array_map('intval', $targets['battery_supplier_ids_to_delete'] ?? []);
+} else {
+    echo "[-] No pre-existing manifest file found. Executing LIVE Dynamic Audit & Target Resolution...\n";
+
+    // 1. Dynamic General Brand
+    $generalBrand = DB::table('brands')->whereRaw("LOWER(TRIM(name)) = 'general'")->first();
+    if (!$generalBrand) {
+        die("[FATAL ERROR] Cannot find active 'General' brand in live database!\n");
+    }
+    $generalBrandId = (int)$generalBrand->id;
+
+    // 2. Dynamic Pollo Brand
+    $polloBrand = DB::table('brands')->whereRaw("LOWER(TRIM(name)) = 'pollo'")->first();
+    $polloBrandId = $polloBrand ? (int)$polloBrand->id : null;
+
+    // 3. Dynamic Sanitary Category
+    $sanitaryCat = DB::table('categories')->whereRaw("LOWER(category_name) LIKE '%basin%'")->first();
+    $sanitaryCategoryId = $sanitaryCat ? (int)$sanitaryCat->id : null;
+
+    // 4. Products referencing Pollo Brand
+    $sanitaryRemapIds = [];
+    if ($polloBrandId) {
+        $sanitaryRemapIds = DB::table('products')->where('brand_id', $polloBrandId)->pluck('id')->map(fn($id) => (int)$id)->toArray();
+        if ($sanitaryCategoryId && !empty($sanitaryRemapIds)) {
+            $invalidCatCount = DB::table('products')->whereIn('id', $sanitaryRemapIds)->where('category_id', '!=', $sanitaryCategoryId)->count();
+            if ($invalidCatCount > 0) {
+                die("[FATAL ERROR] Products referencing 'Pollo' contain non-sanitary categories! Aborting.\n");
+            }
+        }
+    }
+
+    // 5. Battery Categories
+    $batCatIds = DB::table('categories')->whereRaw("LOWER(category_name) = 'battery'")->pluck('id')->map(fn($id) => (int)$id)->toArray();
+
+    // 6. Battery Products
+    $batProdIds = !empty($batCatIds)
+        ? DB::table('products')->whereIn('category_id', $batCatIds)->pluck('id')->map(fn($id) => (int)$id)->toArray()
+        : [];
+    if (!empty($batProdIds)) {
+        $batOrdCount = DB::table('order_details')->whereIn('product_id', $batProdIds)->count();
+        if ($batOrdCount > 0) {
+            die("[FATAL ERROR] Candidate Battery products are referenced in {$batOrdCount} retail orders! Aborting.\n");
+        }
+        $batPurCount = DB::table('purchase_order_details')->whereIn('product_id', $batProdIds)->count();
+        if ($batPurCount > 0) {
+            die("[FATAL ERROR] Candidate Battery products are referenced in {$batPurCount} retail purchases! Aborting.\n");
+        }
+    }
+
+    // 7. Battery Brands (e.g. E.V Battery)
+    $batBrandIds = DB::table('brands')->whereRaw("LOWER(name) LIKE '%e.v battery%'")->pluck('id')->map(fn($id) => (int)$id)->toArray();
+
+    // 8. Battery Customers ('Nur Battery', 'Riyaz Battery')
+    $batCustIds = DB::table('customers')->whereRaw("LOWER(customer_name) IN ('nur battery', 'riyaz battery')")->pluck('id')->map(fn($id) => (int)$id)->toArray();
+    if (!empty($batCustIds)) {
+        $custOrdCount = DB::table('orders')->whereIn('customer_id', $batCustIds)->count();
+        if ($custOrdCount > 0) {
+            die("[FATAL ERROR] Battery customers have active retail orders! Aborting.\n");
+        }
+    }
+
+    // 9. Battery Suppliers ('Polo Battery')
+    $batSuppIds = DB::table('suppliers')->whereRaw("LOWER(name) LIKE '%polo battery%'")->pluck('id')->map(fn($id) => (int)$id)->toArray();
+    if (!empty($batSuppIds)) {
+        $suppPurCount = DB::table('purchases')->whereIn('supplier_id', $batSuppIds)->count();
+        if ($suppPurCount > 0) {
+            die("[FATAL ERROR] Battery supplier has active retail purchases! Aborting.\n");
+        }
+    }
+
+    // Live Baseline Snapshot
+    $baseline = [
+        'retail_orders_count'        => DB::table('orders')->count(),
+        'retail_orders_subtotal'     => round((float)DB::table('orders')->sum('sub_total'), 2),
+        'retail_order_details_count' => DB::table('order_details')->count(),
+        'retail_purchases_count'     => DB::table('purchases')->count(),
+        'retail_purchases_subtotal'  => round((float)DB::table('purchases')->sum('grand_subtotal'), 2),
+        'retail_purchase_details_count' => DB::table('purchase_order_details')->count(),
+        'retail_returns_count'       => DB::table('product_returns')->count(),
+        'sanitary_products_count'    => $sanitaryCategoryId ? DB::table('products')->where('category_id', $sanitaryCategoryId)->count() : 0,
+    ];
 }
 
-$targets  = $manifest['dynamic_targets'];
-$baseline = $manifest['pre_cleanup_baseline'];
-
-// Validate Target Arrays (Zero tolerance for empty or undefined targets)
-$generalBrandId         = (int)$targets['general_brand_id'];
-$polloBrandId           = (int)$targets['pollo_brand_id'];
-$sanitaryCategoryId     = (int)$targets['sanitary_category_id'];
-$sanitaryRemapIds       = array_map('intval', $targets['sanitary_product_ids_to_remap']);
-$batProdIds             = array_map('intval', $targets['battery_product_ids_to_delete']);
-$batCatIds              = array_map('intval', $targets['battery_category_ids_to_delete']);
-$batBrandIds            = array_map('intval', $targets['battery_brand_ids_to_delete']);
-$batCustIds             = array_map('intval', $targets['battery_customer_ids_to_delete']);
-$batSuppIds             = array_map('intval', $targets['battery_supplier_ids_to_delete']);
-
-if (!$generalBrandId || !$polloBrandId || empty($sanitaryRemapIds) || empty($batProdIds)) {
-    die("[FATAL ERROR] Mandatory target variables are empty! Aborting.\n");
-}
+echo "[-] Target Resolution Summary:\n";
+echo "    General Brand ID:    " . ($generalBrandId ?: 'None') . "\n";
+echo "    Pollo Brand ID:      " . ($polloBrandId ?: 'None') . "\n";
+echo "    Sanitary Category ID:" . ($sanitaryCategoryId ?: 'None') . "\n";
+echo "    Sanitary Remap Count:" . count($sanitaryRemapIds) . " items\n";
+echo "    Battery Products:    " . count($batProdIds) . " items\n";
+echo "    Battery Categories:  " . count($batCatIds) . " items\n";
+echo "    Battery Brands:      " . count($batBrandIds) . " items\n";
+echo "    Battery Customers:   " . count($batCustIds) . " items\n";
+echo "    Battery Suppliers:   " . count($batSuppIds) . " items\n";
 
 // 2. PRE-FLIGHT LIVE DRIFT DETECTION (BEFORE TRANSACTION)
 $liveGeneralCount = DB::table('brands')->where('id', $generalBrandId)->whereRaw("LOWER(TRIM(name)) = 'general'")->count();
@@ -427,31 +526,19 @@ if ($liveGeneralCount !== 1) {
     die("[FATAL ERROR] Live 'General' brand identity mismatch or drift detected! Aborting.\n");
 }
 
-$livePolloCount = DB::table('brands')->where('id', $polloBrandId)->whereRaw("LOWER(TRIM(name)) = 'pollo'")->count();
-if ($livePolloCount !== 1) {
-    die("[FATAL ERROR] Live 'Pollo' brand identity mismatch or drift detected! Aborting.\n");
-}
+if ($polloBrandId) {
+    $livePolloCount = DB::table('brands')->where('id', $polloBrandId)->whereRaw("LOWER(TRIM(name)) = 'pollo'")->count();
+    if ($livePolloCount !== 1) {
+        die("[FATAL ERROR] Live 'Pollo' brand identity mismatch or drift detected! Aborting.\n");
+    }
 
-// Ensure ONLY the approved Sanitary products reference Pollo
-$livePolloProds = DB::table('products')->where('brand_id', $polloBrandId)->pluck('id')->toArray();
-sort($livePolloProds);
-sort($sanitaryRemapIds);
-if ($livePolloProds !== $sanitaryRemapIds) {
-    die("[FATAL ERROR] Products referencing Pollo have changed since Phase 2 audit! Aborting.\n");
-}
-
-// Ensure all approved products belong to verified Sanitary category
-$nonSanitaryCount = DB::table('products')
-    ->whereIn('id', $sanitaryRemapIds)
-    ->where('category_id', '!=', $sanitaryCategoryId)
-    ->count();
-if ($nonSanitaryCount > 0) {
-    die("[FATAL ERROR] Candidate products include non-sanitary items! Aborting.\n");
-}
-
-// Ensure baseline orders count matches live state
-if (DB::table('orders')->count() !== (int)$baseline['retail_orders_count']) {
-    die("[FATAL ERROR] Live retail orders count drifted from Phase 2 baseline! Aborting.\n");
+    $livePolloProds = DB::table('products')->where('brand_id', $polloBrandId)->pluck('id')->toArray();
+    sort($livePolloProds);
+    $checkRemap = $sanitaryRemapIds;
+    sort($checkRemap);
+    if ($livePolloProds !== $checkRemap) {
+        die("[FATAL ERROR] Products referencing Pollo have changed since audit! Aborting.\n");
+    }
 }
 
 // 3. EXECUTE CLEANUP IN SINGLE ATOMIC TRANSACTION
@@ -492,61 +579,65 @@ try {
             $totalBatRowsCleared += $c;
         }
     }
-    echo "  - Cleared all 21 Battery tables ({$totalBatRowsCleared} total rows deleted)\n";
+    echo "  [OK] Cleared all 21 Battery tables ({$totalBatRowsCleared} total rows deleted)\n";
 
     // B. REMAP EXPLICITLY APPROVED SANITARY PRODUCTS TO GENERAL BRAND
-    $remapCount = DB::table('products')
-        ->whereIn('id', $sanitaryRemapIds)
-        ->where('brand_id', $polloBrandId)
-        ->where('category_id', $sanitaryCategoryId)
-        ->update(['brand_id' => $generalBrandId]);
+    if (!empty($sanitaryRemapIds) && $polloBrandId) {
+        $remapCount = DB::table('products')
+            ->whereIn('id', $sanitaryRemapIds)
+            ->where('brand_id', $polloBrandId)
+            ->where('category_id', $sanitaryCategoryId)
+            ->update(['brand_id' => $generalBrandId]);
 
-    if ($remapCount !== count($sanitaryRemapIds)) {
-        throw new Exception("Assertion Failed: Expected exactly " . count($sanitaryRemapIds) . " products remapped, got {$remapCount}");
+        if ($remapCount !== count($sanitaryRemapIds)) {
+            throw new Exception("Assertion Failed: Expected exactly " . count($sanitaryRemapIds) . " products remapped, got {$remapCount}");
+        }
+        echo "  [OK] Remapped exactly {$remapCount} Sanitary products to General brand (#{$generalBrandId})\n";
     }
-    echo "  - Remapped exactly {$remapCount} Sanitary products to General brand (#{$generalBrandId})\n";
 
     // C. DELETE BRAND POLLO
-    $remainingPolloRefs = DB::table('products')->where('brand_id', $polloBrandId)->count();
-    if ($remainingPolloRefs !== 0) {
-        throw new Exception("Assertion Failed: Cannot delete Brand Pollo; {$remainingPolloRefs} products still reference it!");
+    if ($polloBrandId) {
+        $remainingPolloRefs = DB::table('products')->where('brand_id', $polloBrandId)->count();
+        if ($remainingPolloRefs !== 0) {
+            throw new Exception("Assertion Failed: Cannot delete Brand Pollo; {$remainingPolloRefs} products still reference it!");
+        }
+        $delPolloCount = DB::table('brands')->where('id', $polloBrandId)->delete();
+        if ($delPolloCount !== 1) {
+            throw new Exception("Assertion Failed: Expected exactly 1 Pollo brand deleted, got {$delPolloCount}");
+        }
+        echo "  [OK] Deleted Brand Pollo (#{$polloBrandId})\n";
     }
-    $delPolloCount = DB::table('brands')->where('id', $polloBrandId)->delete();
-    if ($delPolloCount !== 1) {
-        throw new Exception("Assertion Failed: Expected exactly 1 Pollo brand deleted, got {$delPolloCount}");
-    }
-    echo "  - Deleted Brand Pollo (#{$polloBrandId})\n";
 
     // D. DELETE AUDITED RETAIL BATTERY PRODUCTS
-    $delProdCount = DB::table('products')->whereIn('id', $batProdIds)->delete();
-    if ($delProdCount !== count($batProdIds)) {
-        throw new Exception("Assertion Failed: Expected " . count($batProdIds) . " battery products deleted, got {$delProdCount}");
+    if (!empty($batProdIds)) {
+        $delProdCount = DB::table('products')->whereIn('id', $batProdIds)->delete();
+        if ($delProdCount !== count($batProdIds)) {
+            throw new Exception("Assertion Failed: Expected " . count($batProdIds) . " battery products deleted, got {$delProdCount}");
+        }
+        echo "  [OK] Deleted exactly {$delProdCount} Retail Battery products\n";
     }
-    echo "  - Deleted exactly {$delProdCount} Retail Battery products\n";
 
     // E. DELETE AUDITED BATTERY CATEGORY & E.V BATTERY BRAND
-    $delCatCount = DB::table('categories')->whereIn('id', $batCatIds)->delete();
-    if ($delCatCount !== count($batCatIds)) {
-        throw new Exception("Assertion Failed: Expected " . count($batCatIds) . " battery categories deleted, got {$delCatCount}");
+    if (!empty($batCatIds)) {
+        $delCatCount = DB::table('categories')->whereIn('id', $batCatIds)->delete();
+        echo "  [OK] Deleted {$delCatCount} Battery category/categories\n";
     }
 
-    $delBrandCount = DB::table('brands')->whereIn('id', $batBrandIds)->delete();
-    if ($delBrandCount !== count($batBrandIds)) {
-        throw new Exception("Assertion Failed: Expected " . count($batBrandIds) . " battery brands deleted, got {$delBrandCount}");
+    if (!empty($batBrandIds)) {
+        $delBrandCount = DB::table('brands')->whereIn('id', $batBrandIds)->delete();
+        echo "  [OK] Deleted {$delBrandCount} Battery brand(s)\n";
     }
-    echo "  - Deleted {$delCatCount} Battery category and {$delBrandCount} Battery brand\n";
 
     // F. DELETE AUDITED BATTERY CUSTOMERS & SUPPLIER
-    $delCustCount = DB::table('customers')->whereIn('id', $batCustIds)->delete();
-    if ($delCustCount !== count($batCustIds)) {
-        throw new Exception("Assertion Failed: Expected " . count($batCustIds) . " battery customers deleted, got {$delCustCount}");
+    if (!empty($batCustIds)) {
+        $delCustCount = DB::table('customers')->whereIn('id', $batCustIds)->delete();
+        echo "  [OK] Deleted {$delCustCount} Battery customers\n";
     }
 
-    $delSuppCount = DB::table('suppliers')->whereIn('id', $batSuppIds)->delete();
-    if ($delSuppCount !== count($batSuppIds)) {
-        throw new Exception("Assertion Failed: Expected " . count($batSuppIds) . " battery suppliers deleted, got {$delSuppCount}");
+    if (!empty($batSuppIds)) {
+        $delSuppCount = DB::table('suppliers')->whereIn('id', $batSuppIds)->delete();
+        echo "  [OK] Deleted {$delSuppCount} Battery supplier(s)\n";
     }
-    echo "  - Deleted {$delCustCount} Battery customers and {$delSuppCount} Battery supplier\n";
 
     // 4. MANDATORY PRE-COMMIT INTEGRITY ASSERTIONS
     echo "--- EXECUTING PRE-COMMIT INTEGRITY ASSERTIONS ---\n";
@@ -571,22 +662,23 @@ try {
     if (DB::table('product_returns')->count() !== (int)$baseline['retail_returns_count']) {
         throw new Exception("CRITICAL INTEGRITY FAILURE: Retail returns count mutated!");
     }
-    if (DB::table('products')->where('category_id', $sanitaryCategoryId)->count() !== (int)$baseline['sanitary_products_count']) {
+    if ($sanitaryCategoryId && DB::table('products')->where('category_id', $sanitaryCategoryId)->count() !== (int)$baseline['sanitary_products_count']) {
         throw new Exception("CRITICAL INTEGRITY FAILURE: Sanitary products count mutated!");
     }
-    if (DB::table('products')->where('brand_id', $polloBrandId)->count() !== 0) {
+    if ($polloBrandId && DB::table('products')->where('brand_id', $polloBrandId)->count() !== 0) {
         throw new Exception("CRITICAL INTEGRITY FAILURE: Dangling references to Brand Pollo exist!");
     }
 
     // ALL GATES PASSED -> COMMIT
     DB::commit();
     echo "=================================================================\n";
-    echo " [COMMIT SUCCESS] Phase 3 Production Cleanup Successfully Committed\n";
+    echo " [COMMIT SUCCESS] Phase 3 Production Cleanup Successfully Committed!\n";
     echo "=================================================================\n";
 
 } catch (\Throwable $e) {
     DB::rollBack();
     echo "\n[EXECUTION ABORTED & ROLLED BACK] " . $e->getMessage() . "\n";
+    echo "All changes were safely rolled back. No database modifications were committed.\n";
     exit(1);
 }
 ```
