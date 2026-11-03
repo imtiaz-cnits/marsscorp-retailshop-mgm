@@ -466,25 +466,33 @@
                         <!-- Custom Filter Dropdown -->
                         <div class="position-relative" id="dashboardFilterDropdownWrap">
                             <button type="button" id="dashboardFilterDropdownBtn" class="dashboard-filter-btn">
-                                <span id="dashboardFilterSelectedText">Today</span>
+                                <span id="dashboardFilterSelectedText">All Time</span>
                                 <i class="fa-solid fa-chevron-down text-muted" id="dashboardFilterChevron" style="font-size: 11px; transition: transform 0.2s;"></i>
                             </button>
                             <div id="dashboardFilterMenu" class="dashboard-filter-menu">
-                                <button type="button" class="dashboard-filter-item active" data-filter="today">
-                                    <span>Today</span>
+                                <button type="button" class="dashboard-filter-item active" data-filter="all_time">
+                                    <span>All Time</span>
                                     <i class="fa-solid fa-check check-icon"></i>
+                                </button>
+                                <button type="button" class="dashboard-filter-item" data-filter="today">
+                                    <span>Today</span>
+                                    <i class="fa-solid fa-check check-icon" style="display: none;"></i>
                                 </button>
                                 <button type="button" class="dashboard-filter-item" data-filter="last_week">
-                                    <span>Last Week</span>
-                                    <i class="fa-solid fa-check check-icon"></i>
+                                    <span>Last 7 Days</span>
+                                    <i class="fa-solid fa-check check-icon" style="display: none;"></i>
+                                </button>
+                                <button type="button" class="dashboard-filter-item" data-filter="this_month">
+                                    <span>This Month</span>
+                                    <i class="fa-solid fa-check check-icon" style="display: none;"></i>
                                 </button>
                                 <button type="button" class="dashboard-filter-item" data-filter="last_month">
-                                    <span>Last Month</span>
-                                    <i class="fa-solid fa-check check-icon"></i>
+                                    <span>Last 30 Days</span>
+                                    <i class="fa-solid fa-check check-icon" style="display: none;"></i>
                                 </button>
                                 <button type="button" class="dashboard-filter-item" data-filter="date_wise">
                                     <span>Date Wise</span>
-                                    <i class="fa-solid fa-check check-icon"></i>
+                                    <i class="fa-solid fa-check check-icon" style="display: none;"></i>
                                 </button>
                             </div>
                         </div>
@@ -960,7 +968,7 @@
     let salesProfitChartInstance = null;
     let financialDonutChartInstance = null;
 
-    let currentDashboardFilter = 'today';
+    let currentDashboardFilter = 'all_time';
     let currentDashboardStartDate = '';
     let currentDashboardEndDate = '';
     let dashboardStartPicker = null;
@@ -1115,20 +1123,20 @@
             }
         }
 
-        // Clear Filter Button Click (Reset to Today)
+        // Clear Filter Button Click (Reset to All Time)
         if (refreshBtn) {
             refreshBtn.addEventListener('click', async () => {
-                currentDashboardFilter = 'today';
+                currentDashboardFilter = 'all_time';
                 currentDashboardStartDate = null;
                 currentDashboardEndDate = null;
 
-                if (selectedText) selectedText.innerText = 'Today';
+                if (selectedText) selectedText.innerText = 'All Time';
                 const items = menu.querySelectorAll('.dashboard-filter-item');
                 items.forEach(i => {
-                    const isToday = i.getAttribute('data-filter') === 'today';
-                    i.classList.toggle('active', isToday);
+                    const isAllTime = i.getAttribute('data-filter') === 'all_time';
+                    i.classList.toggle('active', isAllTime);
                     const ck = i.querySelector('.check-icon');
-                    if (ck) ck.style.display = isToday ? 'inline-block' : 'none';
+                    if (ck) ck.style.display = isAllTime ? 'inline-block' : 'none';
                 });
 
                 if (dateBox) {
@@ -1138,7 +1146,7 @@
                 if (dashboardStartPicker) dashboardStartPicker.clear();
                 if (dashboardEndPicker) dashboardEndPicker.clear();
 
-                await loadDashboardData('today');
+                await loadDashboardData('all_time');
             });
         }
     }
@@ -1183,8 +1191,13 @@
                 if (document.getElementById('todayCashCollection')) document.getElementById('todayCashCollection').innerText = '৳ ' + formatMoney(today.cash_collection || 0);
                 if (document.getElementById('todayExpense')) document.getElementById('todayExpense').innerText = '৳ ' + formatMoney(today.expense || 0);
                 if (document.getElementById('todayNetProfit')) document.getElementById('todayNetProfit').innerText = '৳ ' + formatMoney(today.net_profit || 0);
-                if (document.getElementById('customerDue')) document.getElementById('customerDue').innerText = '৳ ' + formatMoney(today.customer_due !== undefined ? today.customer_due : 0);
-                if (document.getElementById('supplierPayable')) document.getElementById('supplierPayable').innerText = '৳ ' + formatMoney(today.supplier_payable !== undefined ? today.supplier_payable : 0);
+
+                // Outstanding Dues: Real cumulative balances so cards never falsely show ৳0.00
+                const lifetimeCustomerDue = financial.lifetime_customer_due !== undefined ? financial.lifetime_customer_due : (today.customer_due || 0);
+                const lifetimeSupplierPayable = financial.lifetime_supplier_payable !== undefined ? financial.lifetime_supplier_payable : (today.supplier_payable || 0);
+
+                if (document.getElementById('customerDue')) document.getElementById('customerDue').innerText = '৳ ' + formatMoney(lifetimeCustomerDue);
+                if (document.getElementById('supplierPayable')) document.getElementById('supplierPayable').innerText = '৳ ' + formatMoney(lifetimeSupplierPayable);
                 if (document.getElementById('totalReturnAmount')) document.getElementById('totalReturnAmount').innerText = '৳ ' + formatMoney(today.total_return !== undefined ? today.total_return : 0);
                 if (document.getElementById('totalDiscountAmount')) document.getElementById('totalDiscountAmount').innerText = '৳ ' + formatMoney(today.total_discount !== undefined ? today.total_discount : 0);
                 if (document.getElementById('todaySalesCountBadge')) document.getElementById('todaySalesCountBadge').innerText = (today.sales_count || 0) + ' Invoices generated';
@@ -1217,12 +1230,11 @@
 
                 // --- 4. Render Interactive ApexCharts ---
                 renderSalesProfitChart(chart.dates || [], chart.sales || [], chart.profits || []);
-                renderFinancialDonutChart(
-                    parseFloat(monthly.cash_collection || 0),
-                    parseFloat(financial.customer_due || 0),
-                    parseFloat(monthly.expense || 0),
-                    parseFloat(monthly.net_profit || 0)
-                );
+                const donutCollection = parseFloat(today.cash_collection || monthly.cash_collection || 0);
+                const donutDue = parseFloat(lifetimeCustomerDue || 0);
+                const donutExpense = parseFloat(today.expense || monthly.expense || 0);
+                const donutProfit = parseFloat(today.net_profit || monthly.net_profit || 0);
+                renderFinancialDonutChart(donutCollection, donutDue, donutExpense, donutProfit);
 
                 // --- 5. Low Stock Table ---
                 const lowStockTbody = document.getElementById('lowStockTbody');
