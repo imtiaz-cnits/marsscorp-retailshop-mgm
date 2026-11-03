@@ -618,8 +618,9 @@
                                 </span>
                                 <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px;">RECEIVABLE DUE</span>
                             </div>
-                            <div class="d-flex align-items-baseline">
+                            <div class="d-flex flex-column">
                                 <h4 id="customerDue" class="fw-bold mb-0 text-dark" style="font-size: 17px;">৳ 0.00</h4>
+                                <small id="batteryCustomerDueSubtext" class="text-muted" style="font-size: 10px;">Period Invoiced Due</small>
                             </div>
                         </div>
                     </div>
@@ -632,8 +633,9 @@
                                 </span>
                                 <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px;">PAYABLE DUE</span>
                             </div>
-                            <div class="d-flex align-items-baseline">
+                            <div class="d-flex flex-column">
                                 <h4 id="supplierPayable" class="fw-bold mb-0 text-dark" style="font-size: 17px;">৳ 0.00</h4>
+                                <small id="batterySupplierPayableSubtext" class="text-muted" style="font-size: 10px;">Period Invoiced Payable</small>
                             </div>
                         </div>
                     </div>
@@ -727,7 +729,7 @@
                         <div class="card border-0 shadow-sm h-100 p-4" style="border-radius: 16px;">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div>
-                                    <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                                    <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2" id="salesProfitTrendTitle">
                                         <i class="fa-solid fa-chart-area text-success"></i> Sales & Profit Trend (Last 7 Days)
                                     </h5>
                                     <small class="text-muted">Daily Revenue comparison against Net Profit</small>
@@ -743,10 +745,10 @@
                         <div class="card border-0 shadow-sm h-100 p-4" style="border-radius: 16px;">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div>
-                                    <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
-                                        <i class="fa-solid fa-chart-pie text-primary"></i> Monthly Breakdown
+                                    <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2" id="financialDonutTitle">
+                                        <i class="fa-solid fa-chart-pie text-primary"></i> Financial Distribution
                                     </h5>
-                                    <small class="text-muted">Collections, Receivables & Costs</small>
+                                    <small class="text-muted" id="financialDonutSub">Collections, receivables &amp; costs for selected period</small>
                                 </div>
                             </div>
                             <div id="financialBreakdownDonutChart" style="min-height: 280px;" class="d-flex justify-content-center align-items-center"></div>
@@ -998,6 +1000,7 @@
     let financialDonutChartInstance = null;
 
     let currentDashboardFilter = 'today';
+    let currentBatteryRequestId = 0;
     let currentDashboardStartDate = '';
     let currentDashboardEndDate = '';
     let dashboardStartPicker = null;
@@ -1186,6 +1189,7 @@
     });
 
     async function loadBatteryDashboardData(filterType = currentDashboardFilter, startDate = currentDashboardStartDate, endDate = currentDashboardEndDate) {
+        const thisRequestId = ++currentBatteryRequestId;
         try {
             if (typeof showLoader === "function") showLoader();
             currentDashboardFilter = filterType;
@@ -1215,6 +1219,9 @@
                     'X-Filter-Type': filterType
                 }
             });
+            if (thisRequestId !== currentBatteryRequestId) {
+                return; // Stale request guard: ignore older response
+            }
             if (typeof hideLoader === "function") hideLoader();
 
             if (res.data && res.data.status === 'success') {
@@ -1234,6 +1241,14 @@
                 if (document.getElementById('totalReturnAmount')) document.getElementById('totalReturnAmount').innerText = '৳ ' + formatMoney(today.total_return !== undefined ? today.total_return : 0);
                 if (document.getElementById('totalDiscountAmount')) document.getElementById('totalDiscountAmount').innerText = '৳ ' + formatMoney(today.total_discount !== undefined ? today.total_discount : 0);
                 if (document.getElementById('todaySalesCountBadge')) document.getElementById('todaySalesCountBadge').innerText = (today.sales_count || 0) + ' Invoices generated';
+
+                // Contextual subtexts for Due cards based on selected filter
+                if (document.getElementById('batteryCustomerDueSubtext')) {
+                    document.getElementById('batteryCustomerDueSubtext').innerText = (filterType === 'all_time') ? 'Lifetime Outstanding Due' : 'Period Invoiced Due';
+                }
+                if (document.getElementById('batterySupplierPayableSubtext')) {
+                    document.getElementById('batterySupplierPayableSubtext').innerText = (filterType === 'all_time') ? 'Lifetime Outstanding Payable' : 'Period Invoiced Payable';
+                }
 
                 // 2. Monthly Cards
                 document.getElementById('monthlyNetProfit').innerText = '৳ ' + formatMoney(monthly.net_profit || data.monthlyTotalProfit || 0);
@@ -1263,12 +1278,16 @@
                 document.getElementById('productCountBadge').innerText = (financial.total_products || 0) + ' Battery Items';
                 document.getElementById('lowStockBadge').innerText = (financial.low_stock_count || 0) + ' Low Stock';
 
-                // 4. Render Charts
+                // 4. Render Dynamic Charts
+                if (chart.title && document.getElementById('salesProfitTrendTitle')) {
+                    document.getElementById('salesProfitTrendTitle').innerHTML = `<i class="fa-solid fa-chart-area text-success"></i> ${chart.title}`;
+                }
                 renderBatterySalesProfitChart(chart.dates || [], chart.sales || [], chart.profits || []);
-                const donutCollection = parseFloat(today.cash_collection || monthly.cash_collection || 0);
-                const donutDue = parseFloat(lifetimeCustomerDue || 0);
-                const donutExpense = parseFloat(today.expense || monthly.expense || 0);
-                const donutProfit = parseFloat(today.net_profit || monthly.net_profit || 0);
+
+                const donutCollection = parseFloat(today.cash_collection !== undefined ? today.cash_collection : 0);
+                const donutDue = parseFloat(today.customer_due !== undefined ? today.customer_due : 0);
+                const donutExpense = parseFloat(today.expense !== undefined ? today.expense : 0);
+                const donutProfit = parseFloat(today.net_profit !== undefined ? Math.max(0, today.net_profit) : 0);
                 renderBatteryFinancialDonutChart(donutCollection, donutDue, donutExpense, donutProfit);
 
                 // 5. Low Stock Table

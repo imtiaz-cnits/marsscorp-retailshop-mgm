@@ -10,10 +10,13 @@ use App\Models\Battery\BatteryOrderDetail;
 use App\Models\Battery\BatteryOrderPaymentDetail;
 use App\Models\Battery\BatteryCustomerPaymentDetail;
 use App\Models\Battery\BatteryPurchase;
+use App\Models\Battery\BatteryPurchasePaymentDetail;
 use App\Models\Battery\BatteryProduct;
 use App\Models\Battery\BatteryCustomer;
 use App\Models\Battery\BatterySupplier;
 use App\Models\Battery\BatteryExpense;
+use App\Models\Battery\BatteryProductReturn;
+use App\Services\DashboardDateFilterService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -23,237 +26,127 @@ class BatteryDashboardController extends Controller
     public function DashboardAllCalculation(Request $request = null)
     {
         try {
-            // Robust retrieval of filter_type from request body, query params, HTTP header, or raw URI
-            $filterType = $request ? ($request->input('filter_type') ?: $request->query('filter_type') ?: $request->header('X-Filter-Type')) : null;
-            $customStart = $request ? ($request->input('start_date') ?: $request->query('start_date')) : null;
-            $customEnd = $request ? ($request->input('end_date') ?: $request->query('end_date')) : null;
-
-            if (!$filterType && !empty($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '?') !== false) {
-                $rawQuery = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
-                if ($rawQuery) {
-                    parse_str($rawQuery, $parsedParams);
-                    if (!empty($parsedParams['filter_type'])) $filterType = $parsedParams['filter_type'];
-                    if (!$customStart && !empty($parsedParams['start_date'])) $customStart = $parsedParams['start_date'];
-                    if (!$customEnd && !empty($parsedParams['end_date'])) $customEnd = $parsedParams['end_date'];
-                }
-            }
-
-            // Default MUST strictly be 'today' as required by user
-            $filterType = $filterType ?: 'today';
+            // Standardized date filter resolution via DashboardDateFilterService
+            [$filterType, $filterStart, $filterEnd, $chartTitle] = DashboardDateFilterService::resolveFilterRange($request);
 
             $today = Carbon::today()->toDateString();
-            $currentYear = date('Y');
-            $currentMonth = date('m');
 
-            if ($filterType === 'all_time') {
-                $filterStart = null;
-                $filterEnd = null;
-            } elseif ($filterType === 'this_month') {
-                $filterStart = Carbon::now()->startOfMonth()->toDateString();
-                $filterEnd = $today;
-            } elseif ($filterType === 'last_week') {
-                $filterStart = Carbon::today()->subDays(7)->toDateString();
-                $filterEnd = $today;
-            } elseif ($filterType === 'last_month') {
-                $filterStart = Carbon::today()->subDays(29)->toDateString();
-                $filterEnd = $today;
-            } elseif ($filterType === 'date_wise' && $customStart) {
-                $filterStart = Carbon::parse($customStart)->toDateString();
-                $filterEnd = $customEnd ? Carbon::parse($customEnd)->toDateString() : $filterStart;
-                if ($filterStart > $filterEnd) {
-                    $tmp = $filterStart;
-                    $filterStart = $filterEnd;
-                    $filterEnd = $tmp;
-                }
-            } else {
-                $filterType = 'today';
-                $filterStart = $today;
-                $filterEnd = $today;
-            }
+            // --- 1. FILTERED BANNER METRICS (STRICT BUSINESS DATE ISOLATION) ---
+            $salesScope = BatteryOrder::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
+                $query->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd]);
+            });
 
-            // --- 1. FILTERED BANNER METRICS ---
-            $todaySalesCount = BatteryOrder::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
-                $query->where(function($q) use ($filterStart, $filterEnd) {
-                    $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd])
-                      ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
-                });
-            })->count();
-
-            $todaySalesAmount = (float) BatteryOrder::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
-                $query->where(function($q) use ($filterStart, $filterEnd) {
-                    $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd])
-                      ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
-                });
-            })->sum('sub_total');
+            $todaySalesCount = (int) (clone $salesScope)->count();
+            $todaySalesAmount = (float) (clone $salesScope)->sum('sub_total');
+            $todayDiscountGiven = (float) (clone $salesScope)->sum('discount_amount');
+            $filteredReceivableDue = (float) (clone $salesScope)->sum('due_amount');
 
             $todayDetails = DB::table('battery_order_details')
                 ->join('battery_orders', 'battery_order_details.order_id', '=', 'battery_orders.id')
                 ->when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
-                    $query->where(function($q) use ($filterStart, $filterEnd) {
-                        $q->whereBetween(DB::raw("COALESCE(battery_orders.invoice_date, DATE(battery_orders.created_at))"), [$filterStart, $filterEnd])
-                          ->orWhereBetween(DB::raw("DATE(battery_orders.created_at)"), [$filterStart, $filterEnd]);
-                    });
+                    $query->whereBetween(DB::raw("COALESCE(battery_orders.invoice_date, DATE(battery_orders.created_at))"), [$filterStart, $filterEnd]);
                 })
-                ->selectRaw('SUM( (battery_order_details.selling_price - battery_order_details.price) * battery_order_details.quantity ) as gross_profit')
+                ->selectRaw('SUM( (CAST(battery_order_details.selling_price AS DECIMAL(15,2)) - CAST(battery_order_details.price AS DECIMAL(15,2))) * (CAST(battery_order_details.quantity AS DECIMAL(15,2)) - CAST(COALESCE(battery_order_details.return_quantity, 0) AS DECIMAL(15,2))) ) as gross_profit')
                 ->first();
-
-            $todayDiscountGiven = (float) BatteryOrder::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
-                $query->where(function($q) use ($filterStart, $filterEnd) {
-                    $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd])
-                      ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
-                });
-            })->sum('discount_amount');
 
             $todayGrossProfit = ((float)($todayDetails->gross_profit ?? 0)) - $todayDiscountGiven;
 
             $todayExpense = (float) BatteryExpense::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
-                $query->where(function($q) use ($filterStart, $filterEnd) {
-                    $q->whereBetween(DB::raw("
-                        CASE 
-                            WHEN date LIKE '__-__-____' THEN STR_TO_DATE(date, '%d-%m-%Y')
-                            WHEN date LIKE '____-__-__%' THEN STR_TO_DATE(SUBSTRING(date, 1, 10), '%Y-%m-%d')
-                            ELSE DATE(created_at)
-                        END
-                    "), [$filterStart, $filterEnd])
-                    ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
-                });
+                DashboardDateFilterService::applyDateFilter($query, 'date', $filterStart, $filterEnd);
             })->sum('expense_amount');
 
             $todayNetProfit = $todayGrossProfit - $todayExpense;
 
-            $todayCashCollection = (float) BatteryOrderPaymentDetail::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
-                $query->where(function($q) use ($filterStart, $filterEnd) {
-                    $q->whereBetween(DB::raw("
-                        CASE 
-                            WHEN due_collection_date LIKE '__-__-____' THEN STR_TO_DATE(due_collection_date, '%d-%m-%Y')
-                            WHEN due_collection_date LIKE '____-__-__%' THEN STR_TO_DATE(SUBSTRING(due_collection_date, 1, 10), '%Y-%m-%d')
-                            ELSE DATE(created_at)
-                        END
-                    "), [$filterStart, $filterEnd])
-                    ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
-                });
-            })->sum('paid_amount')
-            + (float) BatteryCustomerPaymentDetail::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
-                $query->where(function($q) use ($filterStart, $filterEnd) {
-                    $q->whereBetween(DB::raw("COALESCE(due_collection_date, DATE(created_at))"), [$filterStart, $filterEnd])
-                      ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
-                });
+            $todayOrderCollection = (float) BatteryOrderPaymentDetail::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
+                DashboardDateFilterService::applyDateFilter($query, 'due_collection_date', $filterStart, $filterEnd);
             })->sum('paid_amount');
 
-            $todayPurchaseAmount = (float) BatteryPurchase::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
-                $query->where(function($q) use ($filterStart, $filterEnd) {
-                    $q->whereBetween(DB::raw("
-                        CASE 
-                            WHEN date LIKE '__-__-____' THEN STR_TO_DATE(date, '%d-%m-%Y')
-                            WHEN date LIKE '____-__-__%' THEN STR_TO_DATE(SUBSTRING(date, 1, 10), '%Y-%m-%d')
-                            ELSE DATE(created_at)
-                        END
-                    "), [$filterStart, $filterEnd])
-                    ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
-                });
-            })->sum('grand_subtotal');
+            $todayCustCollection = (float) BatteryCustomerPaymentDetail::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
+                DashboardDateFilterService::applyDateFilter($query, 'due_collection_date', $filterStart, $filterEnd);
+            })->sum('paid_amount');
 
-            $filteredReceivableDue = (float) BatteryOrder::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
-                $query->where(function($q) use ($filterStart, $filterEnd) {
-                    $q->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$filterStart, $filterEnd])
-                      ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
-                });
-            })->sum('due_amount');
+            $todayCashCollection = $todayOrderCollection + $todayCustCollection;
 
-            $filteredPayableDue = (float) BatteryPurchase::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
-                $query->where(function($q) use ($filterStart, $filterEnd) {
-                    $q->whereBetween(DB::raw("
-                        CASE 
-                            WHEN date LIKE '__-__-____' THEN STR_TO_DATE(date, '%d-%m-%Y')
-                            WHEN date LIKE '____-__-__%' THEN STR_TO_DATE(SUBSTRING(date, 1, 10), '%Y-%m-%d')
-                            ELSE DATE(created_at)
-                        END
-                    "), [$filterStart, $filterEnd])
-                    ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
-                });
-            })->sum('due_amount');
+            $purchaseScope = BatteryPurchase::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
+                DashboardDateFilterService::applyDateFilter($query, 'date', $filterStart, $filterEnd);
+            });
 
-            $filteredReturn = (float) \App\Models\Battery\BatteryProductReturn::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
-                $query->where(function($q) use ($filterStart, $filterEnd) {
-                    $q->whereBetween(DB::raw("
-                        CASE 
-                            WHEN date LIKE '__-__-____' THEN STR_TO_DATE(date, '%d-%m-%Y')
-                            WHEN date LIKE '____-__-__%' THEN STR_TO_DATE(SUBSTRING(date, 1, 10), '%Y-%m-%d')
-                            ELSE DATE(created_at)
-                        END
-                    "), [$filterStart, $filterEnd])
-                    ->orWhereBetween(DB::raw("DATE(created_at)"), [$filterStart, $filterEnd]);
-                });
+            $todayPurchaseAmount = (float) (clone $purchaseScope)->sum('grand_subtotal');
+            $filteredPayableDue = (float) (clone $purchaseScope)->sum('due_amount');
+
+            // Supplier Payment (Purchase payments + general supplier due collections)
+            $purchasePayCol = (float) BatteryPurchasePaymentDetail::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
+                DashboardDateFilterService::applyDateFilter($query, 'purchase_due_collection_date', $filterStart, $filterEnd);
+            })->sum('paid_amount');
+
+            $supplierDueCol = 0.0;
+            if (DB::getSchemaBuilder()->hasTable('battery_supplier_due_collections')) {
+                $supplierDueCol = (float) DB::table('battery_supplier_due_collections')->when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
+                    DashboardDateFilterService::applyDateFilter($query, 'payment_date', $filterStart, $filterEnd);
+                })->sum('paid_amount');
+            }
+
+            $todaySupplierPayment = $purchasePayCol + $supplierDueCol;
+
+            $filteredReturn = (float) BatteryProductReturn::when($filterStart && $filterEnd, function($query) use ($filterStart, $filterEnd) {
+                DashboardDateFilterService::applyDateFilter($query, 'date', $filterStart, $filterEnd);
             })->sum('amount');
 
-            // --- 2. THIS MONTH'S METRICS ---
-            $monthlySalesCount = BatteryOrder::where(function($q) use ($currentYear, $currentMonth) {
-                $q->where(function($sq) use ($currentYear, $currentMonth) {
-                    $sq->whereYear('invoice_date', $currentYear)->whereMonth('invoice_date', $currentMonth);
-                })->orWhere(function($sq) use ($currentYear, $currentMonth) {
-                    $sq->whereYear('created_at', $currentYear)->whereMonth('created_at', $currentMonth);
-                });
-            })->count();
+            // --- 2. THIS MONTH'S METRICS (STRICT TRANSACTION DATE ISOLATION) ---
+            $monthStart = Carbon::now()->startOfMonth()->toDateString();
+            $monthEnd = Carbon::now()->endOfMonth()->toDateString();
 
-            $monthlySalesAmount = (float) BatteryOrder::where(function($q) use ($currentYear, $currentMonth) {
-                $q->where(function($sq) use ($currentYear, $currentMonth) {
-                    $sq->whereYear('invoice_date', $currentYear)->whereMonth('invoice_date', $currentMonth);
-                })->orWhere(function($sq) use ($currentYear, $currentMonth) {
-                    $sq->whereYear('created_at', $currentYear)->whereMonth('created_at', $currentMonth);
-                });
-            })->sum('sub_total');
+            $monthlySalesScope = BatteryOrder::whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$monthStart, $monthEnd]);
+            $monthlySalesCount = (int) (clone $monthlySalesScope)->count();
+            $monthlySalesAmount = (float) (clone $monthlySalesScope)->sum('sub_total');
+            $monthlyDiscountGiven = (float) (clone $monthlySalesScope)->sum('discount_amount');
 
             $monthlyDetails = DB::table('battery_order_details')
                 ->join('battery_orders', 'battery_order_details.order_id', '=', 'battery_orders.id')
-                ->where(function($q) use ($currentYear, $currentMonth) {
-                    $q->where(function($sq) use ($currentYear, $currentMonth) {
-                        $sq->whereYear('battery_orders.invoice_date', $currentYear)->whereMonth('battery_orders.invoice_date', $currentMonth);
-                    })->orWhere(function($sq) use ($currentYear, $currentMonth) {
-                        $sq->whereYear('battery_orders.created_at', $currentYear)->whereMonth('battery_orders.created_at', $currentMonth);
-                    });
-                })
-                ->selectRaw('SUM( (battery_order_details.selling_price - battery_order_details.price) * battery_order_details.quantity ) as gross_profit')
+                ->whereBetween(DB::raw("COALESCE(battery_orders.invoice_date, DATE(battery_orders.created_at))"), [$monthStart, $monthEnd])
+                ->selectRaw('SUM( (CAST(battery_order_details.selling_price AS DECIMAL(15,2)) - CAST(battery_order_details.price AS DECIMAL(15,2))) * (CAST(battery_order_details.quantity AS DECIMAL(15,2)) - CAST(COALESCE(battery_order_details.return_quantity, 0) AS DECIMAL(15,2))) ) as gross_profit')
                 ->first();
-
-            $monthlyDiscountGiven = (float) BatteryOrder::where(function($q) use ($currentYear, $currentMonth) {
-                $q->where(function($sq) use ($currentYear, $currentMonth) {
-                    $sq->whereYear('invoice_date', $currentYear)->whereMonth('invoice_date', $currentMonth);
-                })->orWhere(function($sq) use ($currentYear, $currentMonth) {
-                    $sq->whereYear('created_at', $currentYear)->whereMonth('created_at', $currentMonth);
-                });
-            })->sum('discount_amount');
 
             $monthlyGrossProfit = ((float)($monthlyDetails->gross_profit ?? 0)) - $monthlyDiscountGiven;
 
-            $monthlyExpense = (float) BatteryExpense::whereRaw(
-                "YEAR(DATE(COALESCE(NULLIF(date, ''), created_at))) = ? AND MONTH(DATE(COALESCE(NULLIF(date, ''), created_at))) = ?",
-                [$currentYear, $currentMonth]
+            $monthlyExpense = (float) BatteryExpense::whereBetween(
+                DB::raw(DashboardDateFilterService::dateSql('date')),
+                [$monthStart, $monthEnd]
             )->sum('expense_amount');
 
             $monthlyNetProfit = $monthlyGrossProfit - $monthlyExpense;
 
-            $monthlyCashCollection = (float) BatteryOrderPaymentDetail::where(function($q) use ($currentYear, $currentMonth) {
-                $q->where(function($sq) use ($currentYear, $currentMonth) {
-                    $sq->whereYear('due_collection_date', $currentYear)->whereMonth('due_collection_date', $currentMonth);
-                })->orWhere(function($sq) use ($currentYear, $currentMonth) {
-                    $sq->whereYear('created_at', $currentYear)->whereMonth('created_at', $currentMonth);
-                });
-            })->sum('paid_amount')
-            + (float) BatteryCustomerPaymentDetail::where(function($q) use ($currentYear, $currentMonth) {
-                $q->where(function($sq) use ($currentYear, $currentMonth) {
-                    $sq->whereYear('due_collection_date', $currentYear)->whereMonth('due_collection_date', $currentMonth);
-                })->orWhere(function($sq) use ($currentYear, $currentMonth) {
-                    $sq->whereYear('created_at', $currentYear)->whereMonth('created_at', $currentMonth);
-                });
-            })->sum('paid_amount');
+            $monthlyOrderCol = (float) BatteryOrderPaymentDetail::whereBetween(
+                DB::raw(DashboardDateFilterService::dateSql('due_collection_date')),
+                [$monthStart, $monthEnd]
+            )->sum('paid_amount');
 
-            $monthlyPurchaseAmount = (float) BatteryPurchase::where(function($q) use ($currentYear, $currentMonth) {
-                $q->where(function($sq) use ($currentYear, $currentMonth) {
-                    $sq->whereYear('date', $currentYear)->whereMonth('date', $currentMonth);
-                })->orWhere(function($sq) use ($currentYear, $currentMonth) {
-                    $sq->whereYear('created_at', $currentYear)->whereMonth('created_at', $currentMonth);
-                });
-            })->sum('grand_subtotal');
+            $monthlyCustCol = (float) BatteryCustomerPaymentDetail::whereBetween(
+                DB::raw(DashboardDateFilterService::dateSql('due_collection_date')),
+                [$monthStart, $monthEnd]
+            )->sum('paid_amount');
+
+            $monthlyCashCollection = $monthlyOrderCol + $monthlyCustCol;
+
+            $monthlyPurchaseAmount = (float) BatteryPurchase::whereBetween(
+                DB::raw(DashboardDateFilterService::dateSql('date')),
+                [$monthStart, $monthEnd]
+            )->sum('grand_subtotal');
+
+            $monthlyPurchasePay = (float) BatteryPurchasePaymentDetail::whereBetween(
+                DB::raw(DashboardDateFilterService::dateSql('purchase_due_collection_date')),
+                [$monthStart, $monthEnd]
+            )->sum('paid_amount');
+
+            $monthlySuppDueCol = 0.0;
+            if (DB::getSchemaBuilder()->hasTable('battery_supplier_due_collections')) {
+                $monthlySuppDueCol = (float) DB::table('battery_supplier_due_collections')->whereBetween(
+                    DB::raw(DashboardDateFilterService::dateSql('payment_date')),
+                    [$monthStart, $monthEnd]
+                )->sum('paid_amount');
+            }
+
+            $monthlySupplierPayment = $monthlyPurchasePay + $monthlySuppDueCol;
 
             // --- 3. FINANCIAL SUMMARY & INVENTORY ---
             $totalCustomers = BatteryCustomer::count();
@@ -262,7 +155,7 @@ class BatteryDashboardController extends Controller
 
             $totalCustomerDue = (float) BatteryCustomer::sum('previous_due_amount') + (float) BatteryOrder::sum('due_amount');
             $totalSupplierPayable = (float) BatterySupplier::sum('purchase_payable_amount') + (float) BatteryPurchase::sum('due_amount');
-            $totalReturn = (float) \App\Models\Battery\BatteryProductReturn::sum('amount');
+            $totalReturn = (float) BatteryProductReturn::sum('amount');
             $totalDiscount = (float) BatteryOrder::sum('discount_amount');
 
             $stockValuation = BatteryProduct::selectRaw('SUM(CAST(cost_price AS DECIMAL(10,2)) * CAST(quantity AS DECIMAL(10,2))) as cost_value, SUM(CAST(sell_price AS DECIMAL(10,2)) * CAST(quantity AS DECIMAL(10,2))) as sell_value, SUM(CASE WHEN CAST(quantity AS DECIMAL(10,2)) <= 10 THEN 1 ELSE 0 END) as low_stock_count')->first();
@@ -270,12 +163,102 @@ class BatteryDashboardController extends Controller
             $lowStockProducts = BatteryProduct::whereRaw('CAST(quantity AS DECIMAL(10,2)) <= 10')
                 ->orderByRaw('CAST(quantity AS DECIMAL(10,2)) asc')
                 ->take(10)
-                ->get();
+                ->get()
+                ->map(function($product) {
+                    $code = '';
+                    if (!empty($product->product_code)) {
+                        $parsed = is_array($product->product_code) ? $product->product_code : json_decode($product->product_code, true);
+                        $code = is_array($parsed) ? ($parsed[0] ?? '') : $parsed;
+                    }
+                    return [
+                        'id'           => $product->id,
+                        'name'         => $product->product_name ?? 'Unknown Battery',
+                        'product_name' => $product->product_name ?? 'Unknown Battery',
+                        'battery_code' => $code ?: ('BAT-' . $product->id),
+                        'quantity'     => (float)($product->quantity ?? 0),
+                        'unit'         => $product->unit ? $product->unit->name : 'টি',
+                    ];
+                });
 
             $recentInvoices = BatteryOrder::with('customer')
                 ->latest()
                 ->take(5)
-                ->get();
+                ->get()
+                ->map(function($inv) {
+                    $cName = $inv->customer ? ($inv->customer->customer_name ?? $inv->customer->name) : 'Walk-in';
+                    return [
+                        'id'             => $inv->id,
+                        'order_no'       => $inv->order_no,
+                        'customer_name'  => $cName,
+                        'date'           => \Carbon\Carbon::parse($inv->invoice_date ?? $inv->created_at)->format('d M Y'),
+                        'grand_subtotal' => (float)$inv->sub_total,
+                        'sub_total'      => (float)$inv->sub_total,
+                        'paid_amount'    => (float)$inv->paid_amount,
+                        'due_amount'     => (float)$inv->due_amount,
+                    ];
+                });
+
+            // --- 4. DYNAMIC DAILY SALES & PROFIT TREND CHART ---
+            $chartDates = [];
+            $chartSales = [];
+            $chartProfits = [];
+
+            $chartStart = $filterStart ?: Carbon::today()->subDays(29)->toDateString();
+            $chartEnd = $filterEnd ?: $today;
+
+            if ($filterType === 'today') {
+                $chartStart = Carbon::today()->subDays(6)->toDateString();
+                $chartEnd = $today;
+            }
+
+            $startDateObj = Carbon::parse($chartStart);
+            $endDateObj = Carbon::parse($chartEnd);
+            if ($startDateObj->diffInDays($endDateObj) > 60) {
+                $startDateObj = $endDateObj->copy()->subDays(60);
+            }
+
+            for ($d = $startDateObj->copy(); $d->lte($endDateObj); $d->addDay()) {
+                $targetDate = $d->toDateString();
+                $formattedLabel = $d->format('d M');
+
+                $daySales = (float) BatteryOrder::where(function($q) use ($targetDate) {
+                    $q->whereDate('invoice_date', $targetDate)
+                      ->orWhere(function($sq) use ($targetDate) {
+                          $sq->whereNull('invoice_date')->whereDate('created_at', $targetDate);
+                      });
+                })->sum('sub_total');
+
+                $dayDetails = DB::table('battery_order_details')
+                    ->join('battery_orders', 'battery_order_details.order_id', '=', 'battery_orders.id')
+                    ->where(function($q) use ($targetDate) {
+                        $q->whereDate('battery_orders.invoice_date', $targetDate)
+                          ->orWhere(function($sq) use ($targetDate) {
+                              $sq->whereNull('battery_orders.invoice_date')->whereDate('battery_orders.created_at', $targetDate);
+                          });
+                    })
+                    ->selectRaw('SUM( (CAST(battery_order_details.selling_price AS DECIMAL(15,2)) - CAST(battery_order_details.price AS DECIMAL(15,2))) * (CAST(battery_order_details.quantity AS DECIMAL(15,2)) - CAST(COALESCE(battery_order_details.return_quantity, 0) AS DECIMAL(15,2))) ) as gross_profit')
+                    ->first();
+
+                $dayDiscount = (float) BatteryOrder::where(function($q) use ($targetDate) {
+                    $q->whereDate('invoice_date', $targetDate)
+                      ->orWhere(function($sq) use ($targetDate) {
+                          $sq->whereNull('invoice_date')->whereDate('created_at', $targetDate);
+                      });
+                })->sum('discount_amount');
+
+                $dayGrossProfit = ((float)($dayDetails->gross_profit ?? 0)) - $dayDiscount;
+
+                $dayExpense = (float) BatteryExpense::where(
+                    DB::raw(DashboardDateFilterService::dateSql('date')),
+                    $targetDate
+                )->sum('expense_amount');
+
+                $dayNetProfit = $dayGrossProfit - $dayExpense;
+
+                $chartDates[] = $formattedLabel;
+                $chartSales[] = round($daySales, 2);
+                $chartProfits[] = round($dayNetProfit, 2);
+            }
 
             $todayPayload = [
                 'sales_count'             => $todaySalesCount,
@@ -285,6 +268,7 @@ class BatteryDashboardController extends Controller
                 'net_profit'              => $todayNetProfit,
                 'cash_collection'         => $todayCashCollection,
                 'purchase_amount'         => $todayPurchaseAmount,
+                'supplier_payment'        => $todaySupplierPayment,
                 'customer_due'            => ($filterType === 'all_time' ? $totalCustomerDue : $filteredReceivableDue),
                 'period_customer_due'     => $filteredReceivableDue,
                 'supplier_payable'        => ($filterType === 'all_time' ? $totalSupplierPayable : $filteredPayableDue),
@@ -297,13 +281,14 @@ class BatteryDashboardController extends Controller
             ];
 
             $monthlyPayload = [
-                'sales_count'     => $monthlySalesCount,
-                'sales_amount'    => $monthlySalesAmount,
-                'gross_profit'    => $monthlyGrossProfit,
-                'expense'         => $monthlyExpense,
-                'net_profit'      => $monthlyNetProfit,
-                'cash_collection' => $monthlyCashCollection,
-                'purchase_amount' => $monthlyPurchaseAmount,
+                'sales_count'      => $monthlySalesCount,
+                'sales_amount'     => $monthlySalesAmount,
+                'gross_profit'     => $monthlyGrossProfit,
+                'expense'          => $monthlyExpense,
+                'net_profit'       => $monthlyNetProfit,
+                'cash_collection'  => $monthlyCashCollection,
+                'purchase_amount'  => $monthlyPurchaseAmount,
+                'supplier_payment' => $monthlySupplierPayment,
             ];
 
             $financialPayload = [
@@ -325,6 +310,12 @@ class BatteryDashboardController extends Controller
                 'today'     => $todayPayload,
                 'monthly'   => $monthlyPayload,
                 'financial' => $financialPayload,
+                'chart'     => [
+                    'dates'   => $chartDates,
+                    'sales'   => $chartSales,
+                    'profits' => $chartProfits,
+                    'title'   => $chartTitle,
+                ],
                 'summary'   => [
                     'today' => $todayPayload,
                     'monthly' => $monthlyPayload,

@@ -608,8 +608,9 @@
                                 </span>
                                 <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px;">RECEIVABLE DUE</span>
                             </div>
-                            <div class="d-flex align-items-baseline">
+                            <div class="d-flex flex-column">
                                 <h4 id="customerDue" class="fw-bold mb-0 text-dark" style="font-size: 17px;">৳ 0.00</h4>
+                                <small id="customerDueSubtext" class="text-muted" style="font-size: 10px;">Period Invoiced Due</small>
                             </div>
                         </div>
                     </div>
@@ -622,8 +623,9 @@
                                 </span>
                                 <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px;">PAYABLE DUE</span>
                             </div>
-                            <div class="d-flex align-items-baseline">
+                            <div class="d-flex flex-column">
                                 <h4 id="supplierPayable" class="fw-bold mb-0 text-dark" style="font-size: 17px;">৳ 0.00</h4>
+                                <small id="supplierPayableSubtext" class="text-muted" style="font-size: 10px;">Period Invoiced Payable</small>
                             </div>
                         </div>
                     </div>
@@ -1151,6 +1153,8 @@
         }
     }
 
+    let currentRetailRequestId = 0;
+
     document.addEventListener("DOMContentLoaded", async () => {
         initDashboardFilter();
         loadDashboardData();
@@ -1163,6 +1167,7 @@
             if (startDate) currentDashboardStartDate = startDate;
             if (endDate) currentDashboardEndDate = endDate;
 
+            const thisRequestId = ++currentRetailRequestId;
             const s = startDate || currentDashboardStartDate;
             const e = endDate || currentDashboardEndDate || s;
             const timestamp = new Date().getTime();
@@ -1188,6 +1193,11 @@
             });
             if (typeof hideLoader === "function") hideLoader();
 
+            // Guard against stale asynchronous responses
+            if (thisRequestId !== currentRetailRequestId) {
+                return;
+            }
+
             if (res.data && res.data.status === 'success') {
                 const data = res.data;
                 const today = data.today || {};
@@ -1212,6 +1222,14 @@
                 if (document.getElementById('totalReturnAmount')) document.getElementById('totalReturnAmount').innerText = '৳ ' + formatMoney(today.total_return !== undefined ? today.total_return : 0);
                 if (document.getElementById('totalDiscountAmount')) document.getElementById('totalDiscountAmount').innerText = '৳ ' + formatMoney(today.total_discount !== undefined ? today.total_discount : 0);
                 if (document.getElementById('todaySalesCountBadge')) document.getElementById('todaySalesCountBadge').innerText = (today.sales_count || 0) + ' Invoices generated';
+
+                // Contextual subtexts for Due cards based on selected filter
+                if (document.getElementById('customerDueSubtext')) {
+                    document.getElementById('customerDueSubtext').innerText = (filterType === 'all_time') ? 'Lifetime Outstanding Due' : 'Period Invoiced Due';
+                }
+                if (document.getElementById('supplierPayableSubtext')) {
+                    document.getElementById('supplierPayableSubtext').innerText = (filterType === 'all_time') ? 'Lifetime Outstanding Payable' : 'Period Invoiced Payable';
+                }
 
                 // --- 2. Monthly Cards ---
                 document.getElementById('monthlyNetProfit').innerText = '৳ ' + formatMoney(monthly.net_profit || data.monthlyTotalProfit || 0);
@@ -1243,11 +1261,11 @@
                 if (document.getElementById('lowStockBadge')) document.getElementById('lowStockBadge').innerText = (financial.low_stock_count || 0) + ' Low Stock';
 
                 // --- 4. Render Interactive ApexCharts ---
-                renderSalesProfitChart(chart.dates || [], chart.sales || [], chart.profits || []);
-                const donutCollection = parseFloat(today.cash_collection || monthly.cash_collection || 0);
-                const donutDue = parseFloat(lifetimeCustomerDue || 0);
-                const donutExpense = parseFloat(today.expense || monthly.expense || 0);
-                const donutProfit = parseFloat(today.net_profit || monthly.net_profit || 0);
+                renderSalesProfitChart(chart.dates || [], chart.sales || [], chart.profits || [], chart.title);
+                const donutCollection = parseFloat(today.cash_collection !== undefined ? today.cash_collection : 0);
+                const donutDue = parseFloat(today.customer_due !== undefined ? today.customer_due : 0);
+                const donutExpense = parseFloat(today.expense !== undefined ? today.expense : 0);
+                const donutProfit = parseFloat(today.net_profit !== undefined ? today.net_profit : 0);
                 renderFinancialDonutChart(donutCollection, donutDue, donutExpense, donutProfit);
 
                 // --- 5. Low Stock Table ---
@@ -1314,7 +1332,7 @@
     }
 
     // Render Area Trend Chart (Sales vs Profit)
-    function renderSalesProfitChart(dates, sales, profits) {
+    function renderSalesProfitChart(dates, sales, profits, title) {
         const userRole = (window.currentUserRole || '').toLowerCase();
         const isAdmin = (userRole === 'admin' || userRole === 'super_admin');
 
@@ -1340,6 +1358,11 @@
                 toolbar: { show: false },
                 fontFamily: 'Inter, sans-serif'
             },
+            title: title ? {
+                text: title,
+                align: 'left',
+                style: { fontSize: '13px', fontWeight: 600, color: '#64748b' }
+            } : undefined,
             colors: chartColors,
             fill: {
                 type: 'gradient',
@@ -1400,7 +1423,7 @@
         const isAdmin = (userRole === 'admin' || userRole === 'super_admin');
 
         let series = [collections, dues, expenses];
-        let labels = ['Monthly Collection', 'Customer Dues', 'Monthly Expenses'];
+        let labels = ['Cash Collection', 'Customer Due', 'Expenses'];
         let colors = ['#7c3aed', '#ef4444', '#f59e0b'];
 
         if (isAdmin) {
