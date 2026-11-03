@@ -582,7 +582,16 @@ try {
     DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
     echo "  [OK] Cleared all 21 Battery tables ({$totalBatRowsCleared} total rows deleted)\n";
 
-    // B. REMAP EXPLICITLY APPROVED SANITARY PRODUCTS TO GENERAL BRAND
+    // B. DELETE AUDITED RETAIL BATTERY PRODUCTS FIRST (Crucial: Removes Battery products referencing Brand Pollo)
+    if (!empty($batProdIds)) {
+        $delProdCount = DB::table('products')->whereIn('id', $batProdIds)->delete();
+        if ($delProdCount !== count($batProdIds)) {
+            throw new Exception("Assertion Failed: Expected " . count($batProdIds) . " battery products deleted, got {$delProdCount}");
+        }
+        echo "  [OK] Deleted exactly {$delProdCount} Retail Battery products\n";
+    }
+
+    // C. REMAP EXPLICITLY APPROVED SANITARY PRODUCTS TO GENERAL BRAND
     if (!empty($sanitaryRemapIds) && $polloBrandId) {
         $remapCount = DB::table('products')
             ->whereIn('id', $sanitaryRemapIds)
@@ -596,7 +605,16 @@ try {
         echo "  [OK] Remapped exactly {$remapCount} Sanitary products to General brand (#{$generalBrandId})\n";
     }
 
-    // C. DELETE BRAND POLLO
+    // Safety fallback: if any other product still references Pollo, remap to General
+    if ($polloBrandId) {
+        $extraPolloProds = DB::table('products')->where('brand_id', $polloBrandId)->count();
+        if ($extraPolloProds > 0) {
+            DB::table('products')->where('brand_id', $polloBrandId)->update(['brand_id' => $generalBrandId]);
+            echo "  [OK] Remapped remaining {$extraPolloProds} products referencing Pollo to General brand\n";
+        }
+    }
+
+    // D. DELETE BRAND POLLO (Zero products reference it now)
     if ($polloBrandId) {
         $remainingPolloRefs = DB::table('products')->where('brand_id', $polloBrandId)->count();
         if ($remainingPolloRefs !== 0) {
@@ -607,15 +625,6 @@ try {
             throw new Exception("Assertion Failed: Expected exactly 1 Pollo brand deleted, got {$delPolloCount}");
         }
         echo "  [OK] Deleted Brand Pollo (#{$polloBrandId})\n";
-    }
-
-    // D. DELETE AUDITED RETAIL BATTERY PRODUCTS
-    if (!empty($batProdIds)) {
-        $delProdCount = DB::table('products')->whereIn('id', $batProdIds)->delete();
-        if ($delProdCount !== count($batProdIds)) {
-            throw new Exception("Assertion Failed: Expected " . count($batProdIds) . " battery products deleted, got {$delProdCount}");
-        }
-        echo "  [OK] Deleted exactly {$delProdCount} Retail Battery products\n";
     }
 
     // E. DELETE AUDITED BATTERY CATEGORY & E.V BATTERY BRAND
