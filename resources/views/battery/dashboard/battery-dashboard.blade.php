@@ -466,17 +466,13 @@
                         <!-- Custom Filter Dropdown -->
                         <div class="position-relative" id="dashboardFilterDropdownWrap">
                             <button type="button" id="dashboardFilterDropdownBtn" class="dashboard-filter-btn">
-                                <span id="dashboardFilterSelectedText">All Time</span>
+                                <span id="dashboardFilterSelectedText">Today</span>
                                 <i class="fa-solid fa-chevron-down text-muted" id="dashboardFilterChevron" style="font-size: 11px; transition: transform 0.2s;"></i>
                             </button>
                             <div id="dashboardFilterMenu" class="dashboard-filter-menu">
-                                <button type="button" class="dashboard-filter-item active" data-filter="all_time">
-                                    <span>All Time</span>
-                                    <i class="fa-solid fa-check check-icon"></i>
-                                </button>
-                                <button type="button" class="dashboard-filter-item" data-filter="today">
+                                <button type="button" class="dashboard-filter-item active" data-filter="today">
                                     <span>Today</span>
-                                    <i class="fa-solid fa-check check-icon" style="display: none;"></i>
+                                    <i class="fa-solid fa-check check-icon"></i>
                                 </button>
                                 <button type="button" class="dashboard-filter-item" data-filter="last_week">
                                     <span>Last 7 Days</span>
@@ -492,6 +488,10 @@
                                 </button>
                                 <button type="button" class="dashboard-filter-item" data-filter="date_wise">
                                     <span>Date Wise</span>
+                                    <i class="fa-solid fa-check check-icon" style="display: none;"></i>
+                                </button>
+                                <button type="button" class="dashboard-filter-item" data-filter="all_time">
+                                    <span>All Time</span>
                                     <i class="fa-solid fa-check check-icon" style="display: none;"></i>
                                 </button>
                             </div>
@@ -997,7 +997,7 @@
     let salesProfitChartInstance = null;
     let financialDonutChartInstance = null;
 
-    let currentDashboardFilter = 'all_time';
+    let currentDashboardFilter = 'today';
     let currentDashboardStartDate = '';
     let currentDashboardEndDate = '';
     let dashboardStartPicker = null;
@@ -1152,20 +1152,20 @@
             }
         }
 
-        // Clear Filter Button Click (Reset to All Time)
+        // Clear Filter Button Click (Reset to Today)
         if (refreshBtn) {
             refreshBtn.addEventListener('click', async () => {
-                currentDashboardFilter = 'all_time';
+                currentDashboardFilter = 'today';
                 currentDashboardStartDate = null;
                 currentDashboardEndDate = null;
 
-                if (selectedText) selectedText.innerText = 'All Time';
+                if (selectedText) selectedText.innerText = 'Today';
                 const items = menu.querySelectorAll('.dashboard-filter-item');
                 items.forEach(i => {
-                    const isAllTime = i.getAttribute('data-filter') === 'all_time';
-                    i.classList.toggle('active', isAllTime);
+                    const isToday = i.getAttribute('data-filter') === 'today';
+                    i.classList.toggle('active', isToday);
                     const ck = i.querySelector('.check-icon');
-                    if (ck) ck.style.display = isAllTime ? 'inline-block' : 'none';
+                    if (ck) ck.style.display = isToday ? 'inline-block' : 'none';
                 });
 
                 if (dateBox) {
@@ -1175,7 +1175,7 @@
                 if (dashboardStartPicker) dashboardStartPicker.clear();
                 if (dashboardEndPicker) dashboardEndPicker.clear();
 
-                await loadBatteryDashboardData('all_time');
+                await loadBatteryDashboardData('today');
             });
         }
     }
@@ -1198,7 +1198,24 @@
             if (filterType === 'date_wise' && s) {
                 queryParams += `&start_date=${encodeURIComponent(s)}&end_date=${encodeURIComponent(e)}`;
             }
-            const res = await axios.get(`/api/battery/dashboard-all-calculation${queryParams}`, HeaderToken());
+            const timestamp = new Date().getTime();
+            queryParams += `&_t=${timestamp}`;
+
+            const tokenConfig = typeof HeaderToken === 'function' ? HeaderToken() : {};
+            const res = await axios.get(`/api/battery/dashboard-all-calculation${queryParams}`, {
+                params: {
+                    filter_type: filterType,
+                    start_date: (filterType === 'date_wise' ? s : null),
+                    end_date: (filterType === 'date_wise' ? e : null),
+                    _t: timestamp
+                },
+                headers: {
+                    ...(tokenConfig.headers || {}),
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache',
+                    'X-Filter-Type': filterType
+                }
+            });
             if (typeof hideLoader === "function") hideLoader();
 
             if (res.data && res.data.status === 'success') {
@@ -1213,13 +1230,8 @@
                 if (document.getElementById('todayCashCollection')) document.getElementById('todayCashCollection').innerText = '৳ ' + formatMoney(today.cash_collection || 0);
                 if (document.getElementById('todayExpense')) document.getElementById('todayExpense').innerText = '৳ ' + formatMoney(today.expense || 0);
                 if (document.getElementById('todayNetProfit')) document.getElementById('todayNetProfit').innerText = '৳ ' + formatMoney(today.net_profit || 0);
-
-                // Outstanding Dues: Real cumulative balances so cards never falsely show ৳0.00
-                const lifetimeCustomerDue = financial.lifetime_customer_due !== undefined ? financial.lifetime_customer_due : (today.customer_due || 0);
-                const lifetimeSupplierPayable = financial.lifetime_supplier_payable !== undefined ? financial.lifetime_supplier_payable : (today.supplier_payable || 0);
-
-                if (document.getElementById('customerDue')) document.getElementById('customerDue').innerText = '৳ ' + formatMoney(lifetimeCustomerDue);
-                if (document.getElementById('supplierPayable')) document.getElementById('supplierPayable').innerText = '৳ ' + formatMoney(lifetimeSupplierPayable);
+                if (document.getElementById('customerDue')) document.getElementById('customerDue').innerText = '৳ ' + formatMoney(today.customer_due !== undefined ? today.customer_due : 0);
+                if (document.getElementById('supplierPayable')) document.getElementById('supplierPayable').innerText = '৳ ' + formatMoney(today.supplier_payable !== undefined ? today.supplier_payable : 0);
                 if (document.getElementById('totalReturnAmount')) document.getElementById('totalReturnAmount').innerText = '৳ ' + formatMoney(today.total_return !== undefined ? today.total_return : 0);
                 if (document.getElementById('totalDiscountAmount')) document.getElementById('totalDiscountAmount').innerText = '৳ ' + formatMoney(today.total_discount !== undefined ? today.total_discount : 0);
                 if (document.getElementById('todaySalesCountBadge')) document.getElementById('todaySalesCountBadge').innerText = (today.sales_count || 0) + ' Invoices generated';
@@ -1231,8 +1243,11 @@
                 document.getElementById('monthlyPurchase').innerText = '৳ ' + formatMoney(monthly.purchase_amount || 0);
 
                 // 3. Balance & Inventory
-                if (document.getElementById('customerDueBottom')) document.getElementById('customerDueBottom').innerText = '৳ ' + formatMoney(financial.lifetime_customer_due || financial.customer_due || 0);
-                if (document.getElementById('supplierPayableBottom')) document.getElementById('supplierPayableBottom').innerText = '৳ ' + formatMoney(financial.lifetime_supplier_payable || financial.supplier_payable || 0);
+                const lifetimeCustomerDue = financial.lifetime_customer_due !== undefined ? financial.lifetime_customer_due : (financial.customer_due || 0);
+                const lifetimeSupplierPayable = financial.lifetime_supplier_payable !== undefined ? financial.lifetime_supplier_payable : (financial.supplier_payable || 0);
+
+                if (document.getElementById('customerDueBottom')) document.getElementById('customerDueBottom').innerText = '৳ ' + formatMoney(lifetimeCustomerDue);
+                if (document.getElementById('supplierPayableBottom')) document.getElementById('supplierPayableBottom').innerText = '৳ ' + formatMoney(lifetimeSupplierPayable);
 
                 if (document.getElementById('totalProductsCount')) {
                     document.getElementById('totalProductsCount').innerText = financial.total_products || 0;

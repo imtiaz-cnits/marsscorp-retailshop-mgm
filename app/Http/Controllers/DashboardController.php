@@ -26,9 +26,23 @@ class DashboardController extends Controller
     public function DashboardAllCalculation(Request $request = null)
     {
         try {
-            $filterType = $request ? $request->query('filter_type', 'all_time') : 'all_time';
-            $customStart = $request ? $request->query('start_date') : null;
-            $customEnd = $request ? $request->query('end_date') : null;
+            // Robust retrieval of filter_type from request body, query params, HTTP header, or raw URI
+            $filterType = $request ? ($request->input('filter_type') ?: $request->query('filter_type') ?: $request->header('X-Filter-Type')) : null;
+            $customStart = $request ? ($request->input('start_date') ?: $request->query('start_date')) : null;
+            $customEnd = $request ? ($request->input('end_date') ?: $request->query('end_date')) : null;
+
+            if (!$filterType && !empty($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '?') !== false) {
+                $rawQuery = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
+                if ($rawQuery) {
+                    parse_str($rawQuery, $parsedParams);
+                    if (!empty($parsedParams['filter_type'])) $filterType = $parsedParams['filter_type'];
+                    if (!$customStart && !empty($parsedParams['start_date'])) $customStart = $parsedParams['start_date'];
+                    if (!$customEnd && !empty($parsedParams['end_date'])) $customEnd = $parsedParams['end_date'];
+                }
+            }
+
+            // Default MUST strictly be 'today' as required by user
+            $filterType = $filterType ?: 'today';
 
             $today = Carbon::today()->toDateString();
             $currentYear = date('Y');
@@ -329,9 +343,9 @@ class DashboardController extends Controller
                     'net_profit'              => $todayNetProfit,
                     'cash_collection'         => $todayCashCollection,
                     'purchase_amount'         => $todayPurchaseAmount,
-                    'customer_due'            => $totalCustomerDue,
+                    'customer_due'            => ($filterType === 'all_time' ? $totalCustomerDue : $filteredReceivableDue),
                     'period_customer_due'     => $filteredReceivableDue,
-                    'supplier_payable'        => $totalSupplierPayable,
+                    'supplier_payable'        => ($filterType === 'all_time' ? $totalSupplierPayable : $filteredPayableDue),
                     'period_supplier_payable' => $filteredPayableDue,
                     'total_return'            => $filteredReturn,
                     'total_discount'          => $todayDiscountGiven,
