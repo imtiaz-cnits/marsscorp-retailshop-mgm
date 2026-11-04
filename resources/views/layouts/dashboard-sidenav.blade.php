@@ -207,6 +207,64 @@
       text-align: center !important;
     }
 
+    /* Compact Topbar & Brand Box Height */
+    #page-topbar,
+    .isvertical-topbar {
+      height: 58px !important;
+      min-height: 58px !important;
+    }
+    .navbar-header {
+      height: 58px !important;
+      min-height: 58px !important;
+    }
+    .header-item {
+      height: 58px !important;
+    }
+    .page-content {
+      padding-top: 74px !important;
+    }
+    .vertical-menu .navbar-brand-box {
+      height: 58px !important;
+      min-height: 58px !important;
+      line-height: 58px !important;
+      display: flex !important;
+      align-items: center !important;
+      padding: 0 12px !important;
+    }
+    .vertical-menu .navbar-brand-box .logo {
+      line-height: normal !important;
+    }
+    .vertical-menu .navbar-brand-box .logo-lg img {
+      max-height: 40px !important;
+      width: auto;
+    }
+    .vertical-menu .navbar-brand-box .logo-sm img {
+      width: 32px !important;
+      height: 32px !important;
+    }
+
+    /* Topbar Live Date & Time Pill */
+    .topbar-datetime-pill {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+      height: 34px;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+    body[light-mode="dark"] .topbar-datetime-pill,
+    body[data-layout-mode="dark"] .topbar-datetime-pill,
+    html.dark .topbar-datetime-pill,
+    body.dark-mode .topbar-datetime-pill {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    body[light-mode="dark"] .topbar-datetime-pill #topbarLiveDate,
+    body[light-mode="dark"] .topbar-datetime-pill #topbarLiveTime {
+      color: #f1f5f9 !important;
+    }
+
     .vertical-menu .navbar-brand-box {
       padding: 0 10px !important;
     }
@@ -357,7 +415,7 @@
       width: 100% !important;
       background: rgba(6, 78, 59, 0.95) !important;
       border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
-      height: 72px !important;
+      height: 58px !important;
       display: flex !important;
       align-items: center !important;
       padding: 0 14px !important;
@@ -408,10 +466,10 @@
     }
 
     body[data-sidebar-size="sm"] .vertical-menu .navbar-brand-box .logo-sm img {
-      width: 36px !important;
-      height: 36px !important;
-      max-width: 36px !important;
-      max-height: 36px !important;
+      width: 30px !important;
+      height: 30px !important;
+      max-width: 30px !important;
+      max-height: 30px !important;
       object-fit: contain !important;
       margin: 0 auto !important;
       display: block !important;
@@ -1264,7 +1322,7 @@
       .navbar-header .dropdown .dropdown-menu.page-header-notifications-dropdown-v,
       .page-header-notifications-dropdown-v {
         position: fixed !important;
-        top: 80px !important;
+        top: 66px !important;
         bottom: auto !important;
         right: 10px !important;
         left: auto !important;
@@ -1640,6 +1698,15 @@
       </div>
 
       <div class="d-flex align-items-center gap-2">
+        {{-- Live Date & Time Pill (Left of Light/Dark Mode Switcher) --}}
+        <div class="topbar-datetime-pill d-none d-md-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill shadow-xs me-1" id="topbarDateTimeWrapper" title="Current Date and Live Time">
+          <i class="fa-regular fa-calendar-days text-success" style="font-size: 13px;"></i>
+          <span id="topbarLiveDate" class="fw-semibold small" style="font-size: 12px; letter-spacing: 0.2px;"></span>
+          <span class="text-muted opacity-50" style="font-size: 10px;">•</span>
+          <i class="fa-regular fa-clock text-primary" style="font-size: 12px;"></i>
+          <span id="topbarLiveTime" class="fw-semibold small" style="font-size: 12px; letter-spacing: 0.2px; font-variant-numeric: tabular-nums;"></span>
+        </div>
+
         <button type="button" class="pos-theme-toggle-btn" aria-label="Toggle Light/Dark Mode"
             onclick="toggle_light_mode()" title="Toggle Light/Dark Theme">
             <i class="fa-regular fa-moon icon-moon"></i>
@@ -1897,7 +1964,7 @@
     <!-- Expanded Sidebar Icon (Large Mode) -->
     <span class="logo-lg d-flex align-items-center position-relative">
       <!-- Full MARSS CORPORATION Logo -->
-      <img src="{{ asset('backend/assets/img/marss-corporation-icon.svg') }}" alt="MARSS CORPORATION" style="width: 175px; height: auto; max-height: 55px; border-radius: 8px; object-fit: contain;" />
+      <img src="{{ asset('backend/assets/img/marss-corporation-icon.svg') }}" alt="MARSS CORPORATION" style="width: 175px; height: auto; border-radius: 8px; object-fit: contain;" />
       @if($isBattery)
         <span class="badge bg-amber-500 text-slate-950 font-bold uppercase position-absolute" style="bottom: 2px; right: 4px; font-size: 8.5px; padding: 2px 6px; border-radius: 6px; letter-spacing: 0.5px;"></span>
       @endif
@@ -3609,6 +3676,34 @@
       background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='%2310b981'><polygon points='0,0 10,0 5,6'/></svg>");
     }
   </style>
+
+  <script>
+    (function() {
+      function updateTopbarDateTime() {
+        const dateElem = document.getElementById('topbarLiveDate');
+        const timeElem = document.getElementById('topbarLiveTime');
+        if (!dateElem && !timeElem) return;
+
+        const now = new Date();
+        if (dateElem) {
+          const options = { day: '2-digit', month: 'short', year: 'numeric' };
+          dateElem.textContent = now.toLocaleDateString('en-GB', options);
+        }
+        if (timeElem) {
+          let hours = now.getHours();
+          const minutes = String(now.getMinutes()).padStart(2, '0');
+          const seconds = String(now.getSeconds()).padStart(2, '0');
+          const ampm = hours >= 12 ? 'PM' : 'AM';
+          hours = hours % 12;
+          hours = hours ? hours : 12;
+          const formattedHours = String(hours).padStart(2, '0');
+          timeElem.textContent = `${formattedHours}:${minutes}:${seconds} ${ampm}`;
+        }
+      }
+      updateTopbarDateTime();
+      setInterval(updateTopbarDateTime, 1000);
+    })();
+  </script>
 </body>
 
 </html>

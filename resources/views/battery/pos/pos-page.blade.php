@@ -2272,6 +2272,27 @@
         }
 
         /* ========================================================
+           Topbar Live Date & Time Pill
+           ======================================================== */
+        .pos-topbar-datetime-pill {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            height: 30px;
+            font-size: 11.5px;
+            transition: all 0.2s ease;
+        }
+        body[light-mode="dark"] .pos-topbar-datetime-pill {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+            color: #e2e8f0 !important;
+        }
+        body[light-mode="dark"] .pos-topbar-datetime-pill #posLiveDate,
+        body[light-mode="dark"] .pos-topbar-datetime-pill #posLiveTime {
+            color: #f1f5f9 !important;
+        }
+
+        /* ========================================================
            2. Modern Sun / Moon Theme Toggle Button (Compact)
            ======================================================== */
         .pos-theme-toggle-btn {
@@ -3021,6 +3042,15 @@
                 </div>
 
                 <div class="profile d-flex align-items-center gap-1.5 gap-md-2 flex-shrink-0">
+                    {{-- Live Date & Time Pill (Left of Light/Dark Mode Switcher) --}}
+                    <div class="pos-topbar-datetime-pill d-none d-md-inline-flex align-items-center gap-2 px-2.5 py-1 rounded-pill shadow-xs me-1" id="posTopbarDateTimeWrapper" title="Current Date and Live Time">
+                        <i class="fa-regular fa-calendar-days text-success" style="font-size: 12px;"></i>
+                        <span id="posLiveDate" class="fw-semibold small" style="font-size: 11.5px; letter-spacing: 0.2px;"></span>
+                        <span class="text-muted opacity-50" style="font-size: 10px;">•</span>
+                        <i class="fa-regular fa-clock text-primary" style="font-size: 11.5px;"></i>
+                        <span id="posLiveTime" class="fw-semibold small" style="font-size: 11.5px; letter-spacing: 0.2px; font-variant-numeric: tabular-nums;"></span>
+                    </div>
+
                     <button type="button" class="pos-theme-toggle-btn" aria-label="Toggle Light/Dark Mode"
                         onclick="toggle_light_mode()" title="Toggle Light/Dark Theme">
                         <i class="fa-regular fa-moon icon-moon"></i>
@@ -4273,9 +4303,12 @@
                             class="price"
                             type="number"
                             step="any"
-                            value="${item.sellingPrice}"
+                            value="${parseFloat(item.sellingPrice) > 0 ? item.sellingPrice : ''}"
+                            placeholder="0"
                             id="sellingPrice-${item.id}"
+                            onfocus="this.select(); if(this.value == '0' || this.value == '0.00') { this.value = ''; }"
                             oninput="updateSellingPrice(${item.id}, this)"
+                            onblur="if(this.value === '') { updateSellingPrice(${item.id}, this); }"
                             style="width: 48px; height: 26px; font-size: 12px; border-radius: 6px; border: 1.5px solid #cbd5e1; text-align: center; font-weight: 700; color: #15803d; outline: none; padding: 1px 2px;"
                         />
                     </td>
@@ -5948,6 +5981,8 @@
 
         document.addEventListener("DOMContentLoaded", function() {
             loadPosUserProfile();
+            updatePosLiveDateTime();
+            setInterval(updatePosLiveDateTime, 1000);
 
             // Global listener to ensure all modal backdrops are fully cleared on close
             document.addEventListener('hidden.bs.modal', function() {
@@ -5959,6 +5994,28 @@
                 }, 150);
             });
         });
+
+        function updatePosLiveDateTime() {
+            const dateElem = document.getElementById('posLiveDate');
+            const timeElem = document.getElementById('posLiveTime');
+            if (!dateElem && !timeElem) return;
+
+            const now = new Date();
+            if (dateElem) {
+                const options = { day: '2-digit', month: 'short', year: 'numeric' };
+                dateElem.textContent = now.toLocaleDateString('en-GB', options);
+            }
+            if (timeElem) {
+                let hours = now.getHours();
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                const formattedHours = String(hours).padStart(2, '0');
+                timeElem.textContent = `${formattedHours}:${minutes}:${seconds} ${ampm}`;
+            }
+        }
     </script>
 </body>
 

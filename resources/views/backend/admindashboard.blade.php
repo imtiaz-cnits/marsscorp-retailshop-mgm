@@ -131,6 +131,23 @@
                     background: #f8fafc;
                     color: #0f172a;
                 }
+                .dashboard-btn-pos {
+                    height: 38px;
+                    font-size: 13px;
+                    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+                    border: 1px solid #059669 !important;
+                    color: #ffffff !important;
+                    text-decoration: none !important;
+                    white-space: nowrap;
+                    transition: all 0.2s ease-in-out;
+                }
+                .dashboard-btn-pos:hover {
+                    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+                    border-color: #047857 !important;
+                    color: #ffffff !important;
+                    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25) !important;
+                    transform: translateY(-1px);
+                }
                 .dashboard-metric-card {
                     border-radius: 14px;
                     background: #ffffff;
@@ -451,7 +468,7 @@
             </style>
 
             <!-- Overview Dashboard Header Card -->
-            <div class="card border-0 shadow-sm mb-4 dashboard-header-card">
+            <div class="card border-0 shadow-sm mb-3 dashboard-header-card">
                 <div class="card-body p-3 p-md-3 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                     <div class="d-flex align-items-center gap-3 flex-shrink-0">
                         <div class="rounded-3 d-flex align-items-center justify-content-center shadow-sm flex-shrink-0" style="width: 44px; height: 44px; min-width: 44px; background: #e0f2fe; color: #0284c7;">
@@ -516,7 +533,7 @@
                         </button>
 
                         <!-- POS Terminal Button -->
-                        <a href="/admin-dashboard-pos" class="btn rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1.5 text-white shadow-sm" style="height: 38px; font-size: 13px; background: #0f4a8a; border-color: #0f4a8a; white-space: nowrap;">
+                        <a href="/admin-dashboard-pos" class="btn dashboard-btn-pos rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1.5 text-white shadow-sm" style="white-space: nowrap;">
                             <i class="fa-solid fa-cart-shopping me-1"></i> POS Terminal
                         </a>
 
@@ -531,9 +548,9 @@
             <!-- ADMIN ONLY FINANCIAL METRICS & CHARTS WRAPPER -->
             <div id="adminOnlyFinancialSections">
                 <!-- ROW 1: TODAY'S KEY METRICS (INCOME, CASH COLLECTION, EXPENSE, PROFIT) -->
-                <div class="row g-3 mb-4">
+                <div class="row g-3 mb-3">
                     <!-- Income (Total Sales) -->
-                    <div class="col-xl-3 col-md-6 today-metric-col">
+                    <div class="col-xl-3 col-md-6 col-sm-6 today-metric-col">
                         <div class="card border-0 shadow-sm h-100 p-3 dashboard-metric-card">
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.3px;">INCOME</span>
@@ -549,7 +566,7 @@
                     </div>
 
                     <!-- Cash Collection -->
-                    <div class="col-xl-3 col-md-6 today-metric-col">
+                    <div class="col-xl-3 col-md-6 col-sm-6 today-metric-col">
                         <div class="card border-0 shadow-sm h-100 p-3 dashboard-metric-card">
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.3px;">CASH COLLECTION</span>
@@ -565,7 +582,7 @@
                     </div>
 
                     <!-- Operating Expense -->
-                    <div class="col-xl-3 col-md-6 today-metric-col">
+                    <div class="col-xl-3 col-md-6 col-sm-6 today-metric-col">
                         <div class="card border-0 shadow-sm h-100 p-3 dashboard-metric-card">
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.3px;">EXPENSE</span>
@@ -581,7 +598,7 @@
                     </div>
 
                     <!-- Net Profit (Admin Only) -->
-                    <div class="col-xl-3 col-md-6" id="todayNetProfitCol">
+                    <div class="col-xl-3 col-md-6 col-sm-6" id="todayNetProfitCol">
                         <div class="card border-0 shadow-sm h-100 p-3 dashboard-metric-card">
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.3px;">PROFIT</span>
@@ -601,66 +618,64 @@
                 <div class="row g-3 mb-3">
                     <!-- Receivable Due -->
                     <div class="col-xl-3 col-md-6 col-sm-6">
-                        <div class="card border-0 shadow-sm px-3 py-2.5" style="border-radius: 12px; background: #ffffff;">
-                            <div class="d-flex align-items-center gap-2 mb-1">
-                                <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 24px; height: 24px; min-width: 24px; background: #fef3c7; color: #d97706; font-size: 11px;">
-                                    <i class="fa-solid fa-users"></i>
-                                </span>
-                                <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px;">RECEIVABLE DUE</span>
-                            </div>
-                            <div class="d-flex flex-column">
-                                <h4 id="customerDue" class="fw-bold mb-0 text-dark" style="font-size: 17px;">৳ 0.00</h4>
-                                <small id="customerDueSubtext" class="text-muted" style="font-size: 10px;">Period Invoiced Due</small>
+                        <div class="card border-0 shadow-sm px-3 py-3 d-flex justify-content-center dashboard-metric-card mb-0" style="border-radius: 12px; min-height: 56px;">
+                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 26px; height: 26px; min-width: 26px; background: #fef3c7; color: #d97706; font-size: 11px;">
+                                        <i class="fa-solid fa-users"></i>
+                                    </span>
+                                    <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px; white-space: nowrap;">RECEIVABLE DUE</span>
+                                </div>
+                                <h4 id="customerDue" class="fw-bold mb-0 text-dark text-end flex-shrink-0" style="font-size: 16px; white-space: nowrap;">৳ 0.00</h4>
                             </div>
                         </div>
                     </div>
                     <!-- Payable Due -->
                     <div class="col-xl-3 col-md-6 col-sm-6">
-                        <div class="card border-0 shadow-sm px-3 py-2.5" style="border-radius: 12px; background: #ffffff;">
-                            <div class="d-flex align-items-center gap-2 mb-1">
-                                <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 24px; height: 24px; min-width: 24px; background: #e0e7ff; color: #4f46e5; font-size: 11px;">
-                                    <i class="fa-solid fa-truck-field"></i>
-                                </span>
-                                <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px;">PAYABLE DUE</span>
-                            </div>
-                            <div class="d-flex flex-column">
-                                <h4 id="supplierPayable" class="fw-bold mb-0 text-dark" style="font-size: 17px;">৳ 0.00</h4>
-                                <small id="supplierPayableSubtext" class="text-muted" style="font-size: 10px;">Period Invoiced Payable</small>
+                        <div class="card border-0 shadow-sm px-3 py-3 d-flex justify-content-center dashboard-metric-card mb-0" style="border-radius: 12px; min-height: 56px;">
+                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 26px; height: 26px; min-width: 26px; background: #e0e7ff; color: #4f46e5; font-size: 11px;">
+                                        <i class="fa-solid fa-truck-field"></i>
+                                    </span>
+                                    <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px; white-space: nowrap;">PAYABLE DUE</span>
+                                </div>
+                                <h4 id="supplierPayable" class="fw-bold mb-0 text-dark text-end flex-shrink-0" style="font-size: 16px; white-space: nowrap;">৳ 0.00</h4>
                             </div>
                         </div>
                     </div>
                     <!-- Return -->
                     <div class="col-xl-3 col-md-6 col-sm-6">
-                        <div class="card border-0 shadow-sm px-3 py-2.5" style="border-radius: 12px; background: #ffffff;">
-                            <div class="d-flex align-items-center gap-2 mb-1">
-                                <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 24px; height: 24px; min-width: 24px; background: #ffe4e6; color: #e11d48; font-size: 11px;">
-                                    <i class="fa-solid fa-rotate-left"></i>
-                                </span>
-                                <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px;">RETURN</span>
-                            </div>
-                            <div class="d-flex align-items-baseline">
-                                <h4 id="totalReturnAmount" class="fw-bold mb-0 text-dark" style="font-size: 17px;">৳ 0.00</h4>
+                        <div class="card border-0 shadow-sm px-3 py-3 d-flex justify-content-center dashboard-metric-card mb-0" style="border-radius: 12px; min-height: 56px;">
+                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 26px; height: 26px; min-width: 26px; background: #ffe4e6; color: #e11d48; font-size: 11px;">
+                                        <i class="fa-solid fa-rotate-left"></i>
+                                    </span>
+                                    <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px; white-space: nowrap;">RETURN</span>
+                                </div>
+                                <h4 id="totalReturnAmount" class="fw-bold mb-0 text-dark text-end flex-shrink-0" style="font-size: 16px; white-space: nowrap;">৳ 0.00</h4>
                             </div>
                         </div>
                     </div>
                     <!-- Discount -->
                     <div class="col-xl-3 col-md-6 col-sm-6">
-                        <div class="card border-0 shadow-sm px-3 py-2.5" style="border-radius: 12px; background: #ffffff;">
-                            <div class="d-flex align-items-center gap-2 mb-1">
-                                <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 24px; height: 24px; min-width: 24px; background: #f3e8ff; color: #9333ea; font-size: 11px;">
-                                    <i class="fa-solid fa-percent"></i>
-                                </span>
-                                <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px;">DISCOUNT</span>
-                            </div>
-                            <div class="d-flex align-items-baseline">
-                                <h4 id="totalDiscountAmount" class="fw-bold mb-0 text-dark" style="font-size: 17px;">৳ 0.00</h4>
+                        <div class="card border-0 shadow-sm px-3 py-3 d-flex justify-content-center dashboard-metric-card mb-0" style="border-radius: 12px; min-height: 56px;">
+                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 26px; height: 26px; min-width: 26px; background: #f3e8ff; color: #9333ea; font-size: 11px;">
+                                        <i class="fa-solid fa-percent"></i>
+                                    </span>
+                                    <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px; white-space: nowrap;">DISCOUNT</span>
+                                </div>
+                                <h4 id="totalDiscountAmount" class="fw-bold mb-0 text-dark text-end flex-shrink-0" style="font-size: 16px; white-space: nowrap;">৳ 0.00</h4>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- ROW 3: UNIFIED 3-COLUMN ENTITIES CARD (Total Products, Total Customers, Total Suppliers) -->
-                <div class="card border-0 shadow-sm mb-4" style="border-radius: 14px; background: #ffffff;">
+                <div class="card border-0 shadow-sm mb-3" style="border-radius: 14px; background: #ffffff;">
                     <div class="card-body p-2 p-md-3">
                         <div class="row g-2 g-md-0 align-items-center">
                             <!-- Total Products -->
@@ -713,7 +728,7 @@
                 </div>
 
                 <!-- ROW 4: GRAPHICAL ANALYTICS CHARTS (Sales & Profit Trend + Financial Breakdown) -->
-                <div class="row g-4 mb-4">
+                <div class="row g-3 mb-4">
                     <!-- Sales vs Net Profit Area Trend Chart -->
                     <div class="col-lg-8">
                         <div class="card border-0 shadow-sm h-100" style="border-radius: 16px;">
