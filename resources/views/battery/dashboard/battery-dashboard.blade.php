@@ -73,7 +73,7 @@
                     background-color: #f1f5f9;
                 }
                 .dashboard-filter-item.active {
-                    background-color: #0f4a8a !important;
+                    background-color: #059669 !important;
                     color: #ffffff !important;
                 }
                 .dashboard-filter-item.active .check-icon {
@@ -97,7 +97,7 @@
                     cursor: pointer;
                 }
                 .dashboard-date-input:focus {
-                    border-color: #0284c7;
+                    border-color: #059669;
                 }
                 .dashboard-refresh-btn {
                     width: 38px;
@@ -206,7 +206,7 @@
                 }
                 body[light-mode="dark"] .dashboard-filter-item.active,
                 html[light-mode="dark"] .dashboard-filter-item.active {
-                    background-color: #0284c7 !important;
+                    background-color: #059669 !important;
                     color: #ffffff !important;
                 }
                 body[light-mode="dark"] .dashboard-date-input,
@@ -483,13 +483,17 @@
                         <!-- Custom Filter Dropdown -->
                         <div class="position-relative" id="dashboardFilterDropdownWrap">
                             <button type="button" id="dashboardFilterDropdownBtn" class="dashboard-filter-btn">
-                                <span id="dashboardFilterSelectedText">Today</span>
+                                <span id="dashboardFilterSelectedText">All Time</span>
                                 <i class="fa-solid fa-chevron-down text-muted" id="dashboardFilterChevron" style="font-size: 11px; transition: transform 0.2s;"></i>
                             </button>
                             <div id="dashboardFilterMenu" class="dashboard-filter-menu">
-                                <button type="button" class="dashboard-filter-item active" data-filter="today">
+                                <button type="button" class="dashboard-filter-item active" data-filter="all_time">
+                                    <span>All Time</span>
+                                    <i class="fa-solid fa-check check-icon" style="display: inline-block;"></i>
+                                </button>
+                                <button type="button" class="dashboard-filter-item" data-filter="today">
                                     <span>Today</span>
-                                    <i class="fa-solid fa-check check-icon"></i>
+                                    <i class="fa-solid fa-check check-icon" style="display: none;"></i>
                                 </button>
                                 <button type="button" class="dashboard-filter-item" data-filter="last_week">
                                     <span>Last 7 Days</span>
@@ -505,10 +509,6 @@
                                 </button>
                                 <button type="button" class="dashboard-filter-item" data-filter="date_wise">
                                     <span>Date Wise</span>
-                                    <i class="fa-solid fa-check check-icon" style="display: none;"></i>
-                                </button>
-                                <button type="button" class="dashboard-filter-item" data-filter="all_time">
-                                    <span>All Time</span>
                                     <i class="fa-solid fa-check check-icon" style="display: none;"></i>
                                 </button>
                             </div>
@@ -527,8 +527,8 @@
                             </div>
                         </div>
 
-                        <!-- Clear Filter Button (Reset to Today) -->
-                        <button type="button" id="dashboardRefreshBtn" class="dashboard-refresh-btn" title="Clear Filter (Reset to Today)">
+                        <!-- Clear Filter Button (Reset to All Time) -->
+                        <button type="button" id="dashboardRefreshBtn" class="dashboard-refresh-btn" title="Clear Filter (Reset to All Time)">
                             <i class="fa-solid fa-xmark text-danger" id="dashboardRefreshIcon" style="font-size: 15px; font-weight: 700;"></i>
                         </button>
 
@@ -1014,7 +1014,7 @@
     let salesProfitChartInstance = null;
     let financialDonutChartInstance = null;
 
-    let currentDashboardFilter = 'today';
+    let currentDashboardFilter = 'all_time';
     let currentBatteryRequestId = 0;
     let currentDashboardStartDate = '';
     let currentDashboardEndDate = '';
@@ -1170,20 +1170,20 @@
             }
         }
 
-        // Clear Filter Button Click (Reset to Today)
+        // Clear Filter Button Click (Reset to All Time)
         if (refreshBtn) {
             refreshBtn.addEventListener('click', async () => {
-                currentDashboardFilter = 'today';
+                currentDashboardFilter = 'all_time';
                 currentDashboardStartDate = null;
                 currentDashboardEndDate = null;
 
-                if (selectedText) selectedText.innerText = 'Today';
+                if (selectedText) selectedText.innerText = 'All Time';
                 const items = menu.querySelectorAll('.dashboard-filter-item');
                 items.forEach(i => {
-                    const isToday = i.getAttribute('data-filter') === 'today';
-                    i.classList.toggle('active', isToday);
+                    const isAllTime = i.getAttribute('data-filter') === 'all_time';
+                    i.classList.toggle('active', isAllTime);
                     const ck = i.querySelector('.check-icon');
-                    if (ck) ck.style.display = isToday ? 'inline-block' : 'none';
+                    if (ck) ck.style.display = isAllTime ? 'inline-block' : 'none';
                 });
 
                 if (dateBox) {
@@ -1193,7 +1193,7 @@
                 if (dashboardStartPicker) dashboardStartPicker.clear();
                 if (dashboardEndPicker) dashboardEndPicker.clear();
 
-                await loadBatteryDashboardData('today');
+                await loadBatteryDashboardData('all_time');
             });
         }
     }

@@ -41,13 +41,17 @@ class DashboardDateFilterService
             }
         }
 
-        $filterType = $filterType ?: 'today';
+        $filterType = $filterType ?: 'all_time';
         $today = Carbon::today()->toDateString();
 
         if ($filterType === 'all_time') {
             $filterStart = null;
             $filterEnd = null;
             $chartTitle = 'Sales & Profit Trend (Last 30 Days)';
+        } elseif ($filterType === 'today') {
+            $filterStart = $today;
+            $filterEnd = $today;
+            $chartTitle = 'Sales & Profit Trend (Today)';
         } elseif ($filterType === 'this_month') {
             $filterStart = Carbon::now()->startOfMonth()->toDateString();
             $filterEnd = $today;
@@ -70,10 +74,10 @@ class DashboardDateFilterService
             }
             $chartTitle = 'Sales & Profit Trend (' . Carbon::parse($filterStart)->format('d M') . ' - ' . Carbon::parse($filterEnd)->format('d M Y') . ')';
         } else {
-            $filterType = 'today';
-            $filterStart = $today;
-            $filterEnd = $today;
-            $chartTitle = 'Sales & Profit Trend (Last 7 Days)';
+            $filterType = 'all_time';
+            $filterStart = null;
+            $filterEnd = null;
+            $chartTitle = 'Sales & Profit Trend (Last 30 Days)';
         }
 
         return [$filterType, $filterStart, $filterEnd, $chartTitle];
