@@ -45,9 +45,12 @@ public function SalesReportList(Request $request)
         }
 
         // Query invoices filtered by date range and user, including product return amounts
+        $startDay = $startDate->toDateString();
+        $endDay   = $endDate->toDateString();
+
         $invoices = Order::with(['productReturns','details'])
             ->where('user_id', $user_id)
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween(DB::raw("COALESCE(invoice_date, DATE(created_at))"), [$startDay, $endDay])
             ->get()
             ->map(function ($order) {
                 // Calculate the total return amount for the order
@@ -83,27 +86,26 @@ public function DailyReceiptPaymentReport(Request $request)
 
             $startDate = Carbon::parse($startDate)->startOfDay();
             $endDate   = Carbon::parse($endDate)->endOfDay();
+            $startDay  = $startDate->toDateString();
+            $endDay    = $endDate->toDateString();
 
             // ১. আজকের জন্য Opening Balance বের করা
             $openingBalance = $this->getOpeningBalanceForDate($startDate);
 
             // ২. আজকের ট্রানজেকশন
             $collectionFromSales = DB::table('order_payment_details')
-                ->whereBetween('created_at', [$startDate, $endDate])
+                ->whereBetween(DB::raw("DATE(COALESCE(NULLIF(order_payment_details.due_collection_date, ''), order_payment_details.created_at))"), [$startDay, $endDay])
                 ->sum('paid_amount') ?? 0;
 
             $collectionFromCustomerDue= DB::table('customer_payment_details')
-                ->whereBetween('due_collection_date', [$startDate, $endDate])
+                ->whereBetween(DB::raw("DATE(COALESCE(customer_payment_details.due_collection_date, customer_payment_details.created_at))"), [$startDay, $endDay])
                 ->sum('previous_due_amount') ?? 0;
 
             $totalCollectionFromSales = $collectionFromSales + $collectionFromCustomerDue;
 
             $totalPaidToSupplier = DB::table('purchase_payment_details')
-                ->whereBetween('created_at', [$startDate, $endDate])
+                ->whereBetween(DB::raw("DATE(COALESCE(purchase_payment_details.purchase_due_collection_date, purchase_payment_details.created_at))"), [$startDay, $endDay])
                 ->sum('paid_amount') ?? 0;
-
-            $startDay = $startDate->toDateString();
-            $endDay   = $endDate->toDateString();
 
             $totalExpense = DB::table('expenses')
                 ->whereBetween(DB::raw("DATE(COALESCE(NULLIF(expenses.date, ''), expenses.created_at))"), [$startDay, $endDay])
@@ -119,7 +121,7 @@ public function DailyReceiptPaymentReport(Request $request)
             $supplierPayments = DB::table('purchase_payment_details')
                 ->join('purchases', 'purchase_payment_details.purchases_id', '=', 'purchases.id')
                 ->join('suppliers', 'purchases.supplier_id', '=', 'suppliers.id')
-                ->whereBetween('purchase_payment_details.created_at', [$startDate, $endDate])
+                ->whereBetween(DB::raw("DATE(COALESCE(purchase_payment_details.purchase_due_collection_date, purchase_payment_details.created_at))"), [$startDay, $endDay])
                 ->selectRaw('suppliers.name as supplier_name, SUM(purchase_payment_details.paid_amount) as total_paid')
                 ->groupBy('suppliers.id', 'suppliers.name')
                 ->get();
@@ -183,13 +185,13 @@ public function DailyReceiptPaymentReport(Request $request)
         $toDay   = Carbon::parse($toDate)->toDateString();
 
         $income = DB::table('order_payment_details')
-            ->where('created_at', '>=', $fromDate)
-            ->where('created_at', '<', $toDate)
+            ->where(DB::raw("DATE(COALESCE(NULLIF(order_payment_details.due_collection_date, ''), order_payment_details.created_at))"), '>=', $fromDay)
+            ->where(DB::raw("DATE(COALESCE(NULLIF(order_payment_details.due_collection_date, ''), order_payment_details.created_at))"), '<', $toDay)
             ->sum('paid_amount') ?? 0;
 
         $supplierPayment = DB::table('purchase_payment_details')
-            ->where('created_at', '>=', $fromDate)
-            ->where('created_at', '<', $toDate)
+            ->where(DB::raw("DATE(COALESCE(purchase_payment_details.purchase_due_collection_date, purchase_payment_details.created_at))"), '>=', $fromDay)
+            ->where(DB::raw("DATE(COALESCE(purchase_payment_details.purchase_due_collection_date, purchase_payment_details.created_at))"), '<', $toDay)
             ->sum('paid_amount') ?? 0;
 
         $expense = DB::table('expenses')
@@ -469,48 +471,52 @@ public function DailyReceiptPaymentReport(Request $request)
                 return response()->json(['status' => 'fail', 'message' => 'Start and End dates are required']);
             }
 
-            // Ensure that the end date includes the whole day (set time to 23:59:59)
-            $endDate = Carbon::parse($endDate)->endOfDay()->toDateTimeString();
+            // Standardize business date boundaries
+            $startDay = Carbon::parse($startDate)->toDateString();
+            $endDay   = Carbon::parse($endDate)->toDateString();
 
-            // Query data with aggregation for each date
+            $dateCol       = "COALESCE(orders.invoice_date, DATE(orders.created_at))";
+            $orderDateCol  = "COALESCE(orders.invoice_date, DATE(orders.created_at))";
+            $returnDateCol = "DATE(COALESCE(NULLIF(product_returns.date, ''), product_returns.created_at))";
+
+            // Query data with aggregation for each business date
             $TotalCostAmounts = DB::table('order_details')
-                ->select(DB::raw('DATE(created_at) AS date'), DB::raw('SUM(price * quantity) AS total_cost_amount'))
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->groupBy(DB::raw('DATE(created_at)'))
+                ->join('orders', 'order_details.order_id', '=', 'orders.id')
+                ->select(DB::raw("{$dateCol} AS date"), DB::raw('SUM(order_details.price * order_details.quantity) AS total_cost_amount'))
+                ->whereBetween(DB::raw($dateCol), [$startDay, $endDay])
+                ->groupBy(DB::raw($dateCol))
                 ->get();
 
             $TotalSalesAmounts = DB::table('order_details')
-                ->select(DB::raw('DATE(created_at) AS date'), DB::raw('SUM(selling_price * quantity) AS sub_total_amount'))
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->groupBy(DB::raw('DATE(created_at)'))
+                ->join('orders', 'order_details.order_id', '=', 'orders.id')
+                ->select(DB::raw("{$dateCol} AS date"), DB::raw('SUM(order_details.selling_price * order_details.quantity) AS sub_total_amount'))
+                ->whereBetween(DB::raw($dateCol), [$startDay, $endDay])
+                ->groupBy(DB::raw($dateCol))
                 ->get();
 
             $TotalpaidAmounts = DB::table('orders')
-                ->select(DB::raw('DATE(created_at) AS date'), DB::raw('SUM(paid_amount) AS total_paid_amount'))
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->groupBy(DB::raw('DATE(created_at)'))
+                ->select(DB::raw("{$orderDateCol} AS date"), DB::raw('SUM(paid_amount) AS total_paid_amount'))
+                ->whereBetween(DB::raw($orderDateCol), [$startDay, $endDay])
+                ->groupBy(DB::raw($orderDateCol))
                 ->get();
 
             $TotalDiscountAmounts = DB::table('orders')
-                ->select(DB::raw('DATE(created_at) AS date'), DB::raw('SUM(discount_amount) AS total_discount_amount'))
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->groupBy(DB::raw('DATE(created_at)'))
+                ->select(DB::raw("{$orderDateCol} AS date"), DB::raw('SUM(discount_amount) AS total_discount_amount'))
+                ->whereBetween(DB::raw($orderDateCol), [$startDay, $endDay])
+                ->groupBy(DB::raw($orderDateCol))
                 ->get();
 
             $TotalDueAmounts = DB::table('orders')
-                ->select(DB::raw('DATE(created_at) AS date'), DB::raw('SUM(due_amount) AS total_due_amount'))
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->groupBy(DB::raw('DATE(created_at)'))
+                ->select(DB::raw("{$orderDateCol} AS date"), DB::raw('SUM(due_amount) AS total_due_amount'))
+                ->whereBetween(DB::raw($orderDateCol), [$startDay, $endDay])
+                ->groupBy(DB::raw($orderDateCol))
                 ->get();
 
             $TotalReturnAmounts = DB::table('product_returns')
-                ->select(DB::raw('DATE(created_at) AS date'), DB::raw('SUM(amount) AS total_amount'))
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->groupBy(DB::raw('DATE(created_at)'))
+                ->select(DB::raw("{$returnDateCol} AS date"), DB::raw('SUM(amount) AS total_amount'))
+                ->whereBetween(DB::raw($returnDateCol), [$startDay, $endDay])
+                ->groupBy(DB::raw($returnDateCol))
                 ->get();
-
-            $startDay = Carbon::parse($startDate)->toDateString();
-            $endDay   = Carbon::parse($endDate)->toDateString();
 
             $TotalExpenseAmounts = DB::table('expenses')
                 ->select(
@@ -580,7 +586,10 @@ public function DailyReceiptPaymentReport(Request $request)
 
             $reportData = array_values($reportData);
 
-            return response()->json(['status' => 'success', 'reportData' => $reportData]);
+            return response()->json(['status' => 'success', 'reportData' => $reportData])
+                ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
         } catch (\Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
@@ -655,22 +664,22 @@ public function DailyReceiptPaymentReport(Request $request)
                 return response()->json(['status' => 'fail', 'message' => 'Start and End dates are required']);
             }
 
-            $startDate = \Carbon\Carbon::parse($startDate)->startOfDay();
-            $endDate = \Carbon\Carbon::parse($endDate)->endOfDay();
+            $startDay = Carbon::parse($startDate)->toDateString();
+            $endDay   = Carbon::parse($endDate)->toDateString();
+
+            $dateCol = "COALESCE(orders.invoice_date, DATE(orders.created_at))";
 
             // Query to get Best Selling Products
-           
             $bestSellingProducts = DB::table('order_details')
+                ->join('orders', 'order_details.order_id', '=', 'orders.id')
                 ->join('products', 'order_details.product_id', '=', 'products.id')
                 ->select(
-                    // 👇 এখানে products.name এর বদলে products.product_name হবে
                     'products.product_name as product_name', 
                     DB::raw('SUM(CAST(order_details.quantity AS DECIMAL(10,2))) as total_quantity'),
                     DB::raw('SUM(CAST(order_details.price AS DECIMAL(10,2))) as total_cost_amount'),
                     DB::raw('SUM(CAST(order_details.selling_price AS DECIMAL(10,2))) as total_selling_amount')
                 )
-                ->whereBetween('order_details.created_at', [$startDate, $endDate])
-                // 👇 এখানেও products.name এর বদলে products.product_name হবে
+                ->whereBetween(DB::raw($dateCol), [$startDay, $endDay])
                 ->groupBy('products.id', 'products.product_name') 
                 ->orderBy('total_quantity', 'desc')
                 ->get();
@@ -694,16 +703,23 @@ public function DailyReceiptPaymentReport(Request $request)
 
             $startDate = Carbon::parse($startDateStr)->startOfDay();
             $endDate   = Carbon::parse($endDateStr)->endOfDay();
+            $startDay  = $startDate->toDateString();
+            $endDay    = $endDate->toDateString();
 
             // 1. Fetch Sales Cash Collections
             $sales = OrderPaymentDetails::with('order.customer')
-                ->whereBetween('created_at', [$startDate, $endDate])
+                ->whereBetween(DB::raw("DATE(COALESCE(NULLIF(due_collection_date, ''), created_at))"), [$startDay, $endDay])
                 ->get()
                 ->map(function($item) {
                     $cName = $item->order && $item->order->customer ? ($item->order->customer->name ?? $item->order->customer->customer_name) : 'Walk-in Customer';
+                    $txDate = !empty($item->due_collection_date) ? Carbon::parse($item->due_collection_date) : Carbon::parse($item->created_at);
+                    if (!empty($item->due_collection_date) && $item->created_at) {
+                        $time = Carbon::parse($item->created_at);
+                        $txDate = Carbon::parse($item->due_collection_date)->setTime($time->hour, $time->minute, $time->second);
+                    }
                     return [
-                        'timestamp'     => $item->created_at->toDateTimeString(),
-                        'date'          => $item->created_at->format('d M Y, h:i A'),
+                        'timestamp'     => $txDate->toDateTimeString(),
+                        'date'          => $txDate->format('d M Y, h:i A'),
                         'particulars'   => "নগদ বিক্রি - ইনভয়েস " . ($item->order->order_no ?? '#POS'),
                         'party_name'    => $cName,
                         'type'          => 'inflow',
@@ -716,13 +732,18 @@ public function DailyReceiptPaymentReport(Request $request)
 
             // 2. Fetch Customer Due Collections
             $customerDues = CustomerPaymentDetails::with('customer')
-                ->whereBetween('created_at', [$startDate, $endDate])
+                ->whereBetween(DB::raw("DATE(COALESCE(due_collection_date, created_at))"), [$startDay, $endDay])
                 ->get()
                 ->map(function($item) {
                     $cName = $item->customer ? ($item->customer->name ?? $item->customer->customer_name) : 'Customer';
+                    $txDate = !empty($item->due_collection_date) ? Carbon::parse($item->due_collection_date) : Carbon::parse($item->created_at);
+                    if (!empty($item->due_collection_date) && $item->created_at) {
+                        $time = Carbon::parse($item->created_at);
+                        $txDate = Carbon::parse($item->due_collection_date)->setTime($time->hour, $time->minute, $time->second);
+                    }
                     return [
-                        'timestamp'     => $item->created_at->toDateTimeString(),
-                        'date'          => $item->created_at->format('d M Y, h:i A'),
+                        'timestamp'     => $txDate->toDateTimeString(),
+                        'date'          => $txDate->format('d M Y, h:i A'),
                         'particulars'   => "কাস্টমার বকেয়া আদায়",
                         'party_name'    => $cName,
                         'type'          => 'inflow',
@@ -734,9 +755,6 @@ public function DailyReceiptPaymentReport(Request $request)
                 });
 
             // 3. Fetch Expenses
-            $startDay = $startDate->toDateString();
-            $endDay   = $endDate->toDateString();
-
             $expenses = Expense::with('expenseType')
                 ->whereBetween(DB::raw("DATE(COALESCE(NULLIF(expenses.date, ''), expenses.created_at))"), [$startDay, $endDay])
                 ->get()
@@ -763,13 +781,18 @@ public function DailyReceiptPaymentReport(Request $request)
             // 4. Fetch Supplier Payments
             $supplierPayments = DB::table('supplier_due_collections')
                 ->leftJoin('suppliers', 'supplier_due_collections.supplier_id', '=', 'suppliers.id')
-                ->whereBetween('supplier_due_collections.created_at', [$startDate, $endDate])
+                ->whereBetween(DB::raw("DATE(COALESCE(supplier_due_collections.due_collection_date, supplier_due_collections.created_at))"), [$startDay, $endDay])
                 ->select('supplier_due_collections.*', 'suppliers.name as supplier_name')
                 ->get()
                 ->map(function($item) {
+                    $txDate = !empty($item->due_collection_date) ? Carbon::parse($item->due_collection_date) : Carbon::parse($item->created_at);
+                    if (!empty($item->due_collection_date) && $item->created_at) {
+                        $time = Carbon::parse($item->created_at);
+                        $txDate = Carbon::parse($item->due_collection_date)->setTime($time->hour, $time->minute, $time->second);
+                    }
                     return [
-                        'timestamp'     => $item->created_at,
-                        'date'          => Carbon::parse($item->created_at)->format('d M Y, h:i A'),
+                        'timestamp'     => $txDate->toDateTimeString(),
+                        'date'          => $txDate->format('d M Y, h:i A'),
                         'particulars'   => "সাপ্লায়ার বকেয়া পরিশোধ",
                         'party_name'    => $item->supplier_name ?? 'Supplier',
                         'type'          => 'outflow',

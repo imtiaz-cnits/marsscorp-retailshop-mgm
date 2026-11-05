@@ -56,6 +56,8 @@ public function getCustomerInvoiceReport(Request $request)
     $customerUniqueId = $request->get('customer_id'); // e.g., #MEC-2025-0149
     $startDate = Carbon::parse($request->get('start_date'))->startOfDay();
     $endDate = Carbon::parse($request->get('end_date'))->endOfDay();
+    $startDay = $startDate->toDateString();
+    $endDay   = $endDate->toDateString();
 
     // Find the customer by the string-based customer_id
     $customer = Customer::where('customer_id', $customerUniqueId)->first();
@@ -68,9 +70,9 @@ public function getCustomerInvoiceReport(Request $request)
     }
 
     // Fetch order payment details within the date range for the customer
-    $orderPaymentDetails = OrderPaymentDetails::whereHas('order', function ($query) use ($customer, $startDate, $endDate) {
+    $orderPaymentDetails = OrderPaymentDetails::whereHas('order', function ($query) use ($customer, $startDay, $endDay) {
         $query->where('customer_id', $customer->id)
-              ->whereBetween('created_at', [$startDate, $endDate]);
+              ->whereBetween(DB::raw("COALESCE(orders.invoice_date, DATE(orders.created_at))"), [$startDay, $endDay]);
     })
     ->with('order.customer') // eager load related customer through order
     ->latest()

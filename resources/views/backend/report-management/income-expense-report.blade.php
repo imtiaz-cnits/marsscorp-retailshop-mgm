@@ -739,7 +739,7 @@
 
         try {
             if (typeof showLoader === 'function') showLoader();
-            const res = await axios.get(`/api/income-expense-report-list?start_date=${startDate}&end_date=${endDate}`, typeof HeaderToken === 'function' ? HeaderToken() : {});
+            const res = await axios.get(`/api/income-expense-report-list?start_date=${startDate}&end_date=${endDate}&_t=${Date.now()}`, typeof HeaderToken === 'function' ? HeaderToken() : {});
             if (typeof hideLoader === 'function') hideLoader();
 
             if (res.data.status === 'success') {
