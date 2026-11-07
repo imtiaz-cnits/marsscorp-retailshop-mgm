@@ -476,6 +476,103 @@
         font-weight: bold;
     }
 
+    /* Modern Table Barcode Badge & Single-Line Truncation with Hover Marquee */
+    .barcode-badge {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        max-width: 100px;
+        height: 22px;
+        padding: 0 6px;
+        border-radius: 6px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1;
+        letter-spacing: 0.01em;
+        background-color: #ecfdf5;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+        overflow: hidden;
+        white-space: nowrap;
+        cursor: pointer;
+        user-select: all;
+        vertical-align: middle;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    }
+
+    .barcode-badge:hover {
+        border-color: #10b981;
+        background-color: #d1fae5;
+        box-shadow: 0 1px 3px rgba(16, 185, 129, 0.2);
+    }
+
+    .barcode-badge .barcode-text {
+        display: inline-block;
+        white-space: nowrap;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        will-change: transform;
+        pointer-events: none;
+    }
+
+    /* Hover Marquee when text overflows */
+    .barcode-badge.is-overflowing:hover .barcode-text {
+        overflow: visible;
+        text-overflow: clip;
+        max-width: none;
+        animation: barcodeScroll var(--scroll-dur, 2.5s) ease-in-out infinite alternate;
+    }
+
+    @keyframes barcodeScroll {
+        0%, 20% {
+            transform: translateX(0);
+        }
+        80%, 100% {
+            transform: translateX(var(--scroll-dist));
+        }
+    }
+
+    /* Dark mode styling for barcode badge */
+    body[light-mode="dark"] .barcode-badge,
+    body[data-layout-mode="dark"] .barcode-badge,
+    html.dark .barcode-badge {
+        background-color: #1e293b !important;
+        color: #34d399 !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .barcode-badge:hover,
+    body[data-layout-mode="dark"] .barcode-badge:hover,
+    html.dark .barcode-badge:hover {
+        border-color: #10b981 !important;
+        background-color: #0f172a !important;
+        box-shadow: 0 1px 3px rgba(52, 211, 153, 0.2) !important;
+    }
+
+    /* Click to copy feedback tooltip / toast */
+    .barcode-copy-tooltip {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: #064e3b;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 8px 14px;
+        border-radius: 8px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+        z-index: 999999;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+    }
+    .barcode-copy-tooltip.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
     /* Quick View Modal Close Button */
     .qv-close-btn {
         width: 28px;
@@ -1391,20 +1488,55 @@
         return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // Helper: Barcode badge array parser
-    function formatProductCode(code) {
-        if (!code) return '<span class="text-slate-400 text-xs">N/A</span>';
-        let arr = [];
-        try {
-            let parsed = typeof code === 'string' ? JSON.parse(code) : code;
-            if (Array.isArray(parsed)) arr = parsed;
-            else if (parsed) arr = [parsed];
-        } catch (e) {
-            arr = [code];
+    // Helper: Barcode badge array parser & sanitizer
+    function sanitizeBarcodeList(rawCode) {
+        if (!rawCode) return [];
+        if (Array.isArray(rawCode)) {
+            return rawCode
+                .map(c => String(c || '').trim())
+                .filter(c => c.length > 0 && c !== 'null' && c !== 'undefined' && c !== '[]' && c !== '{}');
         }
-        arr = arr.filter(Boolean);
-        if (arr.length === 0) return '<span class="text-slate-400 text-xs">N/A</span>';
-        return arr.map(c => `<span class="barcode-badge-pill mr-1 mb-1">${c}</span>`).join('');
+        let str = String(rawCode).trim();
+        if (!str || str === '[]' || str === '{}' || str === 'null' || str === 'undefined') {
+            return [];
+        }
+        try {
+            let parsed = JSON.parse(str);
+            if (Array.isArray(parsed)) {
+                return parsed
+                    .map(c => String(c || '').trim())
+                    .filter(c => c.length > 0 && c !== 'null' && c !== 'undefined' && c !== '[]' && c !== '{}');
+            }
+            if (parsed && typeof parsed === 'string') {
+                let clean = parsed.trim();
+                if (clean && clean !== 'null' && clean !== 'undefined' && clean !== '[]' && clean !== '{}') {
+                    return [clean];
+                }
+            }
+            if (parsed && typeof parsed === 'number') {
+                return [String(parsed)];
+            }
+            return [];
+        } catch (e) {
+            return [str];
+        }
+    }
+
+    function renderBarcodeBadge(code) {
+        const cleanCode = String(code).trim();
+        if (!cleanCode || cleanCode === 'null' || cleanCode === 'undefined' || cleanCode === '[]' || cleanCode === '{}') {
+            return '';
+        }
+        const escaped = cleanCode.replace(/"/g, '&quot;');
+        return `<span class="barcode-badge mr-1 mb-1" data-barcode="${escaped}" title="${escaped} (Click to copy)"><span class="barcode-text">${escaped}</span></span>`;
+    }
+
+    function formatProductCode(code) {
+        const codes = sanitizeBarcodeList(code);
+        if (codes.length === 0) {
+            return '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs select-none font-semibold">-</span>';
+        }
+        return codes.map(c => renderBarcodeBadge(c)).filter(Boolean).join('');
     }
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -1845,18 +1977,13 @@
                 // Barcodes combining
                 let combinedCodes = [];
                 group.items.forEach(sub => {
-                    try {
-                        let parsed = typeof sub.product_code === 'string' ? JSON.parse(sub.product_code) : sub.product_code;
-                        if (Array.isArray(parsed)) combinedCodes.push(...parsed);
-                        else if (parsed) combinedCodes.push(parsed);
-                    } catch (e) {
-                        if (sub.product_code) combinedCodes.push(sub.product_code);
-                    }
+                    const subCodes = sanitizeBarcodeList(sub.product_code);
+                    combinedCodes.push(...subCodes);
                 });
-                combinedCodes = [...new Set(combinedCodes.filter(Boolean))];
+                combinedCodes = [...new Set(combinedCodes)];
                 let allBarcodesHtml = combinedCodes.length > 0
-                    ? combinedCodes.slice(0, 3).map(c => `<span class="barcode-badge-pill mr-1 mb-1">${c}</span>`).join('') + (combinedCodes.length > 3 ? `<span class="badge bg-slate-100 text-slate-600 border">+${combinedCodes.length - 3}</span>` : '')
-                    : '<span class="text-slate-400 text-xs">N/A</span>';
+                    ? combinedCodes.slice(0, 3).map(c => renderBarcodeBadge(c)).join('') + (combinedCodes.length > 3 ? `<span class="badge bg-slate-100 text-slate-600 border">+${combinedCodes.length - 3}</span>` : '')
+                    : '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs select-none font-semibold">-</span>';
 
                 // Cost & Sell displays
                 const costDisplay = group.minCostPrice === group.maxCostPrice
@@ -2102,16 +2229,11 @@
         // Barcodes
         let combined = [];
         groupItems.forEach(g => {
-            try {
-                let parsed = typeof g.product_code === 'string' ? JSON.parse(g.product_code) : g.product_code;
-                if (Array.isArray(parsed)) combined.push(...parsed);
-                else if (parsed) combined.push(parsed);
-            } catch (e) {
-                if (g.product_code) combined.push(g.product_code);
-            }
+            const subCodes = sanitizeBarcodeList(g.product_code);
+            combined.push(...subCodes);
         });
-        combined = [...new Set(combined.filter(Boolean))];
-        $('#qvBarcodes').html(combined.length > 0 ? combined.map(c => `<span class="barcode-badge-pill">${c}</span>`).join(' ') : '<span class="text-muted">N/A</span>');
+        combined = [...new Set(combined)];
+        $('#qvBarcodes').html(combined.length > 0 ? combined.map(c => renderBarcodeBadge(c)).join('') : '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs select-none font-semibold">-</span>');
 
         // Multi batches section
         if (groupItems.length > 1) {
@@ -2707,6 +2829,74 @@
         } else {
             $('#productCreateCameraScanModal').modal('hide');
         }
+    }
+
+    // Barcode Hover Marquee Auto Calculation
+    $(document).on('mouseenter', '.barcode-badge', function() {
+        const badge = this;
+        const textEl = badge.querySelector('.barcode-text');
+        if (!textEl) return;
+        if (badge.clientWidth <= 12) return;
+
+        const availableWidth = badge.clientWidth - 12; // 6px left + 6px right padding
+        const fullWidth = textEl.scrollWidth;
+        const overflow = fullWidth - availableWidth;
+
+        if (overflow > 1) {
+            const duration = Math.max(1.8, (overflow / 22)).toFixed(2);
+            badge.style.setProperty('--scroll-dist', `-${overflow + 3}px`);
+            badge.style.setProperty('--scroll-dur', `${duration}s`);
+            badge.classList.add('is-overflowing');
+        } else {
+            badge.classList.remove('is-overflowing');
+        }
+    });
+
+    // Click to copy barcode
+    $(document).on('click', '.barcode-badge', function(e) {
+        e.stopPropagation();
+        const code = $(this).attr('data-barcode');
+        if (!code) return;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(code).then(() => {
+                showBarcodeCopyToast(code);
+            }).catch(() => {
+                copyBarcodeFallback(code);
+            });
+        } else {
+            copyBarcodeFallback(code);
+        }
+    });
+
+    function copyBarcodeFallback(text) {
+        const tempInput = document.createElement('textarea');
+        tempInput.value = text;
+        tempInput.style.position = 'fixed';
+        tempInput.style.left = '-9999px';
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        try {
+            document.execCommand('copy');
+            showBarcodeCopyToast(text);
+        } catch (err) {}
+        document.body.removeChild(tempInput);
+    }
+
+    function showBarcodeCopyToast(code) {
+        let toast = document.getElementById('barcodeCopyToast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'barcodeCopyToast';
+            toast.className = 'barcode-copy-tooltip';
+            document.body.appendChild(toast);
+        }
+        toast.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;"><svg style="width:14px;height:14px;stroke-width:2.5;" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Barcode copied: <strong>${code}</strong></span>`;
+        toast.classList.add('show');
+        clearTimeout(window._barcodeToastTimer);
+        window._barcodeToastTimer = setTimeout(() => {
+            toast.classList.remove('show');
+        }, 1800);
     }
 </script>
 
