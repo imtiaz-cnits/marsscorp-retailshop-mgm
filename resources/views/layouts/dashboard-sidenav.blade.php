@@ -1911,7 +1911,7 @@
                   report: true,
                   user: false
                 };
-              } else if (role === 'cashier') {
+              } else if (role === 'staff' || role === 'cashier') {
                 effective = {
                   pos: true,
                   product: false,
@@ -1939,6 +1939,9 @@
               if (effective[k] === false) {
                 css += '[data-perm="' + k + '"] { display: none !important; }\n';
               }
+            }
+            if (role !== 'admin' && role !== 'super_admin') {
+              css += '#todayNetProfitCol, #monthlyNetProfitCol, .admin-only-profit, [data-profit-element] { display: none !important; }\n';
             }
             if (css) {
               var style = document.createElement('style');
@@ -2885,7 +2888,16 @@
           // If Super Admin or Admin, show all menus and admin dashboard sections!
           const isAdmin = (window.currentUserRole === 'admin' || window.currentUserRole === 'super_admin');
           if (document.getElementById('adminOnlyFinancialSections')) {
-            document.getElementById('adminOnlyFinancialSections').style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('adminOnlyFinancialSections').style.display = 'block';
+          }
+          if (!isAdmin) {
+            document.querySelectorAll('#todayNetProfitCol, #monthlyNetProfitCol, .admin-only-profit, [data-profit-element]').forEach(el => {
+              el.style.display = 'none';
+            });
+            document.querySelectorAll('.today-metric-col').forEach(el => {
+              el.classList.remove('col-xl-3');
+              el.classList.add('col-xl-4');
+            });
           }
 
           if (isAdmin) {
@@ -2927,13 +2939,13 @@
                 report: true,
                 user: false
               };
-            } else if (role === 'cashier') {
+            } else if (role === 'staff' || role === 'cashier') {
               effective = {
                 pos: true,
                 product: false,
                 purchase: false,
                 customer: false,
-                false: false,
+                expense: false,
                 report: false,
                 user: false
               };

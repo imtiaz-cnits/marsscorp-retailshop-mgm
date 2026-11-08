@@ -301,6 +301,81 @@
         border-color: #be123c !important;
     }
 
+    /* ── Image 4 & 5 Custom Permission Hierarchy Styles ── */
+    .perm-module-card {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 14px;
+        background: #ffffff;
+        margin-bottom: 12px;
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+    .perm-module-card:hover {
+        border-color: #cbd5e1;
+    }
+    .perm-module-header {
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        user-select: none;
+    }
+    .perm-submenus-wrapper {
+        background: #f8fafc;
+        border-top: 1px solid #f1f5f9;
+        padding: 10px 14px 6px 14px;
+    }
+    .perm-submenu-item {
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 9px 14px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        user-select: none;
+    }
+    .perm-submenu-item:hover {
+        border-color: #10b981;
+        background-color: #f0fdf4;
+    }
+    .perm-custom-checkbox {
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        accent-color: #16a34a;
+    }
+    body[light-mode="dark"] .perm-module-card,
+    body[data-layout-mode="dark"] .perm-module-card,
+    html.dark .perm-module-card {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .perm-submenus-wrapper,
+    body[data-layout-mode="dark"] .perm-submenus-wrapper,
+    html.dark .perm-submenus-wrapper {
+        background-color: #0f172a !important;
+        border-color: #1e293b !important;
+    }
+    body[light-mode="dark"] .perm-submenu-item,
+    body[data-layout-mode="dark"] .perm-submenu-item,
+    html.dark .perm-submenu-item {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    body[light-mode="dark"] .perm-submenu-item:hover,
+    body[data-layout-mode="dark"] .perm-submenu-item:hover,
+    html.dark .perm-submenu-item:hover {
+        background-color: #14532d !important;
+        border-color: #10b981 !important;
+    }
+
     /* ── Comprehensive Dark Mode Rules ── */
     body[light-mode="dark"] .card,
     body[data-layout-mode="dark"] .card,
@@ -830,9 +905,9 @@
                 <div class="col-6 col-md-6 col-xl-3">
                     <div class="user-stat-card user-stat-card--cashier shadow-sm h-100">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="user-stat-title">Cashier / POS Operator</span>
+                            <span class="user-stat-title">Staff (স্টাফ)</span>
                             <div class="user-stat-icon user-stat-icon--cashier">
-                                <i class="fa-solid fa-cash-register"></i>
+                                <i class="fa-solid fa-user-tag"></i>
                             </div>
                         </div>
                         <h2 class="user-stat-val text-amber-600 dark:text-amber-400" id="cashierCount">0</h2>
@@ -842,9 +917,9 @@
                 <div class="col-6 col-md-6 col-xl-3">
                     <div class="user-stat-card user-stat-card--manager shadow-sm h-100">
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="user-stat-title">Accountant / Manager</span>
+                            <span class="user-stat-title">Manager (ম্যানেজার)</span>
                             <div class="user-stat-icon user-stat-icon--manager">
-                                <i class="fa-solid fa-calculator"></i>
+                                <i class="fa-solid fa-user-gear"></i>
                             </div>
                         </div>
                         <h2 class="user-stat-val text-purple-600 dark:text-purple-400" id="managerCount">0</h2>
@@ -949,115 +1024,397 @@
     </div>
 </div>
 
-<!-- Modal: Create New User (No Shadow, Sticky Header & Footer, Red Close, Green Cancel, Height 38px) -->
+<!-- Modal: Create New User (Matching Image 4 & Image 5) -->
 <div class="modal fade" id="createUserModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 no-shadow">
-            <div class="modal-header border-0 sticky-modal-header bg-success text-white d-flex align-items-center justify-content-between">
-                <h5 class="modal-title fw-bold m-0 d-flex align-items-center text-white">
-                    <i class="fa-solid fa-user-plus me-2"></i> Create New User & Permissions
+            <div class="modal-header border-0 sticky-modal-header text-white d-flex align-items-center justify-content-between" style="background-color: #15803d !important;">
+                <h5 class="modal-title fw-bold m-0 d-flex align-items-center text-white" style="font-size: 15.5px;">
+                    <i class="fa-solid fa-shield-halved me-2"></i> নতুন ব্যবহারকারী ও পারমিশন তৈরি
                 </h5>
-                <button type="button" class="modal-close-red-btn" data-bs-dismiss="modal" aria-label="Close" id="createUserModalCloseBtn" title="Close">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
+                <button type="button" class="modal-close-red-btn" data-bs-dismiss="modal" aria-label="Close" id="createUserModalCloseBtn" title="Close" style="width: 28px; height: 28px; min-width: 28px; min-height: 28px; border-radius: 50%; background-color: #ef4444; border: none; display: flex; align-items: center; justify-content: center; color: #ffffff; cursor: pointer;">
+                    <i class="fa-solid fa-xmark text-white" style="font-size: 13px;"></i>
                 </button>
             </div>
             <form id="createUserForm">
                 <div class="modal-body scrollable-modal-body">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small">User Name <span class="text-danger">*</span></label>
-                            <input type="text" id="new_name" class="form-control rounded-3" placeholder="Enter user name" required>
+                            <label class="form-label fw-bold small text-slate-700">পূর্ণ নাম (Full Name) <span class="text-danger">*</span></label>
+                            <input type="text" id="new_name" class="form-control rounded-3" placeholder="যেমন: মোঃ রফিকুল ইসলাম" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small">Mobile Number <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold small text-slate-700">মোবাইল নম্বর <span class="text-danger">*</span></label>
                             <input type="text" id="new_mobile" class="form-control rounded-3" placeholder="017XXXXXXXX" required>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small">Email Address (Optional)</label>
-                            <input type="email" id="new_email" class="form-control rounded-3" placeholder="user@domain.com">
+                            <label class="form-label fw-bold small text-slate-700">ইমেইল এড্রেস (ঐচ্ছিক)</label>
+                            <input type="email" id="new_email" class="form-control rounded-3" placeholder="admin@gmail.com">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small">Password <span class="text-danger">*</span></label>
-                            <input type="password" id="new_password" class="form-control rounded-3" placeholder="Minimum 4 characters" required>
+                            <label class="form-label fw-bold small text-slate-700">পাসওয়ার্ড <span class="text-danger">*</span></label>
+                            <input type="password" id="new_password" class="form-control rounded-3" placeholder="••••••••" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small">System Role <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold small text-slate-700">পদবী / রোল (System Role) <span class="text-danger">*</span></label>
                             <select id="new_role" class="form-select rounded-3" onchange="applyRolePresets('new', this.value)" required>
-                                <option value="admin">👑 Admin / Super Admin</option>
-                                <option value="manager">👨‍💼 Store Manager</option>
-                                <option value="cashier" selected>🛒 Cashier / POS Operator</option>
-                                <option value="accountant">📊 Accountant / Bookkeeper</option>
-                                <option value="users">👤 General User</option>
+                                <option value="admin">👑 Admin (অ্যাডমিন)</option>
+                                <option value="manager">👨‍💼 Manager (ম্যানেজার)</option>
+                                <option value="staff" selected>👤 Staff (স্টাফ)</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small">Account Status <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold small text-slate-700">অ্যাকাউন্ট স্ট্যাটাস <span class="text-danger">*</span></label>
                             <select id="new_status" class="form-select rounded-3" required>
-                                <option value="approved" selected>Approved</option>
-                                <option value="pending">Pending</option>
+                                <option value="approved" selected>সক্রিয় (Approved / Active)</option>
+                                <option value="pending">স্থগিত / পেন্ডিং (Pending)</option>
                             </select>
                         </div>
                     </div>
 
-                    <!-- Modern Module Toggle Permission Section -->
-                    <div class="border rounded-4 p-3 modal-toggles-wrapper bg-light-subtle">
-                        <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
-                            <i class="fa-solid fa-toggle-on text-success"></i> Module Access Permissions (ON / OFF)
-                        </h6>
-                        <div class="row g-3" id="new_permission_toggles">
-                            <div class="col-md-6">
-                                <div class="form-check form-switch p-3 border rounded-3 modal-toggle-item bg-white d-flex align-items-center justify-content-between">
-                                    <label class="form-check-label fw-bold mb-0 cursor-pointer" for="new_perm_pos">
-                                        <i class="fa-solid fa-cash-register text-success me-2"></i> POS Billing & Sales
-                                    </label>
-                                    <input class="form-check-input fs-4 m-0 cursor-pointer" type="checkbox" id="new_perm_pos" checked>
+                    <!-- Profile Image Upload (Matching Image 4) -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-slate-700">প্রোফাইল ছবি (ঐচ্ছিক)</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar-preview-wrap rounded-circle border d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; min-width: 50px; overflow: hidden; background-color: #f1f5f9;">
+                                <img id="new_avatar_preview" src="" class="w-100 h-100 object-fit-cover d-none" alt="Avatar">
+                                <i id="new_avatar_icon" class="fa-regular fa-user text-muted fs-4"></i>
+                            </div>
+                            <div>
+                                <input type="file" id="new_img_file" class="d-none" accept="image/*" onchange="previewUserImage('new', this)">
+                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-2" style="font-size: 13px; cursor: pointer;" onclick="document.getElementById('new_img_file').click()">
+                                    <i class="fa-solid fa-camera text-slate-500"></i> ছবি আপলোড করুন
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Menu Access Permission Section (Image 4 & 5) -->
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 pt-3 pb-2 border-top">
+                        <div>
+                            <h6 class="fw-bold mb-0 text-slate-800" style="font-size: 13.5px;">সাইডবার মেনু অ্যাক্সেস পারমিশন (MODULE ACCESS PERMISSIONS)</h6>
+                            <small class="text-muted" style="font-size: 11px;">প্রত্যেকটি মেনু ও সাবমেনুর পারমিশন চেকবক্স দিয়ে নিয়ন্ত্রণ করুন</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-sm px-3 py-1 rounded-pill fw-semibold border-0" style="background-color: #dcfce7; color: #15803d; font-size: 12px; cursor: pointer;" onclick="toggleAllPermissions('new', true)">
+                                সব নির্বাচন
+                            </button>
+                            <button type="button" class="btn btn-sm px-3 py-1 rounded-pill fw-semibold border-0" style="background-color: #f1f5f9; color: #475569; font-size: 12px; cursor: pointer;" onclick="toggleAllPermissions('new', false)">
+                                সব বাতিল
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="new_permission_modules" class="mt-2">
+                        <!-- Module 1: Dashboard -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox" type="checkbox" id="new_perm_dashboard" checked>
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_dashboard" style="font-size: 13px;">ড্যাশবোর্ড (Dashboard)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">মূল সার্বিক ড্যাশবোর্ড ওভারভিউ ও ব্যবসায়িক তথ্য</small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-check form-switch p-3 border rounded-3 modal-toggle-item bg-white d-flex align-items-center justify-content-between">
-                                    <label class="form-check-label fw-bold mb-0 cursor-pointer" for="new_perm_product">
-                                        <i class="fa-solid fa-boxes-stacked text-primary me-2"></i> Product & Inventory
-                                    </label>
-                                    <input class="form-check-input fs-4 m-0 cursor-pointer" type="checkbox" id="new_perm_product">
+                        </div>
+
+                        <!-- Module 2: Sales Portal / POS -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="pos" type="checkbox" id="new_perm_pos_parent" onchange="toggleModuleChildren('new', 'pos', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_pos_parent" style="font-size: 13px;">বিক্রয় পোর্টাল (Sales Portal)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">পণ্য নির্বাচন, নগদ বিক্রয় ও দ্রুত ক্যাশ বিলিং</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">2 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="pos" type="checkbox" id="new_perm_pos_terminal" onchange="syncParentCheckbox('new', 'pos')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_pos_terminal" style="font-size: 12.5px;">পজ টার্মিনাল (POS Terminal)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">কাউন্টার বিলিং ও দ্রুত বিক্রয় রসিদ তৈরি</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="pos" type="checkbox" id="new_perm_invoice_list" onchange="syncParentCheckbox('new', 'pos')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_invoice_list" style="font-size: 12.5px;">ইনভয়েস তালিকা (Invoice List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">বিক্রিত চালানের পূর্ণাঙ্গ তালিকা ও প্রিন্ট</small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-check form-switch p-3 border rounded-3 modal-toggle-item bg-white d-flex align-items-center justify-content-between">
-                                    <label class="form-check-label fw-bold mb-0 cursor-pointer" for="new_perm_purchase">
-                                        <i class="fa-solid fa-truck text-warning me-2"></i> Purchase & Supplier
-                                    </label>
-                                    <input class="form-check-input fs-4 m-0 cursor-pointer" type="checkbox" id="new_perm_purchase">
+                        </div>
+
+                        <!-- Module 3: Stock Management / Products -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="product" type="checkbox" id="new_perm_product_parent" onchange="toggleModuleChildren('new', 'product', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_product_parent" style="font-size: 13px;">স্টক মডিউল (Stock & Products)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">সকল পণ্যের লাইভ গুদাম ও মজুদ নিয়ন্ত্রণ</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">5 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="product" type="checkbox" id="new_perm_product_list" onchange="syncParentCheckbox('new', 'product')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_product_list" style="font-size: 12.5px;">পণ্য তালিকা (Product List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">সকল পণ্যের ক্যাটালগ ও মূল্য নির্ধারণ</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="product" type="checkbox" id="new_perm_brand_list" onchange="syncParentCheckbox('new', 'product')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_brand_list" style="font-size: 12.5px;">ব্র্যান্ড তালিকা (Brand List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">কোম্পানি ও ব্র্যান্ড ভিত্তিক শ্রেণিবিন্যাস</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="product" type="checkbox" id="new_perm_category_list" onchange="syncParentCheckbox('new', 'product')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_category_list" style="font-size: 12.5px;">ক্যাটাগরি তালিকা (Category List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">পণ্যের ক্যাটাগরি ও সাব-ক্যাটাগরি পরিচালনা</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="product" type="checkbox" id="new_perm_barcode_print" onchange="syncParentCheckbox('new', 'product')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_barcode_print" style="font-size: 12.5px;">বারকোড প্রিন্ট (Barcode Print)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">বারকোড লেবেল ও স্টিকার প্রিন্ট জেনারেশন</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="product" type="checkbox" id="new_perm_stock_overview" onchange="syncParentCheckbox('new', 'product')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_stock_overview" style="font-size: 12.5px;">স্টক ওভারভিউ (Stock Overview)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">মজুদ স্টক ও সার্বিক গুদাম পর্যবেক্ষণ</small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-check form-switch p-3 border rounded-3 modal-toggle-item bg-white d-flex align-items-center justify-content-between">
-                                    <label class="form-check-label fw-bold mb-0 cursor-pointer" for="new_perm_customer">
-                                        <i class="fa-solid fa-users text-info me-2"></i> Customer & Dues
-                                    </label>
-                                    <input class="form-check-input fs-4 m-0 cursor-pointer" type="checkbox" id="new_perm_customer">
+                        </div>
+
+                        <!-- Module 4: Purchases & Supplier -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="purchase" type="checkbox" id="new_perm_purchase_parent" onchange="toggleModuleChildren('new', 'purchase', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_purchase_parent" style="font-size: 13px;">পণ্য ক্রয় ও সরবরাহকারী (Purchases & Supplier)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">পণ্য ও অন্যান্য ক্রয় এবং ইনওয়ার্ড স্টক</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">4 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="purchase" type="checkbox" id="new_perm_purchase_entry" onchange="syncParentCheckbox('new', 'purchase')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_purchase_entry" style="font-size: 12.5px;">পণ্য ক্রয় (Purchase Stock)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">নতুন চালান ও সরবরাহকারীর পণ্য ক্রয়</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="purchase" type="checkbox" id="new_perm_supplier_list" onchange="syncParentCheckbox('new', 'purchase')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_supplier_list" style="font-size: 12.5px;">সরবরাহকারী তালিকা (Supplier List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">সকল সরবরাহকারী ও ভেন্ডর প্রোফাইল</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="purchase" type="checkbox" id="new_perm_supplier_due" onchange="syncParentCheckbox('new', 'purchase')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_supplier_due" style="font-size: 12.5px;">সরবরাহকারী বকেয়া (Supplier Due)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">ভেন্ডরদের প্রদেয় বকেয়া খতিয়ান</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="purchase" type="checkbox" id="new_perm_due_payment" onchange="syncParentCheckbox('new', 'purchase')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_due_payment" style="font-size: 12.5px;">বকেয়া পরিশোধ (Due Payment)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">সরবরাহকারী বকেয়া পরিশোধ এন্ট্রি</small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-check form-switch p-3 border rounded-3 modal-toggle-item bg-white d-flex align-items-center justify-content-between">
-                                    <label class="form-check-label fw-bold mb-0 cursor-pointer" for="new_perm_expense">
-                                        <i class="fa-solid fa-wallet text-danger me-2"></i> Expense & Financial Ledger
-                                    </label>
-                                    <input class="form-check-input fs-4 m-0 cursor-pointer" type="checkbox" id="new_perm_expense">
+                        </div>
+
+                        <!-- Module 5: Customers & Dues -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="customer" type="checkbox" id="new_perm_customer_parent" onchange="toggleModuleChildren('new', 'customer', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_customer_parent" style="font-size: 13px;">কাস্টমার ও বাকি (Customers & Dues)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">গ্রাহক প্রোফাইল ও বাকি পাওনা খতিয়ান</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">3 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="customer" type="checkbox" id="new_perm_customer_list" onchange="syncParentCheckbox('new', 'customer')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_customer_list" style="font-size: 12.5px;">কাস্টমার তালিকা (Customer List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">নিবন্ধিত সকল গ্রাহক প্রোফাইল</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="customer" type="checkbox" id="new_perm_customer_due" onchange="syncParentCheckbox('new', 'customer')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_customer_due" style="font-size: 12.5px;">কাস্টমার বকেয়া (Customer Due List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">গ্রাহকদের বাকি ও বকেয়ার লেজার</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="customer" type="checkbox" id="new_perm_customer_due_collection" onchange="syncParentCheckbox('new', 'customer')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_customer_due_collection" style="font-size: 12.5px;">বাকি কালেকশন (Due Collection)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">গ্রাহক কিস্তি ও বকেয়া আদায় এন্ট্রি</small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-check form-switch p-3 border rounded-3 modal-toggle-item bg-white d-flex align-items-center justify-content-between">
-                                    <label class="form-check-label fw-bold mb-0 cursor-pointer" for="new_perm_report">
-                                        <i class="fa-solid fa-chart-pie text-secondary me-2"></i> Reports & Analytics
-                                    </label>
-                                    <input class="form-check-input fs-4 m-0 cursor-pointer" type="checkbox" id="new_perm_report">
+                        </div>
+
+                        <!-- Module 6: Expenses -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="expense" type="checkbox" id="new_perm_expense_parent" onchange="toggleModuleChildren('new', 'expense', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_expense_parent" style="font-size: 13px;">খরচসমূহ (Expenses)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">দৈনিক পরিচালনা ও বিভিন্ন ব্যয়ের হিসাব</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">2 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="expense" type="checkbox" id="new_perm_expense_list" onchange="syncParentCheckbox('new', 'expense')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_expense_list" style="font-size: 12.5px;">খরচ তালিকা (Expense List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">দৈনিক খরচের এন্ট্রি ও তালিকা</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="expense" type="checkbox" id="new_perm_expense_category" onchange="syncParentCheckbox('new', 'expense')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_expense_category" style="font-size: 12.5px;">খরচের খাত (Expense Category)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">ব্যয়ের খাত ও ক্যাটাগরি তৈরি</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 7: Return Management -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="return" type="checkbox" id="new_perm_return_parent" onchange="toggleModuleChildren('new', 'return', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_return_parent" style="font-size: 13px;">রিটার্ন ব্যবস্থাপনা (Return Management)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">বিক্রয় ও ক্রয় পণ্য ফেরত হিসাব</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">1 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="return" type="checkbox" id="new_perm_return_list" onchange="syncParentCheckbox('new', 'return')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_return_list" style="font-size: 12.5px;">রিটার্ন তালিকা (Return List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">পণ্য ফেরত খতিয়ান ও তালিকা</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 8: Reports & Analytics -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="report" type="checkbox" id="new_perm_report_parent" onchange="toggleModuleChildren('new', 'report', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_report_parent" style="font-size: 13px;">রিপোর্ট ও অ্যানালিটিক্স (Reports & Analytics)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">ব্যবসায়িক বিশ্লেষণ ও আর্থিক বিবরণী</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">6 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="report" type="checkbox" id="new_perm_daily_ledger" onchange="syncParentCheckbox('new', 'report')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_daily_ledger" style="font-size: 12.5px;">দৈনিক আয়-ব্যয় খতিয়ান (Daily Ledger)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">দৈনিক সকল হিসাব ও সামগ্রিক সামারি</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="report" type="checkbox" id="new_perm_sales_report" onchange="syncParentCheckbox('new', 'report')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_sales_report" style="font-size: 12.5px;">বিক্রয় রিপোর্ট (Sales Report)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">পণ্য ও চালান ভিত্তিক বিস্তারিত সেলস রিপোর্ট</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="report" type="checkbox" id="new_perm_income_expense_report" onchange="syncParentCheckbox('new', 'report')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_income_expense_report" style="font-size: 12.5px;">আয় ও ব্যয় রিপোর্ট (Income & Expenses)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">সার্বিক আয়-ব্যয় এবং আর্থিক হিসাব</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="report" type="checkbox" id="new_perm_daily_receipt" onchange="syncParentCheckbox('new', 'report')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_daily_receipt" style="font-size: 12.5px;">দৈনিক জমা ও খরচ (Daily Receipt & Payment)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">নগদ গ্রহণ ও পরিশোধের বিস্তারিত রিপোর্ট</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="report" type="checkbox" id="new_perm_personal_trans" onchange="syncParentCheckbox('new', 'report')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_personal_trans" style="font-size: 12.5px;">ব্যক্তিগত লেনদেন (Personal Transaction)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">মালিক বা অংশীদারের ব্যক্তিগত লেনদেন</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="report" type="checkbox" id="new_perm_low_stock" onchange="syncParentCheckbox('new', 'report')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_low_stock" style="font-size: 12.5px;">লো স্টক রিপোর্ট (Low Stock Report)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">মজুদ সংকটপূর্ণ পণ্যের তালিকা</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 9: Settings & User Roles -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="user" type="checkbox" id="new_perm_user_parent" onchange="toggleModuleChildren('new', 'user', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_user_parent" style="font-size: 13px;">সিস্টেম সেটিংস ও রোল (Settings & Roles)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">সিস্টেম ব্যবহারকারী ও রোল ব্যবস্থাপনা</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">1 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="user" type="checkbox" id="new_perm_user_role" onchange="syncParentCheckbox('new', 'user')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="new_perm_user_role" style="font-size: 12.5px;">ইউজার রোল ও পারমিশন (User Role & Permissions)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">ব্যবহারকারী তৈরি ও পারমিশন নিয়ন্ত্রণ</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1074,19 +1431,16 @@
     </div>
 </div>
 
-<!-- Modal: Edit User Role & Toggle Permissions -->
+<!-- Modal: Edit User Role & Permissions (Matching Image 4 & Image 5) -->
 <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 no-shadow">
-            <div class="modal-header border-0 sticky-modal-header bg-success text-white d-flex align-items-center justify-content-between">
-                <h5 class="modal-title fw-bold m-0 d-flex align-items-center text-white">
-                    <i class="fa-solid fa-user-gear me-2"></i> Edit User Role & Permissions
+            <div class="modal-header border-0 sticky-modal-header text-white d-flex align-items-center justify-content-between" style="background-color: #15803d !important;">
+                <h5 class="modal-title fw-bold m-0 d-flex align-items-center text-white" style="font-size: 15.5px;">
+                    <i class="fa-solid fa-user-gear me-2"></i> ব্যবহারকারী ও পারমিশন সম্পাদন (Edit User)
                 </h5>
-                <button type="button" class="modal-close-red-btn" data-bs-dismiss="modal" aria-label="Close" id="editUserModalCloseBtn" title="Close">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
+                <button type="button" class="modal-close-red-btn" data-bs-dismiss="modal" aria-label="Close" id="editUserModalCloseBtn" title="Close" style="width: 28px; height: 28px; min-width: 28px; min-height: 28px; border-radius: 50%; background-color: #ef4444; border: none; display: flex; align-items: center; justify-content: center; color: #ffffff; cursor: pointer;">
+                    <i class="fa-solid fa-xmark text-white" style="font-size: 13px;"></i>
                 </button>
             </div>
             <form id="editUserForm">
@@ -1094,96 +1448,381 @@
                 <div class="modal-body scrollable-modal-body">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small">User Name <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold small text-slate-700">পূর্ণ নাম (Full Name) <span class="text-danger">*</span></label>
                             <input type="text" id="edit_name" class="form-control rounded-3" placeholder="User Name" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small">Mobile Number <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold small text-slate-700">মোবাইল নম্বর <span class="text-danger">*</span></label>
                             <input type="text" id="edit_mobile" class="form-control rounded-3" placeholder="017XXXXXXXX" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small">Email Address (Optional)</label>
+                            <label class="form-label fw-bold small text-slate-700">ইমেইল এড্রেস (ঐচ্ছিক)</label>
                             <input type="email" id="edit_email" class="form-control rounded-3" placeholder="user@domain.com">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small">New Password (Optional)</label>
-                            <input type="password" id="edit_password" class="form-control rounded-3" placeholder="Leave blank to keep unchanged">
+                            <label class="form-label fw-bold small text-slate-700">নতুন পাসওয়ার্ড (ঐচ্ছিক)</label>
+                            <input type="password" id="edit_password" class="form-control rounded-3" placeholder="পরিবর্তন না করতে চাইলে ফাঁকা রাখুন">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small">System Role <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold small text-slate-700">পদবী / রোল (System Role) <span class="text-danger">*</span></label>
                             <select id="edit_role" class="form-select rounded-3" onchange="applyRolePresets('edit', this.value)" required>
-                                <option value="admin">👑 Admin / Super Admin</option>
-                                <option value="manager">👨‍💼 Store Manager</option>
-                                <option value="cashier">🛒 Cashier / POS Operator</option>
-                                <option value="accountant">📊 Accountant / Bookkeeper</option>
-                                <option value="users">👤 General User</option>
+                                <option value="admin">👑 Admin (অ্যাডমিন)</option>
+                                <option value="manager">👨‍💼 Manager (ম্যানেজার)</option>
+                                <option value="staff">👤 Staff (স্টাফ)</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold small">Status <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold small text-slate-700">অ্যাকাউন্ট স্ট্যাটাস <span class="text-danger">*</span></label>
                             <select id="edit_status" class="form-select rounded-3" required>
-                                <option value="approved">Approved</option>
-                                <option value="pending">Pending</option>
+                                <option value="approved">সক্রিয় (Approved / Active)</option>
+                                <option value="pending">স্থগিত / পেন্ডিং (Pending)</option>
                             </select>
                         </div>
                     </div>
 
-                    <!-- Modern Edit Module Toggle Permission Section -->
-                    <div class="border rounded-4 p-3 modal-toggles-wrapper bg-light-subtle">
-                        <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
-                            <i class="fa-solid fa-sliders text-primary"></i> Module Access Permissions (ON / OFF)
-                        </h6>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-check form-switch p-3 border rounded-3 modal-toggle-item bg-white d-flex align-items-center justify-content-between">
-                                    <label class="form-check-label fw-bold mb-0 cursor-pointer" for="edit_perm_pos">
-                                        <i class="fa-solid fa-cash-register text-success me-2"></i> POS Billing & Sales
-                                    </label>
-                                    <input class="form-check-input fs-4 m-0 cursor-pointer" type="checkbox" id="edit_perm_pos">
+                    <!-- Profile Image Upload (Edit Modal) -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-slate-700">প্রোফাইল ছবি (ঐচ্ছিক)</label>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar-preview-wrap rounded-circle border d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; min-width: 50px; overflow: hidden; background-color: #f1f5f9;">
+                                <img id="edit_avatar_preview" src="" class="w-100 h-100 object-fit-cover d-none" alt="Avatar">
+                                <i id="edit_avatar_icon" class="fa-regular fa-user text-muted fs-4"></i>
+                            </div>
+                            <div>
+                                <input type="file" id="edit_img_file" class="d-none" accept="image/*" onchange="previewUserImage('edit', this)">
+                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-2" style="font-size: 13px; cursor: pointer;" onclick="document.getElementById('edit_img_file').click()">
+                                    <i class="fa-solid fa-camera text-slate-500"></i> ছবি আপলোড করুন
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Menu Access Permission Section (Edit Modal) -->
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 pt-3 pb-2 border-top">
+                        <div>
+                            <h6 class="fw-bold mb-0 text-slate-800" style="font-size: 13.5px;">সাইডবার মেনু অ্যাক্সেস পারমিশন (MODULE ACCESS PERMISSIONS)</h6>
+                            <small class="text-muted" style="font-size: 11px;">প্রত্যেকটি মেনু ও সাবমেনুর পারমিশন চেকবক্স দিয়ে নিয়ন্ত্রণ করুন</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-sm px-3 py-1 rounded-pill fw-semibold border-0" style="background-color: #dcfce7; color: #15803d; font-size: 12px; cursor: pointer;" onclick="toggleAllPermissions('edit', true)">
+                                সব নির্বাচন
+                            </button>
+                            <button type="button" class="btn btn-sm px-3 py-1 rounded-pill fw-semibold border-0" style="background-color: #f1f5f9; color: #475569; font-size: 12px; cursor: pointer;" onclick="toggleAllPermissions('edit', false)">
+                                সব বাতিল
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="edit_permission_modules" class="mt-2">
+                        <!-- Module 1: Dashboard -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox" type="checkbox" id="edit_perm_dashboard">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_dashboard" style="font-size: 13px;">ড্যাশবোর্ড (Dashboard)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">মূল সার্বিক ড্যাশবোর্ড ওভারভিউ ও ব্যবসায়িক তথ্য</small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-check form-switch p-3 border rounded-3 modal-toggle-item bg-white d-flex align-items-center justify-content-between">
-                                    <label class="form-check-label fw-bold mb-0 cursor-pointer" for="edit_perm_product">
-                                        <i class="fa-solid fa-boxes-stacked text-primary me-2"></i> Product & Inventory
-                                    </label>
-                                    <input class="form-check-input fs-4 m-0 cursor-pointer" type="checkbox" id="edit_perm_product">
+                        </div>
+
+                        <!-- Module 2: Sales Portal / POS -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="pos" type="checkbox" id="edit_perm_pos_parent" onchange="toggleModuleChildren('edit', 'pos', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_pos_parent" style="font-size: 13px;">বিক্রয় পোর্টাল (Sales Portal)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">পণ্য নির্বাচন, নগদ বিক্রয় ও দ্রুত ক্যাশ বিলিং</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">2 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="pos" type="checkbox" id="edit_perm_pos_terminal" onchange="syncParentCheckbox('edit', 'pos')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_pos_terminal" style="font-size: 12.5px;">পজ টার্মিনাল (POS Terminal)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">কাউন্টার বিলিং ও দ্রুত বিক্রয় রসিদ তৈরি</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="pos" type="checkbox" id="edit_perm_invoice_list" onchange="syncParentCheckbox('edit', 'pos')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_invoice_list" style="font-size: 12.5px;">ইনভয়েস তালিকা (Invoice List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">বিক্রিত চালানের পূর্ণাঙ্গ তালিকা ও প্রিন্ট</small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-check form-switch p-3 border rounded-3 modal-toggle-item bg-white d-flex align-items-center justify-content-between">
-                                    <label class="form-check-label fw-bold mb-0 cursor-pointer" for="edit_perm_purchase">
-                                        <i class="fa-solid fa-truck text-warning me-2"></i> Purchase & Supplier
-                                    </label>
-                                    <input class="form-check-input fs-4 m-0 cursor-pointer" type="checkbox" id="edit_perm_purchase">
+                        </div>
+
+                        <!-- Module 3: Stock Management / Products -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="product" type="checkbox" id="edit_perm_product_parent" onchange="toggleModuleChildren('edit', 'product', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_product_parent" style="font-size: 13px;">স্টক মডিউল (Stock & Products)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">সকল পণ্যের লাইভ গুদাম ও মজুদ নিয়ন্ত্রণ</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">5 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="product" type="checkbox" id="edit_perm_product_list" onchange="syncParentCheckbox('edit', 'product')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_product_list" style="font-size: 12.5px;">পণ্য তালিকা (Product List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">সকল পণ্যের ক্যাটালগ ও মূল্য নির্ধারণ</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="product" type="checkbox" id="edit_perm_brand_list" onchange="syncParentCheckbox('edit', 'product')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_brand_list" style="font-size: 12.5px;">ব্র্যান্ড তালিকা (Brand List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">কোম্পানি ও ব্র্যান্ড ভিত্তিক শ্রেণিবিন্যাস</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="product" type="checkbox" id="edit_perm_category_list" onchange="syncParentCheckbox('edit', 'product')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_category_list" style="font-size: 12.5px;">ক্যাটাগরি তালিকা (Category List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">পণ্যের ক্যাটাগরি ও সাব-ক্যাটাগরি পরিচালনা</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="product" type="checkbox" id="edit_perm_barcode_print" onchange="syncParentCheckbox('edit', 'product')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_barcode_print" style="font-size: 12.5px;">বারকোড প্রিন্ট (Barcode Print)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">বারকোড লেবেল ও স্টিকার প্রিন্ট জেনারেশন</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="product" type="checkbox" id="edit_perm_stock_overview" onchange="syncParentCheckbox('edit', 'product')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_stock_overview" style="font-size: 12.5px;">স্টক ওভারভিউ (Stock Overview)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">মজুদ স্টক ও সার্বিক গুদাম পর্যবেক্ষণ</small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-check form-switch p-3 border rounded-3 modal-toggle-item bg-white d-flex align-items-center justify-content-between">
-                                    <label class="form-check-label fw-bold mb-0 cursor-pointer" for="edit_perm_customer">
-                                        <i class="fa-solid fa-users text-info me-2"></i> Customer & Dues
-                                    </label>
-                                    <input class="form-check-input fs-4 m-0 cursor-pointer" type="checkbox" id="edit_perm_customer">
+                        </div>
+
+                        <!-- Module 4: Purchases & Supplier -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="purchase" type="checkbox" id="edit_perm_purchase_parent" onchange="toggleModuleChildren('edit', 'purchase', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_purchase_parent" style="font-size: 13px;">পণ্য ক্রয় ও সরবরাহকারী (Purchases & Supplier)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">পণ্য ও অন্যান্য ক্রয় এবং ইনওয়ার্ড স্টক</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">4 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="purchase" type="checkbox" id="edit_perm_purchase_entry" onchange="syncParentCheckbox('edit', 'purchase')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_purchase_entry" style="font-size: 12.5px;">পণ্য ক্রয় (Purchase Stock)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">নতুন চালান ও সরবরাহকারীর পণ্য ক্রয়</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="purchase" type="checkbox" id="edit_perm_supplier_list" onchange="syncParentCheckbox('edit', 'purchase')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_supplier_list" style="font-size: 12.5px;">সরবরাহকারী তালিকা (Supplier List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">সকল সরবরাহকারী ও ভেন্ডর প্রোফাইল</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="purchase" type="checkbox" id="edit_perm_supplier_due" onchange="syncParentCheckbox('edit', 'purchase')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_supplier_due" style="font-size: 12.5px;">সরবরাহকারী বকেয়া (Supplier Due)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">ভেন্ডরদের প্রদেয় বকেয়া খতিয়ান</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="purchase" type="checkbox" id="edit_perm_due_payment" onchange="syncParentCheckbox('edit', 'purchase')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_due_payment" style="font-size: 12.5px;">বকেয়া পরিশোধ (Due Payment)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">সরবরাহকারী বকেয়া পরিশোধ এন্ট্রি</small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-check form-switch p-3 border rounded-3 modal-toggle-item bg-white d-flex align-items-center justify-content-between">
-                                    <label class="form-check-label fw-bold mb-0 cursor-pointer" for="edit_perm_expense">
-                                        <i class="fa-solid fa-wallet text-danger me-2"></i> Expense & Financial Ledger
-                                    </label>
-                                    <input class="form-check-input fs-4 m-0 cursor-pointer" type="checkbox" id="edit_perm_expense">
+                        </div>
+
+                        <!-- Module 5: Customers & Dues -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="customer" type="checkbox" id="edit_perm_customer_parent" onchange="toggleModuleChildren('edit', 'customer', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_customer_parent" style="font-size: 13px;">কাস্টমার ও বাকি (Customers & Dues)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">গ্রাহক প্রোফাইল ও বাকি পাওনা খতিয়ান</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">3 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="customer" type="checkbox" id="edit_perm_customer_list" onchange="syncParentCheckbox('edit', 'customer')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_customer_list" style="font-size: 12.5px;">কাস্টমার তালিকা (Customer List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">নিবন্ধিত সকল গ্রাহক প্রোফাইল</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="customer" type="checkbox" id="edit_perm_customer_due" onchange="syncParentCheckbox('edit', 'customer')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_customer_due" style="font-size: 12.5px;">কাস্টমার বকেয়া (Customer Due List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">গ্রাহকদের বাকি ও বকেয়ার লেজার</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="customer" type="checkbox" id="edit_perm_customer_due_collection" onchange="syncParentCheckbox('edit', 'customer')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_customer_due_collection" style="font-size: 12.5px;">বাকি কালেকশন (Due Collection)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">গ্রাহক কিস্তি ও বকেয়া আদায় এন্ট্রি</small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-check form-switch p-3 border rounded-3 modal-toggle-item bg-white d-flex align-items-center justify-content-between">
-                                    <label class="form-check-label fw-bold mb-0 cursor-pointer" for="edit_perm_report">
-                                        <i class="fa-solid fa-chart-pie text-secondary me-2"></i> Reports & Analytics
-                                    </label>
-                                    <input class="form-check-input fs-4 m-0 cursor-pointer" type="checkbox" id="edit_perm_report">
+                        </div>
+
+                        <!-- Module 6: Expenses -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="expense" type="checkbox" id="edit_perm_expense_parent" onchange="toggleModuleChildren('edit', 'expense', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_expense_parent" style="font-size: 13px;">খরচসমূহ (Expenses)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">দৈনিক পরিচালনা ও বিভিন্ন ব্যয়ের হিসাব</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">2 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="expense" type="checkbox" id="edit_perm_expense_list" onchange="syncParentCheckbox('edit', 'expense')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_expense_list" style="font-size: 12.5px;">খরচ তালিকা (Expense List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">দৈনিক খরচের এন্ট্রি ও তালিকা</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="expense" type="checkbox" id="edit_perm_expense_category" onchange="syncParentCheckbox('edit', 'expense')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_expense_category" style="font-size: 12.5px;">খরচের খাত (Expense Category)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">ব্যয়ের খাত ও ক্যাটাগরি তৈরি</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 7: Return Management -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="return" type="checkbox" id="edit_perm_return_parent" onchange="toggleModuleChildren('edit', 'return', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_return_parent" style="font-size: 13px;">রিটার্ন ব্যবস্থাপনা (Return Management)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">বিক্রয় ও ক্রয় পণ্য ফেরত হিসাব</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">1 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="return" type="checkbox" id="edit_perm_return_list" onchange="syncParentCheckbox('edit', 'return')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_return_list" style="font-size: 12.5px;">রিটার্ন তালিকা (Return List)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">পণ্য ফেরত খতিয়ান ও তালিকা</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 8: Reports & Analytics -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="report" type="checkbox" id="edit_perm_report_parent" onchange="toggleModuleChildren('edit', 'report', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_report_parent" style="font-size: 13px;">রিপোর্ট ও অ্যানালিটিক্স (Reports & Analytics)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">ব্যবসায়িক বিশ্লেষণ ও আর্থিক বিবরণী</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">6 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="report" type="checkbox" id="edit_perm_daily_ledger" onchange="syncParentCheckbox('edit', 'report')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_daily_ledger" style="font-size: 12.5px;">দৈনিক আয়-ব্যয় খতিয়ান (Daily Ledger)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">দৈনিক সকল হিসাব ও সামগ্রিক সামারি</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="report" type="checkbox" id="edit_perm_sales_report" onchange="syncParentCheckbox('edit', 'report')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_sales_report" style="font-size: 12.5px;">বিক্রয় রিপোর্ট (Sales Report)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">পণ্য ও চালান ভিত্তিক বিস্তারিত সেলস রিপোর্ট</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="report" type="checkbox" id="edit_perm_income_expense_report" onchange="syncParentCheckbox('edit', 'report')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_income_expense_report" style="font-size: 12.5px;">আয় ও ব্যয় রিপোর্ট (Income & Expenses)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">সার্বিক আয়-ব্যয় এবং আর্থিক হিসাব</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="report" type="checkbox" id="edit_perm_daily_receipt" onchange="syncParentCheckbox('edit', 'report')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_daily_receipt" style="font-size: 12.5px;">দৈনিক জমা ও খরচ (Daily Receipt & Payment)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">নগদ গ্রহণ ও পরিশোধের বিস্তারিত রিপোর্ট</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="report" type="checkbox" id="edit_perm_personal_trans" onchange="syncParentCheckbox('edit', 'report')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_personal_trans" style="font-size: 12.5px;">ব্যক্তিগত লেনদেন (Personal Transaction)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">মালিক বা অংশীদারের ব্যক্তিগত লেনদেন</small>
+                                    </div>
+                                </div>
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="report" type="checkbox" id="edit_perm_low_stock" onchange="syncParentCheckbox('edit', 'report')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_low_stock" style="font-size: 12.5px;">লো স্টক রিপোর্ট (Low Stock Report)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">মজুদ সংকটপূর্ণ পণ্যের তালিকা</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 9: Settings & User Roles -->
+                        <div class="perm-module-card">
+                            <div class="perm-module-header">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <input class="perm-custom-checkbox perm-parent-cb" data-module="user" type="checkbox" id="edit_perm_user_parent" onchange="toggleModuleChildren('edit', 'user', this.checked)">
+                                    <div>
+                                        <label class="fw-bold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_user_parent" style="font-size: 13px;">সিস্টেম সেটিংস ও রোল (Settings & Roles)</label>
+                                        <small class="text-muted d-block" style="font-size: 11px;">সিস্টেম ব্যবহারকারী ও রোল ব্যবস্থাপনা</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-slate-100 text-slate-700 border rounded-pill px-2.5 py-1" style="font-size: 10.5px;">1 টি সাবমেনু</span>
+                            </div>
+                            <div class="perm-submenus-wrapper">
+                                <div class="perm-submenu-item">
+                                    <input class="perm-custom-checkbox perm-child-cb" data-parent="user" type="checkbox" id="edit_perm_user_role" onchange="syncParentCheckbox('edit', 'user')">
+                                    <div>
+                                        <label class="fw-semibold mb-0 text-slate-800 cursor-pointer d-block" for="edit_perm_user_role" style="font-size: 12.5px;">ইউজার রোল ও পারমিশন (User Role & Permissions)</label>
+                                        <small class="text-muted d-block" style="font-size: 10.5px;">ব্যবহারকারী তৈরি ও পারমিশন নিয়ন্ত্রণ</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1259,61 +1898,183 @@
 <script>
     let allUsersData = [];
 
-    // Apply Default Preset Toggles based on Role
-    function applyRolePresets(prefix, role) {
-        const setToggles = (pos, prod, pur, cust, exp, rep) => {
-            document.getElementById(`${prefix}_perm_pos`).checked = pos;
-            document.getElementById(`${prefix}_perm_product`).checked = prod;
-            document.getElementById(`${prefix}_perm_purchase`).checked = pur;
-            document.getElementById(`${prefix}_perm_customer`).checked = cust;
-            document.getElementById(`${prefix}_perm_expense`).checked = exp;
-            document.getElementById(`${prefix}_perm_report`).checked = rep;
-        };
+    // Image preview helper
+    function previewUserImage(prefix, input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById(`${prefix}_avatar_preview`);
+                const icon = document.getElementById(`${prefix}_avatar_icon`);
+                if (preview) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('d-none');
+                }
+                if (icon) {
+                    icon.classList.add('d-none');
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 
-        switch(role) {
-            case 'admin':
-            case 'super_admin':
-                setToggles(true, true, true, true, true, true);
-                break;
-            case 'manager':
-                setToggles(true, true, true, true, true, true);
-                break;
-            case 'cashier':
-                setToggles(true, false, false, false, false, false);
-                break;
-            case 'accountant':
-                setToggles(false, false, false, true, true, true);
-                break;
-            default:
-                setToggles(true, false, false, false, false, false);
+    // Toggle all checkboxes
+    function toggleAllPermissions(prefix, checkAll) {
+        const container = document.getElementById(`${prefix}_permission_modules`);
+        if (!container) return;
+        const checkboxes = container.querySelectorAll('.perm-custom-checkbox');
+        checkboxes.forEach(cb => {
+            cb.checked = checkAll;
+        });
+    }
+
+    // Toggle child checkboxes for a module
+    function toggleModuleChildren(prefix, moduleName, isChecked) {
+        const container = document.getElementById(`${prefix}_permission_modules`);
+        if (!container) return;
+        const children = container.querySelectorAll(`.perm-child-cb[data-parent="${moduleName}"]`);
+        children.forEach(cb => {
+            cb.checked = isChecked;
+        });
+    }
+
+    // Sync parent checkbox state with children
+    function syncParentCheckbox(prefix, moduleName) {
+        const container = document.getElementById(`${prefix}_permission_modules`);
+        if (!container) return;
+        const parent = container.querySelector(`.perm-parent-cb[data-module="${moduleName}"]`);
+        const children = container.querySelectorAll(`.perm-child-cb[data-parent="${moduleName}"]`);
+        if (parent && children.length > 0) {
+            const anyChecked = Array.from(children).some(cb => cb.checked);
+            parent.checked = anyChecked;
+        }
+    }
+
+    // Apply Default Preset Toggles based on 3 System Roles: admin, manager, staff
+    function applyRolePresets(prefix, role) {
+        const container = document.getElementById(`${prefix}_permission_modules`);
+        if (!container) return;
+
+        if (role === 'admin' || role === 'super_admin') {
+            toggleAllPermissions(prefix, true);
+        } else if (role === 'manager') {
+            toggleAllPermissions(prefix, true);
+            // Manager cannot access System Settings & User Roles
+            const userParent = document.getElementById(`${prefix}_perm_user_parent`);
+            if (userParent) {
+                userParent.checked = false;
+                toggleModuleChildren(prefix, 'user', false);
+            }
+        } else if (role === 'staff' || role === 'cashier' || role === 'users') {
+            toggleAllPermissions(prefix, false);
+            // Staff defaults to POS Billing & Sales
+            const posParent = document.getElementById(`${prefix}_perm_pos_parent`);
+            if (posParent) {
+                posParent.checked = true;
+                toggleModuleChildren(prefix, 'pos', true);
+            }
+            const dashboardEl = document.getElementById(`${prefix}_perm_dashboard`);
+            if (dashboardEl) dashboardEl.checked = true;
         }
     }
 
     function resetCreateForm() {
         document.getElementById('createUserForm').reset();
-        document.getElementById('new_role').value = 'cashier';
-        applyRolePresets('new', 'cashier');
+        document.getElementById('new_role').value = 'staff';
+        const preview = document.getElementById('new_avatar_preview');
+        const icon = document.getElementById('new_avatar_icon');
+        if (preview) {
+            preview.src = '';
+            preview.classList.add('d-none');
+        }
+        if (icon) icon.classList.remove('d-none');
+        applyRolePresets('new', 'staff');
     }
 
     function collectToggles(prefix) {
         return {
-            pos: document.getElementById(`${prefix}_perm_pos`).checked,
-            product: document.getElementById(`${prefix}_perm_product`).checked,
-            purchase: document.getElementById(`${prefix}_perm_purchase`).checked,
-            customer: document.getElementById(`${prefix}_perm_customer`).checked,
-            expense: document.getElementById(`${prefix}_perm_expense`).checked,
-            report: document.getElementById(`${prefix}_perm_report`).checked
+            dashboard: !!document.getElementById(`${prefix}_perm_dashboard`)?.checked,
+            pos: !!document.getElementById(`${prefix}_perm_pos_parent`)?.checked,
+            pos_terminal: !!document.getElementById(`${prefix}_perm_pos_terminal`)?.checked,
+            invoice_list: !!document.getElementById(`${prefix}_perm_invoice_list`)?.checked,
+            product: !!document.getElementById(`${prefix}_perm_product_parent`)?.checked,
+            product_list: !!document.getElementById(`${prefix}_perm_product_list`)?.checked,
+            brand_list: !!document.getElementById(`${prefix}_perm_brand_list`)?.checked,
+            category_list: !!document.getElementById(`${prefix}_perm_category_list`)?.checked,
+            barcode_print: !!document.getElementById(`${prefix}_perm_barcode_print`)?.checked,
+            stock_overview: !!document.getElementById(`${prefix}_perm_stock_overview`)?.checked,
+            purchase: !!document.getElementById(`${prefix}_perm_purchase_parent`)?.checked,
+            purchase_entry: !!document.getElementById(`${prefix}_perm_purchase_entry`)?.checked,
+            supplier_list: !!document.getElementById(`${prefix}_perm_supplier_list`)?.checked,
+            supplier_due: !!document.getElementById(`${prefix}_perm_supplier_due`)?.checked,
+            due_payment: !!document.getElementById(`${prefix}_perm_due_payment`)?.checked,
+            customer: !!document.getElementById(`${prefix}_perm_customer_parent`)?.checked,
+            customer_list: !!document.getElementById(`${prefix}_perm_customer_list`)?.checked,
+            customer_due: !!document.getElementById(`${prefix}_perm_customer_due`)?.checked,
+            customer_due_collection: !!document.getElementById(`${prefix}_perm_customer_due_collection`)?.checked,
+            expense: !!document.getElementById(`${prefix}_perm_expense_parent`)?.checked,
+            expense_list: !!document.getElementById(`${prefix}_perm_expense_list`)?.checked,
+            expense_category: !!document.getElementById(`${prefix}_perm_expense_category`)?.checked,
+            return: !!document.getElementById(`${prefix}_perm_return_parent`)?.checked,
+            return_list: !!document.getElementById(`${prefix}_perm_return_list`)?.checked,
+            report: !!document.getElementById(`${prefix}_perm_report_parent`)?.checked,
+            daily_ledger: !!document.getElementById(`${prefix}_perm_daily_ledger`)?.checked,
+            sales_report: !!document.getElementById(`${prefix}_perm_sales_report`)?.checked,
+            income_expense_report: !!document.getElementById(`${prefix}_perm_income_expense_report`)?.checked,
+            daily_receipt: !!document.getElementById(`${prefix}_perm_daily_receipt`)?.checked,
+            personal_trans: !!document.getElementById(`${prefix}_perm_personal_trans`)?.checked,
+            low_stock: !!document.getElementById(`${prefix}_perm_low_stock`)?.checked,
+            user: !!document.getElementById(`${prefix}_perm_user_parent`)?.checked,
+            user_role: !!document.getElementById(`${prefix}_perm_user_role`)?.checked
         };
     }
 
     function setTogglesFromData(prefix, perms, role) {
         if (perms && typeof perms === 'object') {
-            document.getElementById(`${prefix}_perm_pos`).checked = !!perms.pos;
-            document.getElementById(`${prefix}_perm_product`).checked = !!perms.product;
-            document.getElementById(`${prefix}_perm_purchase`).checked = !!perms.purchase;
-            document.getElementById(`${prefix}_perm_customer`).checked = !!perms.customer;
-            document.getElementById(`${prefix}_perm_expense`).checked = !!perms.expense;
-            document.getElementById(`${prefix}_perm_report`).checked = !!perms.report;
+            const setVal = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.checked = !!val;
+            };
+
+            setVal(`${prefix}_perm_dashboard`, perms.dashboard !== undefined ? perms.dashboard : true);
+            setVal(`${prefix}_perm_pos_parent`, perms.pos);
+            setVal(`${prefix}_perm_pos_terminal`, perms.pos_terminal !== undefined ? perms.pos_terminal : perms.pos);
+            setVal(`${prefix}_perm_invoice_list`, perms.invoice_list !== undefined ? perms.invoice_list : perms.pos);
+
+            setVal(`${prefix}_perm_product_parent`, perms.product);
+            setVal(`${prefix}_perm_product_list`, perms.product_list !== undefined ? perms.product_list : perms.product);
+            setVal(`${prefix}_perm_brand_list`, perms.brand_list !== undefined ? perms.brand_list : perms.product);
+            setVal(`${prefix}_perm_category_list`, perms.category_list !== undefined ? perms.category_list : perms.product);
+            setVal(`${prefix}_perm_barcode_print`, perms.barcode_print !== undefined ? perms.barcode_print : perms.product);
+            setVal(`${prefix}_perm_stock_overview`, perms.stock_overview !== undefined ? perms.stock_overview : perms.product);
+
+            setVal(`${prefix}_perm_purchase_parent`, perms.purchase);
+            setVal(`${prefix}_perm_purchase_entry`, perms.purchase_entry !== undefined ? perms.purchase_entry : perms.purchase);
+            setVal(`${prefix}_perm_supplier_list`, perms.supplier_list !== undefined ? perms.supplier_list : perms.purchase);
+            setVal(`${prefix}_perm_supplier_due`, perms.supplier_due !== undefined ? perms.supplier_due : perms.purchase);
+            setVal(`${prefix}_perm_due_payment`, perms.due_payment !== undefined ? perms.due_payment : perms.purchase);
+
+            setVal(`${prefix}_perm_customer_parent`, perms.customer);
+            setVal(`${prefix}_perm_customer_list`, perms.customer_list !== undefined ? perms.customer_list : perms.customer);
+            setVal(`${prefix}_perm_customer_due`, perms.customer_due !== undefined ? perms.customer_due : perms.customer);
+            setVal(`${prefix}_perm_customer_due_collection`, perms.customer_due_collection !== undefined ? perms.customer_due_collection : perms.customer);
+
+            setVal(`${prefix}_perm_expense_parent`, perms.expense);
+            setVal(`${prefix}_perm_expense_list`, perms.expense_list !== undefined ? perms.expense_list : perms.expense);
+            setVal(`${prefix}_perm_expense_category`, perms.expense_category !== undefined ? perms.expense_category : perms.expense);
+
+            setVal(`${prefix}_perm_return_parent`, perms.return !== undefined ? perms.return : false);
+            setVal(`${prefix}_perm_return_list`, perms.return_list !== undefined ? perms.return_list : perms.return);
+
+            setVal(`${prefix}_perm_report_parent`, perms.report);
+            setVal(`${prefix}_perm_daily_ledger`, perms.daily_ledger !== undefined ? perms.daily_ledger : perms.report);
+            setVal(`${prefix}_perm_sales_report`, perms.sales_report !== undefined ? perms.sales_report : perms.report);
+            setVal(`${prefix}_perm_income_expense_report`, perms.income_expense_report !== undefined ? perms.income_expense_report : perms.report);
+            setVal(`${prefix}_perm_daily_receipt`, perms.daily_receipt !== undefined ? perms.daily_receipt : perms.report);
+            setVal(`${prefix}_perm_personal_trans`, perms.personal_trans !== undefined ? perms.personal_trans : perms.report);
+            setVal(`${prefix}_perm_low_stock`, perms.low_stock !== undefined ? perms.low_stock : perms.report);
+
+            setVal(`${prefix}_perm_user_parent`, perms.user);
+            setVal(`${prefix}_perm_user_role`, perms.user_role !== undefined ? perms.user_role : perms.user);
         } else {
             applyRolePresets(prefix, role);
         }
@@ -1354,11 +2115,11 @@
         document.getElementById('totalUserCount').innerText = users.length;
         
         let admins = users.filter(u => u.role === 'admin' || u.role === 'super_admin').length;
-        let cashiers = users.filter(u => u.role === 'cashier').length;
-        let managers = users.filter(u => u.role === 'manager' || u.role === 'accountant').length;
+        let managers = users.filter(u => u.role === 'manager').length;
+        let staff = users.filter(u => u.role === 'staff' || u.role === 'cashier' || u.role === 'users' || u.role === 'accountant').length;
 
         document.getElementById('adminCount').innerText = admins;
-        document.getElementById('cashierCount').innerText = cashiers;
+        document.getElementById('cashierCount').innerText = staff;
         document.getElementById('managerCount').innerText = managers;
     }
 
@@ -1366,13 +2127,14 @@
         switch(role) {
             case 'admin':
             case 'super_admin':
-                return `<span class="user-role-badge role-admin"><i class="fa-solid fa-crown me-1"></i> Super Admin</span>`;
+                return `<span class="user-role-badge role-admin"><i class="fa-solid fa-crown me-1"></i> Admin</span>`;
             case 'manager':
                 return `<span class="user-role-badge role-manager"><i class="fa-solid fa-user-gear me-1"></i> Manager</span>`;
+            case 'staff':
             case 'cashier':
-                return `<span class="user-role-badge role-cashier"><i class="fa-solid fa-cash-register me-1"></i> Cashier</span>`;
+            case 'users':
             case 'accountant':
-                return `<span class="user-role-badge role-accountant"><i class="fa-solid fa-calculator me-1"></i> Accountant</span>`;
+                return `<span class="user-role-badge role-cashier"><i class="fa-solid fa-user me-1"></i> Staff</span>`;
             default:
                 return `<span class="user-role-badge role-default"><i class="fa-solid fa-user me-1"></i> ${role}</span>`;
         }
@@ -1380,13 +2142,13 @@
 
     function renderPermissionPills(perms, role) {
         if (!perms) {
-            if (role === 'admin' || role === 'super_admin' || role === 'manager') {
+            if (role === 'admin' || role === 'super_admin') {
                 return `<span class="badge bg-success text-white px-2 py-1 me-1 mb-1">🟢 All Modules</span>`;
             }
-            if (role === 'cashier') {
-                return `<span class="badge bg-success text-white px-2 py-1 me-1 mb-1">🟢 POS Only</span>`;
+            if (role === 'manager') {
+                return `<span class="badge bg-primary text-white px-2 py-1 me-1 mb-1">🟢 Manager Access</span>`;
             }
-            return `<span class="badge bg-info text-white px-2 py-1 me-1 mb-1">🟢 Accounts Only</span>`;
+            return `<span class="badge bg-success text-white px-2 py-1 me-1 mb-1">🟢 POS Only</span>`;
         }
 
         let html = '';
@@ -1394,7 +2156,7 @@
         if (perms.product) html += `<span class="badge bg-primary text-white px-2 py-1 me-1 mb-1">Product</span>`;
         if (perms.purchase) html += `<span class="badge bg-warning text-dark px-2 py-1 me-1 mb-1">Purchase</span>`;
         if (perms.customer) html += `<span class="badge bg-info text-white px-2 py-1 me-1 mb-1">Customer</span>`;
-        if (perms.expense) html += `<span class="badge bg-danger text-white px-2 py-1 me-1 mb-1">Financials</span>`;
+        if (perms.expense) html += `<span class="badge bg-danger text-white px-2 py-1 me-1 mb-1">Expenses</span>`;
         if (perms.report) html += `<span class="badge bg-secondary text-white px-2 py-1 me-1 mb-1">Reports</span>`;
 
         return html || `<span class="badge bg-light text-muted px-2 py-1">No Active Toggles</span>`;
@@ -1430,14 +2192,14 @@
         users.forEach((u, index) => {
             let sl = index + 1;
             let rawStatus = (u.status || 'approved').toLowerCase();
-            let statusText = rawStatus.charAt(0).toUpperCase() + rawStatus.slice(1);
+            let statusText = rawStatus === 'approved' ? 'Approved' : 'Pending';
             let statusBadge = rawStatus === 'approved' 
                 ? `<span class="user-status-badge status-approved">${statusText}</span>` 
                 : `<span class="user-status-badge status-pending">${statusText}</span>`;
 
             let isSuperAdmin = (u.role === 'admin' || u.role === 'super_admin');
             let deleteBtnHtml = isSuperAdmin
-                ? `<button type="button" disabled class="user-action-btn user-action-btn-delete" style="opacity: 0.35 !important; cursor: not-allowed !important; pointer-events: auto;" title="Super Admin cannot be deleted">
+                ? `<button type="button" disabled class="user-action-btn user-action-btn-delete" style="opacity: 0.35 !important; cursor: not-allowed !important; pointer-events: auto;" title="Admin cannot be deleted">
                         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -1460,7 +2222,7 @@
                     <td class="ps-4 text-center font-bold text-slate-400" style="font-size: 12px;">${sl}</td>
                     <td>
                         <div class="d-flex align-items-center gap-3">
-                            <img src="${u.img_url}" class="rounded-circle border" style="width: 42px; height: 42px; object-fit: cover;" alt="${u.name}" onerror="this.src='/assets/img/default-avatar.png'">
+                            <img src="${u.img_url}" class="rounded-circle border" style="width: 42px; height: 42px; object-fit: cover;" alt="${u.name}" onerror="this.src='/backend/assets/img/profile-img.png'">
                             <div>
                                 <h6 class="fw-bold mb-0 text-slate-800 dark:text-slate-100">${u.name}</h6>
                                 <span class="small text-muted">${u.email || ''}</span>
@@ -1499,7 +2261,7 @@
                     </div>
 
                     <div class="d-flex align-items-center gap-2.5 mb-2.5">
-                        <img src="${u.img_url}" class="rounded-circle border" style="width: 42px; height: 42px; min-width: 42px; object-fit: cover;" alt="${u.name}" onerror="this.src='/assets/img/default-avatar.png'">
+                        <img src="${u.img_url}" class="rounded-circle border" style="width: 42px; height: 42px; min-width: 42px; object-fit: cover;" alt="${u.name}" onerror="this.src='/backend/assets/img/profile-img.png'">
                         <div class="overflow-hidden">
                             <h6 class="fw-bold mb-0 text-slate-800 dark:text-slate-100 text-sm text-truncate">${u.name}</h6>
                             <div class="small text-muted text-truncate" style="font-size: 11.5px;">
@@ -1543,13 +2305,13 @@
         let filtered = allUsersData.filter(u => 
             u.name.toLowerCase().includes(q) || 
             u.mobile.toLowerCase().includes(q) || 
-            u.email.toLowerCase().includes(q) || 
+            (u.email && u.email.toLowerCase().includes(q)) || 
             u.role.toLowerCase().includes(q)
         );
         renderUserTable(filtered);
     });
 
-    // Create User Form Submit
+    // Create User Form Submit (supports file upload)
     document.getElementById('createUserForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -1557,29 +2319,35 @@
         saveBtn.disabled = true;
         saveBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Saving...`;
 
-        let payload = {
-            name: document.getElementById('new_name').value,
-            mobile: document.getElementById('new_mobile').value,
-            email: document.getElementById('new_email').value,
-            password: document.getElementById('new_password').value,
-            role: document.getElementById('new_role').value,
-            status: document.getElementById('new_status').value,
-            permissions: collectToggles('new')
-        };
+        let formData = new FormData();
+        formData.append('name', document.getElementById('new_name').value);
+        formData.append('mobile', document.getElementById('new_mobile').value);
+        formData.append('email', document.getElementById('new_email').value);
+        formData.append('password', document.getElementById('new_password').value);
+        formData.append('role', document.getElementById('new_role').value);
+        formData.append('status', document.getElementById('new_status').value);
+        formData.append('permissions', JSON.stringify(collectToggles('new')));
+
+        const fileInput = document.getElementById('new_img_file');
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            formData.append('img', fileInput.files[0]);
+        }
 
         try {
-            const res = await axios.post('/create-user-admin', payload);
+            const res = await axios.post('/create-user-admin', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
             if (res.data && res.data.status === 'success') {
-                Swal.fire('Success!', res.data.message, 'success');
+                Swal.fire('সফল!', res.data.message, 'success');
                 document.getElementById('createUserModalCloseBtn').click();
                 resetCreateForm();
                 loadAllUsers();
             } else {
-                Swal.fire('Error!', res.data.message || 'Could not create user.', 'error');
+                Swal.fire('ত্রুটি!', res.data.message || 'Could not create user.', 'error');
             }
         } catch (err) {
-            let msg = err.response?.data?.message || 'Error occurred. Please check info and try again.';
-            Swal.fire('Error!', msg, 'error');
+            let msg = err.response?.data?.message || 'ত্রুটি ঘটেছে। অনুগ্রহ করে তথ্য যাচাই করে পুনরায় চেষ্টা করুন।';
+            Swal.fire('ত্রুটি!', msg, 'error');
         } finally {
             saveBtn.disabled = false;
             saveBtn.innerHTML = `<i class="fa-solid fa-check me-1"></i> Save User`;
@@ -1595,17 +2363,36 @@
         document.getElementById('edit_name').value = u.name;
         document.getElementById('edit_mobile').value = u.mobile;
         document.getElementById('edit_email').value = u.email && u.email !== 'N/A' ? u.email : '';
-        document.getElementById('edit_role').value = u.role;
-        document.getElementById('edit_status').value = u.status;
+        
+        // Map role to 3 standard options: admin, manager, staff
+        let roleVal = (u.role || 'staff').toLowerCase();
+        if (roleVal === 'super_admin') roleVal = 'admin';
+        if (roleVal === 'cashier' || roleVal === 'users' || roleVal === 'accountant') roleVal = 'staff';
+        document.getElementById('edit_role').value = roleVal;
+        
+        document.getElementById('edit_status').value = u.status || 'approved';
         document.getElementById('edit_password').value = '';
 
-        setTogglesFromData('edit', u.permissions, u.role);
+        // Avatar preview
+        const preview = document.getElementById('edit_avatar_preview');
+        const icon = document.getElementById('edit_avatar_icon');
+        if (u.img_url && !u.img_url.includes('profile-img.png') && !u.img_url.includes('default-avatar')) {
+            preview.src = u.img_url;
+            preview.classList.remove('d-none');
+            if (icon) icon.classList.add('d-none');
+        } else {
+            preview.src = '';
+            preview.classList.add('d-none');
+            if (icon) icon.classList.remove('d-none');
+        }
+
+        setTogglesFromData('edit', u.permissions, roleVal);
 
         const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
         modal.show();
     }
 
-    // Edit User Form Submit
+    // Edit User Form Submit (supports file upload)
     document.getElementById('editUserForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
@@ -1613,29 +2400,38 @@
         saveBtn.disabled = true;
         saveBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Updating...`;
 
-        let payload = {
-            id: document.getElementById('edit_user_id').value,
-            name: document.getElementById('edit_name').value,
-            mobile: document.getElementById('edit_mobile').value,
-            email: document.getElementById('edit_email').value,
-            role: document.getElementById('edit_role').value,
-            status: document.getElementById('edit_status').value,
-            password: document.getElementById('edit_password').value,
-            permissions: collectToggles('edit')
-        };
+        let formData = new FormData();
+        formData.append('id', document.getElementById('edit_user_id').value);
+        formData.append('name', document.getElementById('edit_name').value);
+        formData.append('mobile', document.getElementById('edit_mobile').value);
+        formData.append('email', document.getElementById('edit_email').value);
+        formData.append('role', document.getElementById('edit_role').value);
+        formData.append('status', document.getElementById('edit_status').value);
+        const pwd = document.getElementById('edit_password').value;
+        if (pwd) {
+            formData.append('password', pwd);
+        }
+        formData.append('permissions', JSON.stringify(collectToggles('edit')));
+
+        const fileInput = document.getElementById('edit_img_file');
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            formData.append('img', fileInput.files[0]);
+        }
 
         try {
-            const res = await axios.post('/update-user-role-status', payload);
+            const res = await axios.post('/update-user-role-status', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
             if (res.data && res.data.status === 'success') {
-                Swal.fire('Updated!', res.data.message, 'success');
+                Swal.fire('আপডেট হয়েছে!', res.data.message, 'success');
                 document.getElementById('editUserModalCloseBtn').click();
                 loadAllUsers();
             } else {
-                Swal.fire('Error!', res.data.message || 'Failed to update.', 'error');
+                Swal.fire('ত্রুটি!', res.data.message || 'Failed to update.', 'error');
             }
         } catch (err) {
             let msg = err.response?.data?.message || 'Error occurred. Please try again.';
-            Swal.fire('Error!', msg, 'error');
+            Swal.fire('ত্রুটি!', msg, 'error');
         } finally {
             saveBtn.disabled = false;
             saveBtn.innerHTML = `<i class="fa-solid fa-arrows-rotate me-1"></i> Update User`;
@@ -1647,9 +2443,9 @@
         let targetUser = allUsersData.find(u => u.id == id);
         if (targetUser && (targetUser.role === 'admin' || targetUser.role === 'super_admin')) {
             if (typeof errorToast === 'function') {
-                errorToast("Super Admin cannot be deleted!");
+                errorToast("Admin cannot be deleted!");
             } else {
-                Swal.fire('Warning', 'Super Admin cannot be deleted!', 'warning');
+                Swal.fire('সতর্কতা', 'Admin cannot be deleted!', 'warning');
             }
             return;
         }
@@ -1696,9 +2492,9 @@
         let targetUser = allUsersData.find(u => u.id == id);
         if (targetUser && (targetUser.role === 'admin' || targetUser.role === 'super_admin')) {
             if (typeof errorToast === 'function') {
-                errorToast("Super Admin cannot be deleted!");
+                errorToast("Admin cannot be deleted!");
             } else {
-                Swal.fire('Warning', 'Super Admin cannot be deleted!', 'warning');
+                Swal.fire('সতর্কতা', 'Admin cannot be deleted!', 'warning');
             }
             closeDeleteUserModal();
             return;
@@ -1745,6 +2541,6 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         loadAllUsers();
-        applyRolePresets('new', 'cashier');
+        applyRolePresets('new', 'staff');
     });
 </script>

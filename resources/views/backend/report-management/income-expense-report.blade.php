@@ -476,8 +476,8 @@
                             <div class="card-val" id="cardTotalExpense">৳ 0.00</div>
                         </div>
 
-                        <!-- Card 4: Net Profit -->
-                        <div class="income-stat-card income-stat-card--profit shadow-sm">
+                        <!-- Card 4: Net Profit (Admin Only) -->
+                        <div class="income-stat-card income-stat-card--profit shadow-sm admin-only-profit" data-profit-element>
                             <div class="flex items-center justify-between mb-1">
                                 <span class="card-title uppercase tracking-wider">Net Profit</span>
                                 <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">৳</span>
@@ -515,7 +515,7 @@
                                     <th class="p-[10px] text-end whitespace-nowrap">Total Due</th>
                                     <th class="p-[10px] text-end whitespace-nowrap">Expense</th>
                                     <th class="p-[10px] text-end whitespace-nowrap">Return</th>
-                                    <th class="p-[10px] text-end whitespace-nowrap">Profit</th>
+                                    <th class="p-[10px] text-end whitespace-nowrap admin-only-profit" data-profit-element>Profit</th>
                                     <th class="p-[10px] text-end rounded-tr-2xl whitespace-nowrap">Balance</th>
                                 </tr>
                             </thead>
@@ -532,7 +532,7 @@
                                     <td id="tfootTotalDue" class="p-[10px] text-end font-bold text-amber-600 dark:text-amber-400 whitespace-nowrap">৳ 0.00</td>
                                     <td id="tfootTotalExpense" class="p-[10px] text-end font-bold text-red-600 dark:text-red-400 whitespace-nowrap">৳ 0.00</td>
                                     <td id="tfootTotalReturn" class="p-[10px] text-end font-bold text-violet-600 dark:text-violet-400 whitespace-nowrap">৳ 0.00</td>
-                                    <td id="tfootTotalProfit" class="p-[10px] text-end font-bold text-teal-600 dark:text-teal-400 whitespace-nowrap">৳ 0.00</td>
+                                    <td id="tfootTotalProfit" class="p-[10px] text-end font-bold text-teal-600 dark:text-teal-400 whitespace-nowrap admin-only-profit" data-profit-element>৳ 0.00</td>
                                     <td id="tfootTotalBalance" class="p-[10px] text-end font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">৳ 0.00</td>
                                 </tr>
                             </tfoot>
@@ -865,7 +865,7 @@
                         <td class="p-[10px] text-end text-amber-600 dark:text-amber-400 font-semibold">৳ ${formatMoney(tdu)}</td>
                         <td class="p-[10px] text-end text-red-600 dark:text-red-400 font-semibold">৳ ${formatMoney(te)}</td>
                         <td class="p-[10px] text-end text-violet-600 dark:text-violet-400 font-semibold">৳ ${formatMoney(tr)}</td>
-                        <td class="p-[10px] text-end font-bold ${profitAmount >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-rose-600 dark:text-rose-400'}">৳ ${formatMoney(profitAmount)}</td>
+                        <td class="p-[10px] text-end font-bold admin-only-profit ${profitAmount >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-rose-600 dark:text-rose-400'}" data-profit-element>৳ ${formatMoney(profitAmount)}</td>
                         <td class="p-[10px] text-end font-bold ${totalBalance >= 0 ? 'text-indigo-600 dark:text-indigo-400' : 'text-rose-600 dark:text-rose-400'}">৳ ${formatMoney(totalBalance)}</td>
                     </tr>
                 `;
@@ -899,7 +899,7 @@
                                 <span class="text-xs font-bold text-slate-800 dark:text-slate-200">${formatDate(report.date)}</span>
                                 ${report.is_dummy ? '<span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">DEMO</span>' : ''}
                             </div>
-                            <span class="text-xs font-bold ${profitAmount >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-rose-600 dark:text-rose-400'}">
+                            <span class="text-xs font-bold admin-only-profit ${profitAmount >= 0 ? 'text-teal-600 dark:text-teal-400' : 'text-rose-600 dark:text-rose-400'}" data-profit-element>
                                 Profit: ৳ ${formatMoney(profitAmount)}
                             </span>
                         </div>

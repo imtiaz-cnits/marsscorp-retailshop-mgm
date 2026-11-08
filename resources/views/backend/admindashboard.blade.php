@@ -483,17 +483,13 @@
                         <!-- Custom Filter Dropdown -->
                         <div class="position-relative" id="dashboardFilterDropdownWrap">
                             <button type="button" id="dashboardFilterDropdownBtn" class="dashboard-filter-btn">
-                                <span id="dashboardFilterSelectedText">All Time</span>
+                                <span id="dashboardFilterSelectedText">Today</span>
                                 <i class="fa-solid fa-chevron-down text-muted" id="dashboardFilterChevron" style="font-size: 11px; transition: transform 0.2s;"></i>
                             </button>
                             <div id="dashboardFilterMenu" class="dashboard-filter-menu">
-                                <button type="button" class="dashboard-filter-item active" data-filter="all_time">
-                                    <span>All Time</span>
-                                    <i class="fa-solid fa-check check-icon" style="display: inline-block;"></i>
-                                </button>
-                                <button type="button" class="dashboard-filter-item" data-filter="today">
+                                <button type="button" class="dashboard-filter-item active" data-filter="today">
                                     <span>Today</span>
-                                    <i class="fa-solid fa-check check-icon" style="display: none;"></i>
+                                    <i class="fa-solid fa-check check-icon" style="display: inline-block;"></i>
                                 </button>
                                 <button type="button" class="dashboard-filter-item" data-filter="last_week">
                                     <span>Last 7 Days</span>
@@ -509,6 +505,10 @@
                                 </button>
                                 <button type="button" class="dashboard-filter-item" data-filter="date_wise">
                                     <span>Date Wise</span>
+                                    <i class="fa-solid fa-check check-icon" style="display: none;"></i>
+                                </button>
+                                <button type="button" class="dashboard-filter-item" data-filter="all_time">
+                                    <span>All Time</span>
                                     <i class="fa-solid fa-check check-icon" style="display: none;"></i>
                                 </button>
                             </div>
@@ -527,8 +527,8 @@
                             </div>
                         </div>
 
-                        <!-- Clear Filter Button (Reset to All Time) -->
-                        <button type="button" id="dashboardRefreshBtn" class="dashboard-refresh-btn" title="Clear Filter (Reset to All Time)">
+                        <!-- Clear Filter Button (Reset to Today) -->
+                        <button type="button" id="dashboardRefreshBtn" class="dashboard-refresh-btn" title="Clear Filter (Reset to Today)">
                             <i class="fa-solid fa-xmark text-danger" id="dashboardRefreshIcon" style="font-size: 15px; font-weight: 700;"></i>
                         </button>
 
@@ -551,14 +551,14 @@
                 <div class="row g-3 mb-3">
                     <!-- Income (Total Sales) -->
                     <div class="col-xl-3 col-md-6 col-sm-6 today-metric-col">
-                        <div class="card border-0 shadow-sm h-100 p-3 dashboard-metric-card">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="card border-0 shadow-sm p-3 dashboard-metric-card mb-0" style="height: auto !important;">
+                            <div class="d-flex align-items-center justify-content-between mb-1.5">
                                 <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.3px;">INCOME</span>
                                 <span class="rounded-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; background: #e0f2fe; color: #0284c7; font-size: 13px;">
                                     <i class="fa-solid fa-money-bill-wave"></i>
                                 </span>
                             </div>
-                            <h3 id="todayTotalSales" class="fw-bold mb-2 text-dark fs-4">৳ 0.00</h3>
+                            <h3 id="todayTotalSales" class="fw-bold mb-1 text-dark fs-4">৳ 0.00</h3>
                             <small class="text-primary d-flex align-items-center gap-1" style="font-size: 11.5px; font-weight: 500;">
                                 <i class="fa-solid fa-arrow-trend-up"></i> Total Sales Revenue
                             </small>
@@ -567,14 +567,14 @@
 
                     <!-- Cash Collection -->
                     <div class="col-xl-3 col-md-6 col-sm-6 today-metric-col">
-                        <div class="card border-0 shadow-sm h-100 p-3 dashboard-metric-card">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="card border-0 shadow-sm p-3 dashboard-metric-card mb-0" style="height: auto !important;">
+                            <div class="d-flex align-items-center justify-content-between mb-1.5">
                                 <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.3px;">CASH COLLECTION</span>
                                 <span class="rounded-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; background: #dcfce7; color: #16a34a; font-size: 13px;">
                                     <i class="fa-solid fa-wallet"></i>
                                 </span>
                             </div>
-                            <h3 id="todayCashCollection" class="fw-bold mb-2 text-dark fs-4">৳ 0.00</h3>
+                            <h3 id="todayCashCollection" class="fw-bold mb-1 text-dark fs-4">৳ 0.00</h3>
                             <small class="text-success d-flex align-items-center gap-1" style="font-size: 11.5px; font-weight: 500;">
                                 <i class="fa-solid fa-arrow-trend-up"></i> Paid at Counter &amp; Dues
                             </small>
@@ -583,14 +583,14 @@
 
                     <!-- Operating Expense -->
                     <div class="col-xl-3 col-md-6 col-sm-6 today-metric-col">
-                        <div class="card border-0 shadow-sm h-100 p-3 dashboard-metric-card">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="card border-0 shadow-sm p-3 dashboard-metric-card mb-0" style="height: auto !important;">
+                            <div class="d-flex align-items-center justify-content-between mb-1.5">
                                 <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.3px;">EXPENSE</span>
                                 <span class="rounded-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; background: #fef3c7; color: #d97706; font-size: 13px;">
                                     <i class="fa-solid fa-circle-exclamation"></i>
                                 </span>
                             </div>
-                            <h3 id="todayExpense" class="fw-bold mb-2 text-dark fs-4">৳ 0.00</h3>
+                            <h3 id="todayExpense" class="fw-bold mb-1 text-dark fs-4">৳ 0.00</h3>
                             <small class="text-warning d-flex align-items-center gap-1" style="font-size: 11.5px; font-weight: 500; color: #d97706 !important;">
                                 <i class="fa-regular fa-clock"></i> Operating Expenses
                             </small>
@@ -599,14 +599,14 @@
 
                     <!-- Net Profit (Admin Only) -->
                     <div class="col-xl-3 col-md-6 col-sm-6" id="todayNetProfitCol">
-                        <div class="card border-0 shadow-sm h-100 p-3 dashboard-metric-card">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="card border-0 shadow-sm p-3 dashboard-metric-card mb-0" style="height: auto !important;">
+                            <div class="d-flex align-items-center justify-content-between mb-1.5">
                                 <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.3px;">PROFIT</span>
                                 <span class="rounded-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; background: #e0f2fe; color: #0284c7; font-size: 13px;">
                                     <i class="fa-solid fa-chart-line"></i>
                                 </span>
                             </div>
-                            <h3 id="todayNetProfit" class="fw-bold mb-2 text-dark fs-4">৳ 0.00</h3>
+                            <h3 id="todayNetProfit" class="fw-bold mb-1 text-dark fs-4">৳ 0.00</h3>
                             <small class="text-info d-flex align-items-center gap-1" style="font-size: 11.5px; font-weight: 500; color: #0284c7 !important;">
                                 <i class="fa-solid fa-arrow-trend-up"></i> Net Business Profit
                             </small>
@@ -618,58 +618,50 @@
                 <div class="row g-3 mb-3">
                     <!-- Receivable Due -->
                     <div class="col-xl-3 col-md-6 col-sm-6">
-                        <div class="card border-0 shadow-sm px-3 py-3 d-flex justify-content-center dashboard-metric-card mb-0" style="border-radius: 12px; min-height: 56px;">
-                            <div class="d-flex align-items-center justify-content-between gap-2">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 26px; height: 26px; min-width: 26px; background: #fef3c7; color: #d97706; font-size: 11px;">
-                                        <i class="fa-solid fa-users"></i>
-                                    </span>
-                                    <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px; white-space: nowrap;">RECEIVABLE DUE</span>
-                                </div>
-                                <h4 id="customerDue" class="fw-bold mb-0 text-dark text-end flex-shrink-0" style="font-size: 16px; white-space: nowrap;">৳ 0.00</h4>
+                        <div class="card border-0 shadow-sm p-3 dashboard-metric-card mb-0" style="border-radius: 14px; height: auto !important;">
+                            <div class="d-flex align-items-center justify-content-between mb-1.5">
+                                <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.3px;">RECEIVABLE DUE</span>
+                                <span class="rounded-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; background: #fef3c7; color: #d97706; font-size: 12px;">
+                                    <i class="fa-solid fa-users"></i>
+                                </span>
                             </div>
+                            <h3 id="customerDue" class="fw-bold mb-0 text-dark fs-4">৳ 0.00</h3>
                         </div>
                     </div>
                     <!-- Payable Due -->
                     <div class="col-xl-3 col-md-6 col-sm-6">
-                        <div class="card border-0 shadow-sm px-3 py-3 d-flex justify-content-center dashboard-metric-card mb-0" style="border-radius: 12px; min-height: 56px;">
-                            <div class="d-flex align-items-center justify-content-between gap-2">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 26px; height: 26px; min-width: 26px; background: #e0e7ff; color: #4f46e5; font-size: 11px;">
-                                        <i class="fa-solid fa-truck-field"></i>
-                                    </span>
-                                    <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px; white-space: nowrap;">PAYABLE DUE</span>
-                                </div>
-                                <h4 id="supplierPayable" class="fw-bold mb-0 text-dark text-end flex-shrink-0" style="font-size: 16px; white-space: nowrap;">৳ 0.00</h4>
+                        <div class="card border-0 shadow-sm p-3 dashboard-metric-card mb-0" style="border-radius: 14px; height: auto !important;">
+                            <div class="d-flex align-items-center justify-content-between mb-1.5">
+                                <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.3px;">PAYABLE DUE</span>
+                                <span class="rounded-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; background: #e0e7ff; color: #4f46e5; font-size: 12px;">
+                                    <i class="fa-solid fa-truck-field"></i>
+                                </span>
                             </div>
+                            <h3 id="supplierPayable" class="fw-bold mb-0 text-dark fs-4">৳ 0.00</h3>
                         </div>
                     </div>
                     <!-- Return -->
                     <div class="col-xl-3 col-md-6 col-sm-6">
-                        <div class="card border-0 shadow-sm px-3 py-3 d-flex justify-content-center dashboard-metric-card mb-0" style="border-radius: 12px; min-height: 56px;">
-                            <div class="d-flex align-items-center justify-content-between gap-2">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 26px; height: 26px; min-width: 26px; background: #ffe4e6; color: #e11d48; font-size: 11px;">
-                                        <i class="fa-solid fa-rotate-left"></i>
-                                    </span>
-                                    <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px; white-space: nowrap;">RETURN</span>
-                                </div>
-                                <h4 id="totalReturnAmount" class="fw-bold mb-0 text-dark text-end flex-shrink-0" style="font-size: 16px; white-space: nowrap;">৳ 0.00</h4>
+                        <div class="card border-0 shadow-sm p-3 dashboard-metric-card mb-0" style="border-radius: 14px; height: auto !important;">
+                            <div class="d-flex align-items-center justify-content-between mb-1.5">
+                                <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.3px;">RETURN</span>
+                                <span class="rounded-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; background: #ffe4e6; color: #e11d48; font-size: 12px;">
+                                    <i class="fa-solid fa-rotate-left"></i>
+                                </span>
                             </div>
+                            <h3 id="totalReturnAmount" class="fw-bold mb-0 text-dark fs-4">৳ 0.00</h3>
                         </div>
                     </div>
                     <!-- Discount -->
                     <div class="col-xl-3 col-md-6 col-sm-6">
-                        <div class="card border-0 shadow-sm px-3 py-3 d-flex justify-content-center dashboard-metric-card mb-0" style="border-radius: 12px; min-height: 56px;">
-                            <div class="d-flex align-items-center justify-content-between gap-2">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 26px; height: 26px; min-width: 26px; background: #f3e8ff; color: #9333ea; font-size: 11px;">
-                                        <i class="fa-solid fa-percent"></i>
-                                    </span>
-                                    <span class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.3px; white-space: nowrap;">DISCOUNT</span>
-                                </div>
-                                <h4 id="totalDiscountAmount" class="fw-bold mb-0 text-dark text-end flex-shrink-0" style="font-size: 16px; white-space: nowrap;">৳ 0.00</h4>
+                        <div class="card border-0 shadow-sm p-3 dashboard-metric-card mb-0" style="border-radius: 14px; height: auto !important;">
+                            <div class="d-flex align-items-center justify-content-between mb-1.5">
+                                <span class="text-muted small fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.3px;">DISCOUNT</span>
+                                <span class="rounded-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; background: #f3e8ff; color: #9333ea; font-size: 12px;">
+                                    <i class="fa-solid fa-percent"></i>
+                                </span>
                             </div>
+                            <h3 id="totalDiscountAmount" class="fw-bold mb-0 text-dark fs-4">৳ 0.00</h3>
                         </div>
                     </div>
                 </div>
@@ -807,55 +799,59 @@
                 <div class="row g-3 mb-4">
                     <!-- Customer Outstanding Due -->
                     <div class="col-xl-3 col-md-6">
-                        <div class="card border-0 shadow-sm h-100 p-3" style="border-radius: 16px; border-top: 4px solid #ef4444 !important;">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                <span class="text-muted small fw-bold text-uppercase">Customer Outstanding Due</span>
-                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">Receivable</span>
+                        <div class="card border-0 shadow-sm p-3 d-flex flex-column mb-0" style="border-radius: 14px; border-top: 3.5px solid #ef4444 !important; height: auto !important;">
+                            <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                                <span class="text-muted small fw-bold text-uppercase text-truncate" style="font-size: 11px; letter-spacing: 0.3px;">Customer Outstanding</span>
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-0.5 rounded-pill flex-shrink-0" style="font-size: 10px; font-weight: 600;">Receivable</span>
                             </div>
-                            <h3 id="customerDueBottom" class="fw-bold text-danger mb-1">৳ 0.00</h3>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">Total Dues from Customers</small>
-                                <a href="/admin-dashboard-customer-due-list" class="text-danger fw-bold small text-decoration-none">View All <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                            <h3 id="customerDueBottom" class="fw-bold text-danger mb-1 fs-4">৳ 0.00</h3>
+                            <div class="d-flex justify-content-between align-items-center gap-2 mt-auto pt-1">
+                                <small class="text-muted text-truncate" style="font-size: 11px;">Total Dues from Customers</small>
+                                <a href="/admin-dashboard-customer-due-list" class="text-danger fw-bold text-decoration-none d-inline-flex align-items-center gap-1 flex-shrink-0" style="font-size: 11px; white-space: nowrap;">View All <i class="fa-solid fa-chevron-right" style="font-size: 9px;"></i></a>
                             </div>
                         </div>
                     </div>
 
                     <!-- Supplier Payable Due -->
                     <div class="col-xl-3 col-md-6">
-                        <div class="card border-0 shadow-sm h-100 p-3" style="border-radius: 16px; border-top: 4px solid #f97316 !important;">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                <span class="text-muted small fw-bold text-uppercase">Supplier Payable Due</span>
-                                <span class="badge bg-warning-subtle text-dark border border-warning-subtle px-2 py-1">Payable</span>
+                        <div class="card border-0 shadow-sm p-3 d-flex flex-column mb-0" style="border-radius: 14px; border-top: 3.5px solid #f97316 !important; height: auto !important;">
+                            <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                                <span class="text-muted small fw-bold text-uppercase text-truncate" style="font-size: 11px; letter-spacing: 0.3px;">Supplier Payable</span>
+                                <span class="badge bg-warning-subtle text-dark border border-warning-subtle px-2 py-0.5 rounded-pill flex-shrink-0" style="font-size: 10px; font-weight: 600;">Payable</span>
                             </div>
-                            <h3 id="supplierPayableBottom" class="fw-bold text-orange mb-1" style="color: #ea580c;">৳ 0.00</h3>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">Total Payable to Suppliers</small>
-                                <a href="/supplier-due-page" class="text-warning fw-bold small text-decoration-none">View All <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                            <h3 id="supplierPayableBottom" class="fw-bold mb-1 fs-4" style="color: #ea580c;">৳ 0.00</h3>
+                            <div class="d-flex justify-content-between align-items-center gap-2 mt-auto pt-1">
+                                <small class="text-muted text-truncate" style="font-size: 11px;">Total Payable to Suppliers</small>
+                                <a href="/supplier-due-page" class="fw-bold text-decoration-none d-inline-flex align-items-center gap-1 flex-shrink-0" style="color: #ea580c; font-size: 11px; white-space: nowrap;">View All <i class="fa-solid fa-chevron-right" style="font-size: 9px;"></i></a>
                             </div>
                         </div>
                     </div>
 
                     <!-- Inventory Stock Valuation (Cost) -->
                     <div class="col-xl-3 col-md-6">
-                        <div class="card border-0 shadow-sm h-100 p-3" style="border-radius: 16px; border-top: 4px solid #0d9488 !important;">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                <span class="text-muted small fw-bold text-uppercase">Stock Cost Value</span>
-                                <span id="productCountBadge" class="badge bg-teal-subtle text-teal border px-2 py-1" style="background-color: #ccfbf1; color: #0d9488;">0 Items</span>
+                        <div class="card border-0 shadow-sm p-3 d-flex flex-column mb-0" style="border-radius: 14px; border-top: 3.5px solid #0d9488 !important; height: auto !important;">
+                            <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                                <span class="text-muted small fw-bold text-uppercase text-truncate" style="font-size: 11px; letter-spacing: 0.3px;">Stock Cost Value</span>
+                                <span id="productCountBadge" class="badge bg-teal-subtle text-teal border px-2 py-0.5 rounded-pill flex-shrink-0" style="background-color: #ccfbf1; color: #0d9488; font-size: 10px; font-weight: 600;">0 Items</span>
                             </div>
-                            <h3 id="costStockValue" class="fw-bold mb-1" style="color: #0d9488;">৳ 0.00</h3>
-                            <small class="text-muted">Total inventory purchase cost</small>
+                            <h3 id="costStockValue" class="fw-bold mb-1 fs-4" style="color: #0d9488;">৳ 0.00</h3>
+                            <div class="mt-auto pt-1">
+                                <small class="text-muted text-truncate d-block" style="font-size: 11px;">Total inventory purchase cost</small>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Inventory Selling Valuation -->
                     <div class="col-xl-3 col-md-6">
-                        <div class="card border-0 shadow-sm h-100 p-3" style="border-radius: 16px; border-top: 4px solid #059669 !important;">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                <span class="text-muted small fw-bold text-uppercase">Stock Selling Value</span>
-                                <span id="lowStockBadge" class="badge bg-danger text-white px-2 py-1">0 Low Stock</span>
+                        <div class="card border-0 shadow-sm p-3 d-flex flex-column mb-0" style="border-radius: 14px; border-top: 3.5px solid #059669 !important; height: auto !important;">
+                            <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                                <span class="text-muted small fw-bold text-uppercase text-truncate" style="font-size: 11px; letter-spacing: 0.3px;">Stock Selling Value</span>
+                                <span id="lowStockBadge" class="badge bg-danger text-white px-2 py-0.5 rounded-pill flex-shrink-0" style="font-size: 10px; font-weight: 600;">0 Low Stock</span>
                             </div>
-                            <h3 id="sellStockValue" class="fw-bold text-success mb-1">৳ 0.00</h3>
-                            <small class="text-muted">Total estimated sales value</small>
+                            <h3 id="sellStockValue" class="fw-bold text-success mb-1 fs-4">৳ 0.00</h3>
+                            <div class="mt-auto pt-1">
+                                <small class="text-muted text-truncate d-block" style="font-size: 11px;">Total estimated sales value</small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -985,7 +981,7 @@
     let salesProfitChartInstance = null;
     let financialDonutChartInstance = null;
 
-    let currentDashboardFilter = 'all_time';
+    let currentDashboardFilter = 'today';
     let currentDashboardStartDate = '';
     let currentDashboardEndDate = '';
     let dashboardStartPicker = null;
@@ -1140,20 +1136,20 @@
             }
         }
 
-        // Clear Filter Button Click (Reset to All Time)
+        // Clear Filter Button Click (Reset to Today)
         if (refreshBtn) {
             refreshBtn.addEventListener('click', async () => {
-                currentDashboardFilter = 'all_time';
+                currentDashboardFilter = 'today';
                 currentDashboardStartDate = null;
                 currentDashboardEndDate = null;
 
-                if (selectedText) selectedText.innerText = 'All Time';
+                if (selectedText) selectedText.innerText = 'Today';
                 const items = menu.querySelectorAll('.dashboard-filter-item');
                 items.forEach(i => {
-                    const isAllTime = i.getAttribute('data-filter') === 'all_time';
-                    i.classList.toggle('active', isAllTime);
+                    const isToday = i.getAttribute('data-filter') === 'today';
+                    i.classList.toggle('active', isToday);
                     const ck = i.querySelector('.check-icon');
-                    if (ck) ck.style.display = isAllTime ? 'inline-block' : 'none';
+                    if (ck) ck.style.display = isToday ? 'inline-block' : 'none';
                 });
 
                 if (dateBox) {
@@ -1163,7 +1159,7 @@
                 if (dashboardStartPicker) dashboardStartPicker.clear();
                 if (dashboardEndPicker) dashboardEndPicker.clear();
 
-                await loadDashboardData('all_time');
+                await loadDashboardData('today');
             });
         }
     }
@@ -1224,7 +1220,25 @@
                 const isAdmin = (userRole === 'admin' || userRole === 'super_admin');
 
                 if (document.getElementById('adminOnlyFinancialSections')) {
-                    document.getElementById('adminOnlyFinancialSections').style.display = isAdmin ? 'block' : 'none';
+                    document.getElementById('adminOnlyFinancialSections').style.display = 'block';
+                }
+
+                const profitCol = document.getElementById('todayNetProfitCol');
+                const monthlyProfitCol = document.getElementById('monthlyNetProfitCol');
+                if (!isAdmin) {
+                    if (profitCol) profitCol.style.display = 'none';
+                    if (monthlyProfitCol) monthlyProfitCol.style.display = 'none';
+                    document.querySelectorAll('.today-metric-col').forEach(col => {
+                        col.classList.remove('col-xl-3');
+                        col.classList.add('col-xl-4');
+                    });
+                } else {
+                    if (profitCol) profitCol.style.display = '';
+                    if (monthlyProfitCol) monthlyProfitCol.style.display = '';
+                    document.querySelectorAll('.today-metric-col').forEach(col => {
+                        col.classList.remove('col-xl-4');
+                        col.classList.add('col-xl-3');
+                    });
                 }
 
                 // --- 1. Filtered Banner Cards (8 Key Metrics) ---
@@ -1280,7 +1294,7 @@
                 const donutCollection = parseFloat(today.cash_collection !== undefined ? today.cash_collection : 0);
                 const donutDue = parseFloat(today.customer_due !== undefined ? today.customer_due : 0);
                 const donutExpense = parseFloat(today.expense !== undefined ? today.expense : 0);
-                const donutProfit = parseFloat(today.net_profit !== undefined ? today.net_profit : 0);
+                const donutProfit = isAdmin ? parseFloat(today.net_profit !== undefined ? today.net_profit : 0) : 0;
                 renderFinancialDonutChart(donutCollection, donutDue, donutExpense, donutProfit);
 
                 // --- 5. Low Stock Table ---

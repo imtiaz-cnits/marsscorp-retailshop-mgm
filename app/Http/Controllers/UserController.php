@@ -551,6 +551,16 @@ class UserController extends Controller
                 $user->password = Hash::make($request->input('password'));
             }
 
+            if ($request->hasFile('img')) {
+                $img = $request->file('img');
+                $t = time();
+                $file_name = $img->getClientOriginalName();
+                $img_name = "{$t}-{$file_name}";
+                $img_url = "uploads/user-img/{$img_name}";
+                $img->move(public_path('uploads/user-img'), $img_name);
+                $user->img_url = $img_url;
+            }
+
             if ($request->has('permissions')) {
                 $perms = $request->input('permissions');
                 if (is_array($perms)) {

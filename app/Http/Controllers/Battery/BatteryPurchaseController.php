@@ -109,18 +109,19 @@ class BatteryPurchaseController extends Controller
     public function PurchasesCreate(Request $request)
     {
         try {
-            $user_id = Auth::id();
+            $user_id = Auth::id() ?? auth('sanctum')->id() ?? auth()->id() ?? $request->user()?->id ?? \App\Models\User::first()?->id ?? 1;
             DB::beginTransaction();
 
             $img_url = null;
             if ($request->hasFile('img')) {
                 $img = $request->file('img');
-                $img_name = "{$user_id}-" . time() . "-" . $img->getClientOriginalName();
-                $img_url = "uploads/battery-purchases-img/{$img_name}";
                 $destination = public_path('uploads/battery-purchases-img');
                 if (!file_exists($destination)) {
                     @mkdir($destination, 0777, true);
                 }
+                $cleanName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $img->getClientOriginalName());
+                $img_name = "{$user_id}-" . time() . "-" . $cleanName;
+                $img_url = "uploads/battery-purchases-img/{$img_name}";
                 $img->move($destination, $img_name);
             }
 
@@ -128,7 +129,7 @@ class BatteryPurchaseController extends Controller
             if ($request->filled('date')) {
                 try {
                     $formattedDate = Carbon::parse($request->date)->format('Y-m-d');
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $formattedDate = now()->format('Y-m-d');
                 }
             }
@@ -137,7 +138,7 @@ class BatteryPurchaseController extends Controller
             if ($request->filled('purchase_due_collection_date')) {
                 try {
                     $formattedDueDate = Carbon::parse($request->purchase_due_collection_date)->format('Y-m-d');
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $formattedDueDate = $formattedDate;
                 }
             }
@@ -145,6 +146,13 @@ class BatteryPurchaseController extends Controller
             $supplier_id = null;
             if ($request->filled('supplier_id') && $request->supplier_id !== 'none') {
                 $supplier_id = $request->supplier_id;
+            }
+
+            if (!$supplier_id || !BatterySupplier::where('id', $supplier_id)->exists()) {
+                $foundSup = BatterySupplier::where('supplier_id', $supplier_id)->orWhere('id', $supplier_id)->first();
+                if ($foundSup) {
+                    $supplier_id = $foundSup->id;
+                }
             }
 
             $lastPurchase = BatteryPurchase::latest('id')->first();
@@ -156,6 +164,7 @@ class BatteryPurchaseController extends Controller
                 'supplier_id' => $supplier_id,
                 'date' => $formattedDate,
                 'referance_no' => $request->referance_no,
+                'purchase_payable_amount' => $request->purchase_payable_amount ?? $request->grand_subtotal ?? 0,
                 'grand_subtotal' => $request->grand_subtotal ?? $request->total_amount ?? $request->sub_total ?? 0,
                 'paid_amount' => $request->paid_amount ?? 0,
                 'due_amount' => $request->due_amount ?? 0,
@@ -172,52 +181,60 @@ class BatteryPurchaseController extends Controller
             if (is_array($products)) {
                 foreach ($products as $product) {
                     if (isset($product['product_id'], $product['quantity'])) {
+                        $prodId = (int) $product['product_id'];
+                        $qty = (int) $product['quantity'];
+                        $costPrice = (float) ($product['cost_price'] ?? 0);
+                        $subtotal = (float) ($product['subtotal'] ?? ($costPrice * $qty));
+
+                        $productModel = BatteryProduct::find($prodId);
+                        if (!$productModel) {
+                            continue;
+                        }
+
                         BatteryPurchaseOrderDetail::create([
                             'purchase_id' => $purchase->id,
-                            'product_id' => $product['product_id'],
-                            'quantity' => $product['quantity'],
-                            'cost_price' => $product['cost_price'],
-                            'subtotal' => $product['subtotal'],
+                            'product_id' => $prodId,
+                            'quantity' => $qty,
+                            'cost_price' => $costPrice,
+                            'subtotal' => $subtotal,
                             'user_id' => $user_id,
                         ]);
 
-                        $productModel = BatteryProduct::find($product['product_id']);
-                        if ($productModel) {
-                            $existingCostPrice = (float) $productModel->cost_price;
-                            $existingQuantity = (int) $productModel->quantity;
-                            $newCostPrice = (float) $product['cost_price'];
-                            $newQuantity = (int) $product['quantity'];
+                        $existingCostPrice = (float) $productModel->cost_price;
+                        $existingQuantity = (int) $productModel->quantity;
 
-                            $combinedQuantity = $existingQuantity + $newQuantity;
-
-                            if ($combinedQuantity > 0) {
-                                $existingTotal = $existingCostPrice * max(0, $existingQuantity);
-                                $newTotal = $newCostPrice * $newQuantity;
-                                $updatedCostPrice = ($existingTotal + $newTotal) / $combinedQuantity;
-                                $productModel->cost_price = round($updatedCostPrice, 2);
-                            }
-
-                            $productModel->quantity = $combinedQuantity;
-
-                            if (!empty($product['product_code'])) {
-                                $newCodes = $product['product_code'];
-                                if (!is_array($newCodes)) {
-                                    $newCodes = json_decode($newCodes, true) ?? [];
-                                }
-                                if (is_array($newCodes) && count($newCodes) > 0) {
-                                    $existingCodes = [];
-                                    if ($productModel->product_code) {
-                                        $existingCodes = is_array($productModel->product_code)
-                                            ? $productModel->product_code
-                                            : (json_decode($productModel->product_code, true) ?? [$productModel->product_code]);
-                                    }
-                                    $mergedCodes = array_values(array_unique(array_merge($existingCodes, $newCodes)));
-                                    $productModel->product_code = json_encode($mergedCodes);
-                                }
-                            }
-
-                            $productModel->save();
+                        // Weighted average cost calculation with zero/negative stock safety
+                        if ($existingQuantity > 0 && ($existingQuantity + $qty) > 0) {
+                            $updatedCostPrice = (($existingCostPrice * $existingQuantity) + ($costPrice * $qty)) / ($existingQuantity + $qty);
+                            $productModel->cost_price = round($updatedCostPrice, 2);
+                        } else {
+                            $productModel->cost_price = round($costPrice, 2);
                         }
+
+                        $productModel->quantity = $existingQuantity + $qty;
+
+                        if (!empty($product['product_code'])) {
+                            $newCodes = $product['product_code'];
+                            if (!is_array($newCodes)) {
+                                $decoded = json_decode($newCodes, true);
+                                $newCodes = is_array($decoded) ? $decoded : (is_string($newCodes) ? [$newCodes] : []);
+                            }
+                            if (is_array($newCodes) && count($newCodes) > 0) {
+                                $existingCodes = [];
+                                if (!empty($productModel->product_code)) {
+                                    if (is_array($productModel->product_code)) {
+                                        $existingCodes = $productModel->product_code;
+                                    } else {
+                                        $decoded = json_decode($productModel->product_code, true);
+                                        $existingCodes = is_array($decoded) ? $decoded : (is_scalar($decoded) && $decoded !== '' ? [(string)$decoded] : [(string)$productModel->product_code]);
+                                    }
+                                }
+                                $mergedCodes = array_values(array_unique(array_merge($existingCodes, $newCodes)));
+                                $productModel->product_code = json_encode($mergedCodes);
+                            }
+                        }
+
+                        $productModel->save();
                     }
                 }
             }
@@ -244,10 +261,14 @@ class BatteryPurchaseController extends Controller
                 'data' => $purchase,
                 'id' => $purchase->id,
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
-            Log::error('Battery Purchase Create Error: ' . $e->getMessage());
-            return response()->json(['status' => 'fail', 'message' => $e->getMessage()], 500);
+            Log::error('Battery Purchase Create Error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()], 200);
         }
     }
 

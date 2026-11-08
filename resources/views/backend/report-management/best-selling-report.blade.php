@@ -1,4 +1,4 @@
-﻿@extends('layouts.dashboard-sidenav')
+@extends('layouts.dashboard-sidenav')
 @section('title','Best Selling Products Report')
 @section('content')
 
@@ -41,7 +41,7 @@
                         <th>Total Sold Quantity</th>
                         <th>Total Cost Amount</th>
                         <th>Total Sales Amount</th>
-                        <th>Total Profit</th>
+                        <th class="admin-only-profit" data-profit-element>Total Profit</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -154,7 +154,7 @@
                             <td>${qty}</td>
                             <td>${cost.toFixed(2)}</td>
                             <td>${sales.toFixed(2)}</td>
-                            <td class="${profit >= 0 ? 'text-success' : 'text-danger'}">${profit.toFixed(2)}</td>
+                            <td class="admin-only-profit ${profit >= 0 ? 'text-success' : 'text-danger'}" data-profit-element>${profit.toFixed(2)}</td>
                         </tr>`;
                     tableList.append(row);
                 });
@@ -165,7 +165,7 @@
                 <th>${grandTotalQuantity}</th>
                 <th>${grandTotalCost.toFixed(2)}</th>
                 <th>${grandTotalSales.toFixed(2)}</th>
-                <th class="${grandTotalProfit >= 0 ? 'text-success' : 'text-danger'}">${grandTotalProfit.toFixed(2)}</th>
+                <th class="admin-only-profit ${grandTotalProfit >= 0 ? 'text-success' : 'text-danger'}" data-profit-element>${grandTotalProfit.toFixed(2)}</th>
             `);
         } catch (e) {
             if(typeof hideLoader === "function") hideLoader();

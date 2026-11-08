@@ -1917,6 +1917,12 @@
             color: #0d9488 !important;
             font-weight: 700 !important;
             letter-spacing: 0.2px !important;
+            max-width: 60px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            vertical-align: middle;
         }
 
         /* Dark mode for compact product card */
@@ -3896,6 +3902,9 @@
                 const brandName = product.brand ? (product.brand.name || '') : '';
                 const brandTag = brandName ? `<span class="pos-product-brand-tag" title="${brandName}">${brandName}</span>` : '';
 
+                const rawProdCode = formatProductCode(product.product_code) || '';
+                const displayProdCode = rawProdCode.length > 4 ? rawProdCode.substring(0, 4) + '...' : rawProdCode;
+
                 const productCard = `
             <div class="col-xl-3 col-md-4 col-6 d-flex align-items-stretch">
                 <a href="javascript:void(0)" class="card-wrapper ${isOutOfStock ? 'stock-out-card' : ''}" onclick="addProductToCart(${product.id})">
@@ -3915,7 +3924,7 @@
                         <h2 class="name product-main-title m-0">${product.product_name}</h2>
                     </div>
                     <div class="drescription d-flex align-items-center justify-content-between flex-wrap gap-1 mt-auto pt-1">
-                        <span class="product-id m-0">${formatProductCode(product.product_code)}</span>
+                        <span class="product-id m-0" title="${rawProdCode}">${displayProdCode}</span>
                         ${doorBadge}
                     </div>
                 </a>

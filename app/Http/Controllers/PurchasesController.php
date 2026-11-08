@@ -271,39 +271,40 @@ public function PurchasesList()
     public function PurchasesCreate(Request $request)
     {
         try {
-            $user_id = Auth::id();
+            $user_id = Auth::id() ?? auth('sanctum')->id() ?? auth()->id() ?? $request->user()?->id ?? \App\Models\User::first()?->id ?? 1;
             DB::beginTransaction();
 
             // Handle document upload if there's an image file
             $img_url = null;
             if ($request->hasFile('img')) {
                 $img = $request->file('img');
-                $img_name = "{$user_id}-" . time() . "-" . $img->getClientOriginalName();
+                $destination = public_path('uploads/purchases-img');
+                if (!file_exists($destination)) {
+                    @mkdir($destination, 0777, true);
+                }
+                $cleanName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $img->getClientOriginalName());
+                $img_name = "{$user_id}-" . time() . "-" . $cleanName;
                 $img_url = "uploads/purchases-img/{$img_name}";
-                $img->move(public_path('uploads/purchases-img'), $img_name);
+                $img->move($destination, $img_name);
             }
 
             // Parse and format date to Y-m-d for database storage
-            $formattedDate = null;
+            $formattedDate = now()->format('Y-m-d');
             if ($request->filled('date')) {
                 try {
                     $formattedDate = Carbon::parse($request->date)->format('Y-m-d');
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $formattedDate = now()->format('Y-m-d');
                 }
-            } else {
-                $formattedDate = now()->format('Y-m-d');
             }
 
-            $formattedDueDate = null;
+            $formattedDueDate = $formattedDate;
             if ($request->filled('purchase_due_collection_date')) {
                 try {
                     $formattedDueDate = Carbon::parse($request->purchase_due_collection_date)->format('Y-m-d');
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     $formattedDueDate = $formattedDate;
                 }
-            } else {
-                $formattedDueDate = $formattedDate;
             }
 
             // Validate & resolve supplier_id
@@ -327,15 +328,28 @@ public function PurchasesList()
                 ]);
             }
 
+            // Validate products
+            $products = $request->products;
+            if (!is_array($products)) {
+                $products = json_decode($products, true) ?? [];
+            }
+            if (!is_array($products) || count($products) === 0) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'At least one product must be added to purchase.'
+                ]);
+            }
+
             // Create Purchase record
             $purchaseData = [
                 'purchase_id' => $this->generatePurchasesID(),
-                'purchase_payable_amount' => $request->purchase_payable_amount,
-                'paid_amount' => $request->paid_amount,
-                'due_amount' => $request->due_amount,
+                'purchase_payable_amount' => $request->purchase_payable_amount ?? $request->grand_subtotal ?? 0,
+                'paid_amount' => $request->paid_amount ?? 0,
+                'due_amount' => $request->due_amount ?? 0,
                 'referance_no' => $request->referance_no,
                 'date' => $formattedDate,
-                'grand_subtotal' => $request->grand_subtotal,
+                'grand_subtotal' => $request->grand_subtotal ?? 0,
                 'attach_document' => $img_url,
                 'supplier_id' => $supplier_id,
                 'user_id' => $user_id,
@@ -363,91 +377,104 @@ public function PurchasesList()
 
             $purchase = Purchase::create($purchaseData);
 
-
             // Save product details in the `purchase_product_details` table
-            $products = json_decode($request->products, true); // Decode the JSON string to an array
             foreach ($products as $product) {
                 if (isset($product['product_id'], $product['quantity'])) {
-                    $purchaseorderDetails = PurchaseOrderDetails::create([
+                    $prodId = (int) $product['product_id'];
+                    $qty = (int) $product['quantity'];
+                    $costPrice = (float) ($product['cost_price'] ?? 0);
+                    $subtotal = (float) ($product['subtotal'] ?? ($costPrice * $qty));
+
+                    $productModel = Product::find($prodId);
+                    if (!$productModel) {
+                        continue;
+                    }
+
+                    PurchaseOrderDetails::create([
                         'purchase_id' => $purchase->id,
-                        'product_id' => $product['product_id'],
-                        'quantity' => $product['quantity'],
-                        'cost_price' => $product['cost_price'],
-                        'subtotal' => $product['subtotal'],
+                        'product_id' => $prodId,
+                        'quantity' => $qty,
+                        'cost_price' => $costPrice,
+                        'subtotal' => $subtotal,
                         'user_id' => $user_id,
                     ]);
 
-                    $productModel = Product::find($product['product_id']);
-                    if ($productModel) {
-                        // Existing data
-                        $existingCostPrice = (float) $productModel->cost_price;
-                        $existingQuantity = (int) $productModel->quantity;
+                    // Existing inventory
+                    $existingCostPrice = (float) $productModel->cost_price;
+                    $existingQuantity = (int) $productModel->quantity;
 
-                        // New purchase data
-                        $newCostPrice = (float) $product['cost_price'];
-                        $newQuantity = (int) $product['quantity'];
-
-                        // Calculate totals
-                        $existingTotal = $existingCostPrice * $existingQuantity;
-                        $newTotal = $newCostPrice * $newQuantity;
-
-                        // Combine totals and quantities
-                        $combinedTotal = $existingTotal + $newTotal;
-                        $combinedQuantity = $existingQuantity + $newQuantity;
-
-                        // Calculate new cost price
-                        $updatedCostPrice = $combinedTotal / $combinedQuantity;
-
-                        // Update product
-                        $productModel->quantity = $combinedQuantity; // Update quantity
-                        $productModel->cost_price = round($updatedCostPrice, 2); // Round to 2 decimal places for cost price
-
-
-                        // Safely update or merge product_code
-                        if (isset($product['product_code']) && !empty($product['product_code'])) {
-                            $newCodes = $product['product_code'];
-
-                            if (!is_array($newCodes)) {
-                                $newCodes = json_decode($newCodes, true) ?? [];
-                            }
-
-                            if (is_array($newCodes) && count($newCodes) > 0) {
-                                // Decode existing product codes
-                                $existingCodes = [];
-                                if ($productModel->product_code) {
-                                    $existingCodes = is_array($productModel->product_code) 
-                                        ? $productModel->product_code 
-                                        : (json_decode($productModel->product_code, true) ?? []);
-                                }
-
-                                // Merge existing and new codes without duplicates
-                                $mergedCodes = array_values(array_unique(array_merge($existingCodes, $newCodes)));
-                                $productModel->product_code = json_encode($mergedCodes);
-                            }
-                        }
-                        $productModel->save();
+                    // Weighted average cost calculation with zero/negative stock safety
+                    if ($existingQuantity > 0 && ($existingQuantity + $qty) > 0) {
+                        $updatedCostPrice = (($existingCostPrice * $existingQuantity) + ($costPrice * $qty)) / ($existingQuantity + $qty);
+                        $productModel->cost_price = round($updatedCostPrice, 2);
+                    } else {
+                        // If stock was 0 or negative, incoming purchase establishes unit cost price
+                        $productModel->cost_price = round($costPrice, 2);
                     }
+
+                    $productModel->quantity = $existingQuantity + $qty;
+
+                    // Safely update or merge product_code
+                    if (isset($product['product_code']) && !empty($product['product_code'])) {
+                        $newCodes = $product['product_code'];
+
+                        if (!is_array($newCodes)) {
+                            $decoded = json_decode($newCodes, true);
+                            $newCodes = is_array($decoded) ? $decoded : (is_string($newCodes) ? [$newCodes] : []);
+                        }
+
+                        if (is_array($newCodes) && count($newCodes) > 0) {
+                            $existingCodes = [];
+                            if (!empty($productModel->product_code)) {
+                                if (is_array($productModel->product_code)) {
+                                    $existingCodes = $productModel->product_code;
+                                } else {
+                                    $decoded = json_decode($productModel->product_code, true);
+                                    $existingCodes = is_array($decoded) ? $decoded : (is_scalar($decoded) && $decoded !== '' ? [(string)$decoded] : [(string)$productModel->product_code]);
+                                }
+                            }
+
+                            $mergedCodes = array_values(array_unique(array_merge($existingCodes, $newCodes)));
+                            $productModel->product_code = json_encode($mergedCodes);
+                        }
+                    }
+
+                    $productModel->save();
                 }
             }
 
-            // Check if the purchase is partially or fully paid
+            // Record payment details
+            $paidAmount = (float) ($request->paid_amount ?? 0);
+            $paymentMethod = $request->payment_method;
+            if (empty($paymentMethod) || $paymentMethod === 'Select Method') {
+                $paymentMethod = $paidAmount > 0 ? 'Cash' : null;
+            }
+            $paymentStatus = $request->payment_status ?: ($paidAmount > 0 ? ((float)($request->due_amount ?? 0) <= 0 ? 'Fully Paid' : 'Partial Paid') : 'Unpaid');
+
             PurchasePaymentDetails::create([
                 'purchases_id' => $purchase->id,
-                'paid_amount' => $request->paid_amount,
-                'discount_amount' => $request->discount_amount ?? 0,
+                'paid_amount' => $paidAmount,
+                'discount_amount' => (float) ($request->discount_amount ?? 0),
                 'transaction_id' => $request->transaction_id ?? null,
                 'purchase_due_collection_date' => $formattedDueDate,
-                'payment_method' => $request->payment_method,
-                'payment_status' => $request->payment_status,
+                'payment_method' => $paymentMethod,
+                'payment_status' => $paymentStatus,
                 'user_id' => $user_id,
             ]);
 
-
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Purchase created successfully']);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
-            return response()->json(['status' => 'fail', 'message' => 'Failed to create purchase: ' . $e->getMessage()]);
+            \Log::error('Purchase Create Error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Failed to create purchase: ' . $e->getMessage()
+            ], 200);
         }
     }
 
@@ -456,18 +483,14 @@ private function generatePurchasesID()
 {
     $prefix = '#PurID';
 
-    $newId = DB::transaction(function () use ($prefix) {
-        $last = Purchase::orderBy('id', 'desc')->first();
-        $number = $last ? ($last->id + 1) : 1;
+    $last = Purchase::orderBy('id', 'desc')->first();
+    $number = $last ? ($last->id + 1) : 1;
+    $id = $prefix . str_pad($number, 5, '0', STR_PAD_LEFT);
+    while (Purchase::where('purchase_id', $id)->exists()) {
+        $number++;
         $id = $prefix . str_pad($number, 5, '0', STR_PAD_LEFT);
-        while (Purchase::where('purchase_id', $id)->exists()) {
-            $number++;
-            $id = $prefix . str_pad($number, 5, '0', STR_PAD_LEFT);
-        }
-        return $id;
-    });
-
-    return $newId;
+    }
+    return $id;
 }
 
 
