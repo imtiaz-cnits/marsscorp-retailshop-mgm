@@ -339,6 +339,143 @@
         border-color: #ef4444 !important;
         color: #f87171 !important;
     }
+
+    /* Modal Container fixes & No duplicate white box */
+    #exampleModal .modal-dialog {
+        background: transparent !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    #exampleModal .modal-content {
+        border-radius: 16px !important;
+        overflow: hidden !important;
+        border: none !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    @media (max-width: 768px) {
+        #exampleModal .modal-dialog {
+            margin: 8px auto !important;
+            width: 96% !important;
+            max-width: 96% !important;
+            height: auto !important;
+            max-height: calc(100dvh - 16px) !important;
+        }
+        #exampleModal .modal-content {
+            max-height: calc(100dvh - 16px) !important;
+            border-radius: 16px !important;
+            height: auto !important;
+        }
+        .purchase-modal-body {
+            max-height: calc(100dvh - 180px) !important;
+            padding: 12px !important;
+        }
+
+        /* Cart Items Box-Type Table Card Layout on Mobile */
+        .table-container thead {
+            display: none !important;
+        }
+        .table-container {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            overflow: visible !important;
+        }
+        .table-container .responsive-table,
+        .table-container .responsive-table tbody {
+            display: block !important;
+            width: 100% !important;
+        }
+        #orderTableBody tr {
+            display: flex !important;
+            flex-direction: column !important;
+            position: relative !important;
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 14px !important;
+            padding: 12px !important;
+            margin-bottom: 10px !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+            gap: 8px !important;
+        }
+        html.dark #orderTableBody tr,
+        body.dark #orderTableBody tr {
+            background: #0f172a !important;
+            border-color: #334155 !important;
+        }
+        #orderTableBody tr td {
+            display: flex !important;
+            width: 100% !important;
+            padding: 0 !important;
+            border: none !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+        }
+        /* Product Name (top) */
+        #orderTableBody tr td:nth-child(2) {
+            order: 1 !important;
+            display: block !important;
+            padding-right: 36px !important;
+            text-align: left !important;
+        }
+        /* Trash button (top right) */
+        #orderTableBody tr td:nth-child(6) {
+            position: absolute !important;
+            top: 10px !important;
+            right: 10px !important;
+            width: auto !important;
+            z-index: 2 !important;
+        }
+        /* Barcode (row 2) */
+        #orderTableBody tr td:nth-child(1) {
+            order: 2 !important;
+        }
+        #orderTableBody tr td:nth-child(1) > div {
+            width: 100% !important;
+        }
+        #orderTableBody tr td:nth-child(1) input {
+            flex: 1 1 auto !important;
+            width: auto !important;
+        }
+        /* Qty (row 3) */
+        #orderTableBody tr td:nth-child(3) {
+            order: 3 !important;
+        }
+        #orderTableBody tr td:nth-child(3)::before {
+            content: 'Quantity:';
+            font-weight: 600;
+            font-size: 11px;
+            color: #64748b;
+        }
+        /* Cost Price (row 4) */
+        #orderTableBody tr td:nth-child(4) {
+            order: 4 !important;
+        }
+        #orderTableBody tr td:nth-child(4)::before {
+            content: 'Cost Price (৳):';
+            font-weight: 600;
+            font-size: 11px;
+            color: #64748b;
+        }
+        /* Sub Total (row 5) */
+        #orderTableBody tr td:nth-child(5) {
+            order: 5 !important;
+            border-top: 1px dashed #e2e8f0 !important;
+            padding-top: 8px !important;
+            margin-top: 2px !important;
+        }
+        html.dark #orderTableBody tr td:nth-child(5),
+        body.dark #orderTableBody tr td:nth-child(5) {
+            border-top-color: #334155 !important;
+        }
+        #orderTableBody tr td:nth-child(5)::before {
+            content: 'Sub Total:';
+            font-weight: 700;
+            font-size: 12px;
+            color: #047857;
+        }
+    }
 </style>
 
 <!-- Action Button Edit Modal Start -->
@@ -428,19 +565,21 @@
                             <span><i class="fa-solid fa-barcode text-emerald-600 dark:text-emerald-400 me-1"></i> Scan Barcode or Select Product <span class="text-rose-500">*</span></span>
                             <span class="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold"><i class="fa-solid fa-bolt me-1"></i> Auto-Cart Enabled</span>
                         </label>
-                        <div class="flex items-center gap-2">
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                             <div class="flex-grow relative">
                                 <input type="text" id="productInputData" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" placeholder="Scan barcode or type product name/code (Auto-adds to list)..." autocomplete="off" />
                                 <ul id="productDropdown" class="list-group absolute w-full shadow-xl rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 mt-1" style="z-index: 1050; max-height: 280px; overflow-y: auto; display: none;"></ul>
                             </div>
-                            <button type="button" class="inline-flex items-center gap-1 px-3 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 flex-shrink-0 cursor-pointer" onclick="openProductCreateModal()" title="Add New Product">
-                                <i class="fa-solid fa-plus text-xs"></i>
-                                <span>New</span>
-                            </button>
-                            <button type="button" class="inline-flex items-center gap-1.5 px-4 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 flex-shrink-0 cursor-pointer" onclick="openPurchaseCameraScanner()">
-                                <i class="fa-solid fa-camera text-xs"></i>
-                                <span>Scan Camera</span>
-                            </button>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button type="button" class="inline-flex items-center justify-center gap-1 flex-1 sm:flex-initial px-3 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 cursor-pointer" onclick="openProductCreateModal()" title="Add New Product">
+                                    <i class="fa-solid fa-plus text-xs"></i>
+                                    <span>New</span>
+                                </button>
+                                <button type="button" class="inline-flex items-center justify-center gap-1.5 flex-1 sm:flex-initial px-4 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 cursor-pointer" onclick="openPurchaseCameraScanner()">
+                                    <i class="fa-solid fa-camera text-xs"></i>
+                                    <span>Scan Camera</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -588,17 +727,28 @@
                 </div>
 
                 <!-- Fixed Sticky Bottom Modal Footer with Left-Right Padding p-4 and Red Cancel Button -->
-                <div class="purchase-modal-footer bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between gap-3 flex-shrink-0" style="position: sticky; bottom: 0; z-index: 20;">
-                    <button type="button" class="px-5 h-[38px] rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all shadow-sm border-0 cursor-pointer" data-bs-dismiss="modal">Cancel</button>
-                    <div class="flex items-center gap-2">
-                        <button type="button" id="btnResetPurchase" onclick="resetPurchaseModalAndDraft()" class="w-[38px] h-[38px] rounded-xl text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 bg-slate-100 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-950/40 border border-slate-300 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-800 shadow-sm transition-all duration-150 flex items-center justify-center cursor-pointer active:scale-95 flex-shrink-0" title="Reset All & Clear Hold Draft">
+                <div class="purchase-modal-footer bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-3 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-2.5 sm:gap-3 flex-shrink-0" style="position: sticky; bottom: 0; z-index: 20;">
+                    <div class="flex items-center justify-between w-full md:w-auto">
+                        <button type="button" class="px-5 h-[38px] rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all shadow-sm border-0 cursor-pointer" data-bs-dismiss="modal">Cancel</button>
+                        <div class="flex md:hidden items-center gap-2">
+                            <button type="button" onclick="resetPurchaseModalAndDraft()" class="w-[38px] h-[38px] rounded-xl text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 bg-slate-100 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-950/40 border border-slate-300 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-800 shadow-sm transition-all duration-150 flex items-center justify-center cursor-pointer active:scale-95 flex-shrink-0" title="Reset All & Clear Hold Draft">
+                                <i class="fa-solid fa-arrows-rotate text-sm"></i>
+                            </button>
+                            <button type="button" onclick="holdPurchaseOrder()" class="mobile-hold-btn px-3.5 h-[38px] bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 border-0 cursor-pointer" title="Hold / Save Draft">
+                                <i class="fa-solid fa-pause text-xs"></i>
+                                <span class="mobile-hold-text">Hold</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <button type="button" id="btnResetPurchase" onclick="resetPurchaseModalAndDraft()" class="hidden md:flex w-[38px] h-[38px] rounded-xl text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 bg-slate-100 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-950/40 border border-slate-300 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-800 shadow-sm transition-all duration-150 items-center justify-center cursor-pointer active:scale-95 flex-shrink-0" title="Reset All & Clear Hold Draft">
                             <i class="fa-solid fa-arrows-rotate text-sm"></i>
                         </button>
-                        <button type="button" id="btnHoldPurchase" onclick="holdPurchaseOrder()" class="px-4 h-[38px] bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 border-0 cursor-pointer" title="Hold / Save Draft">
+                        <button type="button" id="btnHoldPurchase" onclick="holdPurchaseOrder()" class="hidden md:flex px-4 h-[38px] bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 items-center justify-center gap-1.5 border-0 cursor-pointer" title="Hold / Save Draft">
                             <i class="fa-solid fa-pause text-xs"></i>
                             <span id="holdBtnText">Hold</span>
                         </button>
-                        <button type="submit" class="flex-grow sm:flex-grow-0 sm:min-w-[240px] h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 flex items-center justify-center gap-2 border-0 cursor-pointer">
+                        <button type="submit" class="w-full md:w-auto md:min-w-[240px] h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 flex items-center justify-center gap-2 border-0 cursor-pointer">
                             <i class="fa-solid fa-circle-check text-sm"></i>
                             <span>Submit Purchase Order</span>
                         </button>
@@ -1673,18 +1823,36 @@
     function updateHoldButtonState() {
         const btn = document.getElementById('btnHoldPurchase');
         const textSpan = document.getElementById('holdBtnText');
-        if (!btn) return;
+        const mobileHoldBtns = document.querySelectorAll('.mobile-hold-btn');
+        const mobileHoldTexts = document.querySelectorAll('.mobile-hold-text');
+        if (!btn && mobileHoldBtns.length === 0) return;
         const hasHeld = !!localStorage.getItem('retail_held_purchase_order');
         if (hasHeld) {
-            btn.classList.add('bg-amber-600', 'ring-2', 'ring-amber-300');
-            btn.classList.remove('bg-amber-500');
-            if (textSpan) textSpan.innerText = 'Hold (Saved)';
-            btn.setAttribute('title', 'Held draft active. Click to update hold.');
+            if (btn) {
+                btn.classList.add('bg-amber-600', 'ring-2', 'ring-amber-300');
+                btn.classList.remove('bg-amber-500');
+                if (textSpan) textSpan.innerText = 'Hold (Saved)';
+                btn.setAttribute('title', 'Held draft active. Click to update hold.');
+            }
+            mobileHoldBtns.forEach(b => {
+                b.classList.add('bg-amber-600', 'ring-2', 'ring-amber-300');
+                b.classList.remove('bg-amber-500');
+                b.setAttribute('title', 'Held draft active. Click to update hold.');
+            });
+            mobileHoldTexts.forEach(t => t.innerText = 'Saved');
         } else {
-            btn.classList.remove('bg-amber-600', 'ring-2', 'ring-amber-300');
-            btn.classList.add('bg-amber-500');
-            if (textSpan) textSpan.innerText = 'Hold';
-            btn.setAttribute('title', 'Hold / Save Draft');
+            if (btn) {
+                btn.classList.remove('bg-amber-600', 'ring-2', 'ring-amber-300');
+                btn.classList.add('bg-amber-500');
+                if (textSpan) textSpan.innerText = 'Hold';
+                btn.setAttribute('title', 'Hold / Save Draft');
+            }
+            mobileHoldBtns.forEach(b => {
+                b.classList.remove('bg-amber-600', 'ring-2', 'ring-amber-300');
+                b.classList.add('bg-amber-500');
+                b.setAttribute('title', 'Hold / Save Draft');
+            });
+            mobileHoldTexts.forEach(t => t.innerText = 'Hold');
         }
     }
 

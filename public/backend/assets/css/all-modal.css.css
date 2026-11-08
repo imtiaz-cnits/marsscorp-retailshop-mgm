@@ -4364,8 +4364,8 @@ input::-webkit-inner-spin-button {
 }
 
 #exampleModal .modal-dialog {
-  background: var(--white);
-  padding: 20px;
+  background: transparent !important;
+  padding: 0 !important;
   text-align: center;
   border-radius: 20px;
   max-width: 940px;
@@ -4595,7 +4595,9 @@ input::-webkit-inner-spin-button {
 
   #exampleModal .modal-dialog {
     /* width: 90%; */
-    margin: 50px 10px;
+    margin: 10px auto !important;
+    background: transparent !important;
+    padding: 0 !important;
   }
 
   #exampleModal .close-btn i {

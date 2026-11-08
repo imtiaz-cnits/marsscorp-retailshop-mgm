@@ -931,7 +931,7 @@
     <div class="page-content min-h-screen flex flex-col justify-between">
         <div class="data-table flex-grow">
             <div class="card bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm overflow-hidden mb-4 transition-colors">
-                <div class="card-body product-card-body p-4 sm:p-6 md:p-8">
+                <div class="card-body product-card-body p-3 sm:p-6 md:p-8">
 
                     <!-- 1. Header Bar: Title Left, Collect Due Right -->
                     <div class="flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-100 dark:border-slate-800">

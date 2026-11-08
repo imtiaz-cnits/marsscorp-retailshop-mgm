@@ -745,7 +745,7 @@
         .page-content {
             padding-left: 8px !important;
             padding-right: 8px !important;
-            padding-top: 76px !important;
+            padding-top: 66px !important;
             padding-bottom: 8px !important;
         }
         .card-body {

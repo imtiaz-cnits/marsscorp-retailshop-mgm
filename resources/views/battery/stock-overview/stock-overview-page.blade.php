@@ -70,10 +70,25 @@ html.dark .stock-filter-btn {
 @media print { .export-btn, .stock-filter-btn, .search-clean-box, .entries-clean-box, #paginationWrapper, .adjust-action-col { display: none !important; } }
 
     /* ── Custom Sort Component Styles (Matching Custom Entries & Universal Design) ── */
+    .stock-controls-bar {
+        position: relative !important;
+        z-index: 50 !important;
+    }
     .custom-sort-component {
         position: relative;
         display: inline-block;
         user-select: none;
+    }
+    .custom-sort-component.is-open {
+        position: relative !important;
+        z-index: 999999 !important;
+    }
+    .custom-entries-component.is-open {
+        position: relative !important;
+        z-index: 999999 !important;
+    }
+    .custom-entries-menu {
+        z-index: 999999 !important;
     }
     .custom-sort-standalone {
         height: 38px;
@@ -113,7 +128,7 @@ html.dark .stock-filter-btn {
         border: 1.5px solid #cbd5e1;
         border-radius: 12px;
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-        z-index: 9999 !important;
+        z-index: 999999 !important;
         padding: 4px;
         overflow: hidden;
     }
@@ -282,68 +297,72 @@ html.dark .stock-filter-btn {
                     </div>
 
                     <!-- 3. Controls: Search + Show Entry + 3 Filter Buttons (1 row on Desktop, 2 rows on Mobile) -->
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
-                        <!-- Row 1 on mobile, Left on desktop -->
-                        <div class="flex items-center gap-2.5 flex-1 min-w-0">
-                            <!-- Search (Single Border, Clean) -->
-                            <div class="search-clean-box flex-1 md:max-w-xs lg:max-w-sm h-10 px-3 bg-white dark:bg-slate-800 rounded-xl flex items-center shadow-sm transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4 stock-controls-bar relative z-30">
+                        <!-- Desktop Left: Search, Sort & Show | Mobile: Row 1 Search full width, Row 2 Sort & Show -->
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-1 min-w-0">
+                            <!-- Search: Full width on mobile, max-w-xs on desktop -->
+                            <div class="search-clean-box w-full sm:flex-1 md:max-w-xs lg:max-w-sm h-10 px-3 bg-white dark:bg-slate-800 rounded-xl flex items-center shadow-sm transition-all">
                                 <svg class="w-4 h-4 text-slate-400 shrink-0 mr-2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <circle cx="11" cy="11" r="8"></circle>
                                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                                 </svg>
                                 <input type="text" id="searchInput" class="search-clean-input w-full h-full bg-transparent text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400" placeholder="Search product or barcode..." />
                             </div>
-                                                        <!-- Sort Dropdown (Single Clean Universal Component) -->
-                            <div class="shrink-0 flex items-center">
-                                <div class="custom-sort-component custom-sort-standalone" id="stockSortWrapper">
-                                    <div class="custom-sort-trigger" id="stockSortTrigger" onclick="toggleStockSortMenu(event)" title="Sort Products">
-                                        <div class="flex items-center gap-1.5 overflow-hidden">
-                                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">SORT:</span>
-                                            <span class="custom-sort-value text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-400 truncate max-w-[110px] sm:max-w-[130px]" id="stockSortSelectedText">Category (A-Z)</span>
+
+                            <!-- Sort & Entries: 1 Row with 2 Columns on Mobile, Inline on Desktop -->
+                            <div class="flex items-center gap-2.5 w-full sm:w-auto">
+                                <!-- Sort Dropdown (Column 1 on mobile, takes remaining space) -->
+                                <div class="flex-1 sm:flex-initial min-w-0">
+                                    <div class="custom-sort-component custom-sort-standalone w-full sm:w-auto" id="stockSortWrapper">
+                                        <div class="custom-sort-trigger justify-between sm:justify-start" id="stockSortTrigger" onclick="toggleStockSortMenu(event)" title="Sort Products">
+                                            <div class="flex items-center gap-1.5 overflow-hidden">
+                                                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">SORT:</span>
+                                                <span class="custom-sort-value text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-400 truncate max-w-[130px]" id="stockSortSelectedText">Category (A-Z)</span>
+                                            </div>
+                                            <svg class="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400 sort-chevron-icon transition-transform duration-200 shrink-0 ms-1" id="stockSortChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="6 9 12 15 18 9"></polyline>
+                                            </svg>
                                         </div>
-                                        <svg class="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400 sort-chevron-icon transition-transform duration-200 shrink-0" id="stockSortChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
-                                    </div>
-                                    <div class="custom-sort-menu shadow-xl" id="stockSortMenu">
-                                        <div class="custom-sort-list">
-                                            <div class="custom-sort-item active" data-sort="category_asc" onclick="selectStockSort('category_asc', 'Category (A-Z)')">
-                                                <span>Category (A-Z)</span>
-                                                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                            </div>
-                                            <div class="custom-sort-item" data-sort="name_asc" onclick="selectStockSort('name_asc', 'Alphabet (A - Z)')">
-                                                <span>Alphabet (A - Z)</span>
-                                                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                            </div>
-                                            <div class="custom-sort-item" data-sort="name_desc" onclick="selectStockSort('name_desc', 'Alphabet (Z - A)')">
-                                                <span>Alphabet (Z - A)</span>
-                                                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                            </div>
-                                            <div class="custom-sort-item" data-sort="stock_asc" onclick="selectStockSort('stock_asc', 'Stock: Low to High')">
-                                                <span>Stock: Low to High</span>
-                                                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                            </div>
-                                            <div class="custom-sort-item" data-sort="stock_desc" onclick="selectStockSort('stock_desc', 'Stock: High to Low')">
-                                                <span>Stock: High to Low</span>
-                                                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                            </div>
-                                            <div class="custom-sort-item" data-sort="default" onclick="selectStockSort('default', 'Default (Newest)')">
-                                                <span>Default (Newest)</span>
-                                                <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                        <div class="custom-sort-menu shadow-xl" id="stockSortMenu">
+                                            <div class="custom-sort-list">
+                                                <div class="custom-sort-item active" data-sort="category_asc" onclick="selectStockSort('category_asc', 'Category (A-Z)')">
+                                                    <span>Category (A-Z)</span>
+                                                    <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                </div>
+                                                <div class="custom-sort-item" data-sort="name_asc" onclick="selectStockSort('name_asc', 'Alphabet (A - Z)')">
+                                                    <span>Alphabet (A - Z)</span>
+                                                    <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                </div>
+                                                <div class="custom-sort-item" data-sort="name_desc" onclick="selectStockSort('name_desc', 'Alphabet (Z - A)')">
+                                                    <span>Alphabet (Z - A)</span>
+                                                    <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                </div>
+                                                <div class="custom-sort-item" data-sort="stock_asc" onclick="selectStockSort('stock_asc', 'Stock: Low to High')">
+                                                    <span>Stock: Low to High</span>
+                                                    <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                </div>
+                                                <div class="custom-sort-item" data-sort="stock_desc" onclick="selectStockSort('stock_desc', 'Stock: High to Low')">
+                                                    <span>Stock: High to Low</span>
+                                                    <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                </div>
+                                                <div class="custom-sort-item" data-sort="default" onclick="selectStockSort('default', 'Default (Newest)')">
+                                                    <span>Default (Newest)</span>
+                                                    <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 sort-check-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Entries (Single Clean Universal Component) -->
-                            <div class="shrink-0 flex items-center">
-                                <select id="entries">
-                                    <option value="15" selected>15</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                    <option value="200">200</option>
-                                </select>
+                                <!-- Entries (Column 2 on mobile, shrink-0) -->
+                                <div class="shrink-0 flex items-center">
+                                    <select id="entries">
+                                        <option value="15" selected>15</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="200">200</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 

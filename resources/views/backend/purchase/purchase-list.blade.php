@@ -7,7 +7,7 @@
     <div class="page-content purchase-page-content flex-grow flex flex-col justify-between">
         <div class="data-table flex-grow">
             <div class="card bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm overflow-hidden mb-4 transition-colors">
-                <div class="card-body product-card-body p-4 sm:p-6 md:p-8">
+                <div class="card-body product-card-body p-3 sm:p-6 md:p-8">
 
                     <!-- 1. Top Section: Page Title & Top Action Buttons -->
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
@@ -46,8 +46,8 @@
                         </div>
 
                         <!-- 2nd: Start Date with Flatpickr (col-start-date) -->
-                        <div class="col-start-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
-                            <input type="text" id="startDate" name="startDate" placeholder="Start Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
+                        <div class="col-start-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-2.5 sm:px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer min-w-0">
+                            <input type="text" id="startDate" name="startDate" placeholder="Start Date" style="padding: 0 4px !important; min-width: 0 !important;" class="w-full min-w-0 bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
                             <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -57,8 +57,8 @@
                         </div>
 
                         <!-- 3rd: End Date with Flatpickr (col-end-date) -->
-                        <div class="col-end-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
-                            <input type="text" id="endDate" name="endDate" placeholder="End Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
+                        <div class="col-end-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-2.5 sm:px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer min-w-0">
+                            <input type="text" id="endDate" name="endDate" placeholder="End Date" style="padding: 0 4px !important; min-width: 0 !important;" class="w-full min-w-0 bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
                             <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -227,14 +227,23 @@
     /* 5-Column Controls Row: 1 Row on Desktop, 2 Items Per Row on Mobile */
     .controls-five-cols-bar {
         display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 8px !important;
         width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
         align-items: center !important;
+    }
+    .controls-five-cols-bar > div {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
     .controls-five-cols-bar .col-search {
         grid-column: span 2 !important;
         width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
     .controls-five-cols-bar .col-start-date,
     .controls-five-cols-bar .col-end-date,
@@ -242,13 +251,53 @@
     .controls-five-cols-bar .col-filter {
         grid-column: span 1 !important;
         width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
     }
     .controls-five-cols-bar .col-entries {
         display: flex !important;
         justify-content: space-between !important;
+        align-items: center !important;
+        overflow: hidden !important;
     }
     .controls-five-cols-bar .col-filter .select-trigger {
         width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .controls-five-cols-bar input {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    @media (max-width: 767.98px) {
+        .purchase-page-content,
+        .data-table,
+        .product-card-body,
+        #mobileCardList {
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+        }
+        .table-responsive {
+            display: none !important;
+        }
+        .purchase-mobile-card {
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+        }
+        #pagination {
+            max-width: 100% !important;
+            width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            justify-content: center !important;
+        }
     }
 
     @media (min-width: 768px) {
@@ -281,6 +330,7 @@
             width: 130px !important;
         }
     }
+
 
     /* Flatpickr z-index on top of modals */
     .flatpickr-calendar {
@@ -327,6 +377,15 @@
             padding: calc(70px + 20px) 20px 20px 20px !important;
         }
     }
+
+    @media (max-width: 768px) {
+        .page-content {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+            padding-top: 66px !important;
+            padding-bottom: 8px !important;
+        }
+        }
 
     /* Table headers & cells 5px left-right padding */
     #printTable thead th,
@@ -809,7 +868,7 @@
         if (!barcodes || !Array.isArray(barcodes) || barcodes.length === 0) {
             return '<span class="text-slate-400 text-xs">N/A</span>';
         }
-        return barcodes.map(code => `<span class="inline-block px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 text-[13px] font-mono font-semibold me-1">${code}</span>`).join('');
+        return barcodes.map(code => `<span class="inline-block px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 text-[11px] font-mono font-semibold me-1 mb-1 truncate max-w-[120px] align-middle" title="${code}">${code}</span>`).join('');
     }
 
     let rawPurchaseData = [];
@@ -1149,7 +1208,7 @@
                             <div class="text-slate-500 dark:text-slate-400 text-xs mt-1">
                                 Ref: <span class="font-semibold text-slate-700 dark:text-slate-300">${item.referance_no || 'N/A'}</span>
                             </div>
-                            <div class="mt-1.5">${formatBarcodes(item.barcodes)}</div>
+                            <div class="mt-1.5 flex flex-wrap gap-1">${formatBarcodes(item.barcodes)}</div>
                         </div>
 
                         <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700/60 my-2.5">

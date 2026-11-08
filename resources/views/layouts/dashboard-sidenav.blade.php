@@ -291,6 +291,15 @@
       }
     }
 
+    @media (max-width: 768px) {
+        .page-content {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+            padding-top: 66px !important;
+            padding-bottom: 8px !important;
+        }
+        }
+
     /* Hide any collapse button on sidebar itself */
     .vertical-menu .vertical-menu-btn,
     .vertical-menu .vertical-menu-btn2 {
@@ -885,6 +894,59 @@
 
     body[data-sidebar-size="sm"] .vertical-menu .sidebar-bottom-logout .sidebar-logout-btn .text {
       display: none !important;
+    }
+
+    /* Mobile View Fixed Bottom Logout & Sidebar Viewport Fit */
+    @media (max-width: 992px) {
+      .vertical-menu {
+        top: 58px !important;
+        bottom: 0 !important;
+        height: calc(100dvh - 58px) !important;
+        height: calc(100vh - 58px) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        z-index: 1050 !important;
+      }
+      .vertical-menu #sidebar-slider-wrapper {
+        flex: 1 1 auto !important;
+        height: calc(100% - 58px - 56px) !important;
+        max-height: calc(100% - 58px - 56px) !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+      }
+      .vertical-menu .sidebar-bottom-logout {
+        display: block !important;
+        position: relative !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        flex-shrink: 0 !important;
+        margin-top: auto !important;
+        z-index: 1060 !important;
+        padding: 10px 12px !important;
+        background: rgba(6, 78, 59, 0.98) !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+      }
+      body[data-sidebar-size="sm"] .vertical-menu .sidebar-bottom-logout,
+      .vertical-menu .sidebar-bottom-logout {
+        padding: 10px 12px !important;
+      }
+      body[data-sidebar-size="sm"] .vertical-menu .sidebar-bottom-logout .sidebar-logout-btn,
+      .vertical-menu .sidebar-bottom-logout .sidebar-logout-btn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+        width: 100% !important;
+        height: auto !important;
+        padding: 9px 12px !important;
+      }
+      body[data-sidebar-size="sm"] .vertical-menu .sidebar-bottom-logout .sidebar-logout-btn .text,
+      .vertical-menu .sidebar-bottom-logout .sidebar-logout-btn .text {
+        display: inline-block !important;
+      }
     }
 
     /* Comprehensive Dark Mode Card & Section Overrides */

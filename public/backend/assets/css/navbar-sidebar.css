@@ -1259,7 +1259,10 @@ body[data-sidebar-size="lg"] .vertical-menu-btn i {
 
   .vertical-menu {
     opacity: 0;
-    top: 70px;
+    top: 58px;
+    bottom: 0;
+    height: calc(100vh - 58px);
+    height: calc(100dvh - 58px);
     left: -240px;
     transition: 0.3s;
   }
@@ -1271,7 +1274,10 @@ body[data-sidebar-size="lg"] .vertical-menu-btn i {
 
   body.sidebar-enable .vertical-menu {
     opacity: 1;
-    top: 71px;
+    top: 58px;
+    bottom: 0;
+    height: calc(100vh - 58px);
+    height: calc(100dvh - 58px);
     left: 0px;
   }
 

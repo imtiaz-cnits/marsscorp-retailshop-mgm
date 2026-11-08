@@ -465,6 +465,161 @@
                     border-color: #0284c7 !important;
                     color: #ffffff !important;
                 }
+
+                /* Mobile View: Overview Header Buttons, Date Filter & Box-type Tables */
+                @media (max-width: 768px) {
+                    .dashboard-header-card .card-body {
+                        gap: 12px !important;
+                    }
+                    .dashboard-header-controls {
+                        width: 100% !important;
+                        justify-content: space-between !important;
+                    }
+                    .dashboard-action-btns {
+                        order: 1 !important;
+                    }
+                    #dashboardFilterDropdownWrap {
+                        order: 2 !important;
+                        margin-left: auto !important;
+                    }
+                    #dashboardDateRangeBox {
+                        order: 3 !important;
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        display: flex !important;
+                        flex-wrap: nowrap !important;
+                        justify-content: space-between !important;
+                        align-items: center !important;
+                        gap: 4px !important;
+                        margin-top: 6px !important;
+                        box-sizing: border-box !important;
+                    }
+                    #dashboardDateRangeBox.d-none {
+                        display: none !important;
+                    }
+                    #dashboardDateRangeBox .dash-date-wrap {
+                        flex: 1 1 0% !important;
+                        min-width: 0 !important;
+                        max-width: calc(50% - 22px) !important;
+                        position: relative !important;
+                        display: flex !important;
+                        align-items: center !important;
+                    }
+                    #dashboardDateRangeBox .dash-date-wrap input,
+                    #dashboardDateRangeBox .dashboard-date-input {
+                        width: 100% !important;
+                        min-width: 0 !important;
+                        max-width: 100% !important;
+                        box-sizing: border-box !important;
+                        font-size: 11px !important;
+                        padding: 0 4px 0 24px !important;
+                        height: 34px !important;
+                        text-align: center !important;
+                        border-radius: 50rem !important;
+                    }
+                    #dashboardDateRangeBox .dash-date-icon {
+                        position: absolute !important;
+                        left: 8px !important;
+                        font-size: 11px !important;
+                        pointer-events: none !important;
+                        z-index: 2 !important;
+                    }
+                    #dashboardDateRangeBox .dash-date-sep {
+                        flex-shrink: 0 !important;
+                        font-size: 11px !important;
+                        padding: 0 1px !important;
+                    }
+                    .dash-btn-label {
+                        display: none !important;
+                    }
+                    .dashboard-btn-pos, .dashboard-btn-products {
+                        width: 38px !important;
+                        height: 38px !important;
+                        min-width: 38px !important;
+                        padding: 0 !important;
+                        display: inline-flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        border-radius: 12px !important;
+                    }
+                    .dashboard-btn-pos i, .dashboard-btn-products i {
+                        margin: 0 !important;
+                        font-size: 14px !important;
+                    }
+                    .dashboard-refresh-btn {
+                        width: 32px !important;
+                        height: 32px !important;
+                        min-width: 32px !important;
+                        flex-shrink: 0 !important;
+                        display: inline-flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        border-radius: 50% !important;
+                    }
+
+                    /* Stock & Invoice Table Mobile Box Type Layout */
+                    #lowStockTable thead,
+                    #recentSalesTable thead {
+                        display: none !important;
+                    }
+                    #lowStockTable tbody,
+                    #recentSalesTable tbody {
+                        display: flex !important;
+                        flex-direction: column !important;
+                        gap: 10px !important;
+                        padding: 12px !important;
+                    }
+                    #lowStockTable tbody tr,
+                    #recentSalesTable tbody tr {
+                        display: flex !important;
+                        flex-wrap: wrap !important;
+                        align-items: center !important;
+                        justify-content: space-between !important;
+                        padding: 12px 14px !important;
+                        border: 1px solid #e2e8f0 !important;
+                        border-radius: 14px !important;
+                        background: #ffffff !important;
+                        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+                    }
+                    body[light-mode="dark"] #lowStockTable tbody tr,
+                    body[light-mode="dark"] #recentSalesTable tbody tr,
+                    html.dark #lowStockTable tbody tr,
+                    html.dark #recentSalesTable tbody tr {
+                        background: #1e293b !important;
+                        border-color: #334155 !important;
+                    }
+                    #lowStockTable tbody tr td,
+                    #recentSalesTable tbody tr td {
+                        border: none !important;
+                        padding: 2px 4px !important;
+                    }
+                    #lowStockTable tbody tr td:first-child {
+                        flex: 1 1 100% !important;
+                        margin-bottom: 6px !important;
+                        padding-left: 0 !important;
+                        font-size: 13.5px !important;
+                    }
+                    #recentSalesTable tbody tr td:first-child {
+                        padding-left: 0 !important;
+                        font-size: 13px !important;
+                    }
+                    .reorder-btn-label {
+                        display: none !important;
+                    }
+                    .low-stock-reorder-btn {
+                        width: 34px !important;
+                        height: 34px !important;
+                        padding: 0 !important;
+                        display: inline-flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        border-radius: 10px !important;
+                    }
+                    .low-stock-reorder-btn i {
+                        margin: 0 !important;
+                        font-size: 13px !important;
+                    }
+                }
             </style>
 
             <!-- Overview Dashboard Header Card -->
@@ -479,9 +634,19 @@
                             <p class="text-muted small mb-0">Real-time sales, collections, expenses, dues &amp; business metrics</p>
                         </div>
                     </div>
-                    <div class="d-flex flex-wrap align-items-center gap-2 ms-auto justify-content-end">
-                        <!-- Custom Filter Dropdown -->
-                        <div class="position-relative" id="dashboardFilterDropdownWrap">
+                    <div class="d-flex flex-wrap align-items-center gap-2 ms-auto justify-content-end dashboard-header-controls">
+                        <!-- POS Terminal & Products Buttons (Shown on left on mobile, with icons only) -->
+                        <div class="d-flex align-items-center gap-2 dashboard-action-btns">
+                            <a href="{{ route('battery.pos') }}" class="btn dashboard-btn-pos rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1.5 text-white shadow-sm" style="white-space: nowrap;" title="POS Terminal">
+                                <i class="fa-solid fa-cart-shopping"></i> <span class="dash-btn-label ms-1">POS Terminal</span>
+                            </a>
+                            <a href="{{ route('battery.products') }}" class="btn dashboard-btn-products rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-none" style="white-space: nowrap;" title="Products">
+                                <i class="fa-solid fa-circle-plus text-success"></i> <span class="dash-btn-label ms-1">Products</span>
+                            </a>
+                        </div>
+
+                        <!-- Custom Filter Dropdown (Shown on right) -->
+                        <div class="position-relative ms-auto" id="dashboardFilterDropdownWrap">
                             <button type="button" id="dashboardFilterDropdownBtn" class="dashboard-filter-btn">
                                 <span id="dashboardFilterSelectedText">Today</span>
                                 <i class="fa-solid fa-chevron-down text-muted" id="dashboardFilterChevron" style="font-size: 11px; transition: transform 0.2s;"></i>
@@ -514,33 +679,22 @@
                             </div>
                         </div>
 
-                        <!-- Date Range Pickers (Shown when Date Wise is selected) -->
+                        <!-- Date Range Pickers (Line 2 together with Reset on mobile when Date Wise is selected) -->
                         <div id="dashboardDateRangeBox" class="d-none align-items-center gap-2">
-                            <div class="position-relative d-inline-flex align-items-center">
-                                <i class="fa-regular fa-calendar position-absolute text-success" style="left: 12px; font-size: 13px; pointer-events: none; z-index: 2;"></i>
+                            <div class="dash-date-wrap position-relative d-inline-flex align-items-center flex-1">
+                                <i class="fa-regular fa-calendar position-absolute text-success dash-date-icon" style="left: 10px; font-size: 12px; pointer-events: none; z-index: 2;"></i>
                                 <input type="text" id="dashboardStartDate" placeholder="From Date" class="dashboard-date-input" readonly>
                             </div>
-                            <span class="text-muted small fw-medium">to</span>
-                            <div class="position-relative d-inline-flex align-items-center">
-                                <i class="fa-regular fa-calendar position-absolute text-success" style="left: 12px; font-size: 13px; pointer-events: none; z-index: 2;"></i>
+                            <span class="text-muted small fw-medium dash-date-sep">to</span>
+                            <div class="dash-date-wrap position-relative d-inline-flex align-items-center flex-1">
+                                <i class="fa-regular fa-calendar position-absolute text-success dash-date-icon" style="left: 10px; font-size: 12px; pointer-events: none; z-index: 2;"></i>
                                 <input type="text" id="dashboardEndDate" placeholder="To Date" class="dashboard-date-input" readonly>
                             </div>
+                            <!-- Clear Filter Button (Reset to Today) -->
+                            <button type="button" id="dashboardRefreshBtn" class="dashboard-refresh-btn flex-shrink-0" title="Clear Filter (Reset to Today)">
+                                <i class="fa-solid fa-xmark text-danger" id="dashboardRefreshIcon" style="font-size: 15px; font-weight: 700;"></i>
+                            </button>
                         </div>
-
-                        <!-- Clear Filter Button (Reset to Today) -->
-                        <button type="button" id="dashboardRefreshBtn" class="dashboard-refresh-btn" title="Clear Filter (Reset to Today)">
-                            <i class="fa-solid fa-xmark text-danger" id="dashboardRefreshIcon" style="font-size: 15px; font-weight: 700;"></i>
-                        </button>
-
-                        <!-- POS Terminal Button -->
-                        <a href="{{ route('battery.pos') }}" class="btn dashboard-btn-pos rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1.5 text-white shadow-sm" style="white-space: nowrap;">
-                            <i class="fa-solid fa-cart-shopping me-1"></i> POS Terminal
-                        </a>
-
-                        <!-- Products Button -->
-                        <a href="{{ route('battery.products') }}" class="btn dashboard-btn-products rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-none" style="white-space: nowrap;">
-                            <i class="fa-solid fa-circle-plus me-1 text-success"></i> Products
-                        </a>
                     </div>
                 </div>
             </div>
@@ -1327,8 +1481,8 @@
                                 <td class="text-center"><span class="badge bg-light text-dark border font-monospace">${code}</span></td>
                                 <td class="text-center"><span class="badge bg-danger px-2 py-1 fw-bold">${item.quantity} ${item.unit || 'pcs'}</span></td>
                                 <td class="text-end pe-4">
-                                    <a href="{{ route('battery.purchases') }}" class="btn btn-sm btn-outline-success rounded-pill px-2 py-1" title="Procure Battery">
-                                        <i class="fa-solid fa-cart-plus me-1"></i> Reorder
+                                    <a href="{{ route('battery.purchases') }}" class="btn btn-sm btn-outline-success rounded-pill px-2 py-1 low-stock-reorder-btn" title="Procure Battery">
+                                        <i class="fa-solid fa-cart-plus"></i> <span class="reorder-btn-label ms-1">Reorder</span>
                                     </a>
                                 </td>
                             </tr>

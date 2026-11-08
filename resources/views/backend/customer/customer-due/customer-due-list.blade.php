@@ -30,7 +30,7 @@
                                     <rect x="2" y="5" width="20" height="14" rx="2"></rect>
                                     <line x1="2" y1="10" x2="22" y2="10"></line>
                                 </svg>
-                                <span>Customer Due List</span>
+                                <span>Due List</span>
                                 <span id="dueListCount" class="tab-count">0</span>
                             </button>
 
@@ -42,7 +42,7 @@
                                     <line x1="16" y1="17" x2="8" y2="17"></line>
                                     <polyline points="10 9 9 9 8 9"></polyline>
                                 </svg>
-                                <span>Due Collection List</span>
+                                <span>Collection List</span>
                                 <span id="collectionListCount" class="tab-count">0</span>
                             </button>
                         </div>

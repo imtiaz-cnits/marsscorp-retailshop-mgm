@@ -249,7 +249,7 @@
         <!-- Main Form & Content Area -->
         <div class="barcode-main-area">
             <div class="card barcode-card-container bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm overflow-hidden mb-4 transition-colors">
-                <div class="card-body p-4 sm:p-6 md:p-8">
+                <div class="card-body p-3 sm:p-6 md:p-8">
                     
                     <!-- Header -->
                     <div class="flex items-center gap-3 mb-4 pb-3 border-b border-slate-200 dark:border-slate-800">

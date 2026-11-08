@@ -11,7 +11,7 @@
     <div class="page-content purchase-page-content flex-grow flex flex-col justify-between">
         <div class="data-table flex-grow">
             <div class="card bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm overflow-hidden mb-4 transition-colors">
-                <div class="card-body product-card-body p-4 sm:p-6 md:p-8">
+                <div class="card-body product-card-body p-3 sm:p-6 md:p-8">
 
 
                     <!-- 1. Top Section: Page Title & Top Action Buttons -->
@@ -54,8 +54,8 @@
                         </div>
 
                         <!-- 2nd: Start Date with Flatpickr (col-start-date) -->
-                        <div class="col-start-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
-                            <input type="text" id="startDate" name="startDate" placeholder="Start Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
+                        <div class="col-start-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-2.5 sm:px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer min-w-0">
+                            <input type="text" id="startDate" name="startDate" placeholder="Start Date" style="padding: 0 4px !important; min-width: 0 !important;" class="w-full min-w-0 bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
                             <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -65,8 +65,8 @@
                         </div>
 
                         <!-- 3rd: End Date with Flatpickr (col-end-date) -->
-                        <div class="col-end-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
-                            <input type="text" id="endDate" name="endDate" placeholder="End Date" style="padding: 0 6px !important;" class="w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
+                        <div class="col-end-date date-input-wrapper unified-ui-border h-[38px] flex items-center px-2.5 sm:px-3 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer min-w-0">
+                            <input type="text" id="endDate" name="endDate" placeholder="End Date" style="padding: 0 4px !important; min-width: 0 !important;" class="w-full min-w-0 bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
                             <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -279,19 +279,21 @@
                             <span><i class="fa-solid fa-barcode text-emerald-600 dark:text-emerald-400 me-1"></i> Scan Barcode or Select Product <span class="text-rose-500">*</span></span>
                             <span class="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold"><i class="fa-solid fa-bolt me-1"></i> Auto-Cart Enabled</span>
                         </label>
-                        <div class="flex items-center gap-2">
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                             <div class="flex-grow relative">
                                 <input type="text" id="productInputData" class="form-control w-full h-[38px] px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs font-medium focus:border-emerald-600 focus:outline-none" placeholder="Scan barcode or type product name/code (Auto-adds to list)..." autocomplete="off" />
                                 <ul id="productDropdown" class="list-group absolute w-full shadow-xl rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 mt-1" style="z-index: 1050; max-height: 280px; overflow-y: auto; display: none;"></ul>
                             </div>
-                            <button type="button" class="inline-flex items-center gap-1 px-3 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 flex-shrink-0 cursor-pointer" onclick="openProductCreateModal()" title="Add New Product">
-                                <i class="fa-solid fa-plus text-xs"></i>
-                                <span>New</span>
-                            </button>
-                            <button type="button" class="inline-flex items-center gap-1.5 px-4 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 flex-shrink-0 cursor-pointer" onclick="openPurchaseCameraScanner()">
-                                <i class="fa-solid fa-camera text-xs"></i>
-                                <span>Scan Camera</span>
-                            </button>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button type="button" class="inline-flex items-center justify-center gap-1 flex-1 sm:flex-initial px-3 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 cursor-pointer" onclick="openProductCreateModal()" title="Add New Product">
+                                    <i class="fa-solid fa-plus text-xs"></i>
+                                    <span>New</span>
+                                </button>
+                                <button type="button" class="inline-flex items-center justify-center gap-1.5 flex-1 sm:flex-initial px-4 h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold rounded-xl shadow-sm transition-all duration-150 border-0 cursor-pointer" onclick="openPurchaseCameraScanner()">
+                                    <i class="fa-solid fa-camera text-xs"></i>
+                                    <span>Scan Camera</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -439,17 +441,28 @@
                 </div>
 
                 <!-- Sticky Bottom Modal Footer with Left-Right Padding and Red Cancel Button -->
-                <div class="purchase-modal-footer bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between gap-3 flex-shrink-0" style="position: sticky; bottom: 0; z-index: 20;">
-                    <button type="button" class="px-5 h-[38px] rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all shadow-sm border-0 cursor-pointer" data-bs-dismiss="modal">Cancel</button>
-                    <div class="flex items-center gap-2">
-                        <button type="button" id="btnResetBatteryPurchase" onclick="resetBatteryPurchaseModalAndDraft()" class="w-[38px] h-[38px] rounded-xl text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 bg-slate-100 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-950/40 border border-slate-300 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-800 shadow-sm transition-all duration-150 flex items-center justify-center cursor-pointer active:scale-95 flex-shrink-0" title="Reset All & Clear Hold Draft">
+                <div class="purchase-modal-footer bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-3 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-2.5 sm:gap-3 flex-shrink-0" style="position: sticky; bottom: 0; z-index: 20;">
+                    <div class="flex items-center justify-between w-full md:w-auto">
+                        <button type="button" class="px-5 h-[38px] rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all shadow-sm border-0 cursor-pointer" data-bs-dismiss="modal">Cancel</button>
+                        <div class="flex md:hidden items-center gap-2">
+                            <button type="button" onclick="resetBatteryPurchaseModalAndDraft()" class="w-[38px] h-[38px] rounded-xl text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 bg-slate-100 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-950/40 border border-slate-300 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-800 shadow-sm transition-all duration-150 flex items-center justify-center cursor-pointer active:scale-95 flex-shrink-0" title="Reset All & Clear Hold Draft">
+                                <i class="fa-solid fa-arrows-rotate text-sm"></i>
+                            </button>
+                            <button type="button" onclick="holdBatteryPurchaseOrder()" class="mobile-hold-battery-btn px-3.5 h-[38px] bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 border-0 cursor-pointer" title="Hold / Save Draft">
+                                <i class="fa-solid fa-pause text-xs"></i>
+                                <span class="mobile-hold-battery-text">Hold</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <button type="button" id="btnResetBatteryPurchase" onclick="resetBatteryPurchaseModalAndDraft()" class="hidden md:flex w-[38px] h-[38px] rounded-xl text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 bg-slate-100 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-950/40 border border-slate-300 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-800 shadow-sm transition-all duration-150 items-center justify-center cursor-pointer active:scale-95 flex-shrink-0" title="Reset All & Clear Hold Draft">
                             <i class="fa-solid fa-arrows-rotate text-sm"></i>
                         </button>
-                        <button type="button" id="btnHoldBatteryPurchase" onclick="holdBatteryPurchaseOrder()" class="px-4 h-[38px] bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 border-0 cursor-pointer" title="Hold / Save Draft">
+                        <button type="button" id="btnHoldBatteryPurchase" onclick="holdBatteryPurchaseOrder()" class="hidden md:flex px-4 h-[38px] bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 items-center justify-center gap-1.5 border-0 cursor-pointer" title="Hold / Save Draft">
                             <i class="fa-solid fa-pause text-xs"></i>
                             <span id="holdBatteryBtnText">Hold</span>
                         </button>
-                        <button type="submit" class="flex-grow sm:flex-grow-0 sm:min-w-[240px] h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 flex items-center justify-center gap-2 border-0 cursor-pointer">
+                        <button type="submit" class="w-full md:w-auto md:min-w-[240px] h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 flex items-center justify-center gap-2 border-0 cursor-pointer">
                             <i class="fa-solid fa-circle-check text-sm"></i>
                             <span>Submit Purchase Order</span>
                         </button>
@@ -1320,14 +1333,23 @@
     /* 5-Column Controls Row: 1 Row on Desktop, 2 Items Per Row on Mobile */
     .controls-five-cols-bar {
         display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 8px !important;
         width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
         align-items: center !important;
+    }
+    .controls-five-cols-bar > div {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
     .controls-five-cols-bar .col-search {
         grid-column: span 2 !important;
         width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
     .controls-five-cols-bar .col-start-date,
     .controls-five-cols-bar .col-end-date,
@@ -1335,13 +1357,53 @@
     .controls-five-cols-bar .col-filter {
         grid-column: span 1 !important;
         width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
     }
     .controls-five-cols-bar .col-entries {
         display: flex !important;
         justify-content: space-between !important;
+        align-items: center !important;
+        overflow: hidden !important;
     }
     .controls-five-cols-bar .col-filter .select-trigger {
         width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .controls-five-cols-bar input {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    @media (max-width: 767.98px) {
+        .purchase-page-content,
+        .data-table,
+        .product-card-body,
+        #mobileCardList {
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+        }
+        .table-responsive {
+            display: none !important;
+        }
+        .purchase-mobile-card {
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+        }
+        #pagination {
+            max-width: 100% !important;
+            width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            justify-content: center !important;
+        }
     }
 
     @media (min-width: 768px) {
@@ -1562,6 +1624,9 @@
         width: 95% !important;
         margin: 1.75rem auto !important;
         padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
     }
 
     #purchaseCreateModal .modal-content,
@@ -1575,6 +1640,155 @@
         display: flex;
         flex-direction: column;
         padding: 0 !important;
+    }
+
+    @media (max-width: 768px) {
+        #purchaseCreateModal .modal-dialog,
+        #purchaseUpdateModal .modal-dialog {
+            margin: 8px auto !important;
+            width: 96% !important;
+            max-width: 96% !important;
+            height: auto !important;
+            max-height: calc(100dvh - 16px) !important;
+            padding: 0 !important;
+            background: transparent !important;
+        }
+        #purchaseCreateModal .modal-content,
+        #purchaseUpdateModal .modal-content {
+            max-height: calc(100dvh - 16px) !important;
+            border-radius: 16px !important;
+            height: auto !important;
+        }
+        #purchaseCreateModal .purchase-modal-body,
+        #purchaseUpdateModal .purchase-modal-body {
+            max-height: calc(100dvh - 180px) !important;
+            padding: 12px !important;
+        }
+
+        /* Cart Items Box-Type Table Card Layout on Mobile */
+        #purchaseCreateModal .table-container thead,
+        #purchaseUpdateModal .table-container thead {
+            display: none !important;
+        }
+        #purchaseCreateModal .table-container,
+        #purchaseUpdateModal .table-container {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            overflow: visible !important;
+        }
+        #purchaseCreateModal .table-container .responsive-table,
+        #purchaseCreateModal .table-container .responsive-table tbody,
+        #purchaseUpdateModal .table-container .responsive-table,
+        #purchaseUpdateModal .table-container .responsive-table tbody {
+            display: block !important;
+            width: 100% !important;
+        }
+        #orderTableBody tr,
+        #batteryUpdateOrderTableBody tr {
+            display: flex !important;
+            flex-direction: column !important;
+            position: relative !important;
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 14px !important;
+            padding: 12px !important;
+            margin-bottom: 10px !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+            gap: 8px !important;
+        }
+        html.dark #orderTableBody tr,
+        body.dark #orderTableBody tr,
+        html.dark #batteryUpdateOrderTableBody tr,
+        body.dark #batteryUpdateOrderTableBody tr {
+            background: #0f172a !important;
+            border-color: #334155 !important;
+        }
+        #orderTableBody tr td,
+        #batteryUpdateOrderTableBody tr td {
+            display: flex !important;
+            width: 100% !important;
+            padding: 0 !important;
+            border: none !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+        }
+        /* Product Name (top) */
+        #orderTableBody tr td:nth-child(2),
+        #batteryUpdateOrderTableBody tr td:nth-child(2) {
+            order: 1 !important;
+            display: block !important;
+            padding-right: 36px !important;
+            text-align: left !important;
+        }
+        /* Trash button (top right) */
+        #orderTableBody tr td:nth-child(6),
+        #batteryUpdateOrderTableBody tr td:nth-child(6) {
+            position: absolute !important;
+            top: 10px !important;
+            right: 10px !important;
+            width: auto !important;
+            z-index: 2 !important;
+        }
+        /* Barcode (row 2) */
+        #orderTableBody tr td:nth-child(1),
+        #batteryUpdateOrderTableBody tr td:nth-child(1) {
+            order: 2 !important;
+        }
+        #orderTableBody tr td:nth-child(1) > div,
+        #batteryUpdateOrderTableBody tr td:nth-child(1) > div {
+            width: 100% !important;
+        }
+        #orderTableBody tr td:nth-child(1) input,
+        #batteryUpdateOrderTableBody tr td:nth-child(1) input {
+            flex: 1 1 auto !important;
+            width: auto !important;
+        }
+        /* Qty (row 3) */
+        #orderTableBody tr td:nth-child(3),
+        #batteryUpdateOrderTableBody tr td:nth-child(3) {
+            order: 3 !important;
+        }
+        #orderTableBody tr td:nth-child(3)::before,
+        #batteryUpdateOrderTableBody tr td:nth-child(3)::before {
+            content: 'Quantity:';
+            font-weight: 600;
+            font-size: 11px;
+            color: #64748b;
+        }
+        /* Cost Price (row 4) */
+        #orderTableBody tr td:nth-child(4),
+        #batteryUpdateOrderTableBody tr td:nth-child(4) {
+            order: 4 !important;
+        }
+        #orderTableBody tr td:nth-child(4)::before,
+        #batteryUpdateOrderTableBody tr td:nth-child(4)::before {
+            content: 'Cost Price (৳):';
+            font-weight: 600;
+            font-size: 11px;
+            color: #64748b;
+        }
+        /* Sub Total (row 5) */
+        #orderTableBody tr td:nth-child(5),
+        #batteryUpdateOrderTableBody tr td:nth-child(5) {
+            order: 5 !important;
+            border-top: 1px dashed #e2e8f0 !important;
+            padding-top: 8px !important;
+            margin-top: 2px !important;
+        }
+        html.dark #orderTableBody tr td:nth-child(5),
+        body.dark #orderTableBody tr td:nth-child(5),
+        html.dark #batteryUpdateOrderTableBody tr td:nth-child(5),
+        body.dark #batteryUpdateOrderTableBody tr td:nth-child(5) {
+            border-top-color: #334155 !important;
+        }
+        #orderTableBody tr td:nth-child(5)::before,
+        #batteryUpdateOrderTableBody tr td:nth-child(5)::before {
+            content: 'Sub Total:';
+            font-weight: 700;
+            font-size: 12px;
+            color: #047857;
+        }
     }
 
     body[light-mode="dark"] #purchaseCreateModal .modal-content,
@@ -4761,18 +4975,36 @@
     function updateHoldBatteryButtonState() {
         const btn = document.getElementById('btnHoldBatteryPurchase');
         const textSpan = document.getElementById('holdBatteryBtnText');
-        if (!btn) return;
+        const mobileHoldBtns = document.querySelectorAll('.mobile-hold-battery-btn');
+        const mobileHoldTexts = document.querySelectorAll('.mobile-hold-battery-text');
+        if (!btn && mobileHoldBtns.length === 0) return;
         const hasHeld = !!localStorage.getItem(BATTERY_HELD_PURCHASE_KEY);
         if (hasHeld) {
-            btn.classList.add('bg-amber-600', 'ring-2', 'ring-amber-300');
-            btn.classList.remove('bg-amber-500');
-            if (textSpan) textSpan.innerText = 'Held (Saved)';
-            btn.setAttribute('title', 'Held draft active. Click to update hold.');
+            if (btn) {
+                btn.classList.add('bg-amber-600', 'ring-2', 'ring-amber-300');
+                btn.classList.remove('bg-amber-500');
+                if (textSpan) textSpan.innerText = 'Held (Saved)';
+                btn.setAttribute('title', 'Held draft active. Click to update hold.');
+            }
+            mobileHoldBtns.forEach(b => {
+                b.classList.add('bg-amber-600', 'ring-2', 'ring-amber-300');
+                b.classList.remove('bg-amber-500');
+                b.setAttribute('title', 'Held draft active. Click to update hold.');
+            });
+            mobileHoldTexts.forEach(t => t.innerText = 'Saved');
         } else {
-            btn.classList.remove('bg-amber-600', 'ring-2', 'ring-amber-300');
-            btn.classList.add('bg-amber-500');
-            if (textSpan) textSpan.innerText = 'Hold';
-            btn.setAttribute('title', 'Hold / Save Draft');
+            if (btn) {
+                btn.classList.remove('bg-amber-600', 'ring-2', 'ring-amber-300');
+                btn.classList.add('bg-amber-500');
+                if (textSpan) textSpan.innerText = 'Hold';
+                btn.setAttribute('title', 'Hold / Save Draft');
+            }
+            mobileHoldBtns.forEach(b => {
+                b.classList.remove('bg-amber-600', 'ring-2', 'ring-amber-300');
+                b.classList.add('bg-amber-500');
+                b.setAttribute('title', 'Hold / Save Draft');
+            });
+            mobileHoldTexts.forEach(t => t.innerText = 'Hold');
         }
     }
 

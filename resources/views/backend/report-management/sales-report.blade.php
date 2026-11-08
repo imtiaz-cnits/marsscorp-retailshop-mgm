@@ -88,11 +88,54 @@
         grid-template-columns: 2fr 2fr 0.9fr 1.3fr !important;
         gap: 12px !important;
         align-items: flex-end !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
     @media (max-width: 1023px) {
         .top-filter-grid {
-            grid-template-columns: 1fr 1fr !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
             gap: 10px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .top-filter-grid > div {
+            min-width: 0 !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .top-filter-grid label {
+            min-width: 0 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+        .filter-field-wrap {
+            min-width: 0 !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .filter-field-input,
+        .filter-field-wrap input,
+        .filter-field-wrap .flatpickr-input {
+            min-width: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .custom-select-wrap,
+        .custom-select-btn {
+            min-width: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .custom-select-btn span {
+            min-width: 0 !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
         }
     }
 
@@ -136,13 +179,37 @@
     }
 
     @media (max-width: 639px) {
-        .filter-field-input {
-            font-size: 12px !important;
+        .top-filter-grid {
+            gap: 8px !important;
+        }
+        .filter-field-input,
+        .filter-field-wrap input,
+        .filter-field-wrap .flatpickr-input {
+            font-size: 11.5px !important;
             padding-left: 8px !important;
-            padding-right: 28px !important;
+            padding-right: 24px !important;
         }
         .filter-field-icon {
-            right: 8px !important;
+            right: 6px !important;
+            width: 14px !important;
+            height: 14px !important;
+        }
+        .custom-select-btn {
+            padding: 0 8px !important;
+            font-size: 11.5px !important;
+        }
+    }
+    @media (max-width: 767.98px) {
+        .page-content,
+        .data-table,
+        .product-card-body,
+        .card-body,
+        #mobileCardContainer,
+        #mobileCardsList,
+        #mobileCardList {
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
         }
     }
 
@@ -351,7 +418,7 @@
     <div class="page-content min-h-screen flex flex-col justify-between">
         <div class="data-table flex-grow">
             <div class="card bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-sm overflow-hidden mb-4 transition-colors">
-                <div class="card-body product-card-body p-4 sm:p-6 md:p-8">
+                <div class="card-body product-card-body p-3 sm:p-6 md:p-8">
 
                     <!-- 1. Page Title & Export Buttons -->
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4 no-print">
@@ -391,7 +458,7 @@
                     </div>
 
                     <!-- 2. Filter Row: 4 Columns (Desktop 1 row 4 col, Mobile 2 rows 2 col) -->
-                    <div class="top-filter-grid mb-5 no-print">
+                    <div class="top-filter-grid mb-4 no-print">
                         <!-- Column 1: Start Date (Icon on right, text starts left) -->
                         <div>
                             <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Start Date</label>

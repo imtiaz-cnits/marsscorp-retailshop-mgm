@@ -26,7 +26,7 @@
                         </div>
 
                         <!-- Right Controls: + New Return Button (Fixed 38px) -->
-                        <div class="flex items-center flex-wrap gap-2">
+                        <div class="return-desktop-new-btn hidden sm:flex items-center flex-wrap gap-2">
                             <button id="mainNewReturnBtn" onclick="triggerNewReturnModal()" type="button" class="inline-flex items-center gap-1.5 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150">
                                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -38,14 +38,20 @@
                     </div>
 
                     <!-- 2. Mode Toggle Nav Tabs (Fixed 38px height) -->
-                    <div class="flex items-center gap-2 mb-4">
-                        <button id="tabSalesReturnBtn" onclick="switchReturnTab('sales')" type="button" class="inline-flex items-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150">
-                            <i class="fa-solid fa-cart-shopping text-xs"></i>
-                            <span>Sales Return</span>
+                    <div class="return-mode-tabs flex items-center gap-2 mb-4">
+                        <button id="tabSalesReturnBtn" onclick="switchReturnTab('sales')" type="button" class="return-tab-btn inline-flex items-center justify-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150" title="Sales Return">
+                            <i class="fa-solid fa-cart-shopping text-sm sm:text-xs"></i>
+                            <span class="return-btn-label">Sales Return</span>
                         </button>
-                        <button id="tabPurchaseReturnBtn" onclick="switchReturnTab('purchase')" type="button" class="inline-flex items-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-[0.98] text-sm font-semibold rounded-xl shadow-sm transition-all duration-150">
-                            <i class="fa-solid fa-truck-ramp-box text-xs"></i>
-                            <span>Purchase Return</span>
+                        <button id="tabPurchaseReturnBtn" onclick="switchReturnTab('purchase')" type="button" class="return-tab-btn inline-flex items-center justify-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-[0.98] text-sm font-semibold rounded-xl shadow-sm transition-all duration-150" title="Purchase Return">
+                            <i class="fa-solid fa-truck-ramp-box text-sm sm:text-xs"></i>
+                            <span class="return-btn-label">Purchase Return</span>
+                        </button>
+                        <button id="mobileNewReturnBtn" onclick="triggerNewReturnModal()" type="button" class="return-mobile-new-btn return-tab-btn inline-flex items-center justify-center gap-1.5 px-3 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150" title="New Return">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
                         </button>
                     </div>
 
@@ -78,26 +84,29 @@
 
                         <!-- Date Range + Search Bar + Show Entry Side-by-Side -->
                         <div class="flex items-center flex-wrap gap-2 sm:gap-2.5 w-full md:w-auto">
-                            <!-- Start Date with Flatpickr -->
-                            <div class="col-start-date date-input-wrapper unified-ui-border h-[38px] w-[140px] sm:w-[148px] flex items-center px-2.5 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
-                                <input type="text" id="returnStartDate" name="returnStartDate" placeholder="Start Date" style="padding: 0 4px !important;" class="w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
-                                <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                            </div>
+                            <!-- Start Date & End Date Row: 2 equal 50% columns on mobile -->
+                            <div class="return-mobile-dates-row flex items-center gap-2 w-full sm:w-auto">
+                                <!-- Start Date with Flatpickr -->
+                                <div class="col-start-date date-input-wrapper unified-ui-border h-[38px] flex-1 sm:w-[140px] md:w-[148px] flex items-center px-2.5 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer">
+                                    <input type="text" id="returnStartDate" name="returnStartDate" placeholder="Start Date" style="padding: 0 4px !important;" class="w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
+                                    <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                </div>
 
-                            <!-- End Date with Flatpickr -->
-                            <div class="col-end-date date-input-wrapper unified-ui-border h-[38px] w-[140px] sm:w-[148px] flex items-center px-2.5 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer flex-shrink-0">
-                                <input type="text" id="returnEndDate" name="returnEndDate" placeholder="End Date" style="padding: 0 4px !important;" class="w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
-                                <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
+                                <!-- End Date with Flatpickr -->
+                                <div class="col-end-date date-input-wrapper unified-ui-border h-[38px] flex-1 sm:w-[140px] md:w-[148px] flex items-center px-2.5 bg-white dark:bg-slate-800/90 rounded-xl shadow-sm focus-within:border-emerald-600 transition-all cursor-pointer">
+                                    <input type="text" id="returnEndDate" name="returnEndDate" placeholder="End Date" style="padding: 0 4px !important;" class="w-full bg-transparent border-0 outline-none text-[11px] font-medium text-slate-700 dark:text-slate-200 placeholder:text-[11px] placeholder:font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 p-0 cursor-pointer" />
+                                    <svg class="w-3.5 h-3.5 text-slate-400 pointer-events-none ms-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                </div>
                             </div>
 
                             <!-- Search Bar -->
@@ -312,6 +321,43 @@
 </div>
 
 <style>
+    @media (max-width: 640px) {
+        .return-desktop-new-btn {
+            display: none !important;
+        }
+        .return-mode-tabs {
+            display: flex !important;
+            width: 100% !important;
+            gap: 8px !important;
+        }
+        .return-mode-tabs .return-tab-btn {
+            flex: 1 1 0% !important;
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        .return-mode-tabs .return-btn-label {
+            display: none !important;
+        }
+        .return-mobile-dates-row {
+            display: flex !important;
+            width: 100% !important;
+            gap: 8px !important;
+        }
+        .return-mobile-dates-row .col-start-date,
+        .return-mobile-dates-row .col-end-date {
+            flex: 1 1 0% !important;
+            width: 50% !important;
+            max-width: 50% !important;
+            min-width: 0 !important;
+        }
+    }
+    @media (min-width: 641px) {
+        .return-mobile-new-btn {
+            display: none !important;
+        }
+    }
+
     .product-card-body {
         padding: 10px !important;
     }
@@ -723,7 +769,7 @@
         .page-content {
             padding-left: 8px !important;
             padding-right: 8px !important;
-            padding-top: 76px !important;
+            padding-top: 66px !important;
             padding-bottom: 8px !important;
         }
         .card-body {
@@ -827,13 +873,20 @@
         const thPartyName = document.getElementById('thPartyName');
 
         if (tab === 'purchase') {
-            salesBtn.className = 'inline-flex items-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-[0.98] text-sm font-semibold rounded-xl shadow-sm transition-all duration-150';
-            purchaseBtn.className = 'inline-flex items-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150';
+            salesBtn.className = 'return-tab-btn inline-flex items-center justify-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-[0.98] text-sm font-semibold rounded-xl shadow-sm transition-all duration-150';
+            purchaseBtn.className = 'return-tab-btn inline-flex items-center justify-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150';
             
-            mainNewBtn.innerHTML = `
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <span>New Purchase Return</span>
-            `;
+            if (mainNewBtn) {
+                mainNewBtn.innerHTML = `
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>New Purchase Return</span>
+                `;
+            }
+
+            const mobileNewBtn = document.getElementById('mobileNewReturnBtn');
+            if (mobileNewBtn) {
+                mobileNewBtn.title = 'New Purchase Return';
+            }
 
             searchCardBox.style.borderLeft = '5px solid #0d9488 !important';
             searchTitle.innerHTML = `<i class="fa-solid fa-magnifying-glass text-teal-600"></i> Quick Purchase Memo Search & Process Return`;
@@ -844,13 +897,20 @@
             thInvoiceNo.innerText = 'Purchase Memo No';
             thPartyName.innerText = 'Supplier Name';
         } else {
-            salesBtn.className = 'inline-flex items-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150';
-            purchaseBtn.className = 'inline-flex items-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-[0.98] text-sm font-semibold rounded-xl shadow-sm transition-all duration-150';
+            salesBtn.className = 'return-tab-btn inline-flex items-center justify-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-150';
+            purchaseBtn.className = 'return-tab-btn inline-flex items-center justify-center gap-2 px-4 h-[38px] min-h-[38px] max-h-[38px] bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-[0.98] text-sm font-semibold rounded-xl shadow-sm transition-all duration-150';
 
-            mainNewBtn.innerHTML = `
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <span>New Sales Return</span>
-            `;
+            if (mainNewBtn) {
+                mainNewBtn.innerHTML = `
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>New Sales Return</span>
+                `;
+            }
+
+            const mobileNewBtn = document.getElementById('mobileNewReturnBtn');
+            if (mobileNewBtn) {
+                mobileNewBtn.title = 'New Sales Return';
+            }
 
             searchCardBox.style.borderLeft = '5px solid #15803d !important';
             searchTitle.innerHTML = `<i class="fa-solid fa-magnifying-glass text-emerald-600"></i> Quick Invoice Search & Process Return`;

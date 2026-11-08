@@ -11,7 +11,7 @@
 @section('content')
 
 <div class="main-content">
-    <div class="page-content" style="padding-top: 92px !important; padding-bottom: 20px !important;">
+    <div class="page-content" style="padding-bottom: 20px !important;">
         <div class="container-fluid px-0">
 
             <!-- Profile Page Header -->
