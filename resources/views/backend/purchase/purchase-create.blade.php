@@ -206,6 +206,139 @@
         font-weight: bold;
         font-size: 12px;
     }
+
+    /* Qty +/- Buttons: Never Turn White on Hover */
+    .purchase-qty-btn {
+        width: 28px !important;
+        height: 28px !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 8px !important;
+        border: 1px solid #cbd5e1 !important;
+        background-color: #f1f5f9 !important;
+        color: #334155 !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+        user-select: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    .purchase-qty-btn:hover {
+        background-color: #e2e8f0 !important;
+        border-color: #94a3b8 !important;
+        color: #0f172a !important;
+    }
+    .purchase-qty-btn:active {
+        transform: scale(0.92) !important;
+        background-color: #cbd5e1 !important;
+    }
+    .purchase-qty-btn i {
+        color: #334155 !important;
+        font-size: 10px !important;
+    }
+    .purchase-qty-btn:hover i {
+        color: #0f172a !important;
+    }
+    body[light-mode="dark"] .purchase-qty-btn,
+    html[light-mode="dark"] .purchase-qty-btn,
+    body[data-layout-mode="dark"] .purchase-qty-btn,
+    html.dark .purchase-qty-btn,
+    body.dark .purchase-qty-btn,
+    body.dark-mode .purchase-qty-btn {
+        border-color: #475569 !important;
+        background-color: #1e293b !important;
+        color: #cbd5e1 !important;
+    }
+    body[light-mode="dark"] .purchase-qty-btn:hover,
+    html[light-mode="dark"] .purchase-qty-btn:hover,
+    body[data-layout-mode="dark"] .purchase-qty-btn:hover,
+    html.dark .purchase-qty-btn:hover,
+    body.dark .purchase-qty-btn:hover,
+    body.dark-mode .purchase-qty-btn:hover {
+        background-color: #334155 !important;
+        border-color: #64748b !important;
+        color: #ffffff !important;
+    }
+    body[light-mode="dark"] .purchase-qty-btn i,
+    html[light-mode="dark"] .purchase-qty-btn i,
+    body[data-layout-mode="dark"] .purchase-qty-btn i,
+    html.dark .purchase-qty-btn i,
+    body.dark .purchase-qty-btn i,
+    body.dark-mode .purchase-qty-btn i {
+        color: #cbd5e1 !important;
+    }
+    body[light-mode="dark"] .purchase-qty-btn:hover i,
+    html[light-mode="dark"] .purchase-qty-btn:hover i,
+    body[data-layout-mode="dark"] .purchase-qty-btn:hover i,
+    html.dark .purchase-qty-btn:hover i,
+    body.dark .purchase-qty-btn:hover i,
+    body.dark-mode .purchase-qty-btn:hover i {
+        color: #ffffff !important;
+    }
+
+    /* Reset Button in Modal Footer */
+    #btnResetPurchase, #btnResetBatteryPurchase {
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        min-height: 38px !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 12px !important;
+        border: 1px solid #cbd5e1 !important;
+        background-color: #f1f5f9 !important;
+        color: #475569 !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+    }
+    #btnResetPurchase:hover, #btnResetBatteryPurchase:hover {
+        background-color: #fee2e2 !important;
+        border-color: #fca5a5 !important;
+        color: #dc2626 !important;
+    }
+    #btnResetPurchase:hover i, #btnResetBatteryPurchase:hover i {
+        transform: rotate(-90deg);
+        transition: transform 0.25s ease;
+    }
+    #btnResetPurchase:active, #btnResetBatteryPurchase:active {
+        transform: scale(0.92) !important;
+    }
+    body[light-mode="dark"] #btnResetPurchase,
+    html[light-mode="dark"] #btnResetPurchase,
+    body[data-layout-mode="dark"] #btnResetPurchase,
+    html.dark #btnResetPurchase,
+    body.dark #btnResetPurchase,
+    body.dark-mode #btnResetPurchase,
+    body[light-mode="dark"] #btnResetBatteryPurchase,
+    html[light-mode="dark"] #btnResetBatteryPurchase,
+    body[data-layout-mode="dark"] #btnResetBatteryPurchase,
+    html.dark #btnResetBatteryPurchase,
+    body.dark #btnResetBatteryPurchase,
+    body.dark-mode #btnResetBatteryPurchase {
+        border-color: #475569 !important;
+        background-color: #1e293b !important;
+        color: #94a3b8 !important;
+    }
+    body[light-mode="dark"] #btnResetPurchase:hover,
+    html[light-mode="dark"] #btnResetPurchase:hover,
+    body[data-layout-mode="dark"] #btnResetPurchase:hover,
+    html.dark #btnResetPurchase:hover,
+    body.dark #btnResetPurchase:hover,
+    body.dark-mode #btnResetPurchase:hover,
+    body[light-mode="dark"] #btnResetBatteryPurchase:hover,
+    html[light-mode="dark"] #btnResetBatteryPurchase:hover,
+    body[data-layout-mode="dark"] #btnResetBatteryPurchase:hover,
+    html.dark #btnResetBatteryPurchase:hover,
+    body.dark #btnResetBatteryPurchase:hover,
+    body.dark-mode #btnResetBatteryPurchase:hover {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #f87171 !important;
+    }
 </style>
 
 <!-- Action Button Edit Modal Start -->
@@ -316,12 +449,12 @@
                         <table class="responsive-table w-full text-left border-collapse text-xs">
                             <thead class="bg-[#15803d] text-white text-xs font-semibold uppercase tracking-wider">
                                 <tr>
+                                    <th class="p-2.5" style="width: 160px;">Barcodes</th>
                                     <th class="p-2.5">Product Name</th>
-                                    <th class="p-2.5">Barcodes</th>
-                                    <th class="p-2.5 text-center" style="width: 130px;">Qty</th>
-                                    <th class="p-2.5 text-end" style="width: 130px;">Cost Price (৳)</th>
-                                    <th class="p-2.5 text-end" style="width: 130px;">Sub Total</th>
-                                    <th class="p-2.5 text-center" style="width: 60px;">Action</th>
+                                    <th class="p-2.5 text-center" style="width: 140px;">Qty</th>
+                                    <th class="p-2.5 text-end" style="width: 120px;">Cost Price (৳)</th>
+                                    <th class="p-2.5 text-end" style="width: 110px;">Sub Total</th>
+                                    <th class="p-2.5 text-center" style="width: 50px;">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="orderTableBody">
@@ -457,10 +590,19 @@
                 <!-- Fixed Sticky Bottom Modal Footer with Left-Right Padding p-4 and Red Cancel Button -->
                 <div class="purchase-modal-footer bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between gap-3 flex-shrink-0" style="position: sticky; bottom: 0; z-index: 20;">
                     <button type="button" class="px-5 h-[38px] rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all shadow-sm border-0 cursor-pointer" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="flex-grow sm:flex-grow-0 sm:min-w-[240px] h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl shadow transition-all duration-150 flex items-center justify-center gap-2 border-0 cursor-pointer">
-                        <i class="fa-solid fa-circle-check text-sm"></i>
-                        <span>Submit Purchase Order</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="btnResetPurchase" onclick="resetPurchaseModalAndDraft()" class="w-[38px] h-[38px] rounded-xl text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 bg-slate-100 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-950/40 border border-slate-300 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-800 shadow-sm transition-all duration-150 flex items-center justify-center cursor-pointer active:scale-95 flex-shrink-0" title="Reset All & Clear Hold Draft">
+                            <i class="fa-solid fa-arrows-rotate text-sm"></i>
+                        </button>
+                        <button type="button" id="btnHoldPurchase" onclick="holdPurchaseOrder()" class="px-4 h-[38px] bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 border-0 cursor-pointer" title="Hold / Save Draft">
+                            <i class="fa-solid fa-pause text-xs"></i>
+                            <span id="holdBtnText">Hold</span>
+                        </button>
+                        <button type="submit" class="flex-grow sm:flex-grow-0 sm:min-w-[240px] h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 flex items-center justify-center gap-2 border-0 cursor-pointer">
+                            <i class="fa-solid fa-circle-check text-sm"></i>
+                            <span>Submit Purchase Order</span>
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -651,6 +793,14 @@
         if (typeof $ !== "undefined") {
             $('#exampleModal').on('shown.bs.modal', function () {
                 initCreateDatePicker();
+                restoreHeldPurchaseOrder();
+            });
+        }
+        updateHoldButtonState();
+        const modalEl = document.getElementById('exampleModal');
+        if (modalEl) {
+            modalEl.addEventListener('shown.bs.modal', function () {
+                restoreHeldPurchaseOrder();
             });
         }
     });
@@ -1091,27 +1241,35 @@
         const costPrice = parseFloat(product.cost_price) || 0;
 
         row.innerHTML = `
-            <td class="p-2.5 font-bold text-slate-800 dark:text-slate-100">
-                <span class="product-id-val d-none">${product.id}</span>
-                <span>${productName}</span>
-                <div class="text-[11px] text-slate-400 font-normal">ID: ${product.product_id || product.id}</div>
-            </td>
-            <td class="p-2.5">
+            <td class="p-2.5" style="width: 160px;">
                 <div class="d-flex align-items-center gap-1">
-                    <input type="text" id="UpdateProductCode" class="form-control form-control-sm" style="font-size: 11px; width: 140px;" value="${initialBarcode}" readonly />
+                    <input type="text" id="UpdateProductCode" class="form-control form-control-sm" style="font-size: 11px; width: 120px;" value="${initialBarcode}" title="${initialBarcode}" readonly />
                     <button type="button" class="btn btn-sm btn-outline-secondary px-1.5 py-0.5" onclick="promptAddBarcode(this, ${product.id})" title="Add Barcode">
                         <i class="fa-solid fa-plus text-[10px]"></i>
                     </button>
                 </div>
             </td>
-            <td class="p-2.5 text-center">
-                <input type="number" class="form-control form-control-sm quantity text-center font-bold" min="1" value="1" style="width: 70px; margin: 0 auto;" oninput="updateRowSubtotal(this.closest('tr')); updateTotals();" />
+            <td class="p-2.5 font-bold text-slate-800 dark:text-slate-100">
+                <span class="product-id-val d-none">${product.id}</span>
+                <span>${productName}</span>
+                <div class="text-[11px] text-slate-400 font-normal">ID: ${product.product_id || product.id}</div>
             </td>
-            <td class="p-2.5 text-end">
-                <input type="number" step="any" class="form-control form-control-sm cost-price text-end font-bold" value="${costPrice}" style="width: 90px; margin-left: auto;" oninput="updateRowSubtotal(this.closest('tr')); updateTotals();" />
+            <td class="p-2.5 text-center" style="width: 140px;">
+                <div class="d-inline-flex align-items-center justify-content-center gap-1">
+                    <button type="button" class="purchase-qty-btn" onclick="changeRowQty(this, -1)" title="Decrease Qty">
+                        <i class="fa-solid fa-minus"></i>
+                    </button>
+                    <input type="number" class="form-control form-control-sm quantity text-center font-bold" min="1" value="1" style="width: 50px; height: 28px; padding: 2px 4px;" oninput="updateRowSubtotal(this.closest('tr')); updateTotals();" />
+                    <button type="button" class="purchase-qty-btn" onclick="changeRowQty(this, 1)" title="Increase Qty">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
             </td>
-            <td class="p-2.5 text-end font-bold text-slate-800 dark:text-white subtotal">৳ ${costPrice.toFixed(2)}</td>
-            <td class="p-2.5 text-center">
+            <td class="p-2.5 text-end" style="width: 120px;">
+                <input type="number" step="0.01" class="form-control form-control-sm cost-price text-end font-bold" value="${costPrice.toFixed(2)}" style="width: 95px; margin-left: auto;" oninput="updateRowSubtotal(this.closest('tr')); updateTotals();" onblur="this.value = (parseFloat(this.value) || 0).toFixed(2); updateRowSubtotal(this.closest('tr')); updateTotals();" />
+            </td>
+            <td class="p-2.5 text-end font-bold text-slate-800 dark:text-white subtotal" style="width: 110px;">৳ ${costPrice.toFixed(2)}</td>
+            <td class="p-2.5 text-center" style="width: 50px;">
                 <button type="button" class="btn btn-sm btn-outline-danger p-1 rounded-lg" onclick="removeProductRow(this)" title="Remove">
                     <i class="fa-solid fa-trash text-xs"></i>
                 </button>
@@ -1119,6 +1277,16 @@
         `;
 
         tableBody.appendChild(row);
+        updateTotals();
+    }
+
+    function changeRowQty(btn, delta) {
+        const row = btn.closest("tr");
+        const qtyInput = row.querySelector(".quantity");
+        let val = parseInt(qtyInput.value) || 1;
+        val = Math.max(1, val + delta);
+        qtyInput.value = val;
+        updateRowSubtotal(row);
         updateTotals();
     }
 
@@ -1349,6 +1517,7 @@
 
             if (res.data['status'] === "success") {
                 showPurchaseTopToast(res.data['message'], false);
+                clearHeldPurchaseOrder();
                 const formEl = document.getElementById("purchaseCreateForm") || document.getElementById("signup");
                 if (formEl) formEl.reset();
                 const modal = document.getElementById('exampleModal');
@@ -1361,6 +1530,306 @@
             console.error("Purchase Save Error:", e);
             showPurchaseTopToast(e.response?.data?.message || "Failed to submit purchase order.", true);
             unauthorized(e.response?.status);
+        }
+    }
+
+    function holdPurchaseOrder() {
+        const rows = document.querySelectorAll('#orderTableBody tr');
+        const items = [];
+        rows.forEach(row => {
+            const pId = row.getAttribute('data-product-id');
+            const pName = row.querySelector('.product-id-val + span')?.innerText || '';
+            const idBadge = row.querySelector('.text-\\[11px\\]')?.innerText || '';
+            const barcode = row.querySelector('#UpdateProductCode')?.value || '';
+            const qty = parseInt(row.querySelector('.quantity')?.value) || 1;
+            const costPrice = parseFloat(row.querySelector('.cost-price')?.value) || 0;
+            items.push({
+                id: pId,
+                name: pName,
+                idBadge: idBadge,
+                barcode: barcode,
+                barcodesList: UpdatebarcodeLists[pId] || (barcode ? [barcode] : []),
+                quantity: qty,
+                cost_price: costPrice
+            });
+        });
+
+        const draft = {
+            supplierId: document.getElementById('SupplierDataList')?.value || '',
+            supplierSearch: document.getElementById('supplierSearchInput')?.value || '',
+            payableAmount: document.getElementById('PurchasePayableAmount')?.value || '',
+            refNo: document.getElementById('ReferenceNo')?.value || '',
+            purchaseDate: document.getElementById('PurchaseDate')?.value || '',
+            deliveryCharge: document.getElementById('deliveryTransportCharge')?.value || '',
+            discountType: document.getElementById('purchaseDiscountType')?.value || 'fixed',
+            discountInput: document.getElementById('purchaseDiscountInput')?.value || '',
+            paymentMethod: document.getElementById('paymentMethod')?.value || '',
+            paidAmount: document.getElementById('paidAmount')?.value || '',
+            paymentNumber: document.getElementById('paymentNumber')?.value || '',
+            bankName: document.getElementById('bankNameInput')?.value || '',
+            bankNumber: document.getElementById('bankNumberInput')?.value || '',
+            transactionId: document.getElementById('transactionIdInput')?.value || '',
+            paymentDetails: document.getElementById('paymentDetails')?.value || '',
+            items: items,
+            savedAt: new Date().toISOString()
+        };
+
+        localStorage.setItem('retail_held_purchase_order', JSON.stringify(draft));
+        updateHoldButtonState();
+        showPurchaseTopToast("Purchase order held successfully! (অর্ডার ড্রাফট হিসেবে সেভ হয়েছে)", false);
+    }
+
+    function clearHeldPurchaseOrder() {
+        localStorage.removeItem('retail_held_purchase_order');
+        updateHoldButtonState();
+    }
+
+    function resetPurchaseModalAndDraft() {
+        // 1. Clear held draft from storage
+        clearHeldPurchaseOrder();
+
+        // 2. Reset the form
+        const formEl = document.getElementById("purchaseCreateForm") || document.getElementById("signup");
+        if (formEl) formEl.reset();
+
+        // 3. Reset supplier
+        const supList = document.getElementById('SupplierDataList');
+        if (supList) supList.value = 'none';
+        const supInput = document.getElementById('supplierSearchInput');
+        if (supInput) supInput.value = '';
+        const creditNotice = document.getElementById('supplierCreditNotice');
+        if (creditNotice) creditNotice.classList.add('d-none');
+        const payEl = document.getElementById('PurchasePayableAmount');
+        if (payEl) payEl.value = '';
+
+        // 4. Reset reference & date
+        const refEl = document.getElementById('ReferenceNo');
+        if (refEl) refEl.value = '';
+        const pDateInput = document.getElementById('PurchaseDate');
+        if (pDateInput) {
+            const now = new Date();
+            const d = String(now.getDate()).padStart(2, '0');
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const y = now.getFullYear();
+            const todayStr = `${d}-${m}-${y}`;
+            pDateInput.value = todayStr;
+            if (window.createPurchaseDatepicker) {
+                window.createPurchaseDatepicker.setDate(todayStr, false);
+            }
+        }
+        const attachEl = document.getElementById('AttachDocument');
+        if (attachEl) attachEl.value = '';
+
+        // 5. Reset products table & barcodes
+        UpdatebarcodeLists = {};
+        const tableBody = document.getElementById("orderTableBody");
+        if (tableBody) tableBody.innerHTML = '';
+
+        // 6. Reset charges & discounts
+        const delEl = document.getElementById('deliveryTransportCharge');
+        if (delEl) delEl.value = '0';
+        const discType = document.getElementById('purchaseDiscountType');
+        if (discType) discType.value = 'fixed';
+        const discInput = document.getElementById('purchaseDiscountInput');
+        if (discInput) discInput.value = '0';
+        const discSummaryEl = document.getElementById("purchaseDiscountSummaryDisplay");
+        if (discSummaryEl) discSummaryEl.textContent = '';
+        const retCreditCb = document.getElementById('useReturnCreditCheckbox');
+        if (retCreditCb) retCreditCb.checked = false;
+        const retCreditCbBanner = document.getElementById('useReturnCreditCheckboxBanner');
+        if (retCreditCbBanner) retCreditCbBanner.checked = false;
+        const retAdjInput = document.getElementById('returnAdjustmentAmount');
+        if (retAdjInput) retAdjInput.value = '0.00';
+
+        // 7. Reset payment details
+        const pmEl = document.getElementById('paymentMethod');
+        if (pmEl) {
+            pmEl.value = '';
+            if (typeof handlePurchasePaymentMethodChange === 'function') {
+                handlePurchasePaymentMethodChange('');
+            }
+        }
+        const paidEl = document.getElementById('paidAmount');
+        if (paidEl) paidEl.value = '0';
+        const pnEl = document.getElementById('paymentNumber');
+        if (pnEl) pnEl.value = '';
+        const bnEl = document.getElementById('bankNameInput');
+        if (bnEl) bnEl.value = '';
+        const bn2El = document.getElementById('bankNumberInput');
+        if (bn2El) bn2El.value = '';
+        const trxEl = document.getElementById('transactionIdInput');
+        if (trxEl) trxEl.value = '';
+        const pdEl = document.getElementById('paymentDetails');
+        if (pdEl) pdEl.value = '';
+
+        // 8. Update totals & calculations
+        window.purchaseRawSubtotal = 0;
+        updateTotals();
+
+        // 9. Toast notification
+        showPurchaseTopToast("Modal and held draft reset successfully!", false);
+    }
+
+    function updateHoldButtonState() {
+        const btn = document.getElementById('btnHoldPurchase');
+        const textSpan = document.getElementById('holdBtnText');
+        if (!btn) return;
+        const hasHeld = !!localStorage.getItem('retail_held_purchase_order');
+        if (hasHeld) {
+            btn.classList.add('bg-amber-600', 'ring-2', 'ring-amber-300');
+            btn.classList.remove('bg-amber-500');
+            if (textSpan) textSpan.innerText = 'Hold (Saved)';
+            btn.setAttribute('title', 'Held draft active. Click to update hold.');
+        } else {
+            btn.classList.remove('bg-amber-600', 'ring-2', 'ring-amber-300');
+            btn.classList.add('bg-amber-500');
+            if (textSpan) textSpan.innerText = 'Hold';
+            btn.setAttribute('title', 'Hold / Save Draft');
+        }
+    }
+
+    function restoreHeldPurchaseOrder(force = false) {
+        const raw = localStorage.getItem('retail_held_purchase_order');
+        if (!raw) return false;
+        try {
+            const draft = JSON.parse(raw);
+            if (!draft) return false;
+
+            const currentRows = document.querySelectorAll('#orderTableBody tr');
+            if (currentRows.length > 0 && !force) return false;
+
+            if (draft.supplierId && draft.supplierId !== 'none') {
+                const supList = document.getElementById('SupplierDataList');
+                if (supList) supList.value = draft.supplierId;
+            }
+            if (draft.supplierSearch) {
+                const supInput = document.getElementById('supplierSearchInput');
+                if (supInput) supInput.value = draft.supplierSearch;
+            }
+            if (draft.payableAmount) {
+                const payEl = document.getElementById('PurchasePayableAmount');
+                if (payEl) payEl.value = draft.payableAmount;
+            }
+            if (draft.refNo) {
+                const refEl = document.getElementById('ReferenceNo');
+                if (refEl) refEl.value = draft.refNo;
+            }
+            if (draft.purchaseDate) {
+                const dateEl = document.getElementById('PurchaseDate');
+                if (dateEl) {
+                    dateEl.value = draft.purchaseDate;
+                    if (window.createPurchaseDatepicker) {
+                        window.createPurchaseDatepicker.setDate(draft.purchaseDate, false);
+                    }
+                }
+            }
+            if (draft.deliveryCharge) {
+                const delEl = document.getElementById('deliveryTransportCharge');
+                if (delEl) delEl.value = draft.deliveryCharge;
+            }
+            if (draft.discountType) {
+                const dtEl = document.getElementById('purchaseDiscountType');
+                if (dtEl) dtEl.value = draft.discountType;
+            }
+            if (draft.discountInput) {
+                const diEl = document.getElementById('purchaseDiscountInput');
+                if (diEl) diEl.value = draft.discountInput;
+            }
+
+            if (Array.isArray(draft.items) && draft.items.length > 0) {
+                const tableBody = document.getElementById("orderTableBody");
+                tableBody.innerHTML = '';
+                draft.items.forEach(item => {
+                    const row = document.createElement("tr");
+                    row.setAttribute("data-product-id", item.id);
+                    row.className = "hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors";
+                    UpdatebarcodeLists[item.id] = item.barcodesList || (item.barcode ? [item.barcode] : []);
+                    const costPrice = parseFloat(item.cost_price) || 0;
+                    const qty = parseInt(item.quantity) || 1;
+                    const subtotal = qty * costPrice;
+
+                    row.innerHTML = `
+                        <td class="p-2.5" style="width: 160px;">
+                            <div class="d-flex align-items-center gap-1">
+                                <input type="text" id="UpdateProductCode" class="form-control form-control-sm" style="font-size: 11px; width: 120px;" value="${item.barcode || ''}" title="${item.barcode || ''}" readonly />
+                                <button type="button" class="btn btn-sm btn-outline-secondary px-1.5 py-0.5" onclick="promptAddBarcode(this, ${item.id})" title="Add Barcode">
+                                    <i class="fa-solid fa-plus text-[10px]"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="p-2.5 font-bold text-slate-800 dark:text-slate-100">
+                            <span class="product-id-val d-none">${item.id}</span>
+                            <span>${item.name}</span>
+                            <div class="text-[11px] text-slate-400 font-normal">${item.idBadge || ('ID: ' + item.id)}</div>
+                        </td>
+                        <td class="p-2.5 text-center" style="width: 140px;">
+                            <div class="d-inline-flex align-items-center justify-content-center gap-1">
+                                <button type="button" class="purchase-qty-btn" onclick="changeRowQty(this, -1)" title="Decrease Qty">
+                                    <i class="fa-solid fa-minus"></i>
+                                </button>
+                                <input type="number" class="form-control form-control-sm quantity text-center font-bold" min="1" value="${qty}" style="width: 50px; height: 28px; padding: 2px 4px;" oninput="updateRowSubtotal(this.closest('tr')); updateTotals();" />
+                                <button type="button" class="purchase-qty-btn" onclick="changeRowQty(this, 1)" title="Increase Qty">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="p-2.5 text-end" style="width: 120px;">
+                            <input type="number" step="0.01" class="form-control form-control-sm cost-price text-end font-bold" value="${costPrice.toFixed(2)}" style="width: 95px; margin-left: auto;" oninput="updateRowSubtotal(this.closest('tr')); updateTotals();" onblur="this.value = (parseFloat(this.value) || 0).toFixed(2); updateRowSubtotal(this.closest('tr')); updateTotals();" />
+                        </td>
+                        <td class="p-2.5 text-end font-bold text-slate-800 dark:text-white subtotal" style="width: 110px;">৳ ${subtotal.toFixed(2)}</td>
+                        <td class="p-2.5 text-center" style="width: 50px;">
+                            <button type="button" class="btn btn-sm btn-outline-danger p-1 rounded-lg" onclick="removeProductRow(this)" title="Remove">
+                                <i class="fa-solid fa-trash text-xs"></i>
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                updateTotals();
+            }
+
+            if (draft.paymentMethod) {
+                const pmEl = document.getElementById('paymentMethod');
+                if (pmEl) {
+                    pmEl.value = draft.paymentMethod;
+                    if (typeof handlePurchasePaymentMethodChange === 'function') {
+                        handlePurchasePaymentMethodChange(draft.paymentMethod);
+                    }
+                }
+            }
+            if (draft.paidAmount) {
+                const paEl = document.getElementById('paidAmount');
+                if (paEl) paEl.value = draft.paidAmount;
+            }
+            if (draft.paymentNumber) {
+                const pnEl = document.getElementById('paymentNumber');
+                if (pnEl) pnEl.value = draft.paymentNumber;
+            }
+            if (draft.bankName) {
+                const bnEl = document.getElementById('bankNameInput');
+                if (bnEl) bnEl.value = draft.bankName;
+            }
+            if (draft.bankNumber) {
+                const bnEl2 = document.getElementById('bankNumberInput');
+                if (bnEl2) bnEl2.value = draft.bankNumber;
+            }
+            if (draft.transactionId) {
+                const trxEl = document.getElementById('transactionIdInput');
+                if (trxEl) trxEl.value = draft.transactionId;
+            }
+            if (draft.paymentDetails) {
+                const pdEl = document.getElementById('paymentDetails');
+                if (pdEl) pdEl.value = draft.paymentDetails;
+            }
+
+            if (typeof calculateDuePayment === 'function') {
+                calculateDuePayment();
+            }
+            updateHoldButtonState();
+            return true;
+        } catch (e) {
+            console.error("Error restoring held purchase:", e);
+            return false;
         }
     }
 

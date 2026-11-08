@@ -635,7 +635,7 @@
                                     <i class="fa-solid fa-users"></i>
                                 </span>
                             </div>
-                            <h3 id="customerDue" class="fw-bold mb-0 text-dark fs-4">৳ 0.00</h3>
+                            <h3 id="customerDue" class="fw-bold mb-0 text-dark fs-5">৳ 0.00</h3>
                         </div>
                     </div>
                     <!-- Payable Due -->
@@ -647,7 +647,7 @@
                                     <i class="fa-solid fa-truck-field"></i>
                                 </span>
                             </div>
-                            <h3 id="supplierPayable" class="fw-bold mb-0 text-dark fs-4">৳ 0.00</h3>
+                            <h3 id="supplierPayable" class="fw-bold mb-0 text-dark fs-5">৳ 0.00</h3>
                         </div>
                     </div>
                     <!-- Return -->
@@ -659,7 +659,7 @@
                                     <i class="fa-solid fa-rotate-left"></i>
                                 </span>
                             </div>
-                            <h3 id="totalReturnAmount" class="fw-bold mb-0 text-dark fs-4">৳ 0.00</h3>
+                            <h3 id="totalReturnAmount" class="fw-bold mb-0 text-dark fs-5">৳ 0.00</h3>
                         </div>
                     </div>
                     <!-- Discount -->
@@ -671,7 +671,7 @@
                                     <i class="fa-solid fa-percent"></i>
                                 </span>
                             </div>
-                            <h3 id="totalDiscountAmount" class="fw-bold mb-0 text-dark fs-4">৳ 0.00</h3>
+                            <h3 id="totalDiscountAmount" class="fw-bold mb-0 text-dark fs-5">৳ 0.00</h3>
                         </div>
                     </div>
                 </div>
