@@ -354,6 +354,73 @@
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.25) !important;
     }
 
+    /* Purchase Modal Footer Layout (Desktop & Mobile) */
+    .purchase-modal-footer {
+        padding: 14px 20px !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 12px !important;
+    }
+    .purchase-footer-top-row {
+        display: contents !important;
+    }
+    .purchase-btn-cancel {
+        order: 1 !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        height: 38px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+    }
+    .purchase-footer-draft-group {
+        order: 2 !important;
+        margin-left: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        flex-shrink: 0 !important;
+    }
+    #btnHoldPurchase, #btnHoldBatteryPurchase {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        height: 38px !important;
+        padding-left: 18px !important;
+        padding-right: 18px !important;
+        flex-shrink: 0 !important;
+        border-radius: 12px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        border: none !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+    }
+    .purchase-footer-submit-group {
+        order: 3 !important;
+        display: flex !important;
+        align-items: center !important;
+        width: auto !important;
+        flex-shrink: 0 !important;
+    }
+    .purchase-btn-submit {
+        height: 38px !important;
+        min-width: 240px !important;
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        flex-shrink: 0 !important;
+    }
+
     @media (max-width: 768px) {
         #exampleModal .modal-dialog {
             margin: 8px auto !important;
@@ -370,6 +437,51 @@
         .purchase-modal-body {
             max-height: calc(100dvh - 180px) !important;
             padding: 12px !important;
+        }
+
+        /* Mobile Footer: 2 rows. Row 1: Cancel + (Reset & Hold). Row 2: Submit 100% width */
+        .purchase-modal-footer {
+            display: flex !important;
+            flex-direction: column !important;
+            padding: 10px 14px !important;
+            gap: 8px !important;
+        }
+        .purchase-footer-top-row {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            width: 100% !important;
+        }
+        .purchase-btn-cancel {
+            order: unset !important;
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+            height: 38px !important;
+        }
+        .purchase-footer-draft-group {
+            order: unset !important;
+            margin-left: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        #btnHoldPurchase, #btnHoldBatteryPurchase {
+            padding-left: 14px !important;
+            padding-right: 14px !important;
+            height: 38px !important;
+        }
+        .purchase-footer-submit-group {
+            order: unset !important;
+            width: 100% !important;
+            display: block !important;
+        }
+        .purchase-btn-submit {
+            width: 100% !important;
+            min-width: 100% !important;
+            height: 38px !important;
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+            display: flex !important;
         }
 
         /* Cart Items Box-Type Table Card Layout on Mobile */
@@ -726,29 +838,22 @@
                     </div>
                 </div>
 
-                <!-- Fixed Sticky Bottom Modal Footer with Left-Right Padding p-4 and Red Cancel Button -->
-                <div class="purchase-modal-footer bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-3 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-2.5 sm:gap-3 flex-shrink-0" style="position: sticky; bottom: 0; z-index: 20;">
-                    <div class="flex items-center justify-between w-full md:w-auto">
-                        <button type="button" class="px-5 h-[38px] rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all shadow-sm border-0 cursor-pointer" data-bs-dismiss="modal">Cancel</button>
-                        <div class="flex md:hidden items-center gap-2">
-                            <button type="button" onclick="resetPurchaseModalAndDraft()" class="w-[38px] h-[38px] rounded-xl text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 bg-slate-100 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-950/40 border border-slate-300 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-800 shadow-sm transition-all duration-150 flex items-center justify-center cursor-pointer active:scale-95 flex-shrink-0" title="Reset All & Clear Hold Draft">
+                <!-- Fixed Sticky Bottom Modal Footer with Left-Right Padding and Action Buttons -->
+                <div class="purchase-modal-footer bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex-shrink-0" style="position: sticky; bottom: 0; z-index: 20;">
+                    <div class="purchase-footer-top-row">
+                        <button type="button" class="purchase-btn-cancel px-5 h-[38px] rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all shadow-sm border-0 cursor-pointer" data-bs-dismiss="modal">Cancel</button>
+                        <div class="purchase-footer-draft-group">
+                            <button type="button" id="btnResetPurchase" onclick="resetPurchaseModalAndDraft()" class="w-[38px] h-[38px] rounded-xl text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 bg-slate-100 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-950/40 border border-slate-300 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-800 shadow-sm transition-all duration-150 flex items-center justify-center cursor-pointer active:scale-95 flex-shrink-0" title="Reset All & Clear Hold Draft">
                                 <i class="fa-solid fa-arrows-rotate text-sm"></i>
                             </button>
-                            <button type="button" onclick="holdPurchaseOrder()" class="mobile-hold-btn px-3.5 h-[38px] bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 border-0 cursor-pointer" title="Hold / Save Draft">
+                            <button type="button" id="btnHoldPurchase" onclick="holdPurchaseOrder()" class="mobile-hold-btn px-4 h-[38px] bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 border-0 cursor-pointer" title="Hold / Save Draft">
                                 <i class="fa-solid fa-pause text-xs"></i>
-                                <span class="mobile-hold-text">Hold</span>
+                                <span id="holdBtnText" class="mobile-hold-text">Hold</span>
                             </button>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 w-full md:w-auto">
-                        <button type="button" id="btnResetPurchase" onclick="resetPurchaseModalAndDraft()" class="hidden md:flex w-[38px] h-[38px] rounded-xl text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 bg-slate-100 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-950/40 border border-slate-300 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-800 shadow-sm transition-all duration-150 items-center justify-center cursor-pointer active:scale-95 flex-shrink-0" title="Reset All & Clear Hold Draft">
-                            <i class="fa-solid fa-arrows-rotate text-sm"></i>
-                        </button>
-                        <button type="button" id="btnHoldPurchase" onclick="holdPurchaseOrder()" class="hidden md:flex px-4 h-[38px] bg-amber-500 hover:bg-amber-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 items-center justify-center gap-1.5 border-0 cursor-pointer" title="Hold / Save Draft">
-                            <i class="fa-solid fa-pause text-xs"></i>
-                            <span id="holdBtnText">Hold</span>
-                        </button>
-                        <button type="submit" class="w-full md:w-auto md:min-w-[240px] h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 flex items-center justify-center gap-2 border-0 cursor-pointer">
+                    <div class="purchase-footer-submit-group">
+                        <button type="submit" class="purchase-btn-submit h-[38px] bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-bold rounded-xl transition-all duration-150 flex items-center justify-center gap-2 border-0 cursor-pointer">
                             <i class="fa-solid fa-circle-check text-sm"></i>
                             <span>Submit Purchase Order</span>
                         </button>
