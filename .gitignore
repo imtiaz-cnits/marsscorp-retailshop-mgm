@@ -21,3 +21,6 @@ yarn-error.log
 /.vscode
 /.zed
 *.sql
+*.md
+/AUDIT_REPORTS
+/AUDIT_REPORTS/

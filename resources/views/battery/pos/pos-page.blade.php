@@ -3512,7 +3512,7 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-white py-2 px-3 justify-content-between border-top">
-                    <span class="text-muted small"><i class="fa-solid fa-circle-info me-1 text-info"></i> Click 'Load' anytime to load a held invoice to the screen.</span>
+                    <span class="text-muted small"><i class="fa-solid fa-circle-info me-1 text-info"></i> Click 'Restore' anytime to load a held invoice to the screen.</span>
                     <button type="button" class="btn btn-danger px-4 fw-bold shadow-sm text-white" data-bs-dismiss="modal" style="border-radius: 10px; background-color: #dc2626 !important; border-color: #dc2626 !important; color: #ffffff !important; height: 38px !important; min-height: 38px !important; display: inline-flex; align-items: center; justify-content: center;">Close</button>
                 </div>
             </div>
@@ -4768,10 +4768,12 @@
             }
         });
 
-        // Hold Invoices Manager System
+        // Hold Invoices Manager System (Battery POS isolated key)
+        const POS_HELD_STORAGE_KEY = 'battery_pos_held_invoices';
+
         function updateHeldInvoicesBadge() {
             try {
-                const heldList = JSON.parse(localStorage.getItem('pos_held_invoices') || '[]');
+                const heldList = JSON.parse(localStorage.getItem(POS_HELD_STORAGE_KEY) || '[]');
                 const badge = document.getElementById('heldInvoicesBadge');
                 if (badge) {
                     badge.textContent = heldList.length;
@@ -4834,9 +4836,9 @@
                 time: timeStr
             };
 
-            let heldList = JSON.parse(localStorage.getItem('pos_held_invoices') || '[]');
+            let heldList = JSON.parse(localStorage.getItem(POS_HELD_STORAGE_KEY) || '[]');
             heldList.push(holdData);
-            localStorage.setItem('pos_held_invoices', JSON.stringify(heldList));
+            localStorage.setItem(POS_HELD_STORAGE_KEY, JSON.stringify(heldList));
 
             // Reset current POS cart
             cartItems = [];
@@ -4862,7 +4864,7 @@
         }
 
         function openHoldInvoicesModal() {
-            const heldList = JSON.parse(localStorage.getItem('pos_held_invoices') || '[]');
+            const heldList = JSON.parse(localStorage.getItem(POS_HELD_STORAGE_KEY) || '[]');
             const container = document.getElementById('heldInvoicesCardList');
             if (!container) return;
 
@@ -4876,9 +4878,26 @@
             </div>`;
             } else {
                 heldList.slice().reverse().forEach((item) => {
-                    const productSummary = (item.cartItems || [])
-                        .map(p => `${p.productName || p.name || 'Item'} (×${p.quantity || 1})`)
-                        .join(', ');
+                    const productTagsHtml = (item.cartItems || [])
+                        .map(p => {
+                            const matchedProd = (typeof allProducts !== 'undefined' && Array.isArray(allProducts))
+                                ? allProducts.find(ap => String(ap.id) === String(p.id))
+                                : null;
+                            const rawName = p.product_name || p.productName || p.name || (matchedProd ? matchedProd.product_name : '') || 'Product';
+                            const sideInfo = (p.door_side && p.door_side !== 'None' && p.door_side !== 'Standard') ? ` [${p.door_side}]` : '';
+                            const qty = p.quantity || 1;
+                            const safeName = String(rawName + sideInfo)
+                                .replace(/&/g, '&amp;')
+                                .replace(/</g, '&lt;')
+                                .replace(/>/g, '&gt;')
+                                .replace(/"/g, '&quot;');
+                            return `<span class="badge fw-semibold d-inline-flex align-items-center gap-1" style="background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; font-size: 11.5px; padding: 4px 8px; border-radius: 6px;">
+                                <i class="fa-solid fa-box text-success" style="font-size: 10px;"></i>
+                                <span>${safeName}</span>
+                                <span class="fw-bold text-primary ms-0.5">&times;${qty}</span>
+                            </span>`;
+                        })
+                        .join('');
                     const subTotalVal = parseFloat(item.subTotal) || 0;
 
                     const card = document.createElement('div');
@@ -4888,14 +4907,16 @@
                 <div class="card-body p-3">
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                         <!-- Ref & Customer Info -->
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="badge px-2 py-2 fw-bold" style="background: #fef08a; color: #854d0e; border: 1px solid #fde047; font-size: 13px; font-family: monospace; border-radius: 8px;">
+                        <div class="d-flex align-items-start gap-3" style="flex: 1 1 280px; min-width: 0;">
+                            <span class="badge px-2 py-2 fw-bold mt-0.5" style="background: #fef08a; color: #854d0e; border: 1px solid #fde047; font-size: 13px; font-family: monospace; border-radius: 8px; flex-shrink: 0;">
                                 ${item.id}
                             </span>
-                            <div>
-                                <h6 class="m-0 fw-bold text-dark" style="font-size: 15px;">${item.customer_name}</h6>
-                                <span class="text-muted small"><i class="fa-solid fa-phone me-1 text-success"></i>${item.customer_mobile || 'N/A'}</span>
-                                ${productSummary ? `<div class="text-secondary small mt-0.5" style="font-size: 11.5px; max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${productSummary.replace(/"/g, '&quot;')}"><i class="fa-solid fa-box-open me-1 text-primary"></i>${productSummary}</div>` : ''}
+                            <div style="min-width: 0; flex: 1;">
+                                <div class="d-flex align-items-center flex-wrap gap-2">
+                                    <h6 class="m-0 fw-bold text-dark" style="font-size: 15px;">${item.customer_name}</h6>
+                                    <span class="text-muted small"><i class="fa-solid fa-phone me-1 text-success"></i>${item.customer_mobile || 'N/A'}</span>
+                                </div>
+                                ${productTagsHtml ? `<div class="d-flex flex-wrap gap-1 mt-1.5">${productTagsHtml}</div>` : ''}
                             </div>
                         </div>
 
@@ -4938,7 +4959,7 @@
         }
 
         function restoreHeldInvoice(holdId) {
-            let heldList = JSON.parse(localStorage.getItem('pos_held_invoices') || '[]');
+            let heldList = JSON.parse(localStorage.getItem(POS_HELD_STORAGE_KEY) || '[]');
             const item = heldList.find(i => i.id === holdId);
             if (!item) return;
 
@@ -5017,9 +5038,9 @@
         }
 
         function deleteHeldInvoice(holdId, showNotice = true) {
-            let heldList = JSON.parse(localStorage.getItem('pos_held_invoices') || '[]');
+            let heldList = JSON.parse(localStorage.getItem(POS_HELD_STORAGE_KEY) || '[]');
             heldList = heldList.filter(i => i.id !== holdId);
-            localStorage.setItem('pos_held_invoices', JSON.stringify(heldList));
+            localStorage.setItem(POS_HELD_STORAGE_KEY, JSON.stringify(heldList));
             updateHeldInvoicesBadge();
 
             if (showNotice) {

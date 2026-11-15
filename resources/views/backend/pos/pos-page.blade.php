@@ -3512,7 +3512,7 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-white py-2 px-3 justify-content-between border-top">
-                    <span class="text-muted small"><i class="fa-solid fa-circle-info me-1 text-info"></i> Click 'Load' anytime to load a held invoice to the screen.</span>
+                    <span class="text-muted small"><i class="fa-solid fa-circle-info me-1 text-info"></i> Click 'Restore' anytime to load a held invoice to the screen.</span>
                     <button type="button" class="btn btn-danger px-4 fw-bold shadow-sm text-white" data-bs-dismiss="modal" style="border-radius: 10px; background-color: #dc2626 !important; border-color: #dc2626 !important; color: #ffffff !important; height: 38px !important; min-height: 38px !important; display: inline-flex; align-items: center; justify-content: center;">Close</button>
                 </div>
             </div>
@@ -4875,9 +4875,16 @@
             </div>`;
             } else {
                 heldList.slice().reverse().forEach((item) => {
-                    const productSummary = (item.cartItems || [])
-                        .map(p => `${p.productName || p.name || 'Item'} (×${p.quantity || 1})`)
-                        .join(', ');
+                    const productTagsHtml = (item.cartItems || [])
+                        .map(p => {
+                            const matchedProd = (typeof allProducts !== 'undefined' && Array.isArray(allProducts))
+                                ? allProducts.find(prod => String(prod.id) === String(p.id || p.product_id))
+                                : null;
+                            const pName = p.product_name || p.productName || p.name || matchedProd?.product_name || 'Product';
+                            const sideInfo = p.door_side ? ` (${p.door_side})` : '';
+                            return `<span class="badge bg-light text-dark border fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 11.5px; padding: 4px 8px; border-radius: 6px;"><i class="fa-solid fa-box-open text-primary" style="font-size: 10px;"></i><span>${pName}${sideInfo}</span><strong class="text-success">×${p.quantity || 1}</strong></span>`;
+                        })
+                        .join('');
                     const subTotalVal = parseFloat(item.subTotal) || 0;
 
                     const card = document.createElement('div');
@@ -4894,7 +4901,6 @@
                             <div>
                                 <h6 class="m-0 fw-bold text-dark" style="font-size: 15px;">${item.customer_name}</h6>
                                 <span class="text-muted small"><i class="fa-solid fa-phone me-1 text-success"></i>${item.customer_mobile || 'N/A'}</span>
-                                ${productSummary ? `<div class="text-secondary small mt-0.5" style="font-size: 11.5px; max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${productSummary.replace(/"/g, '&quot;')}"><i class="fa-solid fa-box-open me-1 text-primary"></i>${productSummary}</div>` : ''}
                             </div>
                         </div>
 
@@ -4919,6 +4925,7 @@
                             </div>
                         </div>
                     </div>
+                    ${productTagsHtml ? `<div class="d-flex flex-wrap gap-1.5 mt-2 pt-2 border-top" style="border-color: #f1f5f9 !important;">${productTagsHtml}</div>` : ''}
                 </div>
             `;
                     container.appendChild(card);
