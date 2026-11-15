@@ -1540,6 +1540,13 @@
         loadSupplierProfileData();
     });
 
+    function formatMoney(amount) {
+        if (amount === null || amount === undefined || isNaN(amount) || amount === '') return "0.00";
+        const num = typeof amount === 'number' ? amount : parseFloat(amount);
+        if (isNaN(num)) return "0.00";
+        return num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
     function onSupplierCollectionTypeChange() {
         const selectedType = document.querySelector('input[name="supplier_collection_type"]:checked')?.value || 'all';
         const modalTotalDue       = document.getElementById('modalSupplierTotalDue');
@@ -1554,10 +1561,10 @@
         const prevVal  = window.supplierPreviousDueVal || 0;
         const purchVal = window.supplierPurchaseDueVal || 0;
 
-        if (prevDueVal)         prevDueVal.innerText         = `৳ ${prevVal.toFixed(2)}`;
-        if (modalMobilePrevDue) modalMobilePrevDue.innerText = `৳ ${prevVal.toFixed(2)}`;
-        if (purchDueVal)         purchDueVal.innerText         = `৳ ${purchVal.toFixed(2)}`;
-        if (modalMobilePurchDue) modalMobilePurchDue.innerText = `৳ ${purchVal.toFixed(2)}`;
+        if (prevDueVal)         prevDueVal.innerText         = `৳ ${formatMoney(prevVal)}`;
+        if (modalMobilePrevDue) modalMobilePrevDue.innerText = `৳ ${formatMoney(prevVal)}`;
+        if (purchDueVal)         purchDueVal.innerText         = `৳ ${formatMoney(purchVal)}`;
+        if (modalMobilePurchDue) modalMobilePurchDue.innerText = `৳ ${formatMoney(purchVal)}`;
 
         if (selectedType === 'previous') {
             targetMax = prevVal;
@@ -1567,8 +1574,8 @@
             targetMax = window.supplierTotalDueVal || (prevVal + purchVal);
         }
 
-        if (modalTotalDue)       modalTotalDue.innerText       = `৳ ${targetMax.toFixed(2)}`;
-        if (modalMobileTotalDue) modalMobileTotalDue.innerText = `৳ ${targetMax.toFixed(2)}`;
+        if (modalTotalDue)       modalTotalDue.innerText       = `৳ ${formatMoney(targetMax)}`;
+        if (modalMobileTotalDue) modalMobileTotalDue.innerText = `৳ ${formatMoney(targetMax)}`;
         if (inputAmount) inputAmount.value = targetMax > 0 ? targetMax.toFixed(2) : '';
     }
 
@@ -1620,13 +1627,13 @@
                 }
 
                 // Stats Cards
-                $('#supplierNetDue').text(`৳ ${parseFloat(summary.total_due).toFixed(2)}`);
+                $('#supplierNetDue').text(`৳ ${formatMoney(summary.total_due)}`);
                 $('#statTotalPurchases').text(summary.total_purchases);
-                $('#statTotalBilled').text(`৳ ${parseFloat(summary.total_amount).toFixed(2)}`);
-                $('#statTotalPaid').text(`৳ ${parseFloat(summary.total_paid).toFixed(2)}`);
-                $('#statTotalReturns').text(`৳ ${parseFloat(summary.available_credit || 0).toFixed(2)}`);
-                $('#statReturnSubtitle').text(`Total: ৳${parseFloat(summary.total_returns || 0).toFixed(2)} | Adj: ৳${parseFloat(summary.total_returns_adjusted || 0).toFixed(2)}`);
-                $('#statTotalDue').text(`৳ ${parseFloat(summary.total_due).toFixed(2)}`);
+                $('#statTotalBilled').text(`৳ ${formatMoney(summary.total_amount)}`);
+                $('#statTotalPaid').text(`৳ ${formatMoney(summary.total_paid)}`);
+                $('#statTotalReturns').text(`৳ ${formatMoney(summary.available_credit || 0)}`);
+                $('#statReturnSubtitle').text(`Total: ৳${formatMoney(summary.total_returns || 0)} | Adj: ৳${formatMoney(summary.total_returns_adjusted || 0)}`);
+                $('#statTotalDue').text(`৳ ${formatMoney(summary.total_due)}`);
 
                 // Tab Counts
                 $('#purchasesCount').text(purchases.length);
@@ -1652,9 +1659,9 @@
                         const statusClass = item.payment_status === 'Fully Paid'   ? 'sp-badge-success' :
                                             item.payment_status === 'Partial Paid' ? 'sp-badge-warning'  : 'sp-badge-danger';
 
-                        let paidDisplayHtml = `৳ ${parseFloat(item.paid_amount).toFixed(2)}`;
+                        let paidDisplayHtml = `৳ ${formatMoney(item.paid_amount)}`;
                         if (item.return_adjustment_amount && parseFloat(item.return_adjustment_amount) > 0) {
-                            paidDisplayHtml += `<br><span class="sp-badge sp-badge-teal text-[10px] mt-0.5">+৳${parseFloat(item.return_adjustment_amount).toFixed(2)} Adj</span>`;
+                            paidDisplayHtml += `<br><span class="sp-badge sp-badge-teal text-[10px] mt-0.5">+৳${formatMoney(item.return_adjustment_amount)} Adj</span>`;
                         }
 
                         let imgHtml = '';
@@ -1683,9 +1690,9 @@
                                 <td class="text-center"><span class="sp-badge sp-badge-id">${item.purchase_id}</span></td>
                                 <td class="text-center text-slate-600 dark:text-slate-300 whitespace-nowrap">${item.date}</td>
                                 <td class="text-start text-slate-600 dark:text-slate-300 font-medium">${item.referance_no || 'N/A'}</td>
-                                <td class="text-end font-bold text-slate-800 dark:text-white">৳ ${parseFloat(item.grand_subtotal).toFixed(2)}</td>
+                                <td class="text-end font-bold text-slate-800 dark:text-white">৳ ${formatMoney(item.grand_subtotal)}</td>
                                 <td class="text-end font-bold text-emerald-700 dark:text-emerald-400">${paidDisplayHtml}</td>
-                                <td class="text-end font-bold ${item.due_amount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400'}">৳ ${parseFloat(item.due_amount).toFixed(2)}</td>
+                                <td class="text-end font-bold ${item.due_amount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400'}">৳ ${formatMoney(item.due_amount)}</td>
                                 <td class="text-center"><span class="sp-badge ${statusClass}">${item.payment_status}</span></td>
                                 <td class="text-center">
                                     <a href="/purchase-invoice/${item.id}" class="sp-action-view-btn" title="View Invoice">
@@ -1730,15 +1737,15 @@
                                 <div class="sp-mobile-summary-box flex items-center justify-between text-xs">
                                     <div>
                                         <span class="text-slate-400 block text-[10px] uppercase font-bold">Total</span>
-                                        <span class="font-extrabold text-slate-800 dark:text-white">৳ ${parseFloat(item.grand_subtotal).toFixed(2)}</span>
+                                        <span class="font-extrabold text-slate-800 dark:text-white">৳ ${formatMoney(item.grand_subtotal)}</span>
                                     </div>
                                     <div>
                                         <span class="text-slate-400 block text-[10px] uppercase font-bold text-center">Paid</span>
-                                        <span class="font-extrabold text-emerald-600 dark:text-emerald-400">৳ ${parseFloat(item.paid_amount).toFixed(2)}</span>
+                                        <span class="font-extrabold text-emerald-600 dark:text-emerald-400">${paidDisplayHtml}</span>
                                     </div>
                                     <div class="text-end">
                                         <span class="text-slate-400 block text-[10px] uppercase font-bold">Due</span>
-                                        <span class="font-extrabold ${item.due_amount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400'}">৳ ${parseFloat(item.due_amount).toFixed(2)}</span>
+                                        <span class="font-extrabold ${item.due_amount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400'}">৳ ${formatMoney(item.due_amount)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -1765,7 +1772,7 @@
                                 <td class="text-center"><span class="sp-badge sp-badge-teal font-mono">${rItem.purchase_no}</span></td>
                                 <td class="text-start font-bold text-slate-800 dark:text-white">${rItem.product_name}</td>
                                 <td class="text-center"><span class="sp-badge sp-badge-blue">${rItem.quantity} pcs</span></td>
-                                <td class="text-end font-bold text-teal-700 dark:text-teal-300">৳ ${parseFloat(rItem.amount).toFixed(2)}</td>
+                                <td class="text-end font-bold text-teal-700 dark:text-teal-300">৳ ${formatMoney(rItem.amount)}</td>
                             </tr>
                         `);
 
@@ -1777,7 +1784,7 @@
                                         <span class="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[11px] font-bold">#${rIndex + 1}</span>
                                         <span class="sp-badge sp-badge-teal font-mono">${rItem.purchase_no}</span>
                                     </div>
-                                    <span class="sp-badge sp-badge-blue">${rItem.quantity} pcs</span>
+                                    <span class="cp-badge cp-badge-blue">${rItem.quantity} pcs</span>
                                 </div>
                                 <div class="mb-2">
                                     <h4 class="font-bold text-slate-800 dark:text-white text-sm m-0">${rItem.product_name}</h4>
@@ -1785,7 +1792,7 @@
                                 </div>
                                 <div class="sp-mobile-summary-box flex items-center justify-between text-xs">
                                     <span class="text-teal-800 dark:text-teal-300 font-semibold">Credit Amount</span>
-                                    <span class="font-extrabold text-teal-700 dark:text-teal-300 text-sm">৳ ${parseFloat(rItem.amount).toFixed(2)}</span>
+                                    <span class="font-extrabold text-teal-700 dark:text-teal-300 text-sm">৳ ${formatMoney(rItem.amount)}</span>
                                 </div>
                             </div>
                         `);
@@ -1809,8 +1816,8 @@
                                 <td class="text-center font-bold text-slate-500">${index + 1}</td>
                                 <td class="text-center text-slate-600 dark:text-slate-300 whitespace-nowrap">${trx.created_at_formatted}</td>
                                 <td class="text-center"><span class="sp-badge sp-badge-blue font-mono">${trx.purchase_id}</span></td>
-                                <td class="text-end font-bold text-emerald-700 dark:text-emerald-400">৳ ${parseFloat(trx.paid_amount).toFixed(2)}</td>
-                                <td class="text-end text-slate-500 dark:text-slate-400">৳ ${parseFloat(trx.discount_amount || 0).toFixed(2)}</td>
+                                <td class="text-end font-bold text-emerald-700 dark:text-emerald-400">৳ ${formatMoney(trx.paid_amount)}</td>
+                                <td class="text-end text-slate-500 dark:text-slate-400">৳ ${formatMoney(trx.discount_amount || 0)}</td>
                                 <td class="text-start text-slate-700 dark:text-slate-300"><i class="fa-solid fa-wallet me-1 text-slate-400"></i>${trx.payment_method || 'Cash'}</td>
                                 <td class="text-start text-slate-500 dark:text-slate-400 text-xs">${trx.transaction_id || 'N/A'}</td>
                                 <td class="text-center"><span class="sp-badge sp-badge-success">${trx.payment_status || 'Success'}</span></td>
@@ -1839,10 +1846,10 @@
                                 </div>
                                 <div class="sp-mobile-summary-box flex items-center justify-between text-xs">
                                     <div>
-                                        <span class="text-emerald-800 dark:text-emerald-300 font-semibold">Paid: <strong class="text-emerald-700 dark:text-emerald-400 text-sm">৳ ${parseFloat(trx.paid_amount).toFixed(2)}</strong></span>
+                                        <span class="text-emerald-800 dark:text-emerald-300 font-semibold">Paid: <strong class="text-emerald-700 dark:text-emerald-400 text-sm">৳ ${formatMoney(trx.paid_amount)}</strong></span>
                                     </div>
                                     <div>
-                                        <span class="text-slate-400">Discount: <strong>৳ ${parseFloat(trx.discount_amount || 0).toFixed(2)}</strong></span>
+                                        <span class="text-slate-400">Discount: <strong>৳ ${formatMoney(trx.discount_amount || 0)}</strong></span>
                                     </div>
                                 </div>
                             </div>

@@ -5190,7 +5190,9 @@
                     <h5 class="modal-title fw-bold text-white mb-0" id="quickAddProductModalLabel" style="color: #ffffff !important; font-size: 15px;">
                         <i class="fa-solid fa-cart-plus me-2" style="color: #ffffff !important;"></i> Quick Create Product from POS
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="close-btn close" data-bs-dismiss="modal" aria-label="Close" style="position: static !important; width: 28px; height: 28px; min-width: 28px; min-height: 28px; border-radius: 50%; background-color: #dc2626; color: #ffffff; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: all 0.15s ease; margin: 0; padding: 0;" title="Close" onmouseover="this.style.backgroundColor='#b91c1c';" onmouseout="this.style.backgroundColor='#dc2626';">
+                        <i class="fa-solid fa-xmark" style="color: #ffffff; font-size: 14px; line-height: 1;"></i>
+                    </button>
                 </div>
                 <div class="modal-body p-3 bg-light" style="overflow: visible; border-bottom-left-radius: 14px; border-bottom-right-radius: 14px;">
                     <form id="quickProductForm" onsubmit="quickSaveProduct(event)">
@@ -5209,28 +5211,7 @@
                                 </div>
                             </div>
 
-                            <!-- Searchable Category Dropdown -->
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold text-dark mb-1" style="font-size: 12px;">Category</label>
-                                <div class="custom-searchable-select" id="quickCategoryDropdown">
-                                    <input type="hidden" id="quickCategorySelect" value="">
-                                    <div class="select-trigger d-flex align-items-center justify-content-between px-2.5" onclick="toggleCustomDropdown('quickCategoryDropdown')">
-                                        <span class="selected-text text-truncate" style="font-size: 12px; font-weight: 600; color: #64748b;">Select</span>
-                                        <i class="fa-solid fa-chevron-down ms-1 text-muted" style="font-size: 12px; transition: transform 0.2s;"></i>
-                                    </div>
-                                    <div class="select-menu">
-                                        <div class="search-wrap">
-                                            <i class="fa-solid fa-magnifying-glass position-absolute text-muted" style="top: 50%; transform: translateY(-50%); left: 10px; font-size: 12px;"></i>
-                                            <input type="text" placeholder="Search category..." oninput="filterCustomDropdown('quickCategoryDropdown', this.value)">
-                                        </div>
-                                        <div class="select-options-list">
-                                            <!-- Category options will load here -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Searchable Brand Dropdown -->
+                            <!-- Searchable Brand Dropdown (Brand First) -->
                             <div class="col-md-4">
                                 <label class="form-label fw-bold text-dark mb-1" style="font-size: 12px;">Brand</label>
                                 <div class="custom-searchable-select" id="quickBrandDropdown">
@@ -5246,6 +5227,27 @@
                                         </div>
                                         <div class="select-options-list">
                                             <!-- Brand options will load here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Searchable Category Dropdown (Category Second) -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-dark mb-1" style="font-size: 12px;">Category</label>
+                                <div class="custom-searchable-select" id="quickCategoryDropdown">
+                                    <input type="hidden" id="quickCategorySelect" value="">
+                                    <div class="select-trigger d-flex align-items-center justify-content-between px-2.5" onclick="toggleCustomDropdown('quickCategoryDropdown')">
+                                        <span class="selected-text text-truncate" style="font-size: 12px; font-weight: 600; color: #64748b;">Select</span>
+                                        <i class="fa-solid fa-chevron-down ms-1 text-muted" style="font-size: 12px; transition: transform 0.2s;"></i>
+                                    </div>
+                                    <div class="select-menu">
+                                        <div class="search-wrap">
+                                            <i class="fa-solid fa-magnifying-glass position-absolute text-muted" style="top: 50%; transform: translateY(-50%); left: 10px; font-size: 12px;"></i>
+                                            <input type="text" placeholder="Search category..." oninput="filterCustomDropdown('quickCategoryDropdown', this.value)">
+                                        </div>
+                                        <div class="select-options-list">
+                                            <!-- Category options will load here -->
                                         </div>
                                     </div>
                                 </div>

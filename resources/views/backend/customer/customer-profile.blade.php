@@ -1536,6 +1536,13 @@
         fetchCustomerProfile();
     });
 
+    function formatMoney(amount) {
+        if (amount === null || amount === undefined || isNaN(amount) || amount === '') return "0.00";
+        const num = typeof amount === 'number' ? amount : parseFloat(amount);
+        if (isNaN(num)) return "0.00";
+        return num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
     function onCollectionTypeChange() {
         const selectedType = document.querySelector('input[name="collection_type"]:checked')?.value || 'all';
         const inputAmount = document.getElementById('modalPaidAmount');
@@ -1549,10 +1556,10 @@
         const prevVal = window.previousDueVal || 0;
         const invVal = window.invoiceDueVal || 0;
 
-        if (prevDueVal) prevDueVal.innerText = `৳ ${prevVal.toFixed(2)}`;
-        if (modalMobilePrevDue) modalMobilePrevDue.innerText = `৳ ${prevVal.toFixed(2)}`;
-        if (invDueVal) invDueVal.innerText = `৳ ${invVal.toFixed(2)}`;
-        if (modalMobileInvDue) modalMobileInvDue.innerText = `৳ ${invVal.toFixed(2)}`;
+        if (prevDueVal) prevDueVal.innerText = `৳ ${formatMoney(prevVal)}`;
+        if (modalMobilePrevDue) modalMobilePrevDue.innerText = `৳ ${formatMoney(prevVal)}`;
+        if (invDueVal) invDueVal.innerText = `৳ ${formatMoney(invVal)}`;
+        if (modalMobileInvDue) modalMobileInvDue.innerText = `৳ ${formatMoney(invVal)}`;
 
         let targetMax = 0;
 
@@ -1564,8 +1571,8 @@
             targetMax = window.totalDueVal;
         }
 
-        if (modalTotalDue) modalTotalDue.innerText = `৳ ${targetMax.toFixed(2)}`;
-        if (modalMobileTotalDue) modalMobileTotalDue.innerText = `৳ ${targetMax.toFixed(2)}`;
+        if (modalTotalDue) modalTotalDue.innerText = `৳ ${formatMoney(targetMax)}`;
+        if (modalMobileTotalDue) modalMobileTotalDue.innerText = `৳ ${formatMoney(targetMax)}`;
         if (inputAmount) inputAmount.value = targetMax > 0 ? targetMax.toFixed(2) : '';
     }
 
@@ -1597,21 +1604,21 @@
 
                 const openingDue = parseFloat(summary.opening_due || customer.previous_due_amount || 0);
                 const invDue = parseFloat(summary.invoice_due || window.invoiceDueVal || 0);
-                document.getElementById('c_opening_due').innerText = `৳ ${openingDue.toFixed(2)}`;
+                document.getElementById('c_opening_due').innerText = `৳ ${formatMoney(openingDue)}`;
 
                 // Net Current Due Box (Top Right Card)
-                const totalDueFormatted = `৳ ${parseFloat(summary.total_due).toFixed(2)}`;
+                const totalDueFormatted = `৳ ${formatMoney(summary.total_due)}`;
                 document.getElementById('s_due_header').innerText = totalDueFormatted;
-                document.getElementById('s_due_sub_header').innerText = `Prev: ৳${openingDue.toFixed(0)} | Inv: ৳${invDue.toFixed(0)}`;
+                document.getElementById('s_due_sub_header').innerText = `Prev: ৳${formatMoney(openingDue)} | Inv: ৳${formatMoney(invDue)}`;
 
                 // Set Summary KPI Stat Cards
                 document.getElementById('s_invoices').innerText = summary.total_invoices;
-                document.getElementById('s_billed').innerText = `৳ ${parseFloat(summary.total_billed).toFixed(2)}`;
-                document.getElementById('s_paid').innerText = `৳ ${parseFloat(summary.total_paid).toFixed(2)}`;
-                document.getElementById('s_returns').innerText = `৳ ${parseFloat(summary.available_credit || 0).toFixed(2)}`;
-                document.getElementById('s_return_sub').innerText = `Total: ৳${parseFloat(summary.total_returns || 0).toFixed(2)} | Adj: ৳${parseFloat(summary.total_returns_adjusted || 0).toFixed(2)}`;
+                document.getElementById('s_billed').innerText = `৳ ${formatMoney(summary.total_billed)}`;
+                document.getElementById('s_paid').innerText = `৳ ${formatMoney(summary.total_paid)}`;
+                document.getElementById('s_returns').innerText = `৳ ${formatMoney(summary.available_credit || 0)}`;
+                document.getElementById('s_return_sub').innerText = `Total: ৳${formatMoney(summary.total_returns || 0)} | Adj: ৳${formatMoney(summary.total_returns_adjusted || 0)}`;
                 document.getElementById('s_due').innerText = totalDueFormatted;
-                document.getElementById('s_due_sub').innerText = `Prev: ৳${openingDue.toFixed(0)} | Inv: ৳${invDue.toFixed(0)}`;
+                document.getElementById('s_due_sub').innerText = `Prev: ৳${formatMoney(openingDue)} | Inv: ৳${formatMoney(invDue)}`;
 
                 // Tab Counts
                 document.getElementById('invoicesTabCount').innerText = invoices.length;
@@ -1635,16 +1642,16 @@
                     invoicesCards.html('<div class="p-6 text-center text-slate-400 cp-mobile-card"><i class="fa-solid fa-receipt block text-3xl opacity-40 mb-2"></i>No invoices found</div>');
                 } else {
                     invoices.forEach(function(item, index) {
-                        const subTotal = item.sub_total ? parseFloat(item.sub_total).toFixed(2) : '0.00';
-                        const due = item.due_amount ? parseFloat(item.due_amount).toFixed(2) : '0.00';
+                        const subTotal = formatMoney(item.sub_total);
+                        const due = formatMoney(item.due_amount);
                         const paid = parseFloat(item.paid_amount || 0);
                         const dueRaw = parseFloat(item.due_amount || 0);
 
-                        let paidDisplayHtml = `৳ ${paid.toFixed(2)}`;
+                        let paidDisplayHtml = `৳ ${formatMoney(paid)}`;
                         if (item.return_adjustment_amount && parseFloat(item.return_adjustment_amount) > 0) {
-                            paidDisplayHtml += `<br><span class="cp-badge cp-badge-teal text-[10px] mt-0.5">+৳${parseFloat(item.return_adjustment_amount).toFixed(2)} Ret.Adj</span>`;
+                            paidDisplayHtml += `<br><span class="cp-badge cp-badge-teal text-[10px] mt-0.5">+৳${formatMoney(item.return_adjustment_amount)} Ret.Adj</span>`;
                         } else if (item.returned_amount && parseFloat(item.returned_amount) > 0) {
-                            paidDisplayHtml += `<br><span class="cp-badge cp-badge-purple text-[10px] mt-0.5">৳${parseFloat(item.returned_amount).toFixed(2)} Returned</span>`;
+                            paidDisplayHtml += `<br><span class="cp-badge cp-badge-purple text-[10px] mt-0.5">৳${formatMoney(item.returned_amount)} Returned</span>`;
                         }
 
                         let statusBadgeClass = '';
@@ -1761,7 +1768,7 @@
                                 <td class="text-center"><span class="cp-badge cp-badge-teal font-mono">${rItem.order_no}</span></td>
                                 <td class="text-start font-bold text-slate-800 dark:text-white">${rItem.product_name}</td>
                                 <td class="text-center"><span class="cp-badge cp-badge-blue">${rItem.quantity} pcs</span></td>
-                                <td class="text-end font-bold text-teal-700 dark:text-teal-300">৳ ${parseFloat(rItem.amount).toFixed(2)}</td>
+                                <td class="text-end font-bold text-teal-700 dark:text-teal-300">৳ ${formatMoney(rItem.amount)}</td>
                             </tr>
                         `;
                         returnsTableList.append(row);
@@ -1782,7 +1789,7 @@
                                 </div>
                                 <div class="cp-mobile-summary-box flex items-center justify-between text-xs">
                                     <span class="text-teal-800 dark:text-teal-300 font-semibold">Credit Amount</span>
-                                    <span class="font-extrabold text-teal-700 dark:text-teal-300 text-sm">৳ ${parseFloat(rItem.amount).toFixed(2)}</span>
+                                    <span class="font-extrabold text-teal-700 dark:text-teal-300 text-sm">৳ ${formatMoney(rItem.amount)}</span>
                                 </div>
                             </div>
                         `);
@@ -1800,7 +1807,7 @@
                     transactionsCards.html('<div class="p-6 text-center text-slate-400 cp-mobile-card"><i class="fa-solid fa-hand-holding-dollar block text-3xl opacity-40 mb-2"></i>No transactions found</div>');
                 } else {
                     transactions.forEach(function(item, index) {
-                        const amount = item.paid_amount ? parseFloat(item.paid_amount).toFixed(2) : '0.00';
+                        const amount = formatMoney(item.paid_amount);
                         const payMethod = item.payment_method || 'Cash';
 
                         let formattedDate = new Intl.DateTimeFormat('en-US', {
