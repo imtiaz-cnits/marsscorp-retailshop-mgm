@@ -2940,6 +2940,38 @@
             background: #d97706;
         }
 
+        .pos-btn-hold-history {
+            background: #fffbeb;
+            border: 1.5px solid #f59e0b;
+            color: #b45309;
+            font-weight: 800;
+            border-radius: 6px !important;
+            height: 29px !important;
+            padding: 0 9px !important;
+            font-size: 11px !important;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .pos-btn-hold-history:hover {
+            background: #fef3c7;
+            border-color: #d97706;
+            color: #92400e;
+        }
+        body[light-mode="dark"] .pos-btn-hold-history {
+            background: rgba(245, 158, 11, 0.14);
+            border-color: #f59e0b;
+            color: #fbbf24;
+        }
+        body[light-mode="dark"] .pos-btn-hold-history:hover {
+            background: rgba(245, 158, 11, 0.24);
+            border-color: #fbbf24;
+            color: #fde68a;
+        }
+        body[light-mode="dark"] .pos-btn-hold-history #heldInvoicesBadge {
+            background: #f59e0b !important;
+            color: #0f172a !important;
+        }
+
         .pos-btn-clear {
             background: #f8fafc;
             border: 1.5px solid #cbd5e1;
@@ -3416,7 +3448,13 @@
                         <button type="button" id="posBtnHold" onclick="holdCurrentInvoice()" class="pos-btn-hold d-flex align-items-center justify-content-center gap-1" title="Hold Current Invoice">
                             <i class="fa-solid fa-circle-pause" style="font-size: 11px;"></i>
                             <span>Hold</span>
-                            <span id="heldInvoicesBadge" onclick="event.stopPropagation(); openHoldInvoicesModal();" class="badge bg-dark rounded-pill ms-0.5" style="display: none; font-size: 9px; padding: 2px 4px;" title="View Held Invoices">0</span>
+                        </button>
+
+                        <!-- Held Invoices History / Restore Button -->
+                        <button type="button" id="posBtnHoldHistory" onclick="openHoldInvoicesModal()" class="pos-btn-hold-history d-flex align-items-center justify-content-center gap-1" title="Held Invoices History & Restore">
+                            <i class="fa-solid fa-clock-rotate-left" style="font-size: 11px;"></i>
+                            <span>History</span>
+                            <span id="heldInvoicesBadge" class="badge rounded-pill ms-0.5" style="display: none; font-size: 9.5px; padding: 2px 5px; background: #0f172a; color: #ffffff; line-height: 1;">0</span>
                         </button>
 
                         <!-- Clear Button -->
@@ -4758,10 +4796,12 @@
             const address = document.getElementById('CustomerAddress')?.value.trim() || '';
             const prevDue = document.getElementById('totalPreviousDueAmount')?.value.trim() || '0';
             const invDate = document.getElementById('CustomerDate')?.value || '';
-            const customerId = document.getElementById('CustomerID')?.value || '1';
+            const customerId = document.getElementById('CustomerID')?.value || '';
+            const customerDropdownText = document.querySelector('.select-box-dropdown .select-dropdown-selected span')?.textContent?.trim() || 'Select Customer';
             const discount = document.getElementById('discountAmountInput')?.value || '';
             const discountType = document.querySelector('input[name="discountType"]:checked')?.value || 'flat';
             const delivery = document.getElementById('deliveryChargeInput')?.value || '';
+            const exchange = document.getElementById('exchangeAmountInput')?.value || '';
             const paid = document.getElementById('paidAmountInput')?.value || '';
             const note = document.getElementById('orderNote')?.value || '';
             const itemsTotalVal = cartItems.reduce((acc, item) => acc + ((parseFloat(item.sellingPrice) || 0) * (parseFloat(item.quantity) || 0)), 0);
@@ -4776,6 +4816,7 @@
             const holdData = {
                 id: holdId,
                 customer_id: customerId,
+                customer_dropdown_text: customerDropdownText,
                 customer_name: name,
                 customer_mobile: mobile,
                 customer_address: address,
@@ -4785,10 +4826,11 @@
                 discount: discount,
                 discount_type: discountType,
                 delivery_charge: delivery,
+                exchange_amount: exchange,
                 paid: paid,
                 order_note: note,
                 subTotal: itemsTotalVal + (parseFloat(delivery) || 0),
-                total_items: cartItems.reduce((acc, i) => acc + (i.quantity || 1), 0),
+                total_items: cartItems.reduce((acc, i) => acc + (parseFloat(i.quantity) || 1), 0),
                 time: timeStr
             };
 
@@ -4803,8 +4845,10 @@
             const radioFlat = document.getElementById('discountTypeFlat');
             if (radioFlat) radioFlat.checked = true;
             if (document.getElementById('deliveryChargeInput')) document.getElementById('deliveryChargeInput').value = '';
+            if (document.getElementById('exchangeAmountInput')) document.getElementById('exchangeAmountInput').value = '';
             if (document.getElementById('paidAmountInput')) document.getElementById('paidAmountInput').value = '';
             if (document.getElementById('orderNote')) document.getElementById('orderNote').value = '';
+            calculateDuePayment();
 
             updateHeldInvoicesBadge();
 
@@ -4831,7 +4875,12 @@
                 <span>No held invoices found.</span>
             </div>`;
             } else {
-                heldList.forEach((item) => {
+                heldList.slice().reverse().forEach((item) => {
+                    const productSummary = (item.cartItems || [])
+                        .map(p => `${p.productName || p.name || 'Item'} (×${p.quantity || 1})`)
+                        .join(', ');
+                    const subTotalVal = parseFloat(item.subTotal) || 0;
+
                     const card = document.createElement('div');
                     card.className = "card mb-3 border-0 shadow-sm";
                     card.style.cssText = "border-radius: 14px; background: #ffffff; border: 1px solid #e2e8f0 !important;";
@@ -4846,6 +4895,7 @@
                             <div>
                                 <h6 class="m-0 fw-bold text-dark" style="font-size: 15px;">${item.customer_name}</h6>
                                 <span class="text-muted small"><i class="fa-solid fa-phone me-1 text-success"></i>${item.customer_mobile || 'N/A'}</span>
+                                ${productSummary ? `<div class="text-secondary small mt-0.5" style="font-size: 11.5px; max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${productSummary.replace(/"/g, '&quot;')}"><i class="fa-solid fa-box-open me-1 text-primary"></i>${productSummary}</div>` : ''}
                             </div>
                         </div>
 
@@ -4859,10 +4909,10 @@
 
                         <!-- Amount & Action Buttons -->
                         <div class="d-flex align-items-center gap-3 ms-auto ms-sm-0">
-                            <span class="fw-bolder text-success ms-2" style="font-size: 18px;">৳ ${item.subTotal.toFixed(2)}</span>
+                            <span class="fw-bolder text-success ms-2" style="font-size: 18px;">৳ ${subTotalVal.toFixed(2)}</span>
                             <div class="d-flex align-items-center gap-2">
-                                <button type="button" class="btn btn-success px-3 py-2 fw-bold d-flex align-items-center gap-1 shadow-sm" onclick="restoreHeldInvoice('${item.id}')" style="border-radius: 10px; font-size: 13px;">
-                                    <i class="fa-solid fa-play"></i> Load
+                                <button type="button" class="btn btn-success px-3 py-2 fw-bold d-flex align-items-center gap-1.5 shadow-sm" onclick="restoreHeldInvoice('${item.id}')" style="border-radius: 10px; font-size: 13px;">
+                                    <i class="fa-solid fa-rotate-left"></i> Restore
                                 </button>
                                 <button type="button" class="btn btn-outline-danger px-3 py-2 shadow-xs" onclick="deleteHeldInvoice('${item.id}')" style="border-radius: 10px;" title="Delete">
                                     <i class="fa-solid fa-trash-can"></i>
@@ -4900,7 +4950,7 @@
                     showCancelButton: true,
                     confirmButtonColor: '#15803d',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, Load',
+                    confirmButtonText: 'Yes, Restore',
                     cancelButtonText: 'Cancel'
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -4916,11 +4966,24 @@
             cartItems = JSON.parse(JSON.stringify(item.cartItems || []));
             renderCart();
 
-            if (document.getElementById('CustomerName')) document.getElementById('CustomerName').value = item.customer_name || '';
+            const restoredName = (item.customer_name && item.customer_name !== 'Walk-in Customer') ? item.customer_name : '';
+            const restoredId = (item.customer_id && item.customer_id !== '1') ? item.customer_id : '';
+            if (document.getElementById('CustomerName')) document.getElementById('CustomerName').value = restoredName;
             if (document.getElementById('CustomerMobileNumber')) document.getElementById('CustomerMobileNumber').value = item.customer_mobile || '';
             if (document.getElementById('CustomerAddress')) document.getElementById('CustomerAddress').value = item.customer_address || '';
             if (document.getElementById('totalPreviousDueAmount')) document.getElementById('totalPreviousDueAmount').value = item.previous_due || 0;
-            if (document.getElementById('CustomerID')) document.getElementById('CustomerID').value = item.customer_id || '1';
+            if (document.getElementById('CustomerID')) document.getElementById('CustomerID').value = restoredId;
+            if (item.invoice_date && document.getElementById('CustomerDate')) document.getElementById('CustomerDate').value = item.invoice_date;
+
+            const dropdownSelectedSpan = document.querySelector('.select-box-dropdown .select-dropdown-selected span');
+            if (dropdownSelectedSpan) {
+                if (restoredId && restoredName) {
+                    dropdownSelectedSpan.textContent = item.customer_dropdown_text || `${restoredId} - ${restoredName} (${item.customer_mobile || ''})`;
+                } else {
+                    dropdownSelectedSpan.textContent = 'Select Customer';
+                }
+            }
+
             if (item.discount_type === 'percent') {
                 const radioPercent = document.getElementById('discountTypePercent');
                 if (radioPercent) radioPercent.checked = true;
@@ -4930,6 +4993,7 @@
             }
             if (document.getElementById('discountAmountInput')) document.getElementById('discountAmountInput').value = item.discount || '';
             if (document.getElementById('deliveryChargeInput')) document.getElementById('deliveryChargeInput').value = item.delivery_charge || '';
+            if (document.getElementById('exchangeAmountInput')) document.getElementById('exchangeAmountInput').value = item.exchange_amount || '';
             if (document.getElementById('paidAmountInput')) document.getElementById('paidAmountInput').value = item.paid || '';
             if (document.getElementById('orderNote')) document.getElementById('orderNote').value = item.order_note || '';
 
