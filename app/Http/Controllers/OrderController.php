@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\OrderPaymentDetails;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 class OrderController extends Controller
@@ -202,10 +203,67 @@ class OrderController extends Controller
             ], 422);
         }
 
+        $user_id = Auth::id();
         DB::beginTransaction();
         try {
-            $user_id = Auth::id();
             $orderNo = $request->order_no ?? $this->generateOrderNumber();
+
+            // Decode and validate products BEFORE creating order/deducting stock
+            $products = is_array($request->products)
+                ? $request->products
+                : (json_decode($request->products, true) ?? []);
+
+            $qtyByProduct = [];
+            foreach ($products as $product) {
+                if (isset($product['product_id'], $product['quantity'], $product['price'], $product['selling_price'])) {
+                    $pid = (int) $product['product_id'];
+                    $qty = (int) $product['quantity'];
+                    if ($pid <= 0 || $qty <= 0) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status' => 'fail',
+                            'message' => 'সকল বিক্রয় পণ্যের পরিমাণ অবশ্যই ০-এর বেশি হতে হবে।'
+                        ], 422);
+                    }
+                    $qtyByProduct[$pid] = ($qtyByProduct[$pid] ?? 0) + $qty;
+                }
+            }
+
+            // Deterministic ascending row lock across all impacted products
+            ksort($qtyByProduct);
+            $productIdsToLock = array_keys($qtyByProduct);
+            $lockedProducts = !empty($productIdsToLock)
+                ? Product::whereIn('id', $productIdsToLock)->orderBy('id', 'asc')->lockForUpdate()->get()->keyBy('id')
+                : collect();
+
+            $stockSnapshots = [];
+            foreach ($qtyByProduct as $pid => $neededQty) {
+                $productModel = $lockedProducts->get($pid);
+                if (!$productModel) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => "পণ্য আইডি #{$pid} পাওয়া যায়নি।"
+                    ], 404);
+                }
+                $availableQty = (int) $productModel->quantity;
+                if ($availableQty < $neededQty) {
+                    DB::rollBack();
+                    $name = $productModel->product_name ?? ("পণ্য #{$pid}");
+                    Log::warning('OrderCreate blocked: insufficient stock', [
+                        'actor_user_id' => $user_id,
+                        'customer_id' => $request->customer_id,
+                        'product_id' => $pid,
+                        'available_stock' => $availableQty,
+                        'requested_qty' => $neededQty,
+                    ]);
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => "স্টক অপ্রতুল: '{$name}' এর বর্তমান স্টক {$availableQty} পিস, কিন্তু {$neededQty} পিস বিক্রি করা সম্ভব নয়।"
+                    ], 422);
+                }
+                $stockSnapshots[$pid] = $availableQty;
+            }
 
             $orderData = [
                 'customer_id' => $request->customer_id,
@@ -235,29 +293,25 @@ class OrderController extends Controller
             // Create Order
             $order = Order::create($orderData);
 
-            // Decode and handle products
-            $products = json_decode($request->products, true);
-
             foreach ($products as $product) {
                 if (isset($product['product_id'], $product['quantity'], $product['price'], $product['selling_price'])) {
-                    // Correct total cost calculation
-                    $totalCost = $product['price'] * $product['quantity'];
-                    $totalSellingPrice = $product['selling_price'] * $product['quantity'];
+                    $pid = (int) $product['product_id'];
+                    $qty = (int) $product['quantity'];
 
                     // Create OrderDetails
-                    $orderDetails = OrderDetails::create([
-                        'product_id' => $product['product_id'],
+                    OrderDetails::create([
+                        'product_id' => $pid,
                         'order_id' => $order->id,
-                        'quantity' => $product['quantity'],
-                        'price' => $product['price'], // Corrected
-                        'selling_price' => $product['selling_price'], // Corrected
+                        'quantity' => $qty,
+                        'price' => $product['price'],
+                        'selling_price' => $product['selling_price'],
                         'user_id' => $user_id,
                     ]);
 
-                    // Update product stock
-                    $productModel = Product::find($product['product_id']);
+                    // Update locked product stock safely
+                    $productModel = $lockedProducts->get($pid);
                     if ($productModel) {
-                        $productModel->quantity -= $product['quantity'];
+                        $productModel->quantity = (int) $productModel->quantity - $qty;
                         $productModel->save();
                     }
                 }
@@ -276,10 +330,40 @@ class OrderController extends Controller
             ]);
 
             DB::commit();
+
+            $auditProducts = [];
+            foreach ($qtyByProduct as $pid => $soldQty) {
+                $oldStock = $stockSnapshots[$pid] ?? 0;
+                $auditProducts[] = [
+                    'product_id' => $pid,
+                    'sold_qty' => $soldQty,
+                    'old_stock' => $oldStock,
+                    'new_stock' => $oldStock - $soldQty,
+                ];
+            }
+            Log::info('Order Created', [
+                'actor_user_id' => $user_id,
+                'order_id' => $order->id,
+                'order_no' => $order->order_no,
+                'customer_id' => $order->customer_id,
+                'invoice_date' => $order->invoice_date,
+                'sub_total' => $order->sub_total,
+                'paid_amount' => $order->paid_amount,
+                'due_amount' => $order->due_amount,
+                'products' => $auditProducts,
+                'result' => 'success',
+                'timestamp' => now()->toIso8601String(),
+            ]);
+
             return response()->json(['status' => 'success', 'message' => 'Order created successfully', 'invoice_id' => $order->id]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['status' => 'fail', 'message' => 'Order creation failed: ' . $e->getMessage()]);
+            Log::error('Order Creation Error', [
+                'actor_user_id' => $user_id,
+                'customer_id' => $request->customer_id,
+                'error' => $e->getMessage(),
+            ]);
+            return response()->json(['status' => 'fail', 'message' => 'Order creation failed: ' . $e->getMessage()], 500);
         }
     }
 

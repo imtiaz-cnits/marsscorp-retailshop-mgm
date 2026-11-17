@@ -14,6 +14,7 @@ use App\Models\PurchaseReturn;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 
@@ -376,11 +377,97 @@ class ProductReturnController extends Controller
             'date' => 'required|date',
         ]);
 
+        $actorUserId = Auth::id();
         try {
             DB::beginTransaction();
 
-            $order = Order::with('details')->findOrFail($request->order_id);
-            $user_id = Auth::id() ?? ($order->user_id ?? 1);
+            $order = Order::lockForUpdate()->findOrFail($request->order_id);
+            $user_id = $actorUserId ?? ($order->user_id ?? 1);
+
+            // Deterministically lock OrderDetails and Product rows in ascending ID order BEFORE iterating
+            $detailIds = collect($request->products)->pluck('order_detail_id')->map(fn ($v) => (int) $v)->unique()->sort()->values()->all();
+            $productIds = collect($request->products)->pluck('product_id')->map(fn ($v) => (int) $v)->unique()->sort()->values()->all();
+
+            $lockedDetails = OrderDetails::whereIn('id', $detailIds)->orderBy('id', 'asc')->lockForUpdate()->get()->keyBy('id');
+            $lockedProducts = Product::whereIn('id', $productIds)->orderBy('id', 'asc')->lockForUpdate()->get()->keyBy('id');
+
+            // Aggregate request lines by order_detail_id so duplicate lines cannot exceed available returnable qty
+            $aggregatedByDetail = [];
+            foreach ($request->products as $returnedItem) {
+                $dId = (int) $returnedItem['order_detail_id'];
+                $pId = (int) $returnedItem['product_id'];
+                $qty = (int) $returnedItem['quantity'];
+                if (isset($aggregatedByDetail[$dId])) {
+                    if ($aggregatedByDetail[$dId]['product_id'] !== $pId) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status' => 'fail',
+                            'message' => 'একই ইনভয়েস লাইনে ভিন্ন প্রোডাক্ট আইডি পাওয়া গেছে।'
+                        ], 422);
+                    }
+                    $aggregatedByDetail[$dId]['quantity'] += $qty;
+                } else {
+                    $aggregatedByDetail[$dId] = [
+                        'order_detail_id' => $dId,
+                        'product_id' => $pId,
+                        'quantity' => $qty,
+                    ];
+                }
+            }
+
+            // Verify ownership & returnable quantities BEFORE mutating any row
+            foreach ($aggregatedByDetail as $dId => $agg) {
+                $orderDetail = $lockedDetails->get($dId);
+                $product = $lockedProducts->get($agg['product_id']);
+                if (!$orderDetail || !$product) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => 'Referenced order line item or product was not found.'
+                    ], 404);
+                }
+
+                if ((int) $orderDetail->order_id !== (int) $order->id || (int) $orderDetail->product_id !== (int) $product->id) {
+                    DB::rollBack();
+                    Log::warning('ReturnProductCreate blocked: order_detail ownership mismatch', [
+                        'actor_user_id' => $user_id,
+                        'order_id' => $order->id,
+                        'order_detail_id' => $orderDetail->id,
+                        'detail_order_id' => $orderDetail->order_id,
+                        'detail_product_id' => $orderDetail->product_id,
+                        'requested_product_id' => $product->id,
+                    ]);
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => 'ইনভয়েস লাইন আইটেম ও পণ্য এই অর্ডারের সাথে সামঞ্জস্যপূর্ণ নয়।'
+                    ], 422);
+                }
+
+                $priorReturns = (int) ProductReturn::where('order_detail_id', $orderDetail->id)
+                    ->orWhere(function ($q) use ($order, $product) {
+                        $q->whereNull('order_detail_id')
+                          ->where('order_id', $order->id)
+                          ->where('product_id', $product->id);
+                    })->sum('quantity');
+                $priorReturnedQty = max((int) ($orderDetail->return_quantity ?? 0), $priorReturns);
+                $availableReturnQty = max(0, (int) $orderDetail->quantity - $priorReturnedQty);
+
+                if ($agg['quantity'] > $availableReturnQty) {
+                    DB::rollBack();
+                    Log::warning('ReturnProductCreate blocked: exceeds returnable quantity', [
+                        'actor_user_id' => $user_id,
+                        'order_id' => $order->id,
+                        'product_id' => $product->id,
+                        'requested_qty' => $agg['quantity'],
+                        'available_return_qty' => $availableReturnQty,
+                    ]);
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => "Return quantity for product '{$product->product_name}' cannot exceed available returnable quantity ({$availableReturnQty})."
+                    ], 400);
+                }
+                $aggregatedByDetail[$dId]['prior_returned_qty'] = $priorReturnedQty;
+            }
 
             // Generate one shared return transaction number for this entire submission
             $returnNumber = $this->generateReturnNumber();
@@ -399,30 +486,12 @@ class ProductReturnController extends Controller
                 ? ($orderDiscountAmount / $orderSubTotal)
                 : 0;
 
-            foreach ($request->products as $returnedItem) {
-                // Lock row for concurrency protection
-                $orderDetail = OrderDetails::where('id', $returnedItem['order_detail_id'])->lockForUpdate()->firstOrFail();
-                $product = Product::where('id', $returnedItem['product_id'])->lockForUpdate()->firstOrFail();
-                $returnQty = (int) $returnedItem['quantity'];
-
-                // Calculate cumulative prior returns against this line item (including legacy records)
-                $priorReturns = (int) ProductReturn::where('order_detail_id', $orderDetail->id)
-                    ->orWhere(function ($q) use ($order, $product) {
-                        $q->whereNull('order_detail_id')
-                          ->where('order_id', $order->id)
-                          ->where('product_id', $product->id);
-                    })->sum('quantity');
-                $priorReturnedQty = max((int) ($orderDetail->return_quantity ?? 0), $priorReturns);
-                $availableReturnQty = max(0, (int) $orderDetail->quantity - $priorReturnedQty);
-
-                // Reject if return quantity exceeds remaining returnable quantity
-                if ($returnQty > $availableReturnQty) {
-                    DB::rollBack();
-                    return response()->json([
-                        'status' => 'fail',
-                        'message' => "Return quantity for product '{$product->product_name}' cannot exceed available returnable quantity ({$availableReturnQty})."
-                    ], 400);
-                }
+            $auditItems = [];
+            foreach ($aggregatedByDetail as $dId => $agg) {
+                $orderDetail = $lockedDetails->get($dId);
+                $product = $lockedProducts->get($agg['product_id']);
+                $returnQty = $agg['quantity'];
+                $priorReturnedQty = $agg['prior_returned_qty'];
 
                 // Historical immutable unit selling price
                 $unitSellingPrice = (float) $orderDetail->selling_price;
@@ -459,12 +528,23 @@ class ProductReturnController extends Controller
                     'user_id'         => $user_id,
                 ]);
 
-                // Update product stock atomically - NEVER alters product cost_price or sell_price
-                $product->increment('quantity', $returnQty);
+                // Update locked product stock atomically - NEVER alters product cost_price or sell_price
+                $oldStock = (int) $product->quantity;
+                $newStock = $oldStock + $returnQty;
+                $product->quantity = $newStock;
+                $product->save();
 
                 // Track returned quantity immutably on order detail (NEVER alter quantity, price, or selling_price, and NEVER delete detail!)
                 $orderDetail->return_quantity = $priorReturnedQty + $returnQty;
                 $orderDetail->save();
+
+                $auditItems[] = [
+                    'order_detail_id' => $orderDetail->id,
+                    'product_id' => $product->id,
+                    'returned_qty' => $returnQty,
+                    'old_stock' => $oldStock,
+                    'new_stock' => $newStock,
+                ];
 
                 $totalReturnAmount += $lineReturnAmount;
                 $totalDiscountToReduce += $discountToReduce;
@@ -481,6 +561,18 @@ class ProductReturnController extends Controller
 
             DB::commit();
 
+            Log::info('Customer Return Created', [
+                'actor_user_id' => $user_id,
+                'return_number' => $returnNumber,
+                'order_id' => $order->id,
+                'order_no' => $order->order_no,
+                'customer_id' => $order->customer_id,
+                'total_refund_amount' => (float) round($totalReturnAmount, 2),
+                'items' => $auditItems,
+                'result' => 'success',
+                'timestamp' => now()->toIso8601String(),
+            ]);
+
             return response()->json([
                 'status' => 'success',
                 'message' => "Product Return Successfully Processed",
@@ -490,6 +582,11 @@ class ProductReturnController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Customer Return Error', [
+                'actor_user_id' => $actorUserId,
+                'order_id' => $request->input('order_id'),
+                'error' => $e->getMessage(),
+            ]);
             return response()->json([
                 'status' => 'fail',
                 'message' => $e->getMessage(),
@@ -812,41 +909,189 @@ public function PurchaseReturnProductCreate(Request $request)
             'date' => 'required|date',
         ]);
 
+        $actorUserId = Auth::id();
+        $requestedPurchaseId = (int) $request->purchase_id;
+        $requestedSupplierId = (int) $request->supplier_id;
+
+        // Unlocked preliminary lookup to standardize cross-table lock order:
+        // Supplier (id ASC) -> Purchase -> PurchaseOrderDetails (id ASC) -> Product (id ASC)
+        $preliminaryPurchase = Purchase::select(['id', 'supplier_id'])->find($requestedPurchaseId);
+        if (!$preliminaryPurchase) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Purchase record not found.'
+            ], 404);
+        }
+
+        $supplierIdsToLock = array_values(array_unique(array_filter([
+            (int) $preliminaryPurchase->supplier_id,
+            $requestedSupplierId,
+        ])));
+        sort($supplierIdsToLock);
+
         try {
             DB::beginTransaction();
 
-            $user_id = Auth::id();
-            $purchase = Purchase::with('orderDetails')->findOrFail($request->purchase_id);
-            $supplier = Supplier::findOrFail($request->supplier_id);
+            $user_id = $actorUserId;
+            $lockedSuppliers = Supplier::whereIn('id', $supplierIdsToLock)
+                ->orderBy('id', 'asc')
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('id');
 
-            $totalReturnAmount = 0;
-            $date = Carbon::parse($request->date)->format('Y-m-d');
+            $supplier = $lockedSuppliers->get($requestedSupplierId);
+            if (!$supplier) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'Selected supplier not found.'
+                ], 404);
+            }
 
+            // Lock Purchase strictly AFTER Supplier(s) to match SupplierPaymentDetailsUpdate()
+            $purchase = Purchase::with('orderDetails')->lockForUpdate()->findOrFail($requestedPurchaseId);
+
+            if ((int) $purchase->supplier_id !== (int) $preliminaryPurchase->supplier_id) {
+                DB::rollBack();
+                Log::warning('PurchaseReturnProductCreate blocked: concurrent supplier reassignment race', [
+                    'actor_user_id' => $user_id,
+                    'purchase_id' => $purchase->id,
+                    'preliminary_supplier_id' => (int) $preliminaryPurchase->supplier_id,
+                    'locked_supplier_id' => (int) $purchase->supplier_id,
+                ]);
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'পারচেজের সাপ্লাইয়ার তথ্য সমসাময়িকভাবে পরিবর্তিত হয়েছে; অনুগ্রহ করে আবার চেষ্টা করুন।'
+                ], 409);
+            }
+
+            if ((int) $purchase->supplier_id !== (int) $supplier->id) {
+                DB::rollBack();
+                Log::warning('PurchaseReturnProductCreate blocked: supplier mismatch', [
+                    'actor_user_id' => $user_id,
+                    'purchase_id' => $purchase->id,
+                    'purchase_supplier_id' => $purchase->supplier_id,
+                    'requested_supplier_id' => $supplier->id,
+                ]);
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'নির্বাচিত সাপ্লাইয়ার এই পারচেজ ইনভয়েসের সাথে মিলছে না।'
+                ], 422);
+            }
+
+            // Deterministically lock all referenced PurchaseOrderDetails and Product rows
+            $detailIds = collect($request->products)->pluck('purchase_order_detail_id')->map(fn ($v) => (int) $v)->unique()->sort()->values()->all();
+            $productIds = collect($request->products)->pluck('product_id')->map(fn ($v) => (int) $v)->unique()->sort()->values()->all();
+
+            $lockedDetails = PurchaseOrderDetails::whereIn('id', $detailIds)->orderBy('id', 'asc')->lockForUpdate()->get()->keyBy('id');
+            $lockedProducts = Product::whereIn('id', $productIds)->orderBy('id', 'asc')->lockForUpdate()->get()->keyBy('id');
+
+            // Aggregate request lines by detail ID and validate ownership & stock BEFORE mutating any row
+            $aggregatedByDetail = [];
+            $totalRequestedByProduct = [];
             foreach ($request->products as $returnedItem) {
-                // `PurchaseOrderDetails` টেবিল ব্যবহার করা হলো
-                $orderDetail = PurchaseOrderDetails::findOrFail($returnedItem['purchase_order_detail_id']);
-                // `Product` টেবিল ব্যবহার করা হলো
-                $product = Product::findOrFail($returnedItem['product_id']);
-                $returnQty = (int) $returnedItem['quantity'];
+                $dId = (int) $returnedItem['purchase_order_detail_id'];
+                $pId = (int) $returnedItem['product_id'];
+                $qty = (int) $returnedItem['quantity'];
+                if (isset($aggregatedByDetail[$dId])) {
+                    if ($aggregatedByDetail[$dId]['product_id'] !== $pId) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status' => 'fail',
+                            'message' => 'একই পারচেজ লাইনে ভিন্ন প্রোডাক্ট আইডি পাওয়া গেছে।'
+                        ], 422);
+                    }
+                    $aggregatedByDetail[$dId]['quantity'] += $qty;
+                } else {
+                    $aggregatedByDetail[$dId] = [
+                        'purchase_order_detail_id' => $dId,
+                        'product_id' => $pId,
+                        'quantity' => $qty,
+                    ];
+                }
+                $totalRequestedByProduct[$pId] = ($totalRequestedByProduct[$pId] ?? 0) + $qty;
+            }
 
-                // 1. ✅ ভ্যালিডেশন: অবশিষ্ট কেনা পরিমাণের থেকে বেশি রিটার্ন করা যাবে না
-                if ($returnQty > $orderDetail->quantity) {
+            foreach ($aggregatedByDetail as $dId => $agg) {
+                $orderDetail = $lockedDetails->get($dId);
+                $product = $lockedProducts->get($agg['product_id']);
+                if (!$orderDetail || !$product) {
                     DB::rollBack();
                     return response()->json([
                         'status' => 'fail',
-                        'message' => "Return quantity for product {$product->name} exceeds remaining purchased quantity."
-                    ], 400);
+                        'message' => 'Referenced purchase line item or product was not found.'
+                    ], 404);
                 }
 
-                // 2. ✅ ইউনিট প্রাইস গণনা: unit_price/cost_price ব্যবহার করে
-                // আমরা ধরে নিচ্ছি `cost_price` কলামটি প্রতি ইউনিটের মূল্য ধারণ করে।
-                // এটি আপনার ভুল রিটার্ন অ্যামাউন্টের সমস্যা সমাধান করবে।
-                $unitPrice = $orderDetail->cost_price; // Assuming cost_price holds the Unit Price
+                if ((int) $orderDetail->purchase_id !== (int) $purchase->id || (int) $orderDetail->product_id !== (int) $product->id) {
+                    DB::rollBack();
+                    Log::warning('PurchaseReturnProductCreate blocked: detail ownership mismatch', [
+                        'actor_user_id' => $user_id,
+                        'purchase_id' => $purchase->id,
+                        'purchase_order_detail_id' => $orderDetail->id,
+                        'detail_purchase_id' => $orderDetail->purchase_id,
+                        'detail_product_id' => $orderDetail->product_id,
+                        'requested_product_id' => $product->id,
+                    ]);
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => 'পারচেজ লাইন আইটেম ও পণ্য এই পারচেজের সাথে সামঞ্জস্যপূর্ণ নয়।'
+                    ], 422);
+                }
 
-                // রিটার্নের মোট মূল্য
+                $remainingPurchasedQty = max(0, (int) $orderDetail->quantity - (int) ($orderDetail->return_quantity ?? 0));
+                if ($agg['quantity'] > $remainingPurchasedQty) {
+                    DB::rollBack();
+                    $prodName = $product->product_name ?? ("Product #{$product->id}");
+                    Log::warning('PurchaseReturnProductCreate blocked: exceeds purchased quantity', [
+                        'actor_user_id' => $user_id,
+                        'purchase_id' => $purchase->id,
+                        'product_id' => $product->id,
+                        'requested_qty' => $agg['quantity'],
+                        'remaining_purchased_qty' => $remainingPurchasedQty,
+                    ]);
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => "Return quantity for product {$prodName} exceeds remaining purchased quantity ({$remainingPurchasedQty})."
+                    ], 422);
+                }
+            }
+
+            foreach ($totalRequestedByProduct as $pId => $neededReturnQty) {
+                $product = $lockedProducts->get($pId);
+                $currentStock = (int) $product->quantity;
+                if ($currentStock < $neededReturnQty) {
+                    DB::rollBack();
+                    $prodName = $product->product_name ?? ("Product #{$product->id}");
+                    Log::warning('PurchaseReturnProductCreate blocked: insufficient stock', [
+                        'actor_user_id' => $user_id,
+                        'purchase_id' => $purchase->id,
+                        'product_id' => $product->id,
+                        'current_stock' => $currentStock,
+                        'requested_return_qty' => $neededReturnQty,
+                    ]);
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => "Insufficient stock for product {$prodName}: current stock is {$currentStock}, cannot return {$neededReturnQty}."
+                    ], 422);
+                }
+            }
+
+            $totalReturnAmount = 0;
+            $date = Carbon::parse($request->date)->format('Y-m-d');
+            $auditItems = [];
+
+            foreach ($aggregatedByDetail as $dId => $agg) {
+                $orderDetail = $lockedDetails->get($dId);
+                $product = $lockedProducts->get($agg['product_id']);
+                $returnQty = $agg['quantity'];
+                $currentStock = (int) $product->quantity;
+
+                // Unit price calculation
+                $unitPrice = $orderDetail->cost_price;
                 $returnAmount = $returnQty * $unitPrice;
 
-                // 3. ✅ রিটার্ন এন্ট্রি সংরক্ষণ (`purchase_returns` টেবিল)
+                // Save purchase return record
                 PurchaseReturn::create([
                     'purchase_id' => $purchase->id,
                     'supplier_id' => $supplier->id,
@@ -854,36 +1099,37 @@ public function PurchaseReturnProductCreate(Request $request)
                     'purchase_order_detail_id' => $orderDetail->id,
                     'quantity' => $returnQty,
                     'amount' => $returnAmount,
-                    'due_amount' => $returnAmount, // রিটার্ন অ্যামাউন্ট বকেয়া হিসাবে যুক্ত হবে
+                    'due_amount' => $returnAmount,
                     'date' => $date,
                     'user_id' => $user_id,
                 ]);
 
-                // 4. ✅ স্টক আপডেট (`products` টেবিল)
-                // রিটার্ন করা হলে স্টক কমিয়ে দেওয়া হবে
-                if ($product->quantity >= $returnQty) {
-                    $product->decrement('quantity', $returnQty);
-                }
+                // Update locked product stock atomically
+                $newStock = $currentStock - $returnQty;
+                $product->quantity = $newStock;
+                $product->save();
 
-                // 5. ✅ অর্ডার ডিটেইল আপডেট (`purchase_order_details` টেবিল)
+                // Update purchase order detail return tracking
                 $orderDetail->return_quantity = ($orderDetail->return_quantity ?? 0) + $returnQty;
                 $orderDetail->save();
 
-                $totalReturnAmount += $returnAmount;
-            } // foreach লুপ শেষ
+                $auditItems[] = [
+                    'purchase_order_detail_id' => $orderDetail->id,
+                    'product_id' => $product->id,
+                    'returned_qty' => $returnQty,
+                    'old_stock' => $currentStock,
+                    'new_stock' => $newStock,
+                    'return_amount' => $returnAmount,
+                ];
 
-            // 6. ✅ পারচেজ টোটাল আপডেট (`purchases` টেবিল)
-            
-            // স্মার্ট পদ্ধতি: অবশিষ্ট সকল orderDetails-এর মোট সাবটোটাল বের করা
-            // এটি মাল্টিপল আইটেম রিটার্নের পরে সঠিক grand_subtotal নিশ্চিত করবে।
+                $totalReturnAmount += $returnAmount;
+            }
+
+            // Update purchase totals
             $currentPurchaseOrderDetailsSubtotal = PurchaseOrderDetails::where('purchase_id', $purchase->id)->sum('subtotal');
             $remainingSubTotal = $currentPurchaseOrderDetailsSubtotal;
-            
-            // Paid amount remains the same, as the refund/adjustment happens through due amount or supplier balance.
             $remainingPaid = $purchase->paid_amount;
-
-            // বকেয়া কমিয়ে দেওয়া হবে রিটার্ন অ্যামাউন্ট অনুযায়ী
-            $remainingDue = max(0, ($purchase->due_amount - $totalReturnAmount)); 
+            $remainingDue = max(0, ($purchase->due_amount - $totalReturnAmount));
 
             $purchase->update([
                 'grand_subtotal' => $remainingSubTotal,
@@ -891,12 +1137,25 @@ public function PurchaseReturnProductCreate(Request $request)
                 'due_amount' => $remainingDue,
             ]);
 
-            // 7. ✅ সাপ্লায়ার ব্যালেন্স আপডেট (`suppliers` টেবিল)
+            // Update supplier balance
             $supplier->update([
                 'purchase_payable_amount' => max(0, $supplier->purchase_payable_amount - $totalReturnAmount),
             ]);
 
             DB::commit();
+
+            Log::info('Purchase Return Created', [
+                'actor_user_id' => $user_id,
+                'purchase_id' => $purchase->id,
+                'purchase_code' => $purchase->purchase_id,
+                'supplier_id' => $supplier->id,
+                'total_return_amount' => $totalReturnAmount,
+                'remaining_sub_total' => $remainingSubTotal,
+                'remaining_due' => $remainingDue,
+                'items' => $auditItems,
+                'result' => 'success',
+                'timestamp' => now()->toIso8601String(),
+            ]);
 
             return response()->json([
                 'status' => 'success',
@@ -907,6 +1166,11 @@ public function PurchaseReturnProductCreate(Request $request)
 
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Purchase Return Error', [
+                'actor_user_id' => $actorUserId,
+                'purchase_id' => $request->input('purchase_id'),
+                'error' => $e->getMessage(),
+            ]);
             return response()->json([
                 'status' => 'fail',
                 'message' => $e->getMessage(),

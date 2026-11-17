@@ -13,13 +13,13 @@ class PurchaseOrderDetails extends Model
         'product_id',
         'purchase_id',
         'quantity',
+        'return_quantity',
         'cost_price',
         'subtotal',
         'user_id'
     ];
 
      // Each PurchaseOrderDetails belongs to one Purchase
-// Each PurchaseOrderDetails belongs to one Purchase
 public function purchase()
 {
     return $this->belongsTo(Purchase::class, 'purchase_id');

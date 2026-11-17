@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class StockOverviewController extends Controller
@@ -154,14 +155,16 @@ class StockOverviewController extends Controller
      */
     public function RetailStockAdjust(Request $request)
     {
-        try {
-            $request->validate([
-                'product_id'   => 'required|integer|exists:products,id',
-                'new_quantity' => 'required|numeric|min:0',
-                'reason'       => 'nullable|string|max:255'
-            ]);
+        $request->validate([
+            'product_id'   => 'required|integer|exists:products,id',
+            'new_quantity' => 'required|numeric|min:0',
+            'reason'       => 'nullable|string|max:255'
+        ]);
 
-            $product = Product::findOrFail($request->product_id);
+        $actorUserId = Auth::id();
+        DB::beginTransaction();
+        try {
+            $product = Product::lockForUpdate()->findOrFail($request->product_id);
             $oldQty  = (float)($product->quantity ?? 0);
             $newQty  = (float)$request->new_quantity;
             $reason  = $request->input('reason', 'Physical Inventory Recount');
@@ -169,14 +172,31 @@ class StockOverviewController extends Controller
             $product->quantity = $newQty;
             $product->save();
 
-            // Safe Audit Log in application logger (No schema changes)
-            Log::info("Retail Stock Adjustment: Product #{$product->id} ('{$product->product_name}') adjusted from {$oldQty} to {$newQty} by User ID " . (Auth::id() ?? 'System') . ". Reason: {$reason}");
+            DB::commit();
+
+            Log::info('Retail Stock Adjustment', [
+                'actor_user_id' => $actorUserId ?? 'System',
+                'product_id' => $product->id,
+                'product_name' => $product->product_name,
+                'old_qty' => $oldQty,
+                'new_qty' => $newQty,
+                'delta_qty' => $newQty - $oldQty,
+                'reason' => $reason,
+                'result' => 'success',
+                'timestamp' => now()->toIso8601String(),
+            ]);
 
             return response()->json([
                 'status'  => 'success',
                 'message' => "Stock quantity for \"{$product->product_name}\" has been updated to {$newQty}."
             ]);
         } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Retail Stock Adjustment Error', [
+                'actor_user_id' => $actorUserId,
+                'product_id' => $request->input('product_id'),
+                'error' => $e->getMessage(),
+            ]);
             return response()->json([
                 'status'  => 'fail',
                 'message' => $e->getMessage()

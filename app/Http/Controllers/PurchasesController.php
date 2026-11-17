@@ -11,9 +11,12 @@ use App\Models\PurchaseOrderDetails;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PurchasePaymentDetails;
 use App\Models\Supplier;
+use App\Models\SupplierDueCollection;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use RuntimeException;
 
 class PurchasesController extends Controller
 {
@@ -258,7 +261,7 @@ public function PurchasesList()
         ]);
 
     } catch (\Exception $e) {
-        \Log::error('Purchase List Error: ' . $e->getMessage());
+        Log::error('Purchase List Error: ' . $e->getMessage());
         return response()->json([
             'status' => 'fail',
             'PurchasessData' => [],
@@ -270,6 +273,8 @@ public function PurchasesList()
 
     public function PurchasesCreate(Request $request)
     {
+        $uploadedFilePath = null;
+
         try {
             $user_id = Auth::id() ?? auth('sanctum')->id() ?? auth()->id() ?? $request->user()?->id ?? \App\Models\User::first()?->id ?? 1;
             DB::beginTransaction();
@@ -286,6 +291,7 @@ public function PurchasesList()
                 $img_name = "{$user_id}-" . time() . "-" . $cleanName;
                 $img_url = "uploads/purchases-img/{$img_name}";
                 $img->move($destination, $img_name);
+                $uploadedFilePath = public_path($img_url);
             }
 
             // Parse and format date to Y-m-d for database storage
@@ -322,6 +328,11 @@ public function PurchasesList()
 
             if (!$supplier_id || !Supplier::where('id', $supplier_id)->exists()) {
                 DB::rollBack();
+                $this->cleanupOrphanFile($uploadedFilePath);
+                Log::warning('PurchasesCreate failed: invalid supplier', [
+                    'actor_user_id' => $user_id,
+                    'supplier_input' => $request->input('supplier_id'),
+                ]);
                 return response()->json([
                     'status' => 'fail',
                     'message' => 'Please select a valid supplier.'
@@ -335,10 +346,62 @@ public function PurchasesList()
             }
             if (!is_array($products) || count($products) === 0) {
                 DB::rollBack();
+                $this->cleanupOrphanFile($uploadedFilePath);
+                Log::warning('PurchasesCreate failed: empty product list', [
+                    'actor_user_id' => $user_id,
+                    'supplier_id' => $supplier_id,
+                ]);
                 return response()->json([
                     'status' => 'fail',
                     'message' => 'At least one product must be added to purchase.'
                 ]);
+            }
+
+            // Validate line quantities and lock products in deterministic ascending ID order
+            $productIdsToLock = [];
+            foreach ($products as $product) {
+                if (isset($product['product_id'], $product['quantity'])) {
+                    $prodId = (int) $product['product_id'];
+                    $qty = (int) $product['quantity'];
+                    if ($prodId <= 0 || $qty <= 0) {
+                        DB::rollBack();
+                        $this->cleanupOrphanFile($uploadedFilePath);
+                        Log::warning('PurchasesCreate failed: invalid product quantity', [
+                            'actor_user_id' => $user_id,
+                            'supplier_id' => $supplier_id,
+                            'product_id' => $prodId,
+                            'quantity' => $qty,
+                        ]);
+                        return response()->json([
+                            'status' => 'fail',
+                            'message' => 'All purchase items must have valid product IDs and positive quantities.'
+                        ], 422);
+                    }
+                    $productIdsToLock[] = $prodId;
+                }
+            }
+
+            $productIdsToLock = array_values(array_unique($productIdsToLock));
+            sort($productIdsToLock);
+
+            $lockedProducts = !empty($productIdsToLock)
+                ? Product::whereIn('id', $productIdsToLock)->orderBy('id', 'asc')->lockForUpdate()->get()->keyBy('id')
+                : collect();
+
+            foreach ($productIdsToLock as $pidCheck) {
+                if (!$lockedProducts->has($pidCheck)) {
+                    DB::rollBack();
+                    $this->cleanupOrphanFile($uploadedFilePath);
+                    Log::warning('PurchasesCreate failed: product not found', [
+                        'actor_user_id' => $user_id,
+                        'supplier_id' => $supplier_id,
+                        'missing_product_id' => $pidCheck,
+                    ]);
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => "Product ID #{$pidCheck} was not found."
+                    ], 404);
+                }
             }
 
             // Create Purchase record
@@ -377,7 +440,8 @@ public function PurchasesList()
 
             $purchase = Purchase::create($purchaseData);
 
-            // Save product details in the `purchase_product_details` table
+            // Save product details in the `purchase_order_details` table and mutate locked products
+            $auditProducts = [];
             foreach ($products as $product) {
                 if (isset($product['product_id'], $product['quantity'])) {
                     $prodId = (int) $product['product_id'];
@@ -385,9 +449,14 @@ public function PurchasesList()
                     $costPrice = (float) ($product['cost_price'] ?? 0);
                     $subtotal = (float) ($product['subtotal'] ?? ($costPrice * $qty));
 
-                    $productModel = Product::find($prodId);
+                    $productModel = $lockedProducts->get($prodId);
                     if (!$productModel) {
-                        continue;
+                        DB::rollBack();
+                        $this->cleanupOrphanFile($uploadedFilePath);
+                        return response()->json([
+                            'status' => 'fail',
+                            'message' => "Product ID #{$prodId} was not found."
+                        ], 404);
                     }
 
                     PurchaseOrderDetails::create([
@@ -412,7 +481,8 @@ public function PurchasesList()
                         $productModel->cost_price = round($costPrice, 2);
                     }
 
-                    $productModel->quantity = $existingQuantity + $qty;
+                    $newStock = $existingQuantity + $qty;
+                    $productModel->quantity = $newStock;
 
                     // Safely update or merge product_code
                     if (isset($product['product_code']) && !empty($product['product_code'])) {
@@ -440,6 +510,16 @@ public function PurchasesList()
                     }
 
                     $productModel->save();
+
+                    $auditProducts[] = [
+                        'product_id' => $prodId,
+                        'added_qty' => $qty,
+                        'old_stock' => $existingQuantity,
+                        'new_stock' => $newStock,
+                        'unit_cost' => $costPrice,
+                        'old_cost' => $existingCostPrice,
+                        'new_cost' => (float) $productModel->cost_price,
+                    ];
                 }
             }
 
@@ -463,13 +543,29 @@ public function PurchasesList()
             ]);
 
             DB::commit();
+
+            Log::info('Purchase Created', [
+                'actor_user_id' => $user_id,
+                'purchase_id' => $purchase->id,
+                'purchase_code' => $purchase->purchase_id,
+                'supplier_id' => $supplier_id,
+                'date' => $formattedDate,
+                'grand_subtotal' => (float) $purchase->grand_subtotal,
+                'paid_amount' => $paidAmount,
+                'due_amount' => (float) $purchase->due_amount,
+                'products' => $auditProducts,
+                'result' => 'success',
+                'timestamp' => now()->toIso8601String(),
+            ]);
+
             return response()->json(['status' => 'success', 'message' => 'Purchase created successfully']);
         } catch (\Throwable $e) {
             DB::rollBack();
-            \Log::error('Purchase Create Error: ' . $e->getMessage(), [
+            $this->cleanupOrphanFile($uploadedFilePath);
+            Log::error('Purchase Create Error: ' . $e->getMessage(), [
+                'actor_user_id' => Auth::id(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
             ]);
             return response()->json([
                 'status' => 'fail',
@@ -595,7 +691,7 @@ public function getPaymentDetailsById(Request $request)
         ]);
 
     } catch (\Exception $e) {
-        \Log::error('API Error: ' . $e->getMessage());
+        Log::error('API Error: ' . $e->getMessage());
         return response()->json([
             'status'  => 'fail',
             'message' => 'Purchase not found!'
@@ -652,40 +748,69 @@ public function getPaymentDetailsById(Request $request)
 
 public function updatePaymentDetails(Request $request)
 {
+    $request->validate([
+        'id'             => 'required|integer|exists:purchases,id',
+        'paid_amount'    => 'required|numeric|min:0.01',
+        'payment_method' => 'required|string',
+        'transaction_id' => 'nullable|string|max:255'
+    ]);
+
+    DB::beginTransaction();
+    $actorUserId = Auth::id();
     try {
-        $request->validate([
-            'id'             => 'required|integer|exists:purchases,id',
-            'paid_amount'    => 'required|numeric|min:0.01',
-            'payment_method' => 'required|string',
-            'transaction_id' => 'nullable|string|max:255'
-        ]);
+        $purchase = Purchase::lockForUpdate()->findOrFail($request->id);
+        $lockedPayments = PurchasePaymentDetails::where('purchases_id', $purchase->id)
+            ->orderBy('id', 'asc')
+            ->lockForUpdate()
+            ->get();
 
-        $purchase = Purchase::with('paymentDetails')->findOrFail($request->id);
-
-        $currentPaid = $purchase->paymentDetails->sum('paid_amount') ?? 0;
-        $newPaid     = $currentPaid + $request->paid_amount;
-        $grandTotal  = (float) ($purchase->grand_subtotal ?? 0);
+        $oldPaid        = (float) $purchase->paid_amount;
+        $oldDue         = (float) $purchase->due_amount;
+        $currentPaid    = (float) ($lockedPayments->sum('paid_amount') ?? 0);
+        $addedPaid      = (float) $request->paid_amount;
+        $newPaid        = $currentPaid + $addedPaid;
+        $grandTotal     = (float) ($purchase->grand_subtotal ?? 0);
         $deliveryCharge = (float) ($purchase->delivery_charge ?? 0);
         $discountAmount = (float) ($purchase->discount_amount ?? 0);
-        $netTotal    = max(0, ($grandTotal - $discountAmount) + $deliveryCharge);
-        $newDue      = max(0, $netTotal - $newPaid);
+        $netTotal       = max(0, ($grandTotal - $discountAmount) + $deliveryCharge);
+        $newDue         = max(0, $netTotal - $newPaid);
 
-        // শুধু created_at এর তারিখটা নিয়ে purchase_due_collection_date এ ঢুকাবে
-        $todayDate = Carbon::today()->format('Y-m-d'); // শুধু তারিখ, টাইম না
+        $todayDate = Carbon::today()->format('Y-m-d');
 
         PurchasePaymentDetails::create([
             'purchases_id'                => $purchase->id,
-            'paid_amount'                 => $request->paid_amount,
+            'paid_amount'                 => $addedPaid,
             'discount_amount'             => 0,
             'payment_method'              => $request->payment_method,
             'transaction_id'              => $request->transaction_id,
             'payment_status'              => $newDue <= 0 ? 'Fully Paid' : 'Partial Paid',
-            'purchase_due_collection_date'=> $todayDate,   // এটাই তুমি চেয়েছো
+            'purchase_due_collection_date'=> $todayDate,
             'purchase_order_details_id'   => null,
-            'user_id'                     => auth()->id(),
+            'user_id'                     => $actorUserId,
         ]);
 
-        $purchase->update(['due_amount' => $newDue]);
+        $purchase->update([
+            'paid_amount' => $newPaid,
+            'due_amount'  => $newDue,
+        ]);
+
+        DB::commit();
+
+        Log::info('Purchase Payment Updated', [
+            'actor_user_id' => $actorUserId,
+            'purchase_id' => $purchase->id,
+            'purchase_code' => $purchase->purchase_id,
+            'supplier_id' => $purchase->supplier_id,
+            'added_paid_amount' => $addedPaid,
+            'old_paid_amount' => $oldPaid,
+            'new_paid_amount' => $newPaid,
+            'old_due_amount' => $oldDue,
+            'new_due_amount' => $newDue,
+            'payment_method' => $request->payment_method,
+            'transaction_id' => $request->transaction_id,
+            'result' => 'success',
+            'timestamp' => now()->toIso8601String(),
+        ]);
 
         return response()->json([
             'status'   => 'success',
@@ -695,7 +820,12 @@ public function updatePaymentDetails(Request $request)
         ]);
 
     } catch (\Exception $e) {
-        \Log::error('Payment Error: ' . $e->getMessage());
+        DB::rollBack();
+        Log::error('Purchase Payment Update Error', [
+            'actor_user_id' => $actorUserId,
+            'purchase_id' => $request->input('id'),
+            'error' => $e->getMessage(),
+        ]);
         return response()->json([
             'status'  => 'fail',
             'message' => 'Payment failed.'
@@ -717,39 +847,296 @@ public function updatePaymentDetails(Request $request)
         }
     }
 
+    /**
+     * Unified Conservative Historical Integrity Check (Policy P2) shared by PurchasesDelete & PurchasesUpdate.
+     *
+     * Relies on parent business dates (`purchases.date` vs `orders.invoice_date`) rather than
+     * volatile `order_details.created_at` (which historically drifted on invoice edits).
+     * Never infers FIFO/lot attribution from pooled stock; blocks conservatively on any
+     * subsequent sale or missing/malformed/ambiguous business date so manual review is required.
+     */
+    private function parseStrictBusinessDate(mixed $rawDate, bool $allowTimeSuffix = false): ?string
+    {
+        if ($rawDate instanceof \DateTimeInterface) {
+            return $rawDate->format('Y-m-d');
+        }
+        if (!is_string($rawDate)) {
+            return null;
+        }
+        $dateStr = trim($rawDate);
+        if ($dateStr === '') {
+            return null;
+        }
+
+        if ($allowTimeSuffix && preg_match('/^(\d{4})-(\d{2})-(\d{2})(?:[ T]\d{2}:\d{2}:\d{2})?$/', $dateStr, $m)) {
+            $year = (int) $m[1];
+            $month = (int) $m[2];
+            $day = (int) $m[3];
+            return checkdate($month, $day, $year) ? sprintf('%04d-%02d-%02d', $year, $month, $day) : null;
+        }
+
+        if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $dateStr, $m)) {
+            $year = (int) $m[1];
+            $month = (int) $m[2];
+            $day = (int) $m[3];
+            return checkdate($month, $day, $year) ? sprintf('%04d-%02d-%02d', $year, $month, $day) : null;
+        }
+
+        if (preg_match('/^(\d{2})-(\d{2})-(\d{4})$/', $dateStr, $m)) {
+            $day = (int) $m[1];
+            $month = (int) $m[2];
+            $year = (int) $m[3];
+            return checkdate($month, $day, $year) ? sprintf('%04d-%02d-%02d', $year, $month, $day) : null;
+        }
+
+        return null;
+    }
+
+    private function validatePurchaseHistoricalIntegrity(
+        Purchase $purchase,
+        array $productIds,
+        string $operation,
+        ?int $actorUserId = null,
+        ?string $proposedDate = null
+    ) {
+        $productIds = array_values(array_unique(array_filter(array_map('intval', $productIds))));
+        sort($productIds);
+
+        if (empty($productIds)) {
+            return null;
+        }
+
+        // 1. Validate Purchase business date & created_at conservatively
+        if (empty($purchase->date)) {
+            Log::warning("Purchase {$operation} blocked: missing purchase business date (manual review required)", [
+                'actor_user_id' => $actorUserId,
+                'purchase_id' => $purchase->id,
+                'purchase_code' => $purchase->purchase_id,
+                'reason' => 'missing_purchase_date',
+            ]);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'এই পারচেজ রেকর্ডের ব্যবসায়িক তারিখ (date) অনুপস্থিত থাকায় ঐতিহাসিক লাইনেজ যাচাই করা সম্ভব নয়; ম্যানুয়াল রিভিউ প্রয়োজন।'
+            ], 422);
+        }
+
+        $purchaseDateStr = $this->parseStrictBusinessDate($purchase->date, allowTimeSuffix: true);
+        if ($purchaseDateStr === null) {
+            Log::warning("Purchase {$operation} blocked: malformed purchase business date", [
+                'actor_user_id' => $actorUserId,
+                'purchase_id' => $purchase->id,
+                'purchase_code' => $purchase->purchase_id,
+                'raw_date' => $purchase->date,
+                'reason' => 'malformed_purchase_date',
+            ]);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'পারচেজের তারিখ সঠিক ফরম্যাটে না থাকায় অপারেশনটি ব্লক করা হয়েছে; ম্যানুয়াল রিভিউ প্রয়োজন।'
+            ], 422);
+        }
+
+        if (empty($purchase->created_at) || str_starts_with((string) $purchase->created_at, '0000-00-00')) {
+            Log::warning("Purchase {$operation} blocked: missing purchase created_at", [
+                'actor_user_id' => $actorUserId,
+                'purchase_id' => $purchase->id,
+                'purchase_code' => $purchase->purchase_id,
+                'reason' => 'missing_purchase_created_at',
+            ]);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'পারচেজ তৈরির টাইমস্ট্যাম্প অনুপস্থিত থাকায় ঐতিহাসিক ইন্টেগ্রিটি যাচাই সম্ভব নয়; ম্যানুয়াল রিভিউ প্রয়োজন।'
+            ], 422);
+        }
+
+        $effectiveStartDateStr = $purchaseDateStr;
+        $proposedDateStr = null;
+        if ($proposedDate !== null) {
+            $proposedDateStr = $this->parseStrictBusinessDate($proposedDate);
+            if ($proposedDateStr === null) {
+                Log::warning("Purchase {$operation} blocked: malformed proposed purchase date", [
+                    'actor_user_id' => $actorUserId,
+                    'purchase_id' => $purchase->id,
+                    'raw_proposed_date' => $proposedDate,
+                    'reason' => 'malformed_proposed_date',
+                ]);
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'প্রস্তাবিত পারচেজ তারিখটি সঠিক নয়।'
+                ], 422);
+            }
+            if ($proposedDateStr < $effectiveStartDateStr) {
+                $effectiveStartDateStr = $proposedDateStr;
+            }
+        }
+
+        // Reject future-dated purchase anomalies (> 1 day ahead of created_at) on both stored and proposed dates
+        $purchaseCreatedCarbon = Carbon::parse($purchase->created_at);
+        $maxAllowedPurchaseDate = $purchaseCreatedCarbon->copy()->addDay()->endOfDay();
+        if (
+            Carbon::parse($effectiveStartDateStr)->gt($maxAllowedPurchaseDate) ||
+            ($proposedDateStr !== null && Carbon::parse($proposedDateStr)->gt($maxAllowedPurchaseDate))
+        ) {
+            Log::warning("Purchase {$operation} blocked: purchase business date exceeds created_at", [
+                'actor_user_id' => $actorUserId,
+                'purchase_id' => $purchase->id,
+                'purchase_code' => $purchase->purchase_id,
+                'purchase_date' => $proposedDateStr ?? $effectiveStartDateStr,
+                'purchase_created_at' => (string) $purchase->created_at,
+                'reason' => 'ambiguous_future_purchase_date',
+            ]);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'পারচেজের তারিখ ও তৈরির সময়ের মধ্যে অসঙ্গতি থাকায় ম্যানুয়াল রিভিউ ছাড়া পরিবর্তন করা যাবে না।'
+            ], 422);
+        }
+
+        // 2. Inspect active net sales joined to parent orders using business dates
+        $salesRows = DB::table('order_details AS od')
+            ->join('orders AS o', 'o.id', '=', 'od.order_id')
+            ->whereIn('od.product_id', $productIds)
+            ->whereRaw('(CAST(od.quantity AS SIGNED) - COALESCE(od.return_quantity, 0)) > 0')
+            ->select([
+                'od.product_id',
+                'od.order_id',
+                'o.order_no',
+                'o.invoice_date',
+                'o.created_at AS order_created_at',
+                DB::raw('(CAST(od.quantity AS SIGNED) - COALESCE(od.return_quantity, 0)) AS net_sold'),
+            ])
+            ->orderBy('od.product_id', 'asc')
+            ->orderBy('o.id', 'asc')
+            ->get();
+
+        $ambiguousOrders = [];
+        $subsequentSalesByProduct = [];
+
+        foreach ($salesRows as $row) {
+            if (empty($row->invoice_date)) {
+                $ambiguousOrders[] = [
+                    'order_id' => $row->order_id,
+                    'order_no' => $row->order_no,
+                    'product_id' => (int) $row->product_id,
+                    'reason' => 'null_invoice_date',
+                ];
+                continue;
+            }
+
+            $invoiceDateStr = $this->parseStrictBusinessDate($row->invoice_date, allowTimeSuffix: true);
+            if ($invoiceDateStr === null) {
+                $ambiguousOrders[] = [
+                    'order_id' => $row->order_id,
+                    'order_no' => $row->order_no,
+                    'product_id' => (int) $row->product_id,
+                    'raw_invoice_date' => $row->invoice_date,
+                    'reason' => 'malformed_invoice_date',
+                ];
+                continue;
+            }
+
+            if ($invoiceDateStr >= $effectiveStartDateStr) {
+                $pid = (int) $row->product_id;
+                if (!isset($subsequentSalesByProduct[$pid])) {
+                    $subsequentSalesByProduct[$pid] = [
+                        'net_sold' => 0,
+                        'orders' => [],
+                    ];
+                }
+                $subsequentSalesByProduct[$pid]['net_sold'] += (int) $row->net_sold;
+                $subsequentSalesByProduct[$pid]['orders'][] = ($row->order_no ?? ('#' . $row->order_id)) . " ({$invoiceDateStr})";
+            }
+        }
+
+        if (!empty($ambiguousOrders)) {
+            Log::warning("Purchase {$operation} blocked: ambiguous or missing invoice date on historical sales", [
+                'actor_user_id' => $actorUserId,
+                'purchase_id' => $purchase->id,
+                'purchase_code' => $purchase->purchase_id,
+                'purchase_date' => $effectiveStartDateStr,
+                'ambiguous_orders' => array_slice($ambiguousOrders, 0, 10),
+                'reason' => 'missing_or_malformed_invoice_date',
+            ]);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'সংশ্লিষ্ট একটি বা একাধিক বিক্রয় ইনভয়েসে তারিখ (invoice_date) অনুপস্থিত বা অস্পষ্ট থাকায় ঐতিহাসিক স্টক যাচাই সম্ভব নয়। অনুগ্রহ করে ম্যানুয়াল রিভিউ করুন।'
+            ], 422);
+        }
+
+        if (!empty($subsequentSalesByProduct)) {
+            $firstPid = array_key_first($subsequentSalesByProduct);
+            $firstProduct = Product::find($firstPid);
+            $productName = $firstProduct?->product_name ?? ("পণ্য #{$firstPid}");
+            $soldCount = $subsequentSalesByProduct[$firstPid]['net_sold'];
+
+            Log::warning("Purchase {$operation} blocked: Policy P2 historical business-date integrity lock", [
+                'actor_user_id' => $actorUserId,
+                'purchase_id' => $purchase->id,
+                'purchase_code' => $purchase->purchase_id,
+                'purchase_date' => $effectiveStartDateStr,
+                'purchase_created_at' => (string) $purchase->created_at,
+                'blocked_products' => $subsequentSalesByProduct,
+                'reason' => 'subsequent_sales_on_or_after_purchase_business_date',
+            ]);
+
+            return response()->json([
+                'status' => 'fail',
+                'message' => "পণ্য '{$productName}' এই পারচেজের ব্যবসায়িক তারিখ ({$effectiveStartDateStr}) বা তার পরে ইতিমধ্যে {$soldCount} পিস বিক্রি হয়েছে (ঐতিহাসিক COGS/ইনভয়েস রেকর্ড বিদ্যমান)। পুলকৃত স্টকের কস্ট বেসিস সুরক্ষায় সরাসরি পারচেজ {$operation} করা সম্ভব নয়; অনুগ্রহ করে কম্পেনসেটিং অ্যাডজাস্টমেন্ট বা ম্যানুয়াল রিভিউ ব্যবহার করুন।"
+            ], 422);
+        }
+
+        return null;
+    }
+
     public function PurchasesUpdate(Request $request)
     {
         $purchase_id = $request->input('id');
         if (!$purchase_id) {
-            return response()->json(['status' => 'fail', 'message' => 'Purchase ID is required']);
+            return response()->json(['status' => 'fail', 'message' => 'Purchase ID is required'], 422);
         }
 
-        $purchase = Purchase::with(['orderDetails', 'paymentDetails'])->find($purchase_id);
-        if (!$purchase) {
-            return response()->json(['status' => 'fail', 'message' => 'Purchase not found']);
-        }
+        $newUploadedFilePath = null;
+        $oldAttachmentToCleanup = null;
 
         DB::beginTransaction();
         try {
+            $purchase = Purchase::lockForUpdate()->find($purchase_id);
+            if (!$purchase) {
+                DB::rollBack();
+                return response()->json(['status' => 'fail', 'message' => 'Purchase not found'], 404);
+            }
+
             $user_id = Auth::id() ?? $purchase->user_id;
+            $oldPurchaseDate = !empty($purchase->date)
+                ? $this->parseStrictBusinessDate($purchase->date, allowTimeSuffix: true)
+                : null;
+            $oldPaid = (float) $purchase->paid_amount;
+
+            $lockedOldDetails = PurchaseOrderDetails::where('purchase_id', $purchase->id)
+                ->orderBy('id', 'asc')
+                ->lockForUpdate()
+                ->get();
+
+            $lockedPayments = PurchasePaymentDetails::where('purchases_id', $purchase->id)
+                ->orderBy('id', 'asc')
+                ->lockForUpdate()
+                ->get();
 
             $updateDate = $purchase->date;
-            if ($request->filled('date')) {
-                try {
-                    $dateStr = trim($request->input('date'));
-                    if (str_contains($dateStr, '-')) {
-                        $parts = explode('-', $dateStr);
-                        if (count($parts) === 3 && strlen($parts[0]) === 2 && strlen($parts[2]) === 4) {
-                            $updateDate = Carbon::createFromFormat('d-m-Y', $dateStr)->format('Y-m-d');
-                        } else {
-                            $updateDate = Carbon::parse($dateStr)->format('Y-m-d');
-                        }
-                    } else {
-                        $updateDate = Carbon::parse($dateStr)->format('Y-m-d');
-                    }
-                } catch (\Exception $e) {
-                    $updateDate = $purchase->date;
+            $hasExplicitDate = $request->has('date');
+            if ($hasExplicitDate) {
+                $parsedInputDate = $this->parseStrictBusinessDate($request->input('date'));
+                if ($parsedInputDate === null) {
+                    DB::rollBack();
+                    Log::warning('PurchasesUpdate blocked: invalid date input', [
+                        'actor_user_id' => $user_id,
+                        'purchase_id' => $purchase->id,
+                        'raw_date' => $request->input('date'),
+                    ]);
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => 'পারচেজের তারিখটি সঠিক নয়; অনুগ্রহ করে বৈধ YYYY-MM-DD বা DD-MM-YYYY তারিখ দিন।'
+                    ], 422);
                 }
+                $updateDate = $parsedInputDate;
             }
 
             // Supplier resolution
@@ -758,50 +1145,65 @@ public function updatePaymentDetails(Request $request)
                 $supplier_id = (int) $request->supplier_id;
             }
 
-            // Document upload
+            // Document upload (old file cleanup deferred strictly until after DB::commit)
             $img_url = $purchase->attach_document;
             if ($request->hasFile('img')) {
                 $img = $request->file('img');
-                $img_name = "{$user_id}-" . time() . "-" . $img->getClientOriginalName();
+                $cleanName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $img->getClientOriginalName());
+                $img_name = "{$user_id}-" . time() . "-" . $cleanName;
                 $img_url = "uploads/purchases-img/{$img_name}";
                 $destination = public_path('uploads/purchases-img');
                 if (!file_exists($destination)) {
                     @mkdir($destination, 0777, true);
                 }
                 $img->move($destination, $img_name);
+                $newUploadedFilePath = public_path($img_url);
+                $oldAttachmentToCleanup = $purchase->attach_document;
             }
 
-            // Check if any products have been returned
+            // Check if any products have been returned (purchase_returns table OR purchase_order_details.return_quantity)
             $purchaseReturns = DB::table('purchase_returns')
                 ->where('purchase_id', $purchase->id)
                 ->get();
             $returnsByProduct = $purchaseReturns->groupBy('product_id')->map(function ($group) {
-                return $group->sum('quantity');
-            });
+                return (int) $group->sum('quantity');
+            })->toArray();
 
             // Handle products reconciliation
             $rawProducts = $request->input('products');
             $products = null;
-            if ($rawProducts) {
+            if ($rawProducts !== null && $rawProducts !== '') {
                 $products = is_array($rawProducts) ? $rawProducts : json_decode($rawProducts, true);
             }
 
-            $lineItemsCalculatedSubtotal = 0;
+            $oldItemsMap = [];
+            foreach ($lockedOldDetails as $od) {
+                $pid = (int) $od->product_id;
+                $odQty = (int) $od->quantity;
+                $odRet = (int) ($od->return_quantity ?? 0);
+                $odCost = (float) $od->cost_price;
+                $odSub = (float) $od->subtotal;
 
-            if (is_array($products)) {
-                // Map old details by product_id
-                $oldDetails = $purchase->orderDetails;
-                $oldItemsMap = [];
-                foreach ($oldDetails as $od) {
-                    $oldItemsMap[$od->product_id] = [
-                        'quantity'   => (int) $od->quantity,
-                        'cost_price' => (float) $od->cost_price,
-                        'subtotal'   => (float) $od->subtotal,
+                if (isset($oldItemsMap[$pid])) {
+                    $oldItemsMap[$pid]['quantity'] += $odQty;
+                    $oldItemsMap[$pid]['return_quantity'] += $odRet;
+                    $oldItemsMap[$pid]['subtotal'] += $odSub;
+                } else {
+                    $oldItemsMap[$pid] = [
+                        'quantity'        => $odQty,
+                        'return_quantity' => $odRet,
+                        'cost_price'      => $odCost,
+                        'subtotal'        => $odSub,
                     ];
                 }
+            }
 
-                // Map new items by product_id
-                $newItemsMap = [];
+            foreach ($oldItemsMap as $pid => $info) {
+                $returnsByProduct[$pid] = max((int) ($returnsByProduct[$pid] ?? 0), (int) $info['return_quantity']);
+            }
+
+            $newItemsMap = [];
+            if (is_array($products)) {
                 foreach ($products as $p) {
                     if (isset($p['product_id']) && !empty($p['product_id'])) {
                         $pId = (int) $p['product_id'];
@@ -809,44 +1211,120 @@ public function updatePaymentDetails(Request $request)
                         $cost = (float) ($p['cost_price'] ?? 0);
                         $sub = (float) ($p['subtotal'] ?? ($qty * $cost));
 
+                        if ($qty <= 0) {
+                            DB::rollBack();
+                            $this->cleanupOrphanFile($newUploadedFilePath);
+                            return response()->json([
+                                'status' => 'fail',
+                                'message' => "পণ্য আইডি #{$pId} এর পরিমাণ অবশ্যই ০-এর বেশি হতে হবে।"
+                            ], 422);
+                        }
+
                         if (isset($newItemsMap[$pId])) {
                             $newItemsMap[$pId]['quantity'] += $qty;
                             $newItemsMap[$pId]['subtotal'] += $sub;
                         } else {
                             $newItemsMap[$pId] = [
-                                'product_id'   => $pId,
-                                'quantity'     => $qty,
-                                'cost_price'   => $cost,
-                                'subtotal'     => $sub,
-                                'product_code' => $p['product_code'] ?? null,
+                                'product_id'      => $pId,
+                                'quantity'        => $qty,
+                                'return_quantity' => (int) ($oldItemsMap[$pId]['return_quantity'] ?? 0),
+                                'cost_price'      => $cost,
+                                'subtotal'        => $sub,
+                                'product_code'    => $p['product_code'] ?? null,
                             ];
                         }
                     }
                 }
+            }
 
+            // Enforce Policy P2 Historical Integrity on PurchasesUpdate() whenever inventory, cost, supplier, or date changes
+            $normalizedUpdateDate = !empty($updateDate)
+                ? $this->parseStrictBusinessDate($updateDate, allowTimeSuffix: true)
+                : null;
+            $dateChanged = $hasExplicitDate && $normalizedUpdateDate !== $oldPurchaseDate;
+            $supplierChanged = $request->filled('supplier_id') && (int) $supplier_id !== (int) $purchase->supplier_id;
+            $financialsChanged = $request->filled('grand_subtotal') || $request->filled('discount_amount') || $request->filled('delivery_charge');
+            $inventoryImpactedIds = is_array($products)
+                ? array_values(array_unique(array_merge(array_keys($oldItemsMap), array_keys($newItemsMap))))
+                : array_keys($oldItemsMap);
+
+            if (is_array($products) || $dateChanged || $supplierChanged || $financialsChanged) {
+                $p2Block = $this->validatePurchaseHistoricalIntegrity(
+                    $purchase,
+                    $inventoryImpactedIds,
+                    'update',
+                    $user_id,
+                    $dateChanged ? $normalizedUpdateDate : null
+                );
+                if ($p2Block !== null) {
+                    DB::rollBack();
+                    $this->cleanupOrphanFile($newUploadedFilePath);
+                    return $p2Block;
+                }
+            }
+
+            $lineItemsCalculatedSubtotal = 0;
+            $auditProducts = [];
+
+            if (is_array($products)) {
                 // Validate return constraints
                 foreach ($returnsByProduct as $retProdId => $retQty) {
+                    if ($retQty <= 0) {
+                        continue;
+                    }
                     if (!isset($newItemsMap[$retProdId])) {
                         DB::rollBack();
+                        $this->cleanupOrphanFile($newUploadedFilePath);
+                        Log::warning('PurchasesUpdate blocked: attempted to remove returned product', [
+                            'actor_user_id' => $user_id,
+                            'purchase_id' => $purchase->id,
+                            'product_id' => $retProdId,
+                            'returned_qty' => $retQty,
+                        ]);
                         return response()->json([
                             'status'  => 'fail',
                             'message' => "এই ক্রয় ইনভয়েসে পণ্য আইডি #{$retProdId} এর বিপরীতে রিটার্ন রেকর্ড থাকায় এটিকে তালিকা থেকে বাদ দেওয়া যাবে না।"
-                        ]);
+                        ], 422);
                     }
                     if ($newItemsMap[$retProdId]['quantity'] < $retQty) {
                         DB::rollBack();
+                        $this->cleanupOrphanFile($newUploadedFilePath);
+                        Log::warning('PurchasesUpdate blocked: quantity below returned qty', [
+                            'actor_user_id' => $user_id,
+                            'purchase_id' => $purchase->id,
+                            'product_id' => $retProdId,
+                            'requested_qty' => $newItemsMap[$retProdId]['quantity'],
+                            'returned_qty' => $retQty,
+                        ]);
                         return response()->json([
                             'status'  => 'fail',
                             'message' => "পণ্য আইডি #{$retProdId} এর জন্য ইতিমধ্যে {$retQty} টি রিটার্ন এন্ট্রি রয়েছে, তাই ক্রয় সংখ্যা {$retQty} এর নিচে কমানো সম্ভব নয়।"
-                        ]);
+                        ], 422);
                     }
                 }
 
-                // Union of all product IDs
-                $allProductIds = array_unique(array_merge(array_keys($oldItemsMap), array_keys($newItemsMap)));
+                // Union of all product IDs in deterministic ascending order to avoid deadlocks
+                $allProductIds = array_values(array_unique(array_merge(array_keys($oldItemsMap), array_keys($newItemsMap))));
+                sort($allProductIds);
+
+                $lockedProducts = !empty($allProductIds)
+                    ? Product::whereIn('id', $allProductIds)->orderBy('id', 'asc')->lockForUpdate()->get()->keyBy('id')
+                    : collect();
+
+                // Verify all requested new product IDs actually exist
+                foreach (array_keys($newItemsMap) as $reqPid) {
+                    if (!$lockedProducts->has($reqPid)) {
+                        DB::rollBack();
+                        $this->cleanupOrphanFile($newUploadedFilePath);
+                        return response()->json([
+                            'status' => 'fail',
+                            'message' => "পণ্য আইডি #{$reqPid} খুঁজে পাওয়া যায়নি।"
+                        ], 404);
+                    }
+                }
 
                 foreach ($allProductIds as $pId) {
-                    $productModel = Product::where('id', $pId)->lockForUpdate()->first();
+                    $productModel = $lockedProducts->get($pId);
                     if (!$productModel) continue;
 
                     $oldQty  = $oldItemsMap[$pId]['quantity'] ?? 0;
@@ -861,10 +1339,19 @@ public function updatePaymentDetails(Request $request)
                     $finalStock   = $currentStock + $deltaQty;
                     if ($deltaQty < 0 && $finalStock < 0) {
                         DB::rollBack();
+                        $this->cleanupOrphanFile($newUploadedFilePath);
+                        $productTitle = $productModel->product_name ?? ("পণ্য #{$pId}");
+                        Log::warning('PurchasesUpdate blocked: insufficient stock', [
+                            'actor_user_id' => $user_id,
+                            'purchase_id' => $purchase->id,
+                            'product_id' => $pId,
+                            'current_stock' => $currentStock,
+                            'delta_qty' => $deltaQty,
+                        ]);
                         return response()->json([
                             'status'  => 'fail',
-                            'message' => "স্টক অপ্রতুল: \"{$productModel->name}\" এর বর্তমান স্টক {$currentStock} পিস, তাই " . abs($deltaQty) . " পিস কমানো সম্ভব নয়।"
-                        ]);
+                            'message' => "স্টক অপ্রতুল: \"{$productTitle}\" এর বর্তমান স্টক {$currentStock} পিস, তাই " . abs($deltaQty) . " পিস কমানো সম্ভব নয়।"
+                        ], 422);
                     }
 
                     // Weighted average cost price recalculation using incremental inventory valuation
@@ -906,9 +1393,20 @@ public function updatePaymentDetails(Request $request)
                     }
 
                     $productModel->save();
+
+                    $auditProducts[] = [
+                        'product_id' => $pId,
+                        'old_purchase_qty' => $oldQty,
+                        'new_purchase_qty' => $newQty,
+                        'delta_qty' => $deltaQty,
+                        'old_stock' => $currentStock,
+                        'new_stock' => $finalStock,
+                        'old_cost' => $currentCost,
+                        'new_cost' => (float) $productModel->cost_price,
+                    ];
                 }
 
-                // Delete old order details and recreate new ones
+                // Delete old order details and recreate new ones (preserving return_quantity)
                 PurchaseOrderDetails::where('purchase_id', $purchase->id)->delete();
 
                 foreach ($newItemsMap as $newItem) {
@@ -916,12 +1414,13 @@ public function updatePaymentDetails(Request $request)
                     $lineItemsCalculatedSubtotal += $itemSubtotal;
 
                     PurchaseOrderDetails::create([
-                        'purchase_id' => $purchase->id,
-                        'product_id'  => $newItem['product_id'],
-                        'quantity'    => $newItem['quantity'],
-                        'cost_price'  => $newItem['cost_price'],
-                        'subtotal'    => $itemSubtotal,
-                        'user_id'     => $user_id,
+                        'purchase_id'     => $purchase->id,
+                        'product_id'      => $newItem['product_id'],
+                        'quantity'        => $newItem['quantity'],
+                        'return_quantity' => $newItem['return_quantity'],
+                        'cost_price'      => $newItem['cost_price'],
+                        'subtotal'        => $itemSubtotal,
+                        'user_id'         => $user_id,
                     ]);
                 }
             } else {
@@ -936,17 +1435,42 @@ public function updatePaymentDetails(Request $request)
 
             $effectiveTotal = max(0, ($grandSubtotal - $discountAmount) + $deliveryCharge);
 
+            // Guard multiple payment records from silent corruption using locked payment rows
+            $paymentCount = $lockedPayments->count();
+            if ($paymentCount > 1 && $request->filled('paid_amount')) {
+                $reqPaidCheck = round((float) $request->input('paid_amount'), 2);
+                $existingTotalPaid = round((float) $lockedPayments->sum('paid_amount'), 2);
+                if (abs($reqPaidCheck - $existingTotalPaid) > 0.01 && abs($reqPaidCheck - (float) $purchase->paid_amount) > 0.01) {
+                    DB::rollBack();
+                    $this->cleanupOrphanFile($newUploadedFilePath);
+                    Log::warning('PurchasesUpdate blocked: multiple payment records guard', [
+                        'actor_user_id' => $user_id,
+                        'purchase_id' => $purchase->id,
+                        'payment_count' => $paymentCount,
+                        'requested_paid' => $reqPaidCheck,
+                        'existing_paid' => $existingTotalPaid,
+                    ]);
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => 'এই পারচেজের বিপরীতে একাধিক পেমেন্ট/ডিউ কালেকশন এন্ট্রি থাকায় এখান থেকে paid amount পরিবর্তন করা যাবে না।'
+                    ], 422);
+                }
+            }
+
             $requestedPaid = $request->filled('paid_amount') ? round(floatval($request->input('paid_amount')), 2) : (float) $purchase->paid_amount;
+            if ($paymentCount > 1) {
+                $requestedPaid = round((float) $lockedPayments->sum('paid_amount'), 2);
+            }
             $effectivePaid = $requestedPaid + $returnAdj;
             $newDue = max(0, $effectiveTotal - $effectivePaid);
 
-            // Reconcile Payment Details
+            // Reconcile Payment Details (only safely overwrite single initial payment row)
             $paymentMethod = $request->input('payment_method', 'Cash');
             $transactionId = $request->input('transaction_id', null);
             $paymentStatus = $request->input('payment_status', ($newDue <= 0 ? 'Fully Paid' : ($requestedPaid > 0 ? 'Partial Paid' : 'Unpaid')));
 
-            $firstPayment = $purchase->paymentDetails->first();
-            if ($firstPayment) {
+            $firstPayment = $lockedPayments->first();
+            if ($firstPayment && $paymentCount === 1) {
                 $firstPayment->paid_amount = $requestedPaid;
                 $firstPayment->discount_amount = $discountAmount;
                 if ($request->filled('payment_method')) $firstPayment->payment_method = $paymentMethod;
@@ -954,7 +1478,7 @@ public function updatePaymentDetails(Request $request)
                 $firstPayment->payment_status = $paymentStatus;
                 $firstPayment->purchase_due_collection_date = $updateDate;
                 $firstPayment->save();
-            } elseif ($requestedPaid > 0) {
+            } elseif (!$firstPayment && $requestedPaid > 0) {
                 PurchasePaymentDetails::create([
                     'purchases_id'    => $purchase->id,
                     'paid_amount'     => $requestedPaid,
@@ -989,24 +1513,55 @@ public function updatePaymentDetails(Request $request)
             $purchase->update($updateData);
 
             DB::commit();
+
+            // Clean up replaced old attachment strictly AFTER commit and only if unreferenced elsewhere
+            if ($oldAttachmentToCleanup && $oldAttachmentToCleanup !== $img_url) {
+                if (!Purchase::where('attach_document', $oldAttachmentToCleanup)->exists()) {
+                    $this->cleanupOrphanFile(public_path($oldAttachmentToCleanup));
+                }
+            }
+
+            Log::info('Purchase Updated', [
+                'actor_user_id' => $user_id,
+                'purchase_id' => $purchase->id,
+                'purchase_code' => $purchase->purchase_id,
+                'supplier_id' => $supplier_id,
+                'old_date' => $oldPurchaseDate,
+                'new_date' => $normalizedUpdateDate,
+                'old_paid_amount' => $oldPaid,
+                'new_paid_amount' => $requestedPaid,
+                'new_due_amount' => $newDue,
+                'products' => $auditProducts,
+                'result' => 'success',
+                'timestamp' => now()->toIso8601String(),
+            ]);
+
             return response()->json(['status' => 'success', 'message' => 'Purchase updated successfully']);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['status' => 'fail', 'message' => 'Failed to update purchase: ' . $e->getMessage()]);
+            $this->cleanupOrphanFile($newUploadedFilePath);
+            Log::error('Purchase Update Error: ' . $e->getMessage(), [
+                'actor_user_id' => Auth::id(),
+                'purchase_id' => $purchase_id,
+            ]);
+            return response()->json(['status' => 'fail', 'message' => 'Failed to update purchase: ' . $e->getMessage()], 500);
         }
     }
 
     public function PurchasesDelete(Request $request)
     {
         $request->validate([
-            'id' => 'required'
+            'id' => 'required',
+            'reason' => 'nullable|string|max:500',
         ]);
 
         $purchase_id = $request->input('id');
+        $actorUserId = Auth::id();
+        $reason = $request->input('reason');
 
         DB::beginTransaction();
         try {
-            // 1. Find and lock purchase
+            // 1. Find and lock purchase row
             $purchase = Purchase::where('id', $purchase_id)
                 ->orWhere('purchase_id', $purchase_id)
                 ->lockForUpdate()
@@ -1020,58 +1575,186 @@ public function updatePaymentDetails(Request $request)
                 ], 404);
             }
 
-            // 2. Check for existing purchase returns
+            // 2. Check for existing purchase returns (BOTH purchase_returns table AND purchase_order_details.return_quantity)
             $hasReturns = DB::table('purchase_returns')->where('purchase_id', $purchase->id)->exists();
-            if ($hasReturns) {
+            $hasReturnedQty = PurchaseOrderDetails::where('purchase_id', $purchase->id)
+                ->where('return_quantity', '>', 0)
+                ->exists();
+
+            if ($hasReturns || $hasReturnedQty) {
                 DB::rollBack();
+                Log::warning('PurchasesDelete blocked: purchase has returns', [
+                    'actor_user_id' => $actorUserId,
+                    'purchase_id' => $purchase->id,
+                    'purchase_code' => $purchase->purchase_id,
+                    'has_purchase_returns_rows' => $hasReturns,
+                    'has_pod_return_quantity' => $hasReturnedQty,
+                ]);
                 return response()->json([
                     'status' => 'fail',
-                    'message' => 'এই পারচেজ ইনভয়েসের বিপরীতে রিটার্ন এন্ট্রি রয়েছে, তাই ডিলিট করা সম্ভব নয়। রিটার্ন রেকর্ড আগে সামঞ্জস্য করতে হবে।'
+                    'message' => 'এই পারচেজ ইনভয়েসের বিপরীতে রিটার্ন এন্ট্রি বা রিটার্ন সংখ্যা রয়েছে, তাই ডিলিট করা সম্ভব নয়। রিটার্ন রেকর্ড আগে সামঞ্জস্য করতে হবে।'
                 ], 422);
             }
 
-            // 3. Load purchase line items
-            $orderDetails = PurchaseOrderDetails::where('purchase_id', $purchase->id)->get();
+            // 3. Supplier due collection & payment ledger integrity check
+            $payments = PurchasePaymentDetails::where('purchases_id', $purchase->id)
+                ->orderBy('id', 'asc')
+                ->lockForUpdate()
+                ->get();
 
-            // Group required quantities by product_id
-            $qtyByProduct = [];
-            foreach ($orderDetails as $item) {
-                $pid = $item->product_id;
-                $qtyByProduct[$pid] = ($qtyByProduct[$pid] ?? 0) + (int) $item->quantity;
+            $paymentBlocked = false;
+            $paymentBlockReason = '';
+
+            if ($payments->count() > 1) {
+                $paymentBlocked = true;
+                $paymentBlockReason = 'multiple_payment_records';
+            } elseif ((float) $purchase->paid_amount > 0 && $payments->isEmpty()) {
+                $paymentBlocked = true;
+                $paymentBlockReason = 'paid_amount_without_payment_record';
+            } else {
+                foreach ($payments as $pRow) {
+                    if ($pRow->created_at && $purchase->created_at && $pRow->created_at->gt($purchase->created_at->copy()->addSeconds(5))) {
+                        $paymentBlocked = true;
+                        $paymentBlockReason = 'subsequent_payment_created_after_purchase';
+                        break;
+                    }
+                }
             }
 
-            // 4. Pre-check: Validate that current stock is sufficient for every product (prevent negative stock)
-            foreach ($qtyByProduct as $productId => $qtyToReverse) {
-                $product = Product::lockForUpdate()->find($productId);
+            if (!$paymentBlocked && $purchase->supplier_id) {
+                $dueCollectionQuery = SupplierDueCollection::where('supplier_id', $purchase->supplier_id)
+                    ->where('purchase_payable_amount', 0);
+
+                if ($purchase->created_at) {
+                    $dueCollectionQuery->where('created_at', '>=', $purchase->created_at);
+                }
+
+                $matchingCollections = $dueCollectionQuery->get();
+                if ($matchingCollections->isNotEmpty()) {
+                    $wasUpdatedAfterCreate = $purchase->updated_at && $purchase->created_at && $purchase->updated_at->gt($purchase->created_at->copy()->addSeconds(1));
+                    foreach ($matchingCollections as $sdc) {
+                        foreach ($payments as $pRow) {
+                            $sameDate = $pRow->purchase_due_collection_date && $sdc->due_collection_date
+                                && (string) $pRow->purchase_due_collection_date === (string) $sdc->due_collection_date;
+                            $sameTrx = $sdc->transaction_id !== null && $pRow->transaction_id === $sdc->transaction_id;
+                            $paymentAtOrAfterSdc = $pRow->created_at && $sdc->created_at && $pRow->created_at->gte($sdc->created_at->copy()->subSeconds(2));
+
+                            if (($wasUpdatedAfterCreate || $paymentAtOrAfterSdc) && ($sameDate || $sameTrx) && (float) $pRow->paid_amount > 0) {
+                                $paymentBlocked = true;
+                                $paymentBlockReason = 'linked_supplier_due_collection';
+                                break 2;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ($paymentBlocked) {
+                DB::rollBack();
+                Log::warning('PurchasesDelete blocked: supplier payment / due collection linkage', [
+                    'actor_user_id' => $actorUserId,
+                    'purchase_id' => $purchase->id,
+                    'purchase_code' => $purchase->purchase_id,
+                    'reason' => $paymentBlockReason,
+                    'payment_count' => $payments->count(),
+                ]);
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'এই পারচেজ ইনভয়েসের বিপরীতে পরবর্তী পেমেন্ট বা সাপ্লায়ার ডিউ কালেকশন এন্ট্রি যুক্ত রয়েছে। ডিলিট করার আগে পেমেন্ট/কালেকশন রেকর্ড আলাদাভাবে রিভার্স করুন।'
+                ], 422);
+            }
+
+            // 4. Load purchase line items and aggregate net quantities & values per product_id
+            $orderDetails = PurchaseOrderDetails::where('purchase_id', $purchase->id)
+                ->orderBy('id', 'asc')
+                ->lockForUpdate()
+                ->get();
+
+            $groupedByProduct = [];
+            foreach ($orderDetails as $item) {
+                $pid = (int) $item->product_id;
+                $netQty = max(0, (int) $item->quantity - (int) ($item->return_quantity ?? 0));
+                $netVal = $netQty * (float) $item->cost_price;
+
+                if (!isset($groupedByProduct[$pid])) {
+                    $groupedByProduct[$pid] = [
+                        'net_qty'   => 0,
+                        'net_value' => 0.0,
+                    ];
+                }
+                $groupedByProduct[$pid]['net_qty'] += $netQty;
+                $groupedByProduct[$pid]['net_value'] += $netVal;
+            }
+
+            // Deterministic ascending sort on product_id to eliminate lock-order deadlocks
+            ksort($groupedByProduct);
+            $productIds = array_keys($groupedByProduct);
+
+            // 5. Lock all impacted products once in deterministic ascending ID order
+            $lockedProducts = !empty($productIds)
+                ? Product::whereIn('id', $productIds)->orderBy('id', 'asc')->lockForUpdate()->get()->keyBy('id')
+                : collect();
+
+            // 6. Validate Stock Sufficiency before any mutation
+            $productsRequiringP2 = [];
+            foreach ($groupedByProduct as $productId => $group) {
+                $product = $lockedProducts->get($productId);
                 if (!$product) {
                     continue;
                 }
 
-                if ($product->quantity < $qtyToReverse) {
+                $netQtyToReverse = (int) $group['net_qty'];
+                $currentQty = (int) $product->quantity;
+                $name = $product->product_name ?? ('পণ্য #' . $productId);
+
+                if ($currentQty < $netQtyToReverse) {
                     DB::rollBack();
-                    $name = $product->product_name ?? ('পণ্য #' . $productId);
+                    Log::warning('PurchasesDelete blocked: insufficient stock', [
+                        'actor_user_id' => $actorUserId,
+                        'purchase_id' => $purchase->id,
+                        'product_id' => $productId,
+                        'current_qty' => $currentQty,
+                        'net_qty_to_reverse' => $netQtyToReverse,
+                    ]);
                     return response()->json([
                         'status' => 'fail',
-                        'message' => "পণ্য '{$name}' ইতিমধ্যে বিক্রি বা ব্যবহার হয়ে গেছে (বর্তমান স্টক: {$product->quantity}, পারচেজ পরিমাণ: {$qtyToReverse})। স্টক নেগেটিভ হওয়া রোধে এই পারচেজ ডিলিট করা সম্ভব নয়।"
+                        'message' => "পণ্য '{$name}' ইতিমধ্যে বিক্রি বা ব্যবহার হয়ে গেছে (বর্তমান স্টক: {$currentQty}, রিভার্স পরিমাণ: {$netQtyToReverse})। স্টক নেগেটিভ হওয়া রোধে এই পারচেজ ডিলিট করা সম্ভব নয়।"
                     ], 422);
+                }
+
+                if ($netQtyToReverse > 0) {
+                    $productsRequiringP2[] = $productId;
                 }
             }
 
-            // 5. Reverse product stock & recalculate cost price
-            foreach ($orderDetails as $item) {
-                $product = Product::lockForUpdate()->find($item->product_id);
+            // 6b. Policy P2 (Unified Historical Business-Date Integrity Lock)
+            $p2Block = $this->validatePurchaseHistoricalIntegrity($purchase, $productsRequiringP2, 'delete', $actorUserId);
+            if ($p2Block !== null) {
+                DB::rollBack();
+                return $p2Block;
+            }
+
+            // 7. Mutate each grouped product ONCE using pre-locked models (zero silent clamping)
+            $auditProducts = [];
+            foreach ($groupedByProduct as $productId => $group) {
+                $product = $lockedProducts->get($productId);
                 if (!$product) {
                     continue;
                 }
 
-                $qtyToReverse = (int) $item->quantity;
-                $purchaseCost = (float) $item->cost_price;
+                $netQtyToReverse = (int) $group['net_qty'];
+                $netPurchaseValue = (float) $group['net_value'];
                 $currentQty = (int) $product->quantity;
                 $currentCost = (float) $product->cost_price;
 
-                $newQty = max(0, $currentQty - $qtyToReverse);
+                if ($currentQty < $netQtyToReverse) {
+                    throw new RuntimeException("Insufficient stock invariant violation for Product #{$productId}.");
+                }
 
-                // Find previous or latest other purchase for this product
+                $newQty = $currentQty - $netQtyToReverse;
+                $newCost = $currentCost;
+
+                // Find previous/latest other purchase for this product as clean fallback
                 $previousPurchase = PurchaseOrderDetails::where('product_id', $product->id)
                     ->where('purchase_id', '!=', $purchase->id)
                     ->latest('id')
@@ -1079,43 +1762,88 @@ public function updatePaymentDetails(Request $request)
 
                 if ($newQty > 0) {
                     $currentTotalValue = $currentCost * $currentQty;
-                    $purchasedValue = $purchaseCost * $qtyToReverse;
-                    $remainingValue = $currentTotalValue - $purchasedValue;
+                    $remainingValue = $currentTotalValue - $netPurchaseValue;
 
                     if ($remainingValue > 0) {
-                        $product->cost_price = round($remainingValue / $newQty, 2);
+                        $newCost = round($remainingValue / $newQty, 2);
                     } elseif ($previousPurchase) {
-                        $product->cost_price = round((float) $previousPurchase->cost_price, 2);
+                        $newCost = round((float) $previousPurchase->cost_price, 2);
                     }
                 } else {
-                    // Stock is 0; restore previous purchase cost price if available
                     if ($previousPurchase) {
-                        $product->cost_price = round((float) $previousPurchase->cost_price, 2);
+                        $newCost = round((float) $previousPurchase->cost_price, 2);
                     }
                 }
 
-                $product->quantity = $newQty;
-                $product->save();
-            }
+                if ($netQtyToReverse > 0 || abs($newCost - $currentCost) > 0.0001) {
+                    $affected = DB::table('products')
+                        ->where('id', $product->id)
+                        ->where('quantity', (string) $product->quantity)
+                        ->update([
+                            'quantity'   => (string) $newQty,
+                            'cost_price' => (string) $newCost,
+                            'updated_at' => now(),
+                        ]);
 
-            // 6. Delete payment details first (due to foreign key constraint to purchase_order_details)
-            PurchasePaymentDetails::where('purchases_id', $purchase->id)->delete();
-
-            // 7. Delete purchase order details
-            PurchaseOrderDetails::where('purchase_id', $purchase->id)->delete();
-
-            // 8. Delete attached document file if exists
-            if (!empty($purchase->attach_document)) {
-                $docPath = public_path($purchase->attach_document);
-                if (file_exists($docPath) && is_file($docPath)) {
-                    @unlink($docPath);
+                    if ($affected !== 1) {
+                        throw new RuntimeException("Affected row assertion failed updating Product #{$product->id} (affected={$affected}).");
+                    }
                 }
+
+                $auditProducts[] = [
+                    'product_id' => $productId,
+                    'old_qty' => $currentQty,
+                    'reversed_qty' => $netQtyToReverse,
+                    'new_qty' => $newQty,
+                    'old_cost' => $currentCost,
+                    'new_cost' => $newCost,
+                ];
             }
 
-            // 9. Delete purchase record
+            // 8. Delete payment details first (FK ON DELETE RESTRICT to purchases.id)
+            $deletedPaymentCount = PurchasePaymentDetails::where('purchases_id', $purchase->id)->delete();
+
+            // 9. Delete purchase order details
+            $deletedDetailsCount = PurchaseOrderDetails::where('purchase_id', $purchase->id)->delete();
+            if ($deletedDetailsCount !== $orderDetails->count()) {
+                throw new RuntimeException(
+                    "PurchaseOrderDetails delete count mismatch for purchase #{$purchase->id}: expected {$orderDetails->count()}, deleted {$deletedDetailsCount}."
+                );
+            }
+
+            // Capture attachment path BEFORE delete/commit; NEVER unlink before commit!
+            $attachDocument = $purchase->attach_document;
+            $purchaseCode = $purchase->purchase_id;
+            $supplierId = $purchase->supplier_id;
+            $deletedPurchaseDbId = $purchase->id;
+
+            // 10. Delete purchase record
             $purchase->delete();
 
             DB::commit();
+
+            // 11. Post-commit attachment cleanup (only if no other purchase references same document)
+            $attachmentDeleted = false;
+            if (!empty($attachDocument)) {
+                if (!Purchase::where('attach_document', $attachDocument)->exists()) {
+                    $attachmentDeleted = $this->cleanupOrphanFile(public_path($attachDocument));
+                }
+            }
+
+            Log::info('Purchase Deleted', [
+                'actor_user_id' => $actorUserId,
+                'purchase_id' => $deletedPurchaseDbId,
+                'purchase_code' => $purchaseCode,
+                'supplier_id' => $supplierId,
+                'reason' => $reason,
+                'reversed_products' => $auditProducts,
+                'deleted_payments_count' => $deletedPaymentCount,
+                'deleted_details_count' => $deletedDetailsCount,
+                'attachment_path' => $attachDocument,
+                'attachment_deleted' => $attachmentDeleted,
+                'result' => 'success',
+                'timestamp' => now()->toIso8601String(),
+            ]);
 
             return response()->json([
                 'status' => 'success',
@@ -1123,11 +1851,24 @@ public function updatePaymentDetails(Request $request)
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Purchase Delete Error', [
+                'actor_user_id' => $actorUserId,
+                'purchase_input_id' => $purchase_id,
+                'error' => $e->getMessage(),
+            ]);
             return response()->json([
                 'status' => 'fail',
                 'message' => 'পারচেজ ডিলিট করতে সমস্যা হয়েছে: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    private function cleanupOrphanFile(?string $absolutePath): bool
+    {
+        if (!empty($absolutePath) && file_exists($absolutePath) && is_file($absolutePath)) {
+            return @unlink($absolutePath);
+        }
+        return false;
     }
 
     public function PurchaseSplitInvoice(Request $request)
@@ -1333,6 +2074,16 @@ public function updatePaymentDetails(Request $request)
 
             DB::commit();
 
+            Log::info('Purchase Split Invoice Completed', [
+                'actor_user_id' => Auth::id(),
+                'source_purchase_id' => $sourcePurchase->id,
+                'new_purchase_id' => $newPurchase->id,
+                'new_purchase_code' => $newPurchaseId,
+                'moved_detail_ids' => array_values($selectedDetailIds),
+                'result' => 'success',
+                'timestamp' => now()->toIso8601String(),
+            ]);
+
             return response()->json([
                 'status'          => 'success',
                 'message'         => "Successfully split " . count($selectedDetailIds) . " items into new invoice {$newPurchaseId}.",
@@ -1342,7 +2093,7 @@ public function updatePaymentDetails(Request $request)
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Purchase Split Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            Log::error('Purchase Split Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return response()->json([
                 'status'  => 'fail',
                 'message' => 'Failed to split purchase invoice: ' . $e->getMessage()

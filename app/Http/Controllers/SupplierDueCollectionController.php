@@ -319,7 +319,13 @@ public function SupplierPaymentDetailsUpdate(Request $request)
     try {
         $user_id = Auth::id() ?? 1;
         $supplierId = $request->input('supplier_id') ?? $request->input('id');
-        $supplier = Supplier::findOrFail($supplierId);
+        $supplier = Supplier::lockForUpdate()->findOrFail($supplierId);
+
+        // Lock all supplier purchases in deterministic ascending ID order to prevent deadlocks with PurchasesDelete/PurchasesUpdate
+        $lockedPurchases = Purchase::where('supplier_id', $supplier->id)
+            ->orderBy('id', 'asc')
+            ->lockForUpdate()
+            ->get();
 
         $inputPaidAmount     = $request->paid_amount ?? 0;
         $inputDiscountAmount = $request->discount_amount ?? 0;
@@ -344,6 +350,7 @@ public function SupplierPaymentDetailsUpdate(Request $request)
 
         $purchasesPaidTotal     = 0;
         $purchasesDiscountTotal = 0;
+        $allocatedPurchaseIds   = [];
 
         // Step 1: পুরানো ডিউ (Previous Due) ক্লিয়ার করা ('all' অথবা 'previous' মোডে)
         if (($collectionType === 'all' || $collectionType === 'previous') && ($totalAvailablePaid + $totalAvailableDiscount) > 0 && $supplierPreviousDue > 0) {
@@ -359,8 +366,8 @@ public function SupplierPaymentDetailsUpdate(Request $request)
 
                 $supplier->update(['purchase_payable_amount' => 0]);
 
-                $remainingOrderDue = Purchase::where('supplier_id', $supplier->id)
-                    ->where('due_amount', '>', 0)
+                $remainingOrderDue = (float) $lockedPurchases
+                    ->filter(fn ($p) => (float) $p->due_amount > 0)
                     ->sum('due_amount');
                 $totalRemainingDue = $remainingOrderDue;
 
@@ -392,8 +399,8 @@ public function SupplierPaymentDetailsUpdate(Request $request)
                 $totalAvailablePaid     = 0;
 
                 $remainingPreviousDue = $supplierPreviousDue - $usedAmount;
-                $remainingOrderDue    = Purchase::where('supplier_id', $supplier->id)
-                    ->where('due_amount', '>', 0)
+                $remainingOrderDue    = (float) $lockedPurchases
+                    ->filter(fn ($p) => (float) $p->due_amount > 0)
                     ->sum('due_amount');
                 $totalRemainingDue    = $remainingPreviousDue + $remainingOrderDue;
 
@@ -414,10 +421,14 @@ public function SupplierPaymentDetailsUpdate(Request $request)
 
         // Step 2: নতুন পারচেজের ডিউ ক্লিয়ার (FIFO) ('all' অথবা 'purchase' মোডে)
         if (($collectionType === 'all' || $collectionType === 'purchase') && ($totalAvailablePaid + $totalAvailableDiscount) > 0) {
-            $duePurchases = Purchase::where('supplier_id', $supplier->id)
-                ->where('due_amount', '>', 0)
-                ->orderBy('created_at', 'asc')
-                ->get();
+            // Sort locked rows in memory for FIFO allocation without altering DB lock acquisition order (id ASC)
+            $duePurchases = $lockedPurchases
+                ->filter(fn ($p) => (float) $p->due_amount > 0)
+                ->sort(function ($a, $b) {
+                    $cmp = strcmp((string) $a->created_at, (string) $b->created_at);
+                    return $cmp !== 0 ? $cmp : ($a->id <=> $b->id);
+                })
+                ->values();
 
             foreach ($duePurchases as $purchase) {
                 $availableToPay = $totalAvailablePaid + $totalAvailableDiscount;
@@ -440,14 +451,20 @@ public function SupplierPaymentDetailsUpdate(Request $request)
                     $usedFromPaid -= $diff;
                 }
 
+                $newDueAfterUpdate = max(0, $purchase->due_amount - ($usedFromPaid + $usedFromDiscount));
                 $purchase->update([
-                    'due_amount'  => max(0, $purchase->due_amount - ($usedFromPaid + $usedFromDiscount)),
+                    'due_amount'  => $newDueAfterUpdate,
                     'paid_amount' => $purchase->paid_amount + $usedFromPaid,
                 ]);
 
                 if ($usedFromPaid > 0 || $usedFromDiscount > 0) {
-                    $remainingDueAfterUpdate = max(0, $purchase->fresh()->due_amount);
-                    $paymentStatus = $remainingDueAfterUpdate == 0 ? 'Fully Paid' : 'Partial Paid';
+                    $allocatedPurchaseIds[] = [
+                        'purchase_id' => $purchase->id,
+                        'paid' => $usedFromPaid,
+                        'discount' => $usedFromDiscount,
+                        'remaining_due' => $newDueAfterUpdate,
+                    ];
+                    $paymentStatus = $newDueAfterUpdate == 0 ? 'Fully Paid' : 'Partial Paid';
 
                     PurchasePaymentDetails::create([
                         'purchases_id'                => $purchase->id,
@@ -471,8 +488,8 @@ public function SupplierPaymentDetailsUpdate(Request $request)
             // সামারি এন্ট্রি (শুধু নতুন পারচেজের পেমেন্ট)
             if ($purchasesPaidTotal > 0 || $purchasesDiscountTotal > 0) {
                 $remainingPreviousDue = $supplier->purchase_payable_amount;
-                $remainingPurchaseDue = Purchase::where('supplier_id', $supplier->id)
-                    ->where('due_amount', '>', 0)
+                $remainingPurchaseDue = (float) $lockedPurchases
+                    ->filter(fn ($p) => (float) $p->due_amount > 0)
                     ->sum('due_amount');
 
                 $totalRemainingDue = $remainingPreviousDue + $remainingPurchaseDue;
@@ -494,6 +511,20 @@ public function SupplierPaymentDetailsUpdate(Request $request)
 
         DB::commit();
 
+        Log::info('Supplier Payment Updated', [
+            'actor_user_id' => $user_id,
+            'supplier_id' => $supplier->id,
+            'collection_type' => $collectionType,
+            'input_paid_amount' => $inputPaidAmount,
+            'input_discount_amount' => $inputDiscountAmount,
+            'payment_method' => $paymentMethod,
+            'due_collection_date' => $dueCollectionDate,
+            'transaction_id' => $transactionId,
+            'allocated_purchases' => $allocatedPurchaseIds,
+            'result' => 'success',
+            'timestamp' => now()->toIso8601String(),
+        ]);
+
         return response()->json([
             'status'  => 'success',
             'message' => 'Supplier payment updated successfully.'
@@ -501,6 +532,11 @@ public function SupplierPaymentDetailsUpdate(Request $request)
 
     } catch (\Exception $e) {
         DB::rollBack();
+        Log::error('Supplier Payment Update Error', [
+            'actor_user_id' => Auth::id(),
+            'supplier_id' => $request->input('supplier_id') ?? $request->input('id'),
+            'error' => $e->getMessage(),
+        ]);
         return response()->json([
             'status'  => 'fail',
             'message' => 'Error: ' . $e->getMessage() . ' (Line: ' . $e->getLine() . ')'

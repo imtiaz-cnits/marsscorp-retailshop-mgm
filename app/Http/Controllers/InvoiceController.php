@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\OrderPaymentDetails;
 use App\Models\Product;
+use App\Models\ProductReturn;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -538,57 +539,280 @@ public function getInvoiceFullDetailsById(Request $request)
 
 public function updateInvoiceDetails(Request $request)
 {
+    $id = $request->input('id');
+    $user_id = Auth::id();
+
     DB::beginTransaction();
     try {
-        $id = $request->input('id');
-        $order = Order::with('details')->findOrFail($id);
-        $user_id = Auth::id();
-
-        // 1. Process Product Items array from request
-        $itemsRaw = $request->input('items');
-        $items = is_array($itemsRaw) ? $itemsRaw : json_decode($itemsRaw, true);
-        if (!is_array($items)) {
-            $items = [];
+        $order = Order::lockForUpdate()->find($id);
+        if (!$order) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'ইনভয়েসটি খুঁজে পাওয়া যায়নি।'
+            ], 404);
         }
 
-        // Restore old stock for previous order details
-        foreach ($order->details as $oldDetail) {
-            $product = Product::find($oldDetail->product_id);
-            if ($product) {
-                $product->increment('quantity', $oldDetail->quantity);
+        // 1. Validate & decode incoming items cleanly
+        $itemsRaw = $request->input('items');
+        if (is_string($itemsRaw)) {
+            $items = json_decode($itemsRaw, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'ইনভয়েস পণ্যের ফরম্যাট সঠিক নয়।'
+                ], 422);
+            }
+        } elseif (is_array($itemsRaw)) {
+            $items = $itemsRaw;
+        } else {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'ইনভয়েস আপডেট করতে কমপক্ষে একটি বৈধ পণ্য আবশ্যক।'
+            ], 422);
+        }
+
+        if (!is_array($items) || count($items) === 0) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'ইনভয়েসে কমপক্ষে একটি পণ্য থাকতে হবে।'
+            ], 422);
+        }
+
+        $newItemsByProduct = [];
+        foreach ($items as $item) {
+            $productId = (int) ($item['product_id'] ?? 0);
+            $qty = (int) ($item['quantity'] ?? 0);
+            $sellingPrice = (float) ($item['selling_price'] ?? 0);
+            $costPrice = (float) ($item['cost_price'] ?? 0);
+
+            if ($productId <= 0 || $qty <= 0) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'সকল ইনভয়েস পণ্যের আইডি ও পরিমাণ অবশ্যই ০-এর বেশি হতে হবে।'
+                ], 422);
+            }
+
+            if (isset($newItemsByProduct[$productId])) {
+                $newItemsByProduct[$productId]['quantity'] += $qty;
+                $newItemsByProduct[$productId]['selling_price'] = $sellingPrice;
+                $newItemsByProduct[$productId]['cost_price'] = $costPrice;
+            } else {
+                $newItemsByProduct[$productId] = [
+                    'product_id'    => $productId,
+                    'quantity'      => $qty,
+                    'selling_price' => $sellingPrice,
+                    'cost_price'    => $costPrice,
+                ];
             }
         }
 
-        // Delete old order details
-        OrderDetails::where('order_id', $order->id)->delete();
+        // Validate invoice_date if supplied (preserve existing if omitted; NEVER alter $order->created_at)
+        $oldInvoiceDate = $order->invoice_date;
+        $normalizedInvoiceDate = $order->invoice_date;
+        if ($request->filled('invoice_date')) {
+            try {
+                $normalizedInvoiceDate = Carbon::parse($request->input('invoice_date'))->format('Y-m-d');
+            } catch (\Throwable $e) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'ইনভয়েসের তারিখ সঠিক ফরম্যাটে নয়।'
+                ], 422);
+            }
+        }
 
-        // Re-create order details and deduct new stock
+        // 2. Lock existing order details, product returns, and payment rows
+        $oldDetails = OrderDetails::where('order_id', $order->id)
+            ->orderBy('id', 'asc')
+            ->lockForUpdate()
+            ->get();
+
+        $lockedReturns = ProductReturn::where('order_id', $order->id)
+            ->orderBy('id', 'asc')
+            ->lockForUpdate()
+            ->get();
+
+        $lockedPayments = OrderPaymentDetails::where('order_id', $order->id)
+            ->orderBy('id', 'asc')
+            ->lockForUpdate()
+            ->get();
+
+        $oldDetailsByProduct = $oldDetails->groupBy(fn ($d) => (int) $d->product_id);
+        $oldQtyByProduct = [];
+        $returnedByProduct = [];
+
+        foreach ($oldDetails as $od) {
+            $pid = (int) $od->product_id;
+            $oldQtyByProduct[$pid] = ($oldQtyByProduct[$pid] ?? 0) + (int) $od->quantity;
+            $returnedByProduct[$pid] = ($returnedByProduct[$pid] ?? 0) + (int) ($od->return_quantity ?? 0);
+        }
+
+        $returnsSumByProduct = [];
+        foreach ($lockedReturns as $ret) {
+            $pid = (int) $ret->product_id;
+            $returnsSumByProduct[$pid] = ($returnsSumByProduct[$pid] ?? 0) + (int) $ret->quantity;
+        }
+        foreach ($returnsSumByProduct as $pid => $retSum) {
+            $returnedByProduct[$pid] = max((int) ($returnedByProduct[$pid] ?? 0), $retSum);
+        }
+
+        // 3. Collect all affected product IDs from old + new items and lock in ascending ID order
+        $productIds = array_values(array_unique(array_merge(array_keys($oldQtyByProduct), array_keys($newItemsByProduct))));
+        sort($productIds);
+
+        $lockedProducts = !empty($productIds)
+            ? Product::whereIn('id', $productIds)->orderBy('id', 'asc')->lockForUpdate()->get()->keyBy('id')
+            : collect();
+
+        foreach (array_keys($newItemsByProduct) as $reqPid) {
+            if (!$lockedProducts->has($reqPid)) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => "পণ্য আইডি #{$reqPid} খুঁজে পাওয়া যায়নি।"
+                ], 404);
+            }
+        }
+
+        // 4. Protect existing returns before any mutation
+        foreach ($returnedByProduct as $retPid => $retQty) {
+            if ($retQty <= 0) {
+                continue;
+            }
+            if (!isset($newItemsByProduct[$retPid])) {
+                DB::rollBack();
+                Log::warning('InvoiceUpdate blocked: attempted to remove returned product', [
+                    'actor_user_id' => $user_id,
+                    'order_id' => $order->id,
+                    'order_no' => $order->order_no,
+                    'product_id' => $retPid,
+                    'returned_qty' => $retQty,
+                ]);
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => "এই ইনভয়েসে পণ্য আইডি #{$retPid} এর বিপরীতে ইতিমধ্যে {$retQty} পিস রিটার্ন রেকর্ড থাকায় এটিকে তালিকা থেকে বাদ দেওয়া যাবে না।"
+                ], 422);
+            }
+            if ($newItemsByProduct[$retPid]['quantity'] < $retQty) {
+                DB::rollBack();
+                Log::warning('InvoiceUpdate blocked: quantity below returned qty', [
+                    'actor_user_id' => $user_id,
+                    'order_id' => $order->id,
+                    'order_no' => $order->order_no,
+                    'product_id' => $retPid,
+                    'requested_qty' => $newItemsByProduct[$retPid]['quantity'],
+                    'returned_qty' => $retQty,
+                ]);
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => "পণ্য আইডি #{$retPid} এর বিপরীতে ইতিমধ্যে {$retQty} পিস রিটার্ন থাকায় বিক্রয় সংখ্যা {$retQty} এর নিচে কমানো সম্ভব নয়।"
+                ], 422);
+            }
+        }
+
+        // 5. Validate net stock delta for ALL SKUs before mutating any row (prevent negative stock)
+        $stockPlan = [];
+        foreach ($productIds as $pId) {
+            $product = $lockedProducts->get($pId);
+            if (!$product) {
+                continue;
+            }
+            $oldQty = (int) ($oldQtyByProduct[$pId] ?? 0);
+            $newQty = (int) ($newItemsByProduct[$pId]['quantity'] ?? 0);
+            $stockDelta = $oldQty - $newQty;
+            $currentStock = (int) $product->quantity;
+            $finalStock = $currentStock + $stockDelta;
+
+            if ($finalStock < 0) {
+                DB::rollBack();
+                $productTitle = $product->product_name ?? ("পণ্য #{$pId}");
+                Log::warning('InvoiceUpdate blocked: insufficient stock', [
+                    'actor_user_id' => $user_id,
+                    'order_id' => $order->id,
+                    'order_no' => $order->order_no,
+                    'product_id' => $pId,
+                    'current_stock' => $currentStock,
+                    'old_invoice_qty' => $oldQty,
+                    'new_invoice_qty' => $newQty,
+                    'stock_delta' => $stockDelta,
+                ]);
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => "স্টক অপ্রতুল: '{$productTitle}' এর বর্তমান স্টক {$currentStock} পিস, অতিরিক্ত " . abs($stockDelta) . " পিস যোগ করা সম্ভব নয়।"
+                ], 422);
+            }
+
+            $stockPlan[$pId] = [
+                'product' => $product,
+                'old_qty' => $oldQty,
+                'new_qty' => $newQty,
+                'delta' => $stockDelta,
+                'old_stock' => $currentStock,
+                'new_stock' => $finalStock,
+            ];
+        }
+
+        // 6. Apply stock changes cleanly
+        $auditProducts = [];
+        foreach ($stockPlan as $pId => $plan) {
+            if ($plan['delta'] !== 0) {
+                $plan['product']->quantity = $plan['new_stock'];
+                $plan['product']->save();
+            }
+            $auditProducts[] = [
+                'product_id' => $pId,
+                'old_qty' => $plan['old_qty'],
+                'new_qty' => $plan['new_qty'],
+                'old_stock' => $plan['old_stock'],
+                'new_stock' => $plan['new_stock'],
+                'preserved_return_qty' => (int) ($returnedByProduct[$pId] ?? 0),
+            ];
+        }
+
+        // 7. Reconcile OrderDetails IN-PLACE to preserve id, return_quantity, and original created_at
         $calculatedSubTotal = 0;
-        foreach ($items as $item) {
-            $productId = intval($item['product_id']);
-            $qty = floatval($item['quantity']);
-            $sellingPrice = floatval($item['selling_price']);
-            $costPrice = floatval($item['cost_price'] ?? 0);
+        foreach ($productIds as $pId) {
+            $existingRows = $oldDetailsByProduct->get($pId, collect());
 
-            if ($productId <= 0 || $qty <= 0) continue;
+            if (isset($newItemsByProduct[$pId])) {
+                $newItem = $newItemsByProduct[$pId];
+                $preservedReturnQty = (int) ($returnedByProduct[$pId] ?? 0);
+                $calculatedSubTotal += $newItem['selling_price'] * $newItem['quantity'];
 
-            $itemSubTotal = $sellingPrice * $qty;
-            $calculatedSubTotal += $itemSubTotal;
+                if ($existingRows->isNotEmpty()) {
+                    $primaryRow = $existingRows->first();
+                    $primaryRow->quantity = $newItem['quantity'];
+                    $primaryRow->price = $newItem['cost_price'];
+                    $primaryRow->selling_price = $newItem['selling_price'];
+                    $primaryRow->return_quantity = $preservedReturnQty;
+                    $primaryRow->user_id = $user_id ?? $primaryRow->user_id;
+                    $primaryRow->save();
 
-            // Create OrderDetail
-            OrderDetails::create([
-                'order_id' => $order->id,
-                'product_id' => $productId,
-                'quantity' => $qty,
-                'price' => $costPrice,
-                'selling_price' => $sellingPrice,
-                'user_id' => $user_id,
-            ]);
-
-            // Deduct stock for product
-            $product = Product::find($productId);
-            if ($product) {
-                $product->decrement('quantity', $qty);
+                    foreach ($existingRows->slice(1) as $dupRow) {
+                        ProductReturn::where('order_detail_id', $dupRow->id)
+                            ->update(['order_detail_id' => $primaryRow->id]);
+                        $dupRow->delete();
+                    }
+                } else {
+                    OrderDetails::create([
+                        'order_id'        => $order->id,
+                        'product_id'      => $pId,
+                        'quantity'        => $newItem['quantity'],
+                        'return_quantity' => 0,
+                        'price'           => $newItem['cost_price'],
+                        'selling_price'   => $newItem['selling_price'],
+                        'user_id'         => $user_id ?? $order->user_id,
+                    ]);
+                }
+            } else {
+                foreach ($existingRows as $removedRow) {
+                    $removedRow->delete();
+                }
             }
         }
 
@@ -600,7 +824,6 @@ public function updateInvoiceDetails(Request $request)
         $discountAmount = floatval($request->input('discount_amount', 0));
         $paidAmount = floatval($request->input('paid_amount', 0));
         $dueAmount = max(0, $subTotal - $discountAmount - $paidAmount);
-        $invoiceDate = $request->input('invoice_date');
 
         $order->sub_total = $subTotal;
         $order->discount_amount = $discountAmount;
@@ -614,32 +837,51 @@ public function updateInvoiceDetails(Request $request)
         if ($request->has('discount_rate')) {
             $order->discount_rate = $request->filled('discount_rate') ? (float)$request->input('discount_rate') : null;
         }
-
         if ($request->filled('customer_id')) {
             $order->customer_id = $request->input('customer_id');
         }
-        if ($invoiceDate) {
-            $order->invoice_date = $invoiceDate;
-            $order->created_at = Carbon::parse($invoiceDate);
+        if ($request->filled('invoice_date')) {
+            $order->invoice_date = $normalizedInvoiceDate;
         }
+        // Preserve original $order->created_at strictly for historical P2 integrity
         $order->save();
 
-        // Delete previous payment details records for this order to prevent duplicate payment history
-        OrderPaymentDetails::where('order_id', $order->id)->delete();
-
         $paymentStatus = $dueAmount <= 0 ? 'Fully Paid' : ($paidAmount > 0 ? 'Partial Paid' : 'Unpaid');
-
-        OrderPaymentDetails::create([
-            'order_id' => $order->id,
-            'paid_amount' => $paidAmount,
-            'discount_amount' => $discountAmount,
-            'payment_status' => $paymentStatus,
-            'payment_method' => 'Cash',
-            'due_collection_date' => $invoiceDate ?? now(),
-            'user_id' => $user_id,
-        ]);
+        if ($lockedPayments->count() === 1) {
+            $primaryPayment = $lockedPayments->first();
+            $primaryPayment->paid_amount = $paidAmount;
+            $primaryPayment->discount_amount = $discountAmount;
+            $primaryPayment->payment_status = $paymentStatus;
+            $primaryPayment->due_collection_date = $normalizedInvoiceDate ?? $primaryPayment->due_collection_date ?? now();
+            $primaryPayment->user_id = $user_id ?? $primaryPayment->user_id;
+            $primaryPayment->save();
+        } elseif ($lockedPayments->isEmpty()) {
+            OrderPaymentDetails::create([
+                'order_id' => $order->id,
+                'paid_amount' => $paidAmount,
+                'discount_amount' => $discountAmount,
+                'payment_status' => $paymentStatus,
+                'payment_method' => 'Cash',
+                'due_collection_date' => $normalizedInvoiceDate ?? now(),
+                'user_id' => $user_id ?? $order->user_id,
+            ]);
+        }
 
         DB::commit();
+
+        Log::info('Invoice Updated', [
+            'actor_user_id' => $user_id,
+            'order_id' => $order->id,
+            'order_no' => $order->order_no,
+            'old_invoice_date' => $oldInvoiceDate,
+            'new_invoice_date' => $order->invoice_date,
+            'products' => $auditProducts,
+            'sub_total' => $subTotal,
+            'paid_amount' => $paidAmount,
+            'due_amount' => $dueAmount,
+            'result' => 'success',
+            'timestamp' => now()->toIso8601String(),
+        ]);
 
         return response()->json([
             'status' => 'success',
@@ -647,7 +889,10 @@ public function updateInvoiceDetails(Request $request)
         ]);
     } catch (\Exception $e) {
         DB::rollBack();
-        \Log::error("Invoice Update Error: " . $e->getMessage());
+        Log::error("Invoice Update Error: " . $e->getMessage(), [
+            'actor_user_id' => $user_id,
+            'order_id' => $id,
+        ]);
         return response()->json([
             'status' => 'fail',
             'message' => 'Failed to update invoice: ' . $e->getMessage()
@@ -656,12 +901,3 @@ public function updateInvoiceDetails(Request $request)
 }
 
 }
-
-
-
-
-
-
-
-
-

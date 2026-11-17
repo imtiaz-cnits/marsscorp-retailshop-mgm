@@ -395,33 +395,131 @@ class ProductController extends Controller
 
     public function ProductUpdate(Request $request)
     {
+        $user_id = Auth::id();
+        $newUploadedImgPath = null;
+        $oldImageToCleanup = null;
+
+        $targetProductId = (int) $request->input('id');
+        if ($targetProductId <= 0) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Product ID is required'
+            ], 422);
+        }
+
+        $productName = $request->input('product_name');
+        $costPrice = (!is_null($request->input('cost_price')) && $request->input('cost_price') !== '') ? $request->input('cost_price') : 0;
+        $sellPrice = (!is_null($request->input('sell_price')) && $request->input('sell_price') !== '') ? $request->input('sell_price') : 0;
+        $status = $request->input('status') ?? 'Active';
+        $brandId = (!empty($request->input('brand_id')) && $request->input('brand_id') !== 'none') ? $request->input('brand_id') : null;
+        $categoryId = (!empty($request->input('category_id')) && $request->input('category_id') !== 'none') ? $request->input('category_id') : null;
+        $subCategoryId = (!empty($request->input('sub_category_id')) && $request->input('sub_category_id') !== 'none') ? $request->input('sub_category_id') : null;
+        $unitId = (!empty($request->input('unit_id')) && $request->input('unit_id') !== 'none') ? $request->input('unit_id') : null;
+
+        $leftQty = $request->has('door_qty_left') ? floatval($request->input('door_qty_left')) : null;
+        $rightQty = $request->has('door_qty_right') ? floatval($request->input('door_qty_right')) : null;
+        $bothQty = $request->has('door_qty_both') ? floatval($request->input('door_qty_both')) : null;
+        $hasDoorQuantities = (!is_null($leftQty) || !is_null($rightQty) || !is_null($bothQty));
+
+        $requestedStdQty = (!is_null($request->input('quantity')) && $request->input('quantity') !== '')
+            ? (float) $request->input('quantity')
+            : 0;
+
+        if (
+            ($leftQty !== null && $leftQty < 0) ||
+            ($rightQty !== null && $rightQty < 0) ||
+            ($bothQty !== null && $bothQty < 0) ||
+            (!$hasDoorQuantities && $requestedStdQty < 0)
+        ) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'পণ্যের পরিমাণ ০-এর কম হতে পারে না।'
+            ], 422);
+        }
+
+        // Unlocked preliminary read so multi-variant updates lock ALL sibling variants in a single ascending ID pass
+        $preliminaryProduct = Product::select(['id', 'product_name', 'category_id', 'brand_id'])->find($targetProductId);
+        if (!$preliminaryProduct) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Product not found'
+            ], 404);
+        }
+
+        $isDoorVariantMode = $hasDoorQuantities && ($leftQty > 0 || $rightQty > 0 || $bothQty > 0);
+        $variantIdsToLock = [$targetProductId];
+        if ($isDoorVariantMode) {
+            $variantIdsToLock = Product::where('product_name', $preliminaryProduct->product_name)
+                ->where('category_id', $preliminaryProduct->category_id)
+                ->where(function ($q) use ($preliminaryProduct) {
+                    if ($preliminaryProduct->brand_id) {
+                        $q->where('brand_id', $preliminaryProduct->brand_id);
+                    }
+                })
+                ->pluck('id')
+                ->map(fn ($v) => (int) $v)
+                ->push($targetProductId)
+                ->unique()
+                ->sort()
+                ->values()
+                ->all();
+        }
+
+        DB::beginTransaction();
         try {
-            $user_id = Auth::id();
+            $lockedGroup = Product::whereIn('id', $variantIdsToLock)
+                ->orderBy('id', 'asc')
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('id');
 
-            // Update Product Info
-            $product = Product::findOrFail($request->input('id'));
+            $product = $lockedGroup->get($targetProductId);
+            if (!$product) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'Product not found'
+                ], 404);
+            }
 
-            $productName = $request->input('product_name');
-            $costPrice = (!is_null($request->input('cost_price')) && $request->input('cost_price') !== '') ? $request->input('cost_price') : 0;
-            $sellPrice = (!is_null($request->input('sell_price')) && $request->input('sell_price') !== '') ? $request->input('sell_price') : 0;
-            $status = $request->input('status') ?? 'Active';
-            $brandId = (!empty($request->input('brand_id')) && $request->input('brand_id') !== 'none') ? $request->input('brand_id') : null;
-            $categoryId = (!empty($request->input('category_id')) && $request->input('category_id') !== 'none') ? $request->input('category_id') : null;
-            $subCategoryId = (!empty($request->input('sub_category_id')) && $request->input('sub_category_id') !== 'none') ? $request->input('sub_category_id') : null;
-            $unitId = (!empty($request->input('unit_id')) && $request->input('unit_id') !== 'none') ? $request->input('unit_id') : null;
+            if ($isDoorVariantMode) {
+                $groupIdentityShifted =
+                    $product->product_name !== $preliminaryProduct->product_name ||
+                    (string) $product->category_id !== (string) $preliminaryProduct->category_id ||
+                    (string) $product->brand_id !== (string) $preliminaryProduct->brand_id;
 
-            // Handle Product Image Upload
+                $unlockedSiblingExists = Product::where('product_name', $product->product_name)
+                    ->where('category_id', $product->category_id)
+                    ->where(function ($q) use ($product) {
+                        if ($product->brand_id) {
+                            $q->where('brand_id', $product->brand_id);
+                        }
+                    })
+                    ->whereNotIn('id', $variantIdsToLock)
+                    ->exists();
+
+                if ($groupIdentityShifted || $unlockedSiblingExists) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => 'fail',
+                        'message' => 'প্রোডাক্টের ভ্যারিয়েন্ট গ্রুপ সমসাময়িকভাবে পরিবর্তিত হয়েছে; অনুগ্রহ করে আবার চেষ্টা করুন।'
+                    ], 409);
+                }
+            }
+
+            $oldCost = (float) ($product->cost_price ?? 0);
+
+            // Handle Product Image Upload (old file removal deferred strictly until after commit)
             if ($request->hasFile('img_url')) {
                 $img = $request->file('img_url');
                 $img_name = time() . '-' . $user_id . '-' . $img->getClientOriginalName();
                 $img_url = "uploads/product-img/{$img_name}";
                 $img->move(public_path('uploads/product-img'), $img_name);
+                $newUploadedImgPath = public_path($img_url);
 
-                // Remove old image if exists
-                if ($product->img_url && file_exists(public_path($product->img_url))) {
-                    @unlink(public_path($product->img_url));
+                if ($product->img_url) {
+                    $oldImageToCleanup = public_path($product->img_url);
                 }
-
                 $product->img_url = $img_url;
             }
 
@@ -446,6 +544,10 @@ class ProductController extends Controller
                         ->where('id', '!=', $product->id)
                         ->first();
                     if ($existing) {
+                        DB::rollBack();
+                        if ($newUploadedImgPath && file_exists($newUploadedImgPath)) {
+                            @unlink($newUploadedImgPath);
+                        }
                         return response()->json([
                             'status' => 'fail',
                             'message' => "এই বারকোডটি ({$codeStr}) ইতিমধ্যে \"{$existing->product_name}\" প্রোডাক্টে যুক্ত রয়েছে!"
@@ -456,12 +558,7 @@ class ProductController extends Controller
                 $product->product_code = json_encode(array_values(array_unique($cleanCodes)));
             }
 
-            // Check if handedness quantities are provided
-            $leftQty = $request->has('door_qty_left') ? floatval($request->input('door_qty_left')) : null;
-            $rightQty = $request->has('door_qty_right') ? floatval($request->input('door_qty_right')) : null;
-            $bothQty = $request->has('door_qty_both') ? floatval($request->input('door_qty_both')) : null;
-
-            $hasDoorQuantities = (!is_null($leftQty) || !is_null($rightQty) || !is_null($bothQty));
+            $stockChanges = [];
 
             if ($hasDoorQuantities && ($leftQty > 0 || $rightQty > 0 || $bothQty > 0)) {
                 $doorMap = [
@@ -470,30 +567,22 @@ class ProductController extends Controller
                     'Both Handed' => $bothQty ?? 0,
                 ];
 
-                // Find existing variants of this product (same product_name & category_id)
-                $variants = Product::where('product_name', $product->product_name)
-                    ->where('category_id', $product->category_id)
-                    ->where(function ($q) use ($product) {
-                        if ($product->brand_id) {
-                            $q->where('brand_id', $product->brand_id);
-                        }
-                    })
-                    ->get();
+                // All existing sibling variants were already locked atomically in ascending ID order at transaction start
+                $variants = $lockedGroup->values();
 
                 $assignedProductIds = [];
 
                 foreach ($doorMap as $side => $qty) {
-                    // Try to find existing variant for this door_side
                     $existingVariant = $variants->first(function ($v) use ($side) {
                         return $v->door_side === $side;
                     });
 
-                    // If not found and current product matches this side or has no side yet
                     if (!$existingVariant && ($product->door_side === $side || empty($product->door_side)) && !in_array($product->id, $assignedProductIds)) {
                         $existingVariant = $product;
                     }
 
                     if ($existingVariant) {
+                        $oldVarQty = (float) ($existingVariant->quantity ?? 0);
                         $existingVariant->product_name = $productName;
                         $existingVariant->quantity = $qty;
                         $existingVariant->cost_price = $costPrice;
@@ -509,8 +598,13 @@ class ProductController extends Controller
                         }
                         $existingVariant->save();
                         $assignedProductIds[] = $existingVariant->id;
+                        $stockChanges[] = [
+                            'product_id' => $existingVariant->id,
+                            'door_side' => $side,
+                            'old_qty' => $oldVarQty,
+                            'new_qty' => (float) $qty,
+                        ];
                     } else if ($qty > 0) {
-                        // Create new variant if quantity > 0
                         $newVariant = Product::create([
                             'img_url' => $product->img_url,
                             'product_name' => $productName,
@@ -527,10 +621,15 @@ class ProductController extends Controller
                             'user_id' => $user_id,
                         ]);
                         $assignedProductIds[] = $newVariant->id;
+                        $stockChanges[] = [
+                            'product_id' => $newVariant->id,
+                            'door_side' => $side,
+                            'old_qty' => 0,
+                            'new_qty' => (float) $qty,
+                        ];
                     }
                 }
 
-                // If current product wasn't assigned in the loop, update it with main values
                 if (!in_array($product->id, $assignedProductIds)) {
                     $product->product_name = $productName;
                     $product->cost_price = $costPrice;
@@ -543,12 +642,30 @@ class ProductController extends Controller
                     $product->save();
                 }
 
+                DB::commit();
+                if ($oldImageToCleanup && file_exists($oldImageToCleanup)) {
+                    @unlink($oldImageToCleanup);
+                }
+
+                Log::info('Product Updated (Door Variants)', [
+                    'actor_user_id' => $user_id,
+                    'product_id' => $product->id,
+                    'product_name' => $productName,
+                    'old_cost' => $oldCost,
+                    'new_cost' => (float) $costPrice,
+                    'stock_changes' => $stockChanges,
+                    'timestamp' => now()->toIso8601String(),
+                ]);
+
                 return response()->json(['status' => 'success', 'message' => 'Product and Door variants updated successfully']);
             }
 
             // Standard product update without multi-door quantities
+            $oldQty = (float) ($product->quantity ?? 0);
+            $newQty = (!is_null($request->input('quantity')) && $request->input('quantity') !== '') ? $request->input('quantity') : 0;
+
             $product->product_name = $productName;
-            $product->quantity = (!is_null($request->input('quantity')) && $request->input('quantity') !== '') ? $request->input('quantity') : 0;
+            $product->quantity = $newQty;
             $product->cost_price = $costPrice;
             $product->sell_price = $sellPrice;
             $product->status = $status;
@@ -559,8 +676,35 @@ class ProductController extends Controller
             $product->unit_id = $unitId;
             $product->save();
 
+            DB::commit();
+            if ($oldImageToCleanup && file_exists($oldImageToCleanup)) {
+                @unlink($oldImageToCleanup);
+            }
+
+            if ((float) $oldQty !== (float) $newQty || (float) $oldCost !== (float) $costPrice) {
+                Log::info('Product Updated', [
+                    'actor_user_id' => $user_id,
+                    'product_id' => $product->id,
+                    'product_name' => $productName,
+                    'old_qty' => $oldQty,
+                    'new_qty' => (float) $newQty,
+                    'old_cost' => $oldCost,
+                    'new_cost' => (float) $costPrice,
+                    'timestamp' => now()->toIso8601String(),
+                ]);
+            }
+
             return response()->json(['status' => 'success', 'message' => 'Product updated successfully']);
         } catch (Exception $e) {
+            DB::rollBack();
+            if ($newUploadedImgPath && file_exists($newUploadedImgPath)) {
+                @unlink($newUploadedImgPath);
+            }
+            Log::error('Product Update Error', [
+                'actor_user_id' => $user_id,
+                'product_id' => $request->input('id'),
+                'error' => $e->getMessage(),
+            ]);
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
     }
