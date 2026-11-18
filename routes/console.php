@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\ShahinAlomStockRepairService;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
@@ -221,3 +222,95 @@ Artisan::command('purchase:reconcile-shahin-alam {--dry-run : Disabled legacy op
     return 1;
 })->purpose('[DISABLED] Permanently retired historical Shahin Alam reconciliation script');
 
+Artisan::command(
+    'purchase:repair-shahin-alam {--expected-db= : Expected MySQL database name} {--expected-host= : Expected MySQL @@hostname} {--expected-port= : Expected MySQL @@port} {--execute : Execute Category A (-15 units) repair (REQUIRES --confirm-physical-verification, --approval-manifest, and HMAC secret)} {--confirm-physical-verification : Confirm signed physical verification Forms 6A/6B and explicit owner approval} {--approval-manifest= : Path to signed JSON approval manifest file}',
+    function (ShahinAlomStockRepairService $repairService) {
+        $execute = (bool) $this->option('execute');
+        $confirmed = (bool) $this->option('confirm-physical-verification');
+        $expectedDb = trim((string) ($this->option('expected-db') ?? ''));
+        $expectedHost = trim((string) ($this->option('expected-host') ?? ''));
+        $expectedPortRaw = trim((string) ($this->option('expected-port') ?? ''));
+        if ($expectedPortRaw !== '') {
+            if (!ctype_digit($expectedPortRaw)) {
+                $this->error("[REFUSED] Invalid --expected-port '{$expectedPortRaw}': must be an integer between 1 and 65535.");
+                return 1;
+            }
+            $expectedPort = (int) $expectedPortRaw;
+            if ($expectedPort < 1 || $expectedPort > 65535) {
+                $this->error("[REFUSED] Invalid --expected-port '{$expectedPortRaw}': must be between 1 and 65535.");
+                return 1;
+            }
+        } else {
+            $expectedPort = null;
+        }
+        $manifestPath = trim((string) ($this->option('approval-manifest') ?? ''));
+
+        if (!$execute) {
+            if ($expectedDb === '') {
+                $this->error('[DRY-RUN REFUSED] Explicit --expected-db=<database_name> is required.');
+                return 1;
+            }
+
+            $this->info('=============================================================');
+            $this->info('  Shahin Alom Category A Stock Repair — DRY RUN (Read-Only)  ');
+            $this->info('=============================================================');
+
+            try {
+                $result = $repairService->runDryRun(
+                    $expectedDb,
+                    $expectedHost !== '' ? $expectedHost : null,
+                    $expectedPort
+                );
+            } catch (\Throwable $e) {
+                $this->error('[DRY-RUN ABORTED] ' . $e->getMessage());
+                return 1;
+            }
+
+            $this->line("Database   : {$result['db_meta']['db']} @ {$result['db_meta']['host']}:{$result['db_meta']['port']}");
+            $this->line("DB Ledger  : " . ($result['db_ledger_ready'] ? 'READY (stock_repair_executions present)' : 'NOT APPLIED (migration pending — live --execute will fail closed)'));
+            $this->line("Already Run: " . ($result['already_executed'] ? 'YES (blocked by stock_repair_executions ledger)' : 'NO'));
+            $this->line("34-SKU Sum : {$result['pre_sum_34']} -> planned {$result['planned_post_sum_34']} (delta {$result['planned_delta']})");
+            $this->line("Cat-A Sum  : {$result['pre_sum_9']} -> planned {$result['planned_post_sum_9']}");
+
+            $rows = array_map(static fn (array $r) => [
+                $r['id'],
+                $r['name'],
+                $r['barcode'],
+                $r['current_qty'],
+                $r['planned_qty'],
+                $r['delta'],
+            ], $result['targets']);
+
+            $this->table(['ID', 'Product Name', 'Barcode', 'Current Qty', 'Planned Qty', 'Delta'], $rows);
+            $this->warn('[DRY RUN COMPLETE] Transaction rolled back. Zero database rows were modified.');
+            return 0;
+        }
+
+        if ($expectedDb === '' || $expectedHost === '' || $expectedPort === null || $expectedPort <= 0) {
+            $this->error('[REFUSED] Live execution requires explicit --expected-db=<db>, --expected-host=<host>, and --expected-port=<port>.');
+            return 1;
+        }
+
+        if (!$confirmed) {
+            $this->error('[REFUSED] Live execution requires --confirm-physical-verification (signed Forms 6A/6B and explicit owner approval).');
+            return 1;
+        }
+
+        if ($manifestPath === '') {
+            $this->error('[REFUSED] Live execution requires --approval-manifest=<path/to/manifest.json>.');
+            return 1;
+        }
+
+        $this->alert('MODE: LIVE APPROVED EXECUTION (Category A: 9 SKUs, -15 Units)');
+
+        try {
+            $result = $repairService->executeApprovedRepairFromFile($manifestPath, $expectedDb, true, $expectedHost, $expectedPort);
+        } catch (\Throwable $e) {
+            $this->error('[EXECUTION FAILED — ROLLED BACK] ' . $e->getMessage());
+            return 1;
+        }
+
+        $this->info("[SUCCESS] Committed Category A repair #{$result['execution_id']} on {$result['db_meta']['db']} ({$result['repair_reference']}): 9 SKUs ({$result['pre_sum_9']} -> {$result['post_sum_9']}), 34 SKUs ({$result['pre_sum_34']} -> {$result['post_sum_34']}).");
+        return 0;
+    }
+)->purpose('Dry-run by default; atomically verifies and applies approved Shahin Alom Category A (-15 units) ledger repair');
