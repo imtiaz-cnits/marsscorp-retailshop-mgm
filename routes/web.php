@@ -97,6 +97,12 @@ Route::post('/create-user-admin', [UserController::class, 'CreateUserByAdmin']);
 Route::post('/update-user-role-status', [UserController::class, 'UpdateUserRoleStatus']);
 Route::post('/delete-user-admin', [UserController::class, 'DeleteUserByAdmin']);
 
+// User Activity Log Routes
+Route::view('/admin-dashboard-user-activity-log', 'pages.back-end-page.user-activity-log-page');
+Route::get('/get-user-activity-logs', [App\Http\Controllers\UserActivityLogController::class, 'GetActivityLogs']);
+Route::get('/get-recent-user-activity-logs', [App\Http\Controllers\UserActivityLogController::class, 'GetRecentActivityLogs']);
+Route::post('/clear-all-user-activity-logs', [App\Http\Controllers\UserActivityLogController::class, 'ClearAllActivityLogs']);
+
 // Dashboard View Route End
 
 

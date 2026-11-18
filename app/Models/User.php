@@ -16,9 +16,10 @@ class User extends Authenticatable
     protected $attributes = ['otp' => '0'];
     protected $hidden = ['password', 'otp'];
 
-     // Ensure otp_expires_at is cast as a datetime
+     // Ensure otp_expires_at is cast as a datetime and permissions as array
     protected $casts = [
         'otp_expires_at' => 'datetime',
+        'permissions' => 'array',
     ];
 
     public function orders()

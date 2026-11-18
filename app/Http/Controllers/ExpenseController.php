@@ -201,7 +201,7 @@ class ExpenseController extends Controller
             $expenseDate = $request->input('date') ?: date('Y-m-d');
             $createdAt = Carbon::parse($expenseDate)->setTime(now()->hour, now()->minute, now()->second);
 
-            Expense::create([
+            $newExp = Expense::create([
                 'expense_type_id' => $request->input('expense_type_id'),
                 'staff_id'        => $request->input('staff_id') ?: null,
                 'expense_amount'  => $request->input('expense_amount'),
@@ -210,6 +210,13 @@ class ExpenseController extends Controller
                 'user_id'         => $user_id,
                 'created_at'      => $createdAt
             ]);
+
+            \App\Services\ActivityLogger::log(
+                'CREATE',
+                'Expenses',
+                "Recorded expense: ৳ " . number_format($newExp->expense_amount, 2) . " (" . ($newExp->expense_details ?: 'General Expense') . "). Date: {$newExp->date}.",
+                ['expense_id' => $newExp->id, 'amount' => $newExp->expense_amount]
+            );
 
             return response()->json(['status' => 'success', 'message' => "Expense Created Successfully"]);
         } catch (Exception $e) {
@@ -296,6 +303,13 @@ class ExpenseController extends Controller
             // Save the updated Expense data
             $ExpenseData_Update->save();
 
+            \App\Services\ActivityLogger::log(
+                'UPDATE',
+                'Expenses',
+                "Updated expense ID #{$ExpenseData_Update->id}: ৳ " . number_format($ExpenseData_Update->expense_amount, 2) . " (" . ($ExpenseData_Update->expense_details ?: 'Expense') . ").",
+                ['expense_id' => $ExpenseData_Update->id, 'amount' => $ExpenseData_Update->expense_amount]
+            );
+
             // Return success response
             return response()->json(['status' => 'success', 'message' => 'Expense updated successfully']);
         } catch (Exception $e) {
@@ -322,7 +336,17 @@ function ExpenseDelete(Request $request)
             return response()->json(['status' => 'fail', 'message' => 'Expense not found.']);
         }
 
+        $expAmount = $ExpenseData_Delete->expense_amount;
+        $expDetails = $ExpenseData_Delete->expense_details;
+
         Expense::where('id', $Expense_ID)->delete();
+
+        \App\Services\ActivityLogger::log(
+            'DELETE',
+            'Expenses',
+            "Deleted expense ID #{$Expense_ID}: ৳ " . number_format($expAmount, 2) . " (" . ($expDetails ?: 'Expense') . ").",
+            ['expense_id' => $Expense_ID, 'amount' => $expAmount]
+        );
 
         return response()->json(['status' => 'success', 'message' => 'Expense Delete Successful']);
     } catch (Exception $e) {

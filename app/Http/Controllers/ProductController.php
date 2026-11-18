@@ -332,6 +332,13 @@ class ProductController extends Controller
             ]);
             $product->load(['brand', 'category']);
 
+            \App\Services\ActivityLogger::log(
+                'Create',
+                'Product',
+                "Created product '{$product->name}' (Code: {$product->product_code}, Stock: {$product->quantity})",
+                ['product_id' => $product->id, 'product_code' => $product->product_code]
+            );
+
             return response()->json(['status' => 'success', 'message' => 'Product Created Successfully', 'product' => $product]);
         } catch (Exception $e) {
             Log::error($e->getMessage()); // Log the error message
@@ -694,6 +701,13 @@ class ProductController extends Controller
                 ]);
             }
 
+            \App\Services\ActivityLogger::log(
+                'Update',
+                'Product',
+                "Updated product '{$product->name}' (ID #{$product_id}, Stock: {$product->quantity})",
+                ['product_id' => $product_id]
+            );
+
             return response()->json(['status' => 'success', 'message' => 'Product updated successfully']);
         } catch (Exception $e) {
             DB::rollBack();
@@ -754,7 +768,15 @@ class ProductController extends Controller
                 }
             }
             // Delete the product record
+            $productName = $product->name;
             $product->delete();
+
+            \App\Services\ActivityLogger::log(
+                'Delete',
+                'Product',
+                "Deleted product '{$productName}' (ID #{$productID})",
+                ['product_id' => $productID, 'name' => $productName]
+            );
 
             // Return success response
             return response()->json([

@@ -103,7 +103,7 @@ class BatteryExpenseController extends Controller
             $expenseDate = $request->input('date') ?: date('Y-m-d');
             $createdAt = Carbon::parse($expenseDate)->setTime(now()->hour, now()->minute, now()->second);
 
-            BatteryExpense::create([
+            $newExp = BatteryExpense::create([
                 'expense_type_id' => $request->input('expense_type_id'),
                 'staff_id'        => $request->input('staff_id') ?: null,
                 'expense_amount'  => $request->input('expense_amount'),
@@ -112,6 +112,13 @@ class BatteryExpenseController extends Controller
                 'user_id'         => $user_id,
                 'created_at'      => $createdAt
             ]);
+
+            \App\Services\ActivityLogger::log(
+                'CREATE',
+                'Expenses',
+                "Recorded battery expense: ৳ " . number_format($newExp->expense_amount, 2) . " (" . ($newExp->expense_details ?: 'Expense') . "). Date: {$newExp->date}.",
+                ['expense_id' => $newExp->id, 'amount' => $newExp->expense_amount]
+            );
 
             return response()->json(['status' => 'success', 'message' => "Expense Created Successfully"]);
         } catch (Exception $e) {
@@ -148,6 +155,13 @@ class BatteryExpenseController extends Controller
             $expense->date = $expenseDate;
             $expense->save();
 
+            \App\Services\ActivityLogger::log(
+                'UPDATE',
+                'Expenses',
+                "Updated battery expense ID #{$expense->id}: ৳ " . number_format($expense->expense_amount, 2) . " (" . ($expense->expense_details ?: 'Expense') . ").",
+                ['expense_id' => $expense->id, 'amount' => $expense->expense_amount]
+            );
+
             return response()->json(['status' => 'success', 'message' => 'Expense updated successfully']);
         } catch (Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
@@ -164,7 +178,17 @@ class BatteryExpenseController extends Controller
                 return response()->json(['status' => 'fail', 'message' => 'Expense not found.']);
             }
 
+            $expAmount = $expense->expense_amount;
+            $expDetails = $expense->expense_details;
+            $expId = $expense->id;
             $expense->delete();
+
+            \App\Services\ActivityLogger::log(
+                'DELETE',
+                'Expenses',
+                "Deleted battery expense ID #{$expId}: ৳ " . number_format($expAmount, 2) . " (" . ($expDetails ?: 'Expense') . ").",
+                ['expense_id' => $expId, 'amount' => $expAmount]
+            );
 
             return response()->json(['status' => 'success', 'message' => 'Expense deleted successfully']);
         } catch (Exception $e) {

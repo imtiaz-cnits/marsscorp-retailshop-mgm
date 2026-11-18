@@ -259,6 +259,13 @@ public function SupplierCreate(Request $request)
             'user_id' => $user_id,
         ]);
 
+        \App\Services\ActivityLogger::log(
+            'CREATE',
+            'Purchases',
+            "Created supplier \"{$newSupplier->name}\" (" . ($newSupplier->supplier_id ?? "ID: {$newSupplier->id}") . "). Company: " . ($newSupplier->company ?: 'N/A') . ".",
+            ['supplier_id' => $newSupplier->id, 'name' => $newSupplier->name, 'company' => $newSupplier->company]
+        );
+
         return response()->json([
             'status' => 'success',
             'message' => 'Supplier Created Successfully',
@@ -359,6 +366,13 @@ public function SupplierUpdate(Request $request)
         // Save the updated supplier data
         $SupplierData_Update->save();
 
+        \App\Services\ActivityLogger::log(
+            'UPDATE',
+            'Purchases',
+            "Updated supplier details for \"{$SupplierData_Update->name}\" (" . ($SupplierData_Update->supplier_id ?? "ID: {$SupplierData_Update->id}") . ").",
+            ['supplier_id' => $SupplierData_Update->id, 'name' => $SupplierData_Update->name]
+        );
+
         // Return success response
         return response()->json(['status' => 'success', 'message' => 'Supplier updated successfully']);
     } catch (\Throwable $e) {
@@ -413,9 +427,19 @@ function SupplierDelete(Request $request)
             @unlink(public_path($SupplierData_Delete->img_url));
         }
 
+        $supplierName = $SupplierData_Delete->name;
+        $supplierIdCode = $SupplierData_Delete->supplier_id ?? "ID: {$Supplier_ID}";
+
         Supplier::where('id', $Supplier_ID)->delete();
 
         DB::commit();
+
+        \App\Services\ActivityLogger::log(
+            'DELETE',
+            'Purchases',
+            "Deleted supplier \"{$supplierName}\" ({$supplierIdCode}).",
+            ['supplier_id' => $Supplier_ID, 'name' => $supplierName]
+        );
 
         return response()->json(['status' => 'success', 'message' => 'Supplier Delete Successful']);
     } catch (\Exception $e) {

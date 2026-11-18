@@ -99,6 +99,13 @@ class BatterySupplierController extends Controller
                 'user_id' => $user_id,
             ]);
 
+            \App\Services\ActivityLogger::log(
+                'CREATE',
+                'Battery Purchases',
+                "Created battery supplier \"{$newSupplier->name}\" (" . ($newSupplier->supplier_id ?? "ID: {$newSupplier->id}") . "). Company: " . ($newSupplier->company ?: 'N/A') . ".",
+                ['supplier_id' => $newSupplier->id, 'name' => $newSupplier->name, 'company' => $newSupplier->company]
+            );
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Supplier Created Successfully',
@@ -152,6 +159,13 @@ class BatterySupplierController extends Controller
 
             $supplier->save();
 
+            \App\Services\ActivityLogger::log(
+                'UPDATE',
+                'Battery Purchases',
+                "Updated battery supplier details for \"{$supplier->name}\" (" . ($supplier->supplier_id ?? "ID: {$supplier->id}") . ").",
+                ['supplier_id' => $supplier->id, 'name' => $supplier->name]
+            );
+
             return response()->json(['status' => 'success', 'message' => 'Supplier updated successfully']);
         } catch (Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
@@ -176,7 +190,16 @@ class BatterySupplierController extends Controller
                 ]);
             }
 
+            $supplierName = $supplier->name;
+            $supplierIdCode = $supplier->supplier_id ?? "ID: {$supplier->id}";
             $supplier->delete();
+
+            \App\Services\ActivityLogger::log(
+                'DELETE',
+                'Battery Purchases',
+                "Deleted battery supplier \"{$supplierName}\" ({$supplierIdCode}).",
+                ['supplier_id' => $supplier->id, 'name' => $supplierName]
+            );
 
             return response()->json(['status' => 'success', 'message' => 'Supplier deleted successfully']);
         } catch (Exception $e) {

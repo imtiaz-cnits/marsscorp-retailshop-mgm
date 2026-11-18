@@ -558,6 +558,13 @@ public function PurchasesList()
                 'timestamp' => now()->toIso8601String(),
             ]);
 
+            \App\Services\ActivityLogger::log(
+                'Purchase',
+                'Purchase',
+                "Created purchase #{$purchase->purchase_id} (Total: ৳ " . number_format((float)$purchase->grand_subtotal, 2) . ", Paid: ৳ " . number_format((float)$purchase->paid_amount, 2) . ")",
+                ['purchase_id' => $purchase->id, 'purchase_code' => $purchase->purchase_id, 'supplier_id' => $supplier_id]
+            );
+
             return response()->json(['status' => 'success', 'message' => 'Purchase created successfully']);
         } catch (\Throwable $e) {
             DB::rollBack();

@@ -38,6 +38,14 @@ class UserController extends Controller
 
             $user->save();
 
+            \App\Services\ActivityLogger::log(
+                'Create',
+                'Auth',
+                "New user registered: '{$user->name}' ({$user->email})",
+                ['user_id' => $user->id, 'role' => $user->role],
+                $user
+            );
+
             return response()->json(['status' => 'success', 'message' => 'User Registration Successfully']);
         } catch (Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
@@ -78,11 +86,26 @@ class UserController extends Controller
 
             $user = User::where('email', $request->input('email'))->first();
 
+            // Support legacy admin email aliases like admin@anisstore.com
+            if (!$user && in_array(strtolower(trim($request->input('email'))), ['admin@anisstore.com', 'admin@marsscorporation.com'])) {
+                $user = User::where('email', 'admin@gmail.com')->first();
+            }
+
             if (!$user || !Hash::check($request->input('password'), $user->password)) {
                 return response()->json(['status' => 'failed', 'message' => 'Invalid User']);
             }
 
             $token = $user->createToken('authToken')->plainTextToken;
+
+            \App\Services\ActivityLogger::log(
+                'Login',
+                'Auth',
+                "User '{$user->name}' ({$user->role}) logged into the system",
+                ['email' => $user->email, 'role' => $user->role],
+                $user
+            );
+
+            $permissionsArray = is_array($user->permissions) ? $user->permissions : ($user->permissions ? json_decode($user->permissions, true) : null);
 
             // Include role and permissions in the response
             return response()->json([
@@ -90,7 +113,7 @@ class UserController extends Controller
                 'message' => 'Login Successful',
                 'token' => $token,
                 'role' => $user->role,
-                'permissions' => $user->permissions ? json_decode($user->permissions, true) : null
+                'permissions' => $permissionsArray
             ]);
         } catch (Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
@@ -354,7 +377,7 @@ class UserController extends Controller
     public function UsersProfile(Request $request)
     {
         $user = Auth::user();
-        $perms = $user->permissions ? json_decode($user->permissions, true) : null;
+        $perms = is_array($user->permissions) ? $user->permissions : ($user->permissions ? json_decode($user->permissions, true) : null);
 
         return response()->json([
             'id'          => $user->id,
@@ -406,6 +429,14 @@ class UserController extends Controller
 
             $user->save();
 
+            \App\Services\ActivityLogger::log(
+                'Update',
+                'Settings / Profile',
+                "User '{$user->name}' updated their profile",
+                ['user_id' => $user->id],
+                $user
+            );
+
             return response()->json(['status' => 'success', 'message' => 'Profile updated successfully.']);
         } catch (\Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
@@ -416,7 +447,17 @@ class UserController extends Controller
 
     public function UserLogout(Request $request)
     {
-        $request->user()->tokens()->delete();
+        $user = $request->user();
+        if ($user) {
+            \App\Services\ActivityLogger::log(
+                'Logout',
+                'Auth',
+                "User '{$user->name}' ({$user->role}) logged out",
+                ['email' => $user->email],
+                $user
+            );
+        }
+        $request->user()?->tokens()->delete();
         return redirect('/nexus-login-page');
     }
 
@@ -429,7 +470,7 @@ class UserController extends Controller
                 ->orderBy('id', 'desc')
                 ->get()
                 ->map(function ($user) {
-                    $perms = $user->permissions ? json_decode($user->permissions, true) : null;
+                    $perms = is_array($user->permissions) ? $user->permissions : ($user->permissions ? json_decode($user->permissions, true) : null);
                     return [
                         'id'          => $user->id,
                         'name'        => $user->name ?? 'N/A',
@@ -504,6 +545,13 @@ class UserController extends Controller
                 'img_url'     => $img_url,
             ]);
 
+            \App\Services\ActivityLogger::log(
+                'Create',
+                'Settings / Role',
+                "Created new user '{$user->name}' with role '{$user->role}'",
+                ['created_user_id' => $user->id, 'email' => $user->email, 'role' => $user->role]
+            );
+
             return response()->json([
                 'status'  => 'success',
                 'message' => 'নতুন ইউজার সফলভাবে তৈরি করা হয়েছে।'
@@ -571,6 +619,13 @@ class UserController extends Controller
 
             $user->save();
 
+            \App\Services\ActivityLogger::log(
+                'Status Change',
+                'Settings / Role',
+                "Updated role to '{$user->role}' and status to '{$user->status}' for user '{$user->name}'",
+                ['target_user_id' => $user->id, 'role' => $user->role, 'status' => $user->status]
+            );
+
             return response()->json([
                 'status'  => 'success',
                 'message' => 'ইউজার রোল ও পারমিশন সফলভাবে আপডেট হয়েছে।'
@@ -612,6 +667,13 @@ class UserController extends Controller
             }
 
             $user->delete();
+
+            \App\Services\ActivityLogger::log(
+                'Delete',
+                'Settings / Role',
+                "Admin deleted user '{$user->name}' ({$user->email})",
+                ['deleted_user_id' => $id, 'name' => $user->name, 'email' => $user->email]
+            );
 
             return response()->json([
                 'status'  => 'success',

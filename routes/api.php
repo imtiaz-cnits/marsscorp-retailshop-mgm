@@ -329,4 +329,9 @@ Route::get('/daily-ledger-report-list', [ReportManagementController::class, 'Dai
 
 // Dashboard All API Route End
 
+// User Activity Log API Routes
+Route::get('/get-user-activity-logs', [App\Http\Controllers\UserActivityLogController::class, 'GetActivityLogs']);
+Route::get('/get-recent-user-activity-logs', [App\Http\Controllers\UserActivityLogController::class, 'GetRecentActivityLogs']);
+Route::post('/clear-all-user-activity-logs', [App\Http\Controllers\UserActivityLogController::class, 'ClearAllActivityLogs']);
+
 require __DIR__.'/battery_api.php';

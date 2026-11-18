@@ -220,6 +220,20 @@ class BatterySupplierDueCollectionController extends Controller
 
             DB::commit();
 
+            \App\Services\ActivityLogger::log(
+                'DUE_PAYMENT',
+                'Battery Purchases',
+                "Paid battery supplier due: ৳ " . number_format($inputPaidAmount, 2) . " to \"{$supplier->name}\" (" . ($supplier->supplier_id ?? "ID: {$supplier->id}") . "). Remaining Due: ৳ " . number_format($totalRemainingDue ?? 0, 2) . ". Method: " . ($paymentMethod ?: 'Cash') . ".",
+                [
+                    'supplier_id'     => $supplier->id,
+                    'supplier_name'   => $supplier->name,
+                    'paid_amount'     => $inputPaidAmount,
+                    'discount_amount' => $inputDiscountAmount,
+                    'remaining_due'   => $totalRemainingDue ?? 0,
+                    'payment_method'  => $paymentMethod,
+                ]
+            );
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Supplier payment updated successfully.'

@@ -355,6 +355,13 @@ class OrderController extends Controller
                 'timestamp' => now()->toIso8601String(),
             ]);
 
+            \App\Services\ActivityLogger::log(
+                'Sale',
+                'POS / Sales',
+                "Created sales invoice #{$order->order_no} (Total: ৳ " . number_format((float)$order->sub_total, 2) . ", Paid: ৳ " . number_format((float)$order->paid_amount, 2) . ")",
+                ['order_id' => $order->id, 'order_no' => $order->order_no, 'customer_id' => $order->customer_id]
+            );
+
             return response()->json(['status' => 'success', 'message' => 'Order created successfully', 'invoice_id' => $order->id]);
         } catch (\Exception $e) {
             DB::rollBack();

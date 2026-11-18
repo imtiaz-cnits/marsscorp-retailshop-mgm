@@ -117,6 +117,13 @@ class BatteryCustomerController extends Controller
                 'user_id' => $user_id,
             ]);
 
+            \App\Services\ActivityLogger::log(
+                'CREATE',
+                'Battery POS',
+                "Created battery customer \"{$customer->customer_name}\" (" . ($customer->customer_id ?? "ID: {$customer->id}") . "). Mobile: " . ($customer->mobile ?: 'N/A') . ".",
+                ['customer_id' => $customer->id, 'customer_name' => $customer->customer_name, 'mobile' => $customer->mobile]
+            );
+
             return response()->json([
                 'status' => 'success',
                 'message' => "Customer Created Successfully",
@@ -192,6 +199,13 @@ class BatteryCustomerController extends Controller
 
             $customer->save();
 
+            \App\Services\ActivityLogger::log(
+                'UPDATE',
+                'Battery POS',
+                "Updated battery customer details for \"{$customer->customer_name}\" (" . ($customer->customer_id ?? "ID: {$customer->id}") . ").",
+                ['customer_id' => $customer->id, 'customer_name' => $customer->customer_name]
+            );
+
             return response()->json(['status' => 'success', 'message' => 'Customer updated successfully']);
         } catch (Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
@@ -220,7 +234,16 @@ class BatteryCustomerController extends Controller
                 @unlink(public_path($customer->img_url));
             }
 
+            $customerName = $customer->customer_name;
+            $customerIdCode = $customer->customer_id ?? "ID: {$customer->id}";
             $customer->delete();
+
+            \App\Services\ActivityLogger::log(
+                'DELETE',
+                'Battery POS',
+                "Deleted battery customer \"{$customerName}\" ({$customerIdCode}).",
+                ['customer_id' => $customer->id, 'customer_name' => $customerName]
+            );
 
             return response()->json(['status' => 'success', 'message' => 'Customer deleted successfully']);
         } catch (Exception $e) {

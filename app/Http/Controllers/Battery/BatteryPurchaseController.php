@@ -254,6 +254,13 @@ class BatteryPurchaseController extends Controller
 
             DB::commit();
 
+            \App\Services\ActivityLogger::log(
+                'Purchase',
+                'Battery Purchase',
+                "Created battery purchase #{$purchase->purchase_id} (Total: ৳ " . number_format((float)$purchase->grand_subtotal, 2) . ")",
+                ['purchase_id' => $purchase->id, 'supplier_id' => $purchase->supplier_id]
+            );
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Purchase created successfully',
@@ -593,6 +600,13 @@ class BatteryPurchaseController extends Controller
 
             DB::commit();
 
+            \App\Services\ActivityLogger::log(
+                'Update',
+                'Battery Purchase',
+                "Updated battery purchase #{$purchase->purchase_id} (Total: ৳ " . number_format((float)$purchase->grand_subtotal, 2) . ")",
+                ['purchase_id' => $purchase->id, 'supplier_id' => $purchase->supplier_id]
+            );
+
             return response()->json([
                 'status'   => 'success',
                 'message'  => 'Purchase updated successfully',
@@ -722,6 +736,13 @@ class BatteryPurchaseController extends Controller
             $purchase->delete();
 
             DB::commit();
+
+            \App\Services\ActivityLogger::log(
+                'Delete',
+                'Battery Purchase',
+                "Deleted battery purchase record",
+                ['purchase_id' => $purchaseID]
+            );
 
             return response()->json([
                 'status' => 'success',
@@ -1047,6 +1068,13 @@ class BatteryPurchaseController extends Controller
             }
 
             DB::commit();
+
+            \App\Services\ActivityLogger::log(
+                'Update',
+                'Battery Purchase',
+                "Split items from battery purchase into new invoice {$newPurchaseId}",
+                ['original_purchase_id' => $originalPurchase->id, 'new_purchase_id' => $newPurchase->id]
+            );
 
             return response()->json([
                 'status'          => 'success',

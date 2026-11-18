@@ -473,14 +473,18 @@
       <h1 class="auth-form-title">WELCOME BACK!</h1>
       <p class="auth-form-subtitle">Please sign in to your dashboard</p>
 
-      <form onsubmit="SubmitLogin(event)">
+      <form onsubmit="SubmitLogin(event)" autocomplete="off">
+        <!-- Hidden dummy inputs to catch browser's initial automatic page-load autofill -->
+        <input type="text" name="fakeusernameremembered" style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;" tabindex="-1" aria-hidden="true" autocomplete="off" />
+        <input type="password" name="fakepasswordremembered" style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;" tabindex="-1" aria-hidden="true" autocomplete="off" />
+
         <div class="auth-field">
           <label for="email">EMAIL ADDRESS</label>
           <div class="auth-input-wrap">
             <svg class="auth-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
             </svg>
-            <input type="email" id="email" class="auth-input" placeholder="admin@example.com" required />
+            <input type="email" id="email" name="email" class="auth-input" placeholder="admin@example.com" autocomplete="username" required />
           </div>
         </div>
 
@@ -490,7 +494,7 @@
             <svg class="auth-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
             </svg>
-            <input type="password" id="password" class="auth-input" placeholder="••••••••" required />
+            <input type="password" id="password" name="password" class="auth-input" placeholder="••••••••" autocomplete="current-password" required />
             <button type="button" class="auth-eye-btn" onclick="togglePassword('password','eyeIcon')" title="Toggle visibility">
               <img id="eyeIcon" src="{{ asset('backend/assets/icons/password-eye-icon.svg') }}" alt="Eye Icon" />
             </button>
@@ -596,6 +600,50 @@
 </div>
 
 <script>
+  /* ---- Clear initial autofill on page load so fields start empty ---- */
+  (function () {
+    let userHasFocused = false;
+
+    function resetAutofillIfUntouched() {
+      if (userHasFocused) return;
+      const email = document.getElementById('email');
+      const pass  = document.getElementById('password');
+      if (email && document.activeElement !== email) {
+        email.value = '';
+      }
+      if (pass && document.activeElement !== pass) {
+        pass.value = '';
+      }
+    }
+
+    document.addEventListener('focusin', function (e) {
+      if (e.target && (e.target.id === 'email' || e.target.id === 'password')) {
+        userHasFocused = true;
+      }
+    });
+
+    ['DOMContentLoaded', 'load'].forEach(function (ev) {
+      window.addEventListener(ev, function () {
+        resetAutofillIfUntouched();
+        setTimeout(resetAutofillIfUntouched, 50);
+        setTimeout(resetAutofillIfUntouched, 150);
+        setTimeout(resetAutofillIfUntouched, 300);
+      });
+    });
+
+    let checkInterval = setInterval(function () {
+      if (userHasFocused) {
+        clearInterval(checkInterval);
+        return;
+      }
+      resetAutofillIfUntouched();
+    }, 100);
+
+    setTimeout(function () {
+      clearInterval(checkInterval);
+    }, 1500);
+  })();
+
   /* ---- Dark / Light toggle (right panel only) ---- */
   function toggleAuthTheme() {
     const panel = document.getElementById('authRight');

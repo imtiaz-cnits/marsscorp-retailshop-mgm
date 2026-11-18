@@ -236,6 +236,25 @@
         transition: all 0.2s ease;
     }
 
+    /* ── Active Module Permission Pills Wrapping (Max 3 per row) ── */
+    .user-perm-pills-wrap {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 4px 6px !important;
+        max-width: 245px !important;
+        align-items: center !important;
+    }
+    .user-perm-pill {
+        display: inline-flex !important;
+        align-items: center !important;
+        padding: 2.5px 7.5px !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        border-radius: 6px !important;
+        line-height: 1.25 !important;
+        white-space: nowrap !important;
+    }
+
     /* ── Modal Customizations (Shadow Remove, Sticky Header/Footer, 38px Buttons) ── */
     .modal-content.no-shadow {
         box-shadow: none !important;
@@ -950,7 +969,7 @@
                                     <th>User Info</th>
                                     <th>Mobile Number</th>
                                     <th>Role</th>
-                                    <th>Active Module Permissions</th>
+                                    <th style="width: 250px; min-width: 230px;">Active Module Permissions</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-end pe-4">Actions</th>
                                 </tr>
@@ -2029,6 +2048,12 @@
     }
 
     function setTogglesFromData(prefix, perms, role) {
+        if (typeof perms === 'string') {
+            try { perms = JSON.parse(perms); } catch(e){}
+        }
+        if (typeof perms === 'string') {
+            try { perms = JSON.parse(perms); } catch(e){}
+        }
         if (perms && typeof perms === 'object') {
             const setVal = (id, val) => {
                 const el = document.getElementById(id);
@@ -2141,25 +2166,84 @@
     }
 
     function renderPermissionPills(perms, role) {
-        if (!perms) {
-            if (role === 'admin' || role === 'super_admin') {
-                return `<span class="badge bg-success text-white px-2 py-1 me-1 mb-1">🟢 All Modules</span>`;
+        if (typeof perms === 'string') {
+            try { perms = JSON.parse(perms); } catch(e){}
+        }
+        if (typeof perms === 'string') {
+            try { perms = JSON.parse(perms); } catch(e){}
+        }
+
+        const isSuper = (role === 'admin' || role === 'super_admin');
+
+        if (!perms || Object.keys(perms).length === 0) {
+            if (isSuper) {
+                return `
+                <div class="user-perm-pills-wrap">
+                    <span class="user-perm-pill bg-success text-white">Dashboard</span>
+                    <span class="user-perm-pill bg-success text-white">POS</span>
+                    <span class="user-perm-pill bg-primary text-white">Product</span>
+                    <span class="user-perm-pill bg-warning text-dark">Purchase</span>
+                    <span class="user-perm-pill bg-info text-white">Customer</span>
+                    <span class="user-perm-pill bg-danger text-white">Expenses</span>
+                    <span class="user-perm-pill text-white" style="background-color: #9333ea;">Return</span>
+                    <span class="user-perm-pill bg-secondary text-white">Reports</span>
+                    <span class="user-perm-pill bg-dark text-white">Settings</span>
+                </div>`;
             }
             if (role === 'manager') {
-                return `<span class="badge bg-primary text-white px-2 py-1 me-1 mb-1">🟢 Manager Access</span>`;
+                return `
+                <div class="user-perm-pills-wrap">
+                    <span class="user-perm-pill bg-success text-white">Dashboard</span>
+                    <span class="user-perm-pill bg-success text-white">POS</span>
+                    <span class="user-perm-pill bg-primary text-white">Product</span>
+                    <span class="user-perm-pill bg-warning text-dark">Purchase</span>
+                    <span class="user-perm-pill bg-info text-white">Customer</span>
+                    <span class="user-perm-pill bg-danger text-white">Expenses</span>
+                    <span class="user-perm-pill text-white" style="background-color: #9333ea;">Return</span>
+                    <span class="user-perm-pill bg-secondary text-white">Reports</span>
+                </div>`;
             }
-            return `<span class="badge bg-success text-white px-2 py-1 me-1 mb-1">🟢 POS Only</span>`;
+            return `
+            <div class="user-perm-pills-wrap">
+                <span class="user-perm-pill bg-success text-white">Dashboard</span>
+                <span class="user-perm-pill bg-success text-white">POS</span>
+            </div>`;
         }
 
         let html = '';
-        if (perms.pos) html += `<span class="badge bg-success text-white px-2 py-1 me-1 mb-1">POS</span>`;
-        if (perms.product) html += `<span class="badge bg-primary text-white px-2 py-1 me-1 mb-1">Product</span>`;
-        if (perms.purchase) html += `<span class="badge bg-warning text-dark px-2 py-1 me-1 mb-1">Purchase</span>`;
-        if (perms.customer) html += `<span class="badge bg-info text-white px-2 py-1 me-1 mb-1">Customer</span>`;
-        if (perms.expense) html += `<span class="badge bg-danger text-white px-2 py-1 me-1 mb-1">Expenses</span>`;
-        if (perms.report) html += `<span class="badge bg-secondary text-white px-2 py-1 me-1 mb-1">Reports</span>`;
+        if (perms.dashboard || isSuper) {
+            html += `<span class="user-perm-pill bg-success text-white">Dashboard</span>`;
+        }
+        if (perms.pos || perms.pos_terminal || perms.invoice_list || isSuper) {
+            html += `<span class="user-perm-pill bg-emerald-600 text-white" style="background-color: #059669;">POS</span>`;
+        }
+        if (perms.product || perms.product_list || perms.brand_list || perms.category_list || perms.barcode_print || perms.stock_overview || isSuper) {
+            html += `<span class="user-perm-pill bg-primary text-white">Product</span>`;
+        }
+        if (perms.purchase || perms.purchase_entry || perms.supplier_list || perms.supplier_due || perms.due_payment || isSuper) {
+            html += `<span class="user-perm-pill bg-warning text-dark">Purchase</span>`;
+        }
+        if (perms.customer || perms.customer_list || perms.customer_due || perms.customer_due_collection || isSuper) {
+            html += `<span class="user-perm-pill bg-info text-white">Customer</span>`;
+        }
+        if (perms.expense || perms.expense_list || perms.expense_category || isSuper) {
+            html += `<span class="user-perm-pill bg-danger text-white">Expenses</span>`;
+        }
+        if (perms.return || perms.return_list || isSuper) {
+            html += `<span class="user-perm-pill text-white" style="background-color: #9333ea;">Return</span>`;
+        }
+        if (perms.report || perms.daily_ledger || perms.sales_report || perms.income_expense_report || perms.daily_receipt || perms.personal_trans || perms.low_stock || isSuper) {
+            html += `<span class="user-perm-pill bg-secondary text-white">Reports</span>`;
+        }
+        if (perms.user || perms.user_role || isSuper) {
+            html += `<span class="user-perm-pill bg-dark text-white">Settings</span>`;
+        }
 
-        return html || `<span class="badge bg-light text-muted px-2 py-1">No Active Toggles</span>`;
+        if (!html) {
+            return `<span class="badge bg-light text-muted px-2 py-1">No Active Toggles</span>`;
+        }
+
+        return `<div class="user-perm-pills-wrap">${html}</div>`;
     }
 
     function renderUserTable(users) {
@@ -2231,7 +2315,7 @@
                     </td>
                     <td class="fw-semibold text-slate-700 dark:text-slate-200">${u.mobile}</td>
                     <td>${getRoleBadge(u.role)}</td>
-                    <td>${renderPermissionPills(u.permissions, u.role)}</td>
+                    <td style="max-width: 250px; white-space: normal;">${renderPermissionPills(u.permissions, u.role)}</td>
                     <td class="text-center">${statusBadge}</td>
                     <td class="text-end pe-4">
                         <div class="d-flex align-items-center justify-content-end gap-1.5">
@@ -2338,16 +2422,55 @@
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             if (res.data && res.data.status === 'success') {
-                Swal.fire('সফল!', res.data.message, 'success');
-                document.getElementById('createUserModalCloseBtn').click();
+                // 1. Close Modal
+                const createModalEl = document.getElementById('createUserModal');
+                const createModalInstance = bootstrap.Modal.getInstance(createModalEl);
+                if (createModalInstance) {
+                    createModalInstance.hide();
+                } else {
+                    document.getElementById('createUserModalCloseBtn')?.click();
+                }
+
+                // 2. Show Success Toast
+                const msg = res.data.message || 'নতুন ব্যবহারকারী সফলভাবে তৈরি হয়েছে!';
+                if (typeof successToast === 'function') {
+                    successToast(msg);
+                } else if (typeof Toastify === 'function') {
+                    Toastify({
+                        text: msg,
+                        gravity: "top",
+                        position: "right",
+                        style: { background: "linear-gradient(135deg, #15803d 0%, #16a34a 100%)", borderRadius: "8px", fontWeight: "600", zIndex: "999999" }
+                    }).showToast();
+                }
+
                 resetCreateForm();
                 loadAllUsers();
             } else {
-                Swal.fire('ত্রুটি!', res.data.message || 'Could not create user.', 'error');
+                const errMsg = res.data?.message || 'Could not create user.';
+                if (typeof errorToast === 'function') {
+                    errorToast(errMsg);
+                } else if (typeof Toastify === 'function') {
+                    Toastify({
+                        text: errMsg,
+                        gravity: "top",
+                        position: "right",
+                        style: { background: "linear-gradient(135deg, #b91c1c 0%, #dc2626 100%)", borderRadius: "8px", fontWeight: "600", zIndex: "999999" }
+                    }).showToast();
+                }
             }
         } catch (err) {
             let msg = err.response?.data?.message || 'ত্রুটি ঘটেছে। অনুগ্রহ করে তথ্য যাচাই করে পুনরায় চেষ্টা করুন।';
-            Swal.fire('ত্রুটি!', msg, 'error');
+            if (typeof errorToast === 'function') {
+                errorToast(msg);
+            } else if (typeof Toastify === 'function') {
+                Toastify({
+                    text: msg,
+                    gravity: "top",
+                    position: "right",
+                    style: { background: "linear-gradient(135deg, #b91c1c 0%, #dc2626 100%)", borderRadius: "8px", fontWeight: "600", zIndex: "999999" }
+                }).showToast();
+            }
         } finally {
             saveBtn.disabled = false;
             saveBtn.innerHTML = `<i class="fa-solid fa-check me-1"></i> Save User`;
@@ -2423,15 +2546,54 @@
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             if (res.data && res.data.status === 'success') {
-                Swal.fire('আপডেট হয়েছে!', res.data.message, 'success');
-                document.getElementById('editUserModalCloseBtn').click();
+                // 1. Close Modal
+                const editModalEl = document.getElementById('editUserModal');
+                const editModalInstance = bootstrap.Modal.getInstance(editModalEl);
+                if (editModalInstance) {
+                    editModalInstance.hide();
+                } else {
+                    document.getElementById('editUserModalCloseBtn')?.click();
+                }
+
+                // 2. Show Success Toast
+                const msg = res.data.message || 'ব্যবহারকারীর তথ্য সফলভাবে আপডেট হয়েছে!';
+                if (typeof successToast === 'function') {
+                    successToast(msg);
+                } else if (typeof Toastify === 'function') {
+                    Toastify({
+                        text: msg,
+                        gravity: "top",
+                        position: "right",
+                        style: { background: "linear-gradient(135deg, #15803d 0%, #16a34a 100%)", borderRadius: "8px", fontWeight: "600", zIndex: "999999" }
+                    }).showToast();
+                }
+
                 loadAllUsers();
             } else {
-                Swal.fire('ত্রুটি!', res.data.message || 'Failed to update.', 'error');
+                const errMsg = res.data?.message || 'Failed to update.';
+                if (typeof errorToast === 'function') {
+                    errorToast(errMsg);
+                } else if (typeof Toastify === 'function') {
+                    Toastify({
+                        text: errMsg,
+                        gravity: "top",
+                        position: "right",
+                        style: { background: "linear-gradient(135deg, #b91c1c 0%, #dc2626 100%)", borderRadius: "8px", fontWeight: "600", zIndex: "999999" }
+                    }).showToast();
+                }
             }
         } catch (err) {
-            let msg = err.response?.data?.message || 'Error occurred. Please try again.';
-            Swal.fire('ত্রুটি!', msg, 'error');
+            let msg = err.response?.data?.message || 'ত্রুটি ঘটেছে। অনুগ্রহ করে পুনরায় চেষ্টা করুন।';
+            if (typeof errorToast === 'function') {
+                errorToast(msg);
+            } else if (typeof Toastify === 'function') {
+                Toastify({
+                    text: msg,
+                    gravity: "top",
+                    position: "right",
+                    style: { background: "linear-gradient(135deg, #b91c1c 0%, #dc2626 100%)", borderRadius: "8px", fontWeight: "600", zIndex: "999999" }
+                }).showToast();
+            }
         } finally {
             saveBtn.disabled = false;
             saveBtn.innerHTML = `<i class="fa-solid fa-arrows-rotate me-1"></i> Update User`;
@@ -2444,8 +2606,8 @@
         if (targetUser && (targetUser.role === 'admin' || targetUser.role === 'super_admin')) {
             if (typeof errorToast === 'function') {
                 errorToast("Admin cannot be deleted!");
-            } else {
-                Swal.fire('সতর্কতা', 'Admin cannot be deleted!', 'warning');
+            } else if (typeof Toastify === 'function') {
+                Toastify({ text: "Admin cannot be deleted!", style: { background: "#dc2626" } }).showToast();
             }
             return;
         }
@@ -2493,8 +2655,6 @@
         if (targetUser && (targetUser.role === 'admin' || targetUser.role === 'super_admin')) {
             if (typeof errorToast === 'function') {
                 errorToast("Admin cannot be deleted!");
-            } else {
-                Swal.fire('সতর্কতা', 'Admin cannot be deleted!', 'warning');
             }
             closeDeleteUserModal();
             return;
@@ -2513,23 +2673,17 @@
                 closeDeleteUserModal();
                 if (typeof successToast === 'function') {
                     successToast(res.data.message || 'User deleted successfully.');
-                } else {
-                    Swal.fire('Deleted!', res.data.message, 'success');
                 }
                 loadAllUsers();
             } else {
                 if (typeof errorToast === 'function') {
                     errorToast(res.data.message || 'Could not delete user.');
-                } else {
-                    Swal.fire('Error!', res.data.message || 'Could not delete user.', 'error');
                 }
             }
         } catch (err) {
             let msg = err.response?.data?.message || 'Error occurred while deleting user.';
             if (typeof errorToast === 'function') {
                 errorToast(msg);
-            } else {
-                Swal.fire('Error!', msg, 'error');
             }
         } finally {
             if (deleteBtn) {

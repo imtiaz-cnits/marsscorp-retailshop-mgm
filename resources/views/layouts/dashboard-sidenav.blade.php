@@ -1317,6 +1317,112 @@
       padding: 0 !important;
     }
 
+    /* Notification User Logs Top Button & Tabs */
+    .noti-user-log-top-btn {
+      background: #ecfdf5 !important;
+      color: #059669 !important;
+      border: 1px solid #a7f3d0 !important;
+      font-size: 11px !important;
+      font-weight: 700 !important;
+      padding: 3px 8px !important;
+      border-radius: 6px !important;
+      text-decoration: none !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      transition: all 0.15s ease !important;
+      line-height: 1.4 !important;
+    }
+    .noti-user-log-top-btn:hover {
+      background: #d1fae5 !important;
+      color: #047857 !important;
+    }
+    body[light-mode="dark"] .noti-user-log-top-btn,
+    body[data-layout-mode="dark"] .noti-user-log-top-btn,
+    html.dark .noti-user-log-top-btn,
+    body.dark-mode .noti-user-log-top-btn {
+      background: #064e3b !important;
+      color: #6ee7b7 !important;
+      border-color: #047857 !important;
+    }
+
+    .noti-tab-nav {
+      display: flex;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .noti-tab-btn {
+      flex: 1;
+      padding: 5px 8px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+    .noti-tab-btn:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+    .noti-tab-btn.active {
+      background: #ffffff;
+      color: #059669;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    body[light-mode="dark"] .noti-tab-nav,
+    body[data-layout-mode="dark"] .noti-tab-nav,
+    html.dark .noti-tab-nav,
+    body.dark-mode .noti-tab-nav {
+      background: #0f172a !important;
+      border-bottom-color: #334155 !important;
+    }
+    body[light-mode="dark"] .noti-tab-btn,
+    body[data-layout-mode="dark"] .noti-tab-btn,
+    html.dark .noti-tab-btn,
+    body.dark-mode .noti-tab-btn {
+      color: #94a3b8 !important;
+    }
+    body[light-mode="dark"] .noti-tab-btn.active,
+    body[data-layout-mode="dark"] .noti-tab-btn.active,
+    html.dark .noti-tab-btn.active,
+    body.dark-mode .noti-tab-btn.active {
+      background: #1e293b !important;
+      color: #34d399 !important;
+    }
+
+    .noti-activity-item {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      transition: background 0.15s ease;
+    }
+    .noti-activity-item:hover {
+      background: #f8fafc;
+    }
+    body[light-mode="dark"] .noti-activity-item,
+    body[data-layout-mode="dark"] .noti-activity-item,
+    html.dark .noti-activity-item,
+    body.dark-mode .noti-activity-item {
+      border-bottom-color: #1e293b !important;
+    }
+    body[light-mode="dark"] .noti-activity-item:hover,
+    body[data-layout-mode="dark"] .noti-activity-item:hover,
+    html.dark .noti-activity-item:hover,
+    body.dark-mode .noti-activity-item:hover {
+      background: #1e293b !important;
+    }
+
     .noti-mobile-close-btn {
       display: none;
     }
@@ -1801,12 +1907,15 @@
                   <i class="fa-solid fa-bell"></i>
                 </div>
                 <div>
-                  <h6 class="noti-title">Stock Notifications</h6>
-                  <p class="noti-subtitle">Products with stock below 10</p>
+                  <h6 class="noti-title" id="notiHeaderTitle">Stock Notifications</h6>
+                  <p class="noti-subtitle" id="notiHeaderSubtitle">Products with stock below 10</p>
                 </div>
               </div>
               <div class="d-flex align-items-center gap-1.5">
-                <a href="/admin-dashboard-stock-out" class="noti-view-all-btn">
+                <a href="{{ url('admin-dashboard-user-activity-log') }}" class="noti-user-log-top-btn" id="notiUserLogTopBtn" style="display: none;" title="User Activity Logs">
+                  <i class="fa-solid fa-clock-rotate-left"></i> <span>User Logs</span>
+                </a>
+                <a href="/admin-dashboard-stock-out" class="noti-view-all-btn" id="notiHeaderViewAllBtn">
                   <span>View All</span> <i class="fa-solid fa-arrow-right" style="font-size: 8.5px;"></i>
                 </a>
                 <button type="button" class="noti-mobile-close-btn" id="noti-mobile-close-btn" aria-label="Close notifications" title="Close">
@@ -1814,6 +1923,18 @@
                 </button>
               </div>
             </div>
+
+            <!-- Tab Switcher for Admin & Super Admin -->
+            <div class="noti-tab-nav" id="notiTabNav" style="display: none;">
+              <button type="button" class="noti-tab-btn active" id="notiTabStockBtn" onclick="switchNotiTab('stock')">
+                <i class="fa-solid fa-boxes-stacked"></i> Stock (<span id="notiStockCountTab">0</span>)
+              </button>
+              <button type="button" class="noti-tab-btn" id="notiTabActivityBtn" onclick="switchNotiTab('activity')">
+                <i class="fa-solid fa-clock-rotate-left"></i> User Logs
+              </button>
+            </div>
+
+            <!-- List 1: Low Stock Notifications -->
             <div id="notification-items-list">
               <!-- Dynamic Low Stock Product Notifications Populated via JS -->
               <div class="text-center py-4 px-3">
@@ -1821,8 +1942,17 @@
                 <span class="small text-muted">Loading notifications...</span>
               </div>
             </div>
-            <div class="stock-noti-footer">
-              <a href="/admin-dashboard-stock-out">
+
+            <!-- List 2: User Activity Logs (Dynamic) -->
+            <div id="notification-activity-list" style="display: none; max-height: 340px; overflow-y: auto;">
+              <div class="text-center py-4 px-3">
+                <div class="spinner-border spinner-border-sm text-emerald-600 me-2" role="status"></div>
+                <span class="small text-muted">Loading user activity logs...</span>
+              </div>
+            </div>
+
+            <div class="stock-noti-footer" id="notiFooterContainer">
+              <a href="/admin-dashboard-stock-out" id="notiFooterLink">
                 <i class="fa-solid fa-boxes-stacked"></i> View complete low stock product list <i class="fa-solid fa-arrow-right" style="font-size: 9px;"></i>
               </a>
             </div>
@@ -1830,25 +1960,36 @@
         </div>
 
         <div class="dropdown d-inline-block">
-          <button type="button" class="btn header-item user text-start d-flex align-items-center p-0"
+          <button type="button" class="btn header-item user text-start d-flex align-items-center gap-2 p-1 px-2 rounded-xl bg-white dark:bg-slate-800  hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
             id="page-header-user-dropdown-v" data-bs-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">
+            aria-expanded="false" title="Account Menu">
             <img class="rounded-circle header-profile-user"
-              id="UserProfileImg" src="{{ asset('backend/assets/img/profile-img.png') }}" onerror="this.src='{{ asset('backend/assets/img/profile-img.png') }}'" alt="Header Avatar" style="width: 36px; height: 36px; object-fit: cover;" />
+              id="UserProfileImg" src="{{ asset('backend/assets/img/profile-img.png') }}" onerror="this.src='{{ asset('backend/assets/img/profile-img.png') }}'" alt="Header Avatar" style="width: 34px; height: 34px; object-fit: cover; border: 1.5px solid #16a34a;" />
+            <div class="d-none d-md-flex flex-column text-start" style="line-height: 1.25;">
+              <span class="fw-bold text-slate-800 dark:text-white truncate" id="topbarUserName" style="max-width: 110px; font-size: 12.5px;">User</span>
+              <span class="topbar-user-role-badge topbar-badge--default" id="topbarUserRoleBadge">Role</span>
+            </div>
+            <i class="fa-solid fa-chevron-down text-slate-400 ms-0.5 d-none d-md-inline" style="font-size: 9px;"></i>
           </button>
-          <div class="dropdown-menu dropdown-menu-end pt-0 profile-dropdown">
-            <div class="p-3 border-bottom">
-              <h6 class="mb-0" id="AuthorizePersonProfileName"></h6>
-              <a href="#" class="mb-0 font-size-11 text-muted" id="EmailShow">
+          <div class="dropdown-menu dropdown-menu-end p-0 profile-dropdown shadow-lg border-0" style="border-radius: 14px; overflow: hidden; min-width: 230px;">
+            <div class="p-3 border-bottom bg-slate-50 dark:bg-slate-800/80">
+              <div class="d-flex align-items-center justify-content-between gap-2 mb-1">
+                <h6 class="mb-0 fw-bold text-slate-800 dark:text-white truncate" id="AuthorizePersonProfileName" style="font-size: 13.5px;">User</h6>
+                <span class="topbar-dropdown-role-badge topbar-badge--default" id="dropdownUserRoleBadge">Role</span>
+              </div>
+              <div class="text-[11.5px] text-muted truncate" id="EmailShow" style="max-width: 200px;"></div>
+            </div>
+            <div class="py-1">
+              <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-3 text-xs fw-semibold" href="{{url('admin-dashboard-user-profile')}}">
+                <i class="fa-solid fa-circle-user text-emerald-600" style="font-size: 13px; width: 16px;"></i>
+                <span>Profile</span>
+              </a>
+              <div class="dropdown-divider my-1"></div>
+              <a class="dropdown-item d-flex align-items-center gap-2 py-2 px-3 text-xs fw-bold text-danger hover:bg-red-50 dark:hover:bg-red-950/30" href="#" onclick="userlogout(event)">
+                <i class="fa-solid fa-right-from-bracket text-danger" style="font-size: 13px; width: 16px;"></i>
+                <span>Logout</span>
               </a>
             </div>
-            <a class="dropdown-item" href="{{url('admin-dashboard-user-profile')}}"><i
-                class="mdi mdi-account-circle text-muted font-size-16 align-middle me-2"></i>
-              <span class="align-middle">Profile</span></a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#" onclick="userlogout(event)"><i
-                class="mdi mdi-logout text-muted font-size-16 align-middle me-2"></i>
-              <span class="align-middle">Logout</span></a>
           </div>
         </div>
       </div>
@@ -1942,54 +2083,78 @@
           var perms = null;
           try {
             perms = JSON.parse(localStorage.getItem('user_permissions') || 'null');
+            if (typeof perms === 'string') {
+              perms = JSON.parse(perms);
+            }
           } catch (e) {}
 
           if (role && role !== 'admin' && role !== 'super_admin') {
             var effective = {
+              dashboard: true,
               pos: true,
+              pos_terminal: true,
+              invoice_list: true,
               product: false,
               purchase: false,
               customer: false,
               expense: false,
+              return: false,
               report: false,
               user: false
             };
-            if (perms && typeof perms === 'object') {
-              effective.pos = !!perms.pos;
+            if (perms && typeof perms === 'object' && Object.keys(perms).length > 0) {
+              effective.dashboard = (perms.dashboard !== undefined) ? !!perms.dashboard : true;
+              var posP = (perms.pos !== undefined) ? !!perms.pos : true;
+              effective.pos = posP;
+              effective.pos_terminal = posP && ((perms.pos_terminal !== undefined) ? !!perms.pos_terminal : true);
+              effective.invoice_list = posP && ((perms.invoice_list !== undefined) ? !!perms.invoice_list : true);
               effective.product = !!perms.product;
               effective.purchase = !!perms.purchase;
               effective.customer = !!perms.customer;
               effective.expense = !!perms.expense;
+              effective.return = (perms.return !== undefined) ? !!perms.return : posP;
               effective.report = !!perms.report;
               effective.user = !!perms.user;
             } else {
               if (role === 'manager') {
                 effective = {
+                  dashboard: true,
                   pos: true,
+                  pos_terminal: true,
+                  invoice_list: true,
                   product: true,
                   purchase: true,
                   customer: true,
                   expense: true,
+                  return: true,
                   report: true,
                   user: false
                 };
               } else if (role === 'staff' || role === 'cashier') {
                 effective = {
+                  dashboard: true,
                   pos: true,
+                  pos_terminal: true,
+                  invoice_list: true,
                   product: false,
                   purchase: false,
                   customer: false,
                   expense: false,
+                  return: false,
                   report: false,
                   user: false
                 };
               } else if (role === 'accountant') {
                 effective = {
+                  dashboard: true,
                   pos: false,
+                  pos_terminal: false,
+                  invoice_list: false,
                   product: false,
                   purchase: false,
                   customer: true,
                   expense: true,
+                  return: false,
                   report: true,
                   user: false
                 };
@@ -2055,6 +2220,8 @@
               $activeParent = null;
           } elseif (request()->routeIs('battery.reports.*')) {
               $activeParent = 'battery-report';
+          } elseif (request()->is('admin-dashboard-user-role*') || request()->is('admin-dashboard-user-profile*') || request()->is('admin-dashboard-user-activity-log*')) {
+              $activeParent = 'user-role';
           }
       } else {
           if (request()->is('admin-dashboard-product*') || request()->is('admin-dashboard-stock-overview*') || request()->is('admin-dashboard-brand*') || request()->is('admin-dashboard-category*') || request()->is('admin-dashboard-barcode-genarate*')) {
@@ -2073,7 +2240,7 @@
               $activeParent = null;
           } elseif (request()->is('admin-dashboard-*-report*') || request()->is('admin-dashboard-stock-out*') || request()->is('admin-dashboard-daily-*') || request()->is('admin-dashboard-personal-*') || request()->is('admin-dashboard-income-*') || request()->is('admin-dashboard-sales-report*')) {
               $activeParent = 'report';
-          } elseif (request()->is('admin-dashboard-user-role*') || request()->is('admin-dashboard-user-profile*')) {
+          } elseif (request()->is('admin-dashboard-user-role*') || request()->is('admin-dashboard-user-profile*') || request()->is('admin-dashboard-user-activity-log*')) {
               $activeParent = 'user-role';
           }
       }
@@ -2090,7 +2257,7 @@
         <ul class="space-y-1">
           
           <!-- 1. Dashboard -->
-          <li class="sidebar-item relative group">
+          <li class="sidebar-item relative group" data-perm="dashboard">
             <a href="{{ url('admin-dashboard') }}" class="sidebar-link w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ request()->is('admin-dashboard') ? 'active-gradient' : '' }}">
               <i class="fa-solid fa-gauge text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
               <span class="sidebar-label text-[13.5px] font-medium tracking-wide">Dashboard</span>
@@ -2101,7 +2268,7 @@
           </li>
 
           <!-- 2. POS -->
-          <li class="sidebar-item relative group" data-perm="pos">
+          <li class="sidebar-item relative group" data-perm="pos_terminal">
             <a href="{{ url('admin-dashboard-pos') }}" class="sidebar-link w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ request()->is('admin-dashboard-pos') ? 'active-gradient' : '' }}">
               <i class="fa-solid fa-cash-register text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
               <span class="sidebar-label text-[13.5px] font-medium tracking-wide">POS</span>
@@ -2112,7 +2279,7 @@
           </li>
 
           <!-- 3. Invoice List -->
-          <li class="sidebar-item relative group" data-perm="pos">
+          <li class="sidebar-item relative group" data-perm="invoice_list">
             <a href="{{ url('admin-dashboard-invoice') }}" class="sidebar-link w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ request()->is('admin-dashboard-invoice') ? 'active-gradient' : '' }}">
               <i class="fa-solid fa-file-invoice-dollar text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
               <span class="sidebar-label text-[13.5px] font-medium tracking-wide">Invoice List</span>
@@ -2244,7 +2411,7 @@
           </li>
 
           <!-- 9. Return Management (Single Link) -->
-          <li class="sidebar-item relative group" data-perm="pos">
+          <li class="sidebar-item relative group" data-perm="return">
             <a href="{{ url('admin-dashboard-return-list') }}" class="sidebar-link w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-slate-100 hover:text-white hover:bg-white/15 transition-all duration-200 {{ request()->is('admin-dashboard-return-list*') ? 'active-gradient' : '' }}">
               <i class="fa-solid fa-arrow-rotate-left text-emerald-200 group-hover:text-emerald-100 text-[15px] w-6 text-center shrink-0 transition-transform group-hover:scale-110"></i>
               <span class="sidebar-label text-[13.5px] font-medium tracking-wide whitespace-nowrap">Return Management</span>
@@ -2315,6 +2482,7 @@
               <ul class="py-0.5 px-1 space-y-0.5">
                 <li><a href="{{ url('admin-dashboard-user-role') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-user-role') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-user-gear text-[10px] text-emerald-300/80 w-4 text-center"></i><span>User List &amp; Roles</span></a></li>
                 <li><a href="{{ url('admin-dashboard-user-profile') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-user-profile') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-circle-user text-[10px] text-emerald-300/80 w-4 text-center"></i><span>Profile</span></a></li>
+                <li class="admin-only-menu"><a href="{{ url('admin-dashboard-user-activity-log') }}" class="sidebar-flyout-link {{ request()->is('admin-dashboard-user-activity-log*') ? 'active-flyout-link' : '' }}"><i class="fa-solid fa-clock-rotate-left text-[10px] text-emerald-300/80 w-4 text-center"></i><span>User Activity Log</span></a></li>
               </ul>
             </div>
           </li>
@@ -2515,7 +2683,7 @@
       </div>
 
       <!-- Panel 7: Sales Return Submenu Panel -->
-      <div id="submenu-panel-sales-return" class="sidebar-submenu-panel sidebar-panel-scroll absolute inset-0 w-full h-full overflow-y-auto overflow-x-hidden transition-transform duration-300 ease-in-out py-2 px-3 {{ $activeParent === 'sales-return' ? 'translate-x-0 pointer-events-auto' : 'translate-x-full pointer-events-none' }}" data-parent-id="sales-return" data-perm="pos">
+      <div id="submenu-panel-sales-return" class="sidebar-submenu-panel sidebar-panel-scroll absolute inset-0 w-full h-full overflow-y-auto overflow-x-hidden transition-transform duration-300 ease-in-out py-2 px-3 {{ $activeParent === 'sales-return' ? 'translate-x-0 pointer-events-auto' : 'translate-x-full pointer-events-none' }}" data-parent-id="sales-return" data-perm="return">
         <div class="sidebar-back-wrapper relative group mb-2">
           <button type="button" class="sidebar-back-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-emerald-100 bg-white/10 hover:bg-white/20 border border-white/15 font-semibold text-sm transition-all duration-200 shadow-sm" data-target="main">
             <i class="fa-solid fa-chevron-left text-xs text-emerald-300"></i>
@@ -2659,6 +2827,15 @@
             </a>
             <div class="sidebar-mini-tooltip">
               Profile
+            </div>
+          </li>
+          <li class="relative group admin-only-menu">
+            <a href="{{ url('admin-dashboard-user-activity-log') }}" class="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] text-slate-200 hover:text-white hover:bg-white/10 transition-all duration-150 {{ request()->is('admin-dashboard-user-activity-log*') ? 'active-submenu-link' : '' }}">
+              <i class="fa-solid fa-clock-rotate-left text-xs text-emerald-300/80 w-4 text-center"></i>
+              <span>User Activity Log</span>
+            </a>
+            <div class="sidebar-mini-tooltip">
+              User Activity Log
             </div>
           </li>
         </ul>
@@ -2920,7 +3097,64 @@
   <!-- Smart Role & Toggle Permission Control Script -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
+      // Instant Pre-render from localStorage for 0ms lag-free topbar identity
+      (function() {
+        const cachedRole = localStorage.getItem('user_role');
+        const cachedName = localStorage.getItem('user_name');
+        const cachedEmail = localStorage.getItem('user_email');
+        if (cachedName) {
+          if (document.getElementById('topbarUserName')) document.getElementById('topbarUserName').innerText = cachedName;
+          if (document.getElementById('AuthorizePersonProfileName')) document.getElementById('AuthorizePersonProfileName').innerText = cachedName;
+        }
+        if (cachedEmail && document.getElementById('EmailShow')) {
+          document.getElementById('EmailShow').innerText = cachedEmail;
+        }
+        if (cachedRole) {
+          const info = getRoleBadgeData(cachedRole);
+          if (document.getElementById('topbarUserRoleBadge')) {
+            const el = document.getElementById('topbarUserRoleBadge');
+            el.className = `topbar-user-role-badge ${info.cls}`;
+            el.innerHTML = `${info.icon} <span>${info.title}</span>`;
+          }
+          if (document.getElementById('dropdownUserRoleBadge')) {
+            const el = document.getElementById('dropdownUserRoleBadge');
+            el.className = `topbar-dropdown-role-badge ${info.cls}`;
+            el.innerHTML = `${info.icon} <span>${info.title}</span>`;
+          }
+        }
+      })();
+
       applyUserRolePermissions();
+
+      function getRoleBadgeData(roleStr) {
+        const r = (roleStr || 'user').toLowerCase();
+        let title = 'Staff';
+        let cls = 'topbar-badge--staff';
+        let icon = '<i class="fa-solid fa-user"></i>';
+
+        if (r.includes('super')) {
+          title = 'Super Admin';
+          cls = 'topbar-badge--super';
+          icon = '<i class="fa-solid fa-crown"></i>';
+        } else if (r.includes('admin')) {
+          title = 'Admin';
+          cls = 'topbar-badge--admin';
+          icon = '<i class="fa-solid fa-crown"></i>';
+        } else if (r.includes('manager')) {
+          title = 'Manager';
+          cls = 'topbar-badge--manager';
+          icon = '<i class="fa-solid fa-user-tie"></i>';
+        } else if (r.includes('cashier')) {
+          title = 'Cashier';
+          cls = 'topbar-badge--cashier';
+          icon = '<i class="fa-solid fa-cash-register"></i>';
+        } else if (r.includes('staff')) {
+          title = 'Staff';
+          cls = 'topbar-badge--staff';
+          icon = '<i class="fa-solid fa-user"></i>';
+        }
+        return { title, cls, icon };
+      }
 
       async function applyUserRolePermissions() {
         try {
@@ -2932,6 +3166,8 @@
 
           // Cache in localStorage for instant 0ms pre-rendering on next page transitions
           localStorage.setItem('user_role', window.currentUserRole);
+          if (user.name) localStorage.setItem('user_name', user.name);
+          if (user.email) localStorage.setItem('user_email', user.email);
           if (user.permissions) {
             localStorage.setItem('user_permissions', JSON.stringify(user.permissions));
           }
@@ -2947,8 +3183,33 @@
             document.getElementById('EmailShow').innerText = user.email || "No Email";
           }
 
+          // Render topbar & dropdown role badges
+          const badgeInfo = getRoleBadgeData(user.role);
+          if (document.getElementById('topbarUserName')) {
+            document.getElementById('topbarUserName').innerText = user.name || "User";
+          }
+          if (document.getElementById('topbarUserRoleBadge')) {
+            const el = document.getElementById('topbarUserRoleBadge');
+            el.className = `topbar-user-role-badge ${badgeInfo.cls}`;
+            el.innerHTML = `${badgeInfo.icon} <span>${badgeInfo.title}</span>`;
+          }
+          if (document.getElementById('dropdownUserRoleBadge')) {
+            const el = document.getElementById('dropdownUserRoleBadge');
+            el.className = `topbar-dropdown-role-badge ${badgeInfo.cls}`;
+            el.innerHTML = `${badgeInfo.icon} <span>${badgeInfo.title}</span>`;
+          }
+
           // If Super Admin or Admin, show all menus and admin dashboard sections!
-          const isAdmin = (window.currentUserRole === 'admin' || window.currentUserRole === 'super_admin');
+          const isAdmin = (window.currentUserRole === 'admin' || window.currentUserRole === 'super_admin' || window.currentUserRole === 'super admin');
+          if (document.getElementById('notiUserLogTopBtn')) {
+            document.getElementById('notiUserLogTopBtn').style.display = isAdmin ? 'inline-flex' : 'none';
+          }
+          if (document.getElementById('notiTabNav')) {
+            document.getElementById('notiTabNav').style.display = isAdmin ? 'flex' : 'none';
+          }
+          document.querySelectorAll('.admin-only-menu').forEach(el => {
+            el.style.display = isAdmin ? '' : 'none';
+          });
           if (document.getElementById('adminOnlyFinancialSections')) {
             document.getElementById('adminOnlyFinancialSections').style.display = 'block';
           }
@@ -2971,53 +3232,83 @@
           let perms = window.currentUserPermissions;
           let role = window.currentUserRole;
 
+          if (typeof perms === 'string') {
+            try { perms = JSON.parse(perms); } catch(e){}
+          }
+          if (typeof perms === 'string') {
+            try { perms = JSON.parse(perms); } catch(e){}
+          }
+
           let effective = {
+            dashboard: true,
             pos: true,
+            pos_terminal: true,
+            invoice_list: true,
             product: false,
             purchase: false,
             customer: false,
             expense: false,
+            return: false,
             report: false,
             user: false
           };
 
-          if (perms && typeof perms === 'object') {
-            effective.pos = !!perms.pos;
+          if (perms && typeof perms === 'object' && Object.keys(perms).length > 0) {
+            effective.dashboard = (perms.dashboard !== undefined) ? !!perms.dashboard : true;
+            
+            const posParent = (perms.pos !== undefined) ? !!perms.pos : true;
+            effective.pos = posParent;
+            effective.pos_terminal = posParent && ((perms.pos_terminal !== undefined) ? !!perms.pos_terminal : true);
+            effective.invoice_list = posParent && ((perms.invoice_list !== undefined) ? !!perms.invoice_list : true);
+
             effective.product = !!perms.product;
             effective.purchase = !!perms.purchase;
             effective.customer = !!perms.customer;
             effective.expense = !!perms.expense;
+            effective.return = (perms.return !== undefined) ? !!perms.return : posParent;
             effective.report = !!perms.report;
             effective.user = !!perms.user;
           } else {
             // Default role presets if custom toggles aren't explicitly saved
             if (role === 'manager') {
               effective = {
+                dashboard: true,
                 pos: true,
+                pos_terminal: true,
+                invoice_list: true,
                 product: true,
                 purchase: true,
                 customer: true,
                 expense: true,
+                return: true,
                 report: true,
                 user: false
               };
             } else if (role === 'staff' || role === 'cashier') {
               effective = {
+                dashboard: true,
                 pos: true,
+                pos_terminal: true,
+                invoice_list: true,
                 product: false,
                 purchase: false,
                 customer: false,
                 expense: false,
+                return: false,
                 report: false,
                 user: false
               };
             } else if (role === 'accountant') {
               effective = {
+                dashboard: true,
                 pos: false,
+                pos_terminal: false,
+                invoice_list: false,
                 product: false,
                 purchase: false,
                 customer: true,
                 expense: true,
+                return: false,
                 report: true,
                 user: false
               };
@@ -3038,12 +3329,30 @@
 
           // Route Protection: Prevent unauthorized direct URL access
           const path = window.location.pathname;
-          if (path.includes('admin-dashboard-user-role') && !effective.user) {
-            window.location.href = effective.pos ? '/admin-dashboard-pos' : '/admin-dashboard';
+          const fallbackUrl = effective.pos_terminal ? '/admin-dashboard-pos' : (effective.dashboard ? '/admin-dashboard' : (effective.product ? '/admin-dashboard-product' : '/admin-dashboard-invoice'));
+
+          if (path.includes('admin-dashboard-user-activity-log') && !isAdmin) {
+            window.location.href = fallbackUrl;
+          } else if (path.includes('admin-dashboard-user-role') && !effective.user) {
+            window.location.href = fallbackUrl;
           } else if ((path.includes('admin-dashboard-product') || path.includes('admin-dashboard-stock-overview') || path.includes('admin-dashboard-brand') || path.includes('admin-dashboard-category')) && !effective.product) {
-            window.location.href = effective.pos ? '/admin-dashboard-pos' : '/admin-dashboard';
+            window.location.href = fallbackUrl;
           } else if ((path.includes('admin-dashboard-Purchase') || path.includes('admin-dashboard-supplier')) && !effective.purchase) {
-            window.location.href = effective.pos ? '/admin-dashboard-pos' : '/admin-dashboard';
+            window.location.href = fallbackUrl;
+          } else if (path.includes('admin-dashboard-customer') && !effective.customer) {
+            window.location.href = fallbackUrl;
+          } else if ((path.includes('admin-dashboard-expence') || path.includes('admin-dashboard-opening-balance')) && !effective.expense) {
+            window.location.href = fallbackUrl;
+          } else if (path.includes('admin-dashboard-return-list') && !effective.return) {
+            window.location.href = fallbackUrl;
+          } else if ((path.includes('admin-dashboard-daily-') || path.includes('admin-dashboard-sales-report') || path.includes('admin-dashboard-income-expense-report') || path.includes('admin-dashboard-personal-transaction-report') || path.includes('admin-dashboard-stock-out')) && !effective.report) {
+            window.location.href = fallbackUrl;
+          } else if (path.includes('admin-dashboard-pos') && !effective.pos_terminal) {
+            window.location.href = fallbackUrl;
+          } else if (path.includes('admin-dashboard-invoice') && !effective.invoice_list) {
+            window.location.href = fallbackUrl;
+          } else if ((path === '/admin-dashboard' || path === '/admin-dashboard/') && !effective.dashboard) {
+            window.location.href = fallbackUrl;
           }
 
         } catch (error) {
@@ -3136,6 +3445,10 @@
             }
           }
 
+          if (document.getElementById('notiStockCountTab')) {
+            document.getElementById('notiStockCountTab').innerText = count;
+          }
+
           // Play chime sound if count increased or explicitly triggered
           if (playSound && count > 0) {
             playStockNotificationChime();
@@ -3206,6 +3519,115 @@
       }
     }
 
+    /* ── Switch Notification Tabs (Stock vs User Logs) ── */
+    let currentNotiTab = 'stock';
+
+    function switchNotiTab(tab) {
+      currentNotiTab = tab;
+      const stockList = document.getElementById('notification-items-list');
+      const actList = document.getElementById('notification-activity-list');
+      const stockBtn = document.getElementById('notiTabStockBtn');
+      const actBtn = document.getElementById('notiTabActivityBtn');
+      const titleEl = document.getElementById('notiHeaderTitle');
+      const subEl = document.getElementById('notiHeaderSubtitle');
+      const viewAllBtn = document.getElementById('notiHeaderViewAllBtn');
+      const footerLink = document.getElementById('notiFooterLink');
+
+      if (tab === 'activity') {
+        if (stockList) stockList.style.display = 'none';
+        if (actList) actList.style.display = 'block';
+        if (stockBtn) stockBtn.classList.remove('active');
+        if (actBtn) actBtn.classList.add('active');
+
+        if (titleEl) titleEl.innerText = 'User Activity Logs';
+        if (subEl) subEl.innerText = 'Real-time actions by system users';
+        if (viewAllBtn) viewAllBtn.href = '/admin-dashboard-user-activity-log';
+        if (footerLink) {
+          footerLink.href = '/admin-dashboard-user-activity-log';
+          footerLink.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> View complete user activity log <i class="fa-solid fa-arrow-right" style="font-size: 9px;"></i>';
+        }
+
+        loadRecentActivityLogs();
+      } else {
+        if (stockList) stockList.style.display = 'block';
+        if (actList) actList.style.display = 'none';
+        if (stockBtn) stockBtn.classList.add('active');
+        if (actBtn) actBtn.classList.remove('active');
+
+        if (titleEl) titleEl.innerText = 'Stock Notifications';
+        if (subEl) subEl.innerText = 'Products with stock below 10';
+        if (viewAllBtn) viewAllBtn.href = '/admin-dashboard-stock-out';
+        if (footerLink) {
+          footerLink.href = '/admin-dashboard-stock-out';
+          footerLink.innerHTML = '<i class="fa-solid fa-boxes-stacked"></i> View complete low stock product list <i class="fa-solid fa-arrow-right" style="font-size: 9px;"></i>';
+        }
+      }
+    }
+
+    async function loadRecentActivityLogs() {
+      const container = document.getElementById('notification-activity-list');
+      if (!container) return;
+
+      container.innerHTML = `
+        <div class="text-center py-4 px-3 text-slate-400">
+          <div class="spinner-border spinner-border-sm text-emerald-600 me-2" role="status"></div>
+          <span class="small text-muted">Loading user activity logs...</span>
+        </div>
+      `;
+
+      try {
+        const res = await axios.get('/get-recent-user-activity-logs', HeaderToken());
+        if (res.data && res.data.status === 'success') {
+          const logs = res.data.data.recent || [];
+          if (logs.length === 0) {
+            container.innerHTML = `
+              <div class="text-center py-4 px-3 text-slate-400">
+                <i class="fa-solid fa-clock-rotate-left text-2xl opacity-40 mb-2"></i>
+                <div class="text-xs">No recent activity logs recorded</div>
+              </div>
+            `;
+            return;
+          }
+
+          let html = '';
+          logs.forEach(item => {
+            let iconClass = 'fa-circle-dot text-emerald-500';
+            let act = (item.action || '').toLowerCase();
+            if (act.includes('login')) iconClass = 'fa-right-to-bracket text-emerald-500';
+            else if (act.includes('logout')) iconClass = 'fa-right-from-bracket text-slate-400';
+            else if (act.includes('sale')) iconClass = 'fa-cart-shopping text-teal-500';
+            else if (act.includes('purchase')) iconClass = 'fa-boxes-packing text-blue-500';
+            else if (act.includes('delete')) iconClass = 'fa-trash-can text-red-500';
+            else if (act.includes('update') || act.includes('status')) iconClass = 'fa-pen-to-square text-amber-500';
+            else if (act.includes('create')) iconClass = 'fa-plus text-green-500';
+
+            html += `
+              <a href="/admin-dashboard-user-activity-log" class="noti-activity-item text-decoration-none">
+                <div style="width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #e2e8f0; color: #334155; flex-shrink: 0;">
+                  <i class="fa-solid ${iconClass}" style="font-size: 11px;"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="d-flex align-items-center justify-content-between gap-1 mb-0.5">
+                    <span class="font-bold text-slate-800 dark:text-white text-xs truncate" style="max-width: 170px;">${item.user_name}</span>
+                    <span class="text-[10px] text-slate-400 whitespace-nowrap">${item.time_ago}</span>
+                  </div>
+                  <div class="text-[11.5px] text-slate-600 dark:text-slate-300" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.35;">
+                    ${item.description}
+                  </div>
+                </div>
+              </a>
+            `;
+          });
+          container.innerHTML = html;
+        } else {
+          container.innerHTML = `<div class="text-center py-3 text-muted text-xs">No activity records found</div>`;
+        }
+      } catch (e) {
+        console.error('Failed to load recent activity logs:', e);
+        container.innerHTML = `<div class="text-center py-3 text-danger text-xs">Unable to load activity logs</div>`;
+      }
+    }
+
     // Modern Light / Dark Mode Toggle Function with Icon Switching
     function toggle_light_mode() {
       const body = document.body;
@@ -3273,7 +3695,11 @@
 
       if (bellBtn) {
         bellBtn.addEventListener('click', function() {
-          loadLowStockNotifications(false);
+          if (currentNotiTab === 'activity') {
+            loadRecentActivityLogs();
+          } else {
+            loadLowStockNotifications(false);
+          }
           if (window.innerWidth <= 768 && notiBackdrop) {
             setTimeout(() => {
               if (notiDropdown && notiDropdown.classList.contains('show')) {
@@ -3748,6 +4174,50 @@
     [data-theme="dark"] ::-webkit-scrollbar-button:vertical:single-button:end:increment:hover {
       background-color: #334155;
       background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='%2310b981'><polygon points='0,0 10,0 5,6'/></svg>");
+    }
+
+    /* ── Topbar User Role Badges ── */
+    .topbar-user-role-badge, .topbar-dropdown-role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3.5px;
+      padding: 1.5px 7px;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.25;
+      white-space: nowrap;
+      text-transform: capitalize;
+    }
+    .topbar-badge--super {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(234, 88, 12, 0.3);
+    }
+    .topbar-badge--admin {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(220, 38, 38, 0.3);
+    }
+    .topbar-badge--manager {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+    .topbar-badge--cashier {
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+    .topbar-badge--staff {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+    .topbar-badge--default {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
     }
   </style>
 

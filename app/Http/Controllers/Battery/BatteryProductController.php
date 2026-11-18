@@ -219,6 +219,13 @@ class BatteryProductController extends Controller
 
             $product->load(['brand', 'category']);
 
+            \App\Services\ActivityLogger::log(
+                'CREATE',
+                'Products & Stock',
+                "Created battery product \"{$product->product_name}\" (" . ($product->brand->name ?? 'General') . "). Stock: {$product->quantity}, Sell: ৳ " . number_format($product->sell_price, 2) . ".",
+                ['product_id' => $product->id, 'product_name' => $product->product_name, 'quantity' => $product->quantity]
+            );
+
             return response()->json(['status' => 'success', 'message' => 'Product Created Successfully', 'product' => $product]);
         } catch (Exception $e) {
             Log::error('Battery Product Create Error: ' . $e->getMessage());
@@ -321,6 +328,13 @@ class BatteryProductController extends Controller
 
             $product->save();
 
+            \App\Services\ActivityLogger::log(
+                'UPDATE',
+                'Products & Stock',
+                "Updated battery product \"{$product->product_name}\". Stock: {$product->quantity}, Sell: ৳ " . number_format($product->sell_price, 2) . ".",
+                ['product_id' => $product->id, 'product_name' => $product->product_name, 'quantity' => $product->quantity]
+            );
+
             return response()->json(['status' => 'success', 'message' => 'Product updated successfully']);
         } catch (Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
@@ -357,7 +371,15 @@ class BatteryProductController extends Controller
                 @unlink(public_path($product->img_url));
             }
 
+            $prodName = $product->product_name;
             $product->delete();
+
+            \App\Services\ActivityLogger::log(
+                'DELETE',
+                'Products & Stock',
+                "Deleted battery product \"{$prodName}\" (ID: {$productID}).",
+                ['product_id' => $productID, 'product_name' => $prodName]
+            );
 
             return response()->json([
                 'status' => 'success',

@@ -3047,6 +3047,50 @@
                 margin-top: auto !important;
             }
         }
+
+        /* ── Topbar User Role Badges ── */
+        .topbar-user-role-badge, .topbar-dropdown-role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3.5px;
+            padding: 1.5px 7px;
+            border-radius: 9999px;
+            font-size: 10px;
+            font-weight: 800;
+            line-height: 1.25;
+            white-space: nowrap;
+            text-transform: capitalize;
+        }
+        .topbar-badge--super {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: #ffffff;
+            box-shadow: 0 1px 3px rgba(234, 88, 12, 0.3);
+        }
+        .topbar-badge--admin {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #ffffff;
+            box-shadow: 0 1px 3px rgba(220, 38, 38, 0.3);
+        }
+        .topbar-badge--manager {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+        .topbar-badge--cashier {
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+        .topbar-badge--staff {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+        .topbar-badge--default {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
     </style>
 
     <!-- Google Fonts: Valley Sans & Baloo Da 2 -->
@@ -3107,17 +3151,25 @@
                         </button>
                     </div>
                     <div class="dropdown d-inline-block">
-                        <button type="button" class="btn header-item user p-0 border-0 d-flex align-items-center justify-content-center"
+                        <button type="button" class="btn header-item user p-1 px-2 border rounded-xl d-flex align-items-center gap-2 bg-white shadow-xs"
                             id="page-header-user-dropdown-v" data-bs-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false">
+                            aria-expanded="false" style="border-color: #e2e8f0;">
                             <img class="rounded-circle header-profile-user shadow-sm"
                                 id="UserProfileImg" src="{{ asset('backend/assets/img/profile-img.png') }}" onerror="this.src='{{ asset('backend/assets/img/profile-img.png') }}'"
-                                alt="Header Avatar" style="width: 34px; height: 34px; object-fit: cover; border: 2px solid #16a34a;" />
+                                alt="Header Avatar" style="width: 32px; height: 32px; object-fit: cover; border: 1.5px solid #16a34a;" />
+                            <div class="d-none d-md-flex flex-column text-start" style="line-height: 1.25;">
+                                <span class="fw-bold text-dark truncate" id="topbarUserName" style="max-width: 110px; font-size: 12px;">User</span>
+                                <span class="topbar-user-role-badge topbar-badge--default" id="topbarUserRoleBadge" style="font-size: 9.5px; padding: 1px 6px;">Role</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-muted ms-0.5 d-none d-md-inline" style="font-size: 8.5px;"></i>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-end pt-0 profile-dropdown shadow-lg border-0" style="border-radius: 12px; overflow: hidden; min-width: 210px;">
+                        <div class="dropdown-menu dropdown-menu-end p-0 profile-dropdown shadow-lg border-0" style="border-radius: 14px; overflow: hidden; min-width: 220px;">
                             <div class="p-3 border-bottom bg-light">
-                                <h6 class="mb-0 fw-bold text-dark" id="AuthorizePersonProfileName">Loading...</h6>
-                                <a href="#" class="mb-0 font-size-11 text-muted text-break" id="EmailShow">loading...</a>
+                                <div class="d-flex align-items-center justify-content-between gap-2 mb-1">
+                                    <h6 class="mb-0 fw-bold text-dark truncate" id="AuthorizePersonProfileName" style="font-size: 13.5px;">User</h6>
+                                    <span class="topbar-dropdown-role-badge topbar-badge--default" id="dropdownUserRoleBadge" style="font-size: 10px;">Role</span>
+                                </div>
+                                <div class="text-[11px] text-muted text-truncate" id="EmailShow" style="max-width: 190px;">email@example.com</div>
                             </div>
                             <a class="dropdown-item py-2 fw-semibold" href="{{ route('battery.dashboard') }}">
                                 <i class="fa-regular fa-user text-muted me-2"></i> Profile
@@ -6068,6 +6120,29 @@
                     }
                     if (document.getElementById('EmailShow')) {
                         document.getElementById('EmailShow').innerText = user.email || "No Email";
+                    }
+
+                    // Render role badge helper
+                    const r = (user.role || 'user').toLowerCase();
+                    let title = 'Staff', cls = 'topbar-badge--staff', icon = '<i class="fa-solid fa-user"></i>';
+                    if (r.includes('super')) { title = 'Super Admin'; cls = 'topbar-badge--super'; icon = '<i class="fa-solid fa-crown"></i>'; }
+                    else if (r.includes('admin')) { title = 'Admin'; cls = 'topbar-badge--admin'; icon = '<i class="fa-solid fa-crown"></i>'; }
+                    else if (r.includes('manager')) { title = 'Manager'; cls = 'topbar-badge--manager'; icon = '<i class="fa-solid fa-user-tie"></i>'; }
+                    else if (r.includes('cashier')) { title = 'Cashier'; cls = 'topbar-badge--cashier'; icon = '<i class="fa-solid fa-cash-register"></i>'; }
+                    else if (r.includes('staff')) { title = 'Staff'; cls = 'topbar-badge--staff'; icon = '<i class="fa-solid fa-user"></i>'; }
+
+                    if (document.getElementById('topbarUserName')) {
+                        document.getElementById('topbarUserName').innerText = user.name || "User";
+                    }
+                    if (document.getElementById('topbarUserRoleBadge')) {
+                        const el = document.getElementById('topbarUserRoleBadge');
+                        el.className = `topbar-user-role-badge ${cls}`;
+                        el.innerHTML = `${icon} <span>${title}</span>`;
+                    }
+                    if (document.getElementById('dropdownUserRoleBadge')) {
+                        const el = document.getElementById('dropdownUserRoleBadge');
+                        el.className = `topbar-dropdown-role-badge ${cls}`;
+                        el.innerHTML = `${icon} <span>${title}</span>`;
                     }
                 }
             } catch (e) {

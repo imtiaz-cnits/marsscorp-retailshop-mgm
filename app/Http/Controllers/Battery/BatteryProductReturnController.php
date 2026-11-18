@@ -342,6 +342,13 @@ class BatteryProductReturnController extends Controller
 
             DB::commit();
 
+            \App\Services\ActivityLogger::log(
+                'RETURN',
+                'Returns',
+                "Processed battery sales return #{$returnNumber} for invoice \"{$order->order_no}\". Refund Amount: ৳ " . number_format($totalReturnAmount, 2) . ".",
+                ['return_number' => $returnNumber, 'order_no' => $order->order_no, 'refund_amount' => $totalReturnAmount]
+            );
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Sales return processed successfully.',

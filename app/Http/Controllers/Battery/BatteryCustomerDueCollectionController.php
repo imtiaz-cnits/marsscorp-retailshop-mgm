@@ -231,6 +231,20 @@ class BatteryCustomerDueCollectionController extends Controller
 
             DB::commit();
 
+            \App\Services\ActivityLogger::log(
+                'DUE_COLLECTION',
+                'Battery POS',
+                "Collected battery customer due: ৳ " . number_format($inputPaidAmount, 2) . " from \"{$customer->customer_name}\" (" . ($customer->customer_id ?? "ID: {$customer->id}") . "). Remaining Due: ৳ " . number_format($totalRemainingDue ?? 0, 2) . ". Method: " . ($paymentMethod ?: 'Cash') . ".",
+                [
+                    'customer_id'     => $customer->id,
+                    'customer_name'   => $customer->customer_name,
+                    'paid_amount'     => $inputPaidAmount,
+                    'discount_amount' => $inputDiscountAmount,
+                    'remaining_due'   => $totalRemainingDue ?? 0,
+                    'payment_method'  => $paymentMethod,
+                ]
+            );
+
             return response()->json([
                 'status'  => 'success',
                 'message' => 'Customer payment updated successfully.'

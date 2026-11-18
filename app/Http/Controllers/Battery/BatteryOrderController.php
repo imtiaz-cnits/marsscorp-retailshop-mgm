@@ -92,6 +92,13 @@ class BatteryOrderController extends Controller
 
             DB::commit();
 
+            \App\Services\ActivityLogger::log(
+                'Sale',
+                'Battery POS / Sales',
+                "Created battery invoice #{$order->order_no} (Total: ৳ " . number_format((float)$order->sub_total, 2) . ", Paid: ৳ " . number_format((float)$order->paid_amount, 2) . ")",
+                ['order_id' => $order->id, 'order_no' => $order->order_no, 'customer_id' => $order->customer_id]
+            );
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Order created successfully',

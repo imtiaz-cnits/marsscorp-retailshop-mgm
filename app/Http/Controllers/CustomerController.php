@@ -235,6 +235,13 @@ public function CustomerCreate(Request $request)
             'user_id' => $user_id,
         ]);
 
+        \App\Services\ActivityLogger::log(
+            'CREATE',
+            'Customers & Dues',
+            "Created customer \"{$CustomerID->customer_name}\" (" . ($CustomerID->customer_id ?? "ID: {$CustomerID->id}") . "). Mobile: " . ($CustomerID->mobile ?: 'N/A') . ".",
+            ['customer_id' => $CustomerID->id, 'customer_name' => $CustomerID->customer_name, 'mobile' => $CustomerID->mobile]
+        );
+
         return response()->json([
             'status' => 'success',
             'message' => "Customer Created Successfully",
@@ -321,6 +328,13 @@ public function CustomerUpdate(Request $request)
         // Save the customer and payment details
         $CustomerData_Update->save();
 
+        \App\Services\ActivityLogger::log(
+            'UPDATE',
+            'Customers & Dues',
+            "Updated customer details for \"{$CustomerData_Update->customer_name}\" (" . ($CustomerData_Update->customer_id ?? "ID: {$CustomerData_Update->id}") . ").",
+            ['customer_id' => $CustomerData_Update->id, 'customer_name' => $CustomerData_Update->customer_name]
+        );
+
         return response()->json(['status' => 'success', 'message' => 'Customer updated successfully']);
     } catch (Exception $e) {
         return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
@@ -382,9 +396,18 @@ public function CustomerDelete(Request $request)
         }
 
         // 5. Delete customer record
+        $customerName = $customer_delete->customer_name;
+        $customerIdCode = $customer_delete->customer_id ?? "ID: {$customer_id}";
         $customer_delete->delete();
 
         DB::commit();
+
+        \App\Services\ActivityLogger::log(
+            'DELETE',
+            'Customers & Dues',
+            "Deleted customer \"{$customerName}\" ({$customerIdCode}).",
+            ['customer_id' => $customer_id, 'customer_name' => $customerName]
+        );
 
         return response()->json(['status' => 'success', 'message' => 'Customer deleted successfully']);
     } catch (\Exception $e) {
